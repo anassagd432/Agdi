@@ -176,6 +176,10 @@ export function getChromeExtensionRelayAuthHeaders(url: string): Record<string, 
 
 export async function ensureChromeExtensionRelayServer(opts: {
   cdpUrl: string;
+  /** How often the relay sends an application-level ping to the extension. */
+  extensionPingIntervalMs?: number;
+  /** If we don't see any message (incl. pong) from the extension in this window, we drop it. */
+  extensionIdleTimeoutMs?: number;
 }): Promise<ChromeExtensionRelayServer> {
   const info = parseBaseUrl(opts.cdpUrl);
   if (!isLoopbackHost(info.host)) {
@@ -186,6 +190,15 @@ export async function ensureChromeExtensionRelayServer(opts: {
   if (existing) {
     return existing;
   }
+
+  const extensionPingIntervalMs =
+    typeof opts.extensionPingIntervalMs === "number" && opts.extensionPingIntervalMs > 0
+      ? opts.extensionPingIntervalMs
+      : 5000;
+  const extensionIdleTimeoutMs =
+    typeof opts.extensionIdleTimeoutMs === "number" && opts.extensionIdleTimeoutMs > 0
+      ? opts.extensionIdleTimeoutMs
+      : 20_000;
 
   let extensionWs: WebSocket | null = null;
   const cdpClients = new Set<WebSocket>();
@@ -500,14 +513,35 @@ export async function ensureChromeExtensionRelayServer(opts: {
   wssExtension.on("connection", (ws) => {
     extensionWs = ws;
 
+    let lastSeenAt = Date.now();
+
     const ping = setInterval(() => {
       if (ws.readyState !== WebSocket.OPEN) {
         return;
       }
+
+      // If the extension service worker got suspended or the connection got half-open,
+      // we might never see a close event. Proactively drop stale connections so
+      // a fresh extension instance can reconnect.
+      if (Date.now() - lastSeenAt > extensionIdleTimeoutMs) {
+        try {
+          ws.close(1011, "extension idle timeout");
+        } catch {
+          // ignore
+        }
+        try {
+          ws.terminate();
+        } catch {
+          // ignore
+        }
+        return;
+      }
+
       ws.send(JSON.stringify({ method: "ping" } satisfies ExtensionPingMessage));
-    }, 5000);
+    }, extensionPingIntervalMs);
 
     ws.on("message", (data) => {
+      lastSeenAt = Date.now();
       let parsed: ExtensionMessage | null = null;
       try {
         parsed = JSON.parse(rawDataToString(data)) as ExtensionMessage;

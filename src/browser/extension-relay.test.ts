@@ -298,6 +298,32 @@ describe("chrome extension relay server", () => {
     ext.close();
   }, 15_000);
 
+  it("drops stale extension connections so a new instance can reconnect", async () => {
+    const port = await getFreePort();
+    cdpUrl = `http://127.0.0.1:${port}`;
+    await ensureChromeExtensionRelayServer({
+      cdpUrl,
+      extensionPingIntervalMs: 20,
+      extensionIdleTimeoutMs: 80,
+    });
+
+    const ext1 = new WebSocket(`ws://127.0.0.1:${port}/extension`);
+    await waitForOpen(ext1);
+
+    // This client never responds with a pong, so it should be dropped.
+    await new Promise<void>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error("timeout waiting for ext close")), 2000);
+      ext1.once("close", () => {
+        clearTimeout(t);
+        resolve();
+      });
+    });
+
+    const ext2 = new WebSocket(`ws://127.0.0.1:${port}/extension`);
+    await waitForOpen(ext2);
+    ext2.close();
+  });
+
   it("rebroadcasts attach when a session id is reused for a new target", async () => {
     const port = await getFreePort();
     cdpUrl = `http://127.0.0.1:${port}`;
