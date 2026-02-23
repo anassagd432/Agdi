@@ -5,674 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGDI — Your AI Operating System</title>
-    <meta name="description"
-        content="AGDI is the first autonomous AI agent built to use computers just like you do. Voice control, native app interaction, and workflow automation.">
+    <meta name="description" content="AGDI is the first autonomous AI agent built to use computers natively.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <style>
-        :root {
-            --bg: #030305;
-            --surface: #0a0b12;
-            --surface-glass: rgba(10, 11, 18, 0.7);
-            --card: #10111a;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(0, 212, 255, 0.3);
-            --text: #ffffff;
-            --text-2: #8a93a6;
-            --accent: #00d4ff;
-            --accent-alt: #a100ff;
-            --gradient: linear-gradient(135deg, #00d4ff 0%, #a100ff 100%);
-            --glow: rgba(0, 212, 255, 0.4);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Selection */
-        ::selection {
-            background: var(--accent);
-            color: #000;
-        }
-
-        /* Animated Background Blob */
-        .blob {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 60vw;
-            height: 60vw;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 60%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-            transform: translate(-50%, -50%);
-            transition: top 0.2s ease-out, left 0.2s ease-out;
-            filter: blur(40px);
-        }
-
-        /* Scroll animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-logo .icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-2);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text);
-        }
-
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 100px;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background: var(--text);
-            color: var(--bg);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-gradient {
-            background: var(--gradient);
-            color: white;
-            box-shadow: 0 4px 20px var(--glow);
-        }
-
-        .btn-gradient:hover {
-            box-shadow: 0 8px 30px var(--glow);
-            transform: translateY(-2px);
-        }
-
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            color: var(--text);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-glass:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Hero Section */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 160px 5% 100px;
-            overflow: hidden;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 100px;
-            font-size: 14px;
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 40px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .hero-badge .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent);
-            animation: pulse 2s infinite;
-        }
-
-        .hero h1 {
-            font-size: clamp(40px, 8vw, 110px);
-            font-weight: 900;
-            letter-spacing: -3px;
-            line-height: 1.05;
-            margin-bottom: 30px;
-            max-width: 1200px;
-        }
-
-        .gradient-text {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: clamp(18px, 2vw, 24px);
-            color: var(--text-2);
-            max-width: 700px;
-            margin-bottom: 50px;
-            font-weight: 400;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 80px;
-        }
-
-        /* Hero UI Mockup Focus */
-        .hero-mockup {
-            position: relative;
-            width: 100%;
-            max-width: 1000px;
-            perspective: 1000px;
-            margin-top: 40px;
-        }
-
-        .mockup-window {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            transform: rotateX(15deg) translateY(0);
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
-        }
-
-        .hero-mockup:hover .mockup-window {
-            transform: rotateX(0deg) translateY(-10px);
-        }
-
-        .mockup-inner {
-            background: #000;
-            border-radius: 18px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .mockup-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 20px;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .mockup-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .mockup-dots span {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .mockup-body {
-            padding: 40px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 16px;
-            line-height: 2;
-            color: var(--text-2);
-            text-align: left;
-            height: 300px;
-            position: relative;
-        }
-
-        .typewriter::after {
-            content: '|';
-            color: var(--accent);
-            animation: blink 1s step-end infinite;
-        }
-
-        /* Context Section */
-        .context-section {
-            padding: 120px 5%;
-            text-align: center;
-            position: relative;
-        }
-
-        .context-section p.lead {
-            font-size: clamp(24px, 4vw, 42px);
-            font-weight: 500;
-            line-height: 1.4;
-            max-width: 1000px;
-            margin: 0 auto;
-            color: var(--text);
-        }
-
-        .context-section p.lead span {
-            color: var(--text-2);
-        }
-
-        /* Bento Box Features */
-        .bento-section {
-            padding: 100px 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .bento-header {
-            margin-bottom: 60px;
-        }
-
-        .bento-header h2 {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -2px;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 320px;
-            gap: 24px;
-        }
-
-        .bento-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 40px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .bento-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .bento-card:hover::before {
-            opacity: 1;
-        }
-
-        .bento-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-4px);
-        }
-
-        .bento-content {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bento-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: auto;
-        }
-
-        .bento-card h3 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        .bento-card p {
-            color: var(--text-2);
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        /* specific bento sizes */
-        .bento-large {
-            grid-column: span 2;
-            grid-row: span 2;
-        }
-
-        .bento-wide {
-            grid-column: span 2;
-        }
-
-        /* Code block inside bento */
-        .bento-code {
-            background: #000;
-            border-radius: 12px;
-            padding: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            color: var(--text-2);
-            margin-top: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .bento-code .keyword {
-            color: var(--accent-alt);
-        }
-
-        .bento-code .string {
-            color: var(--accent);
-        }
-
-        /* Architectures / Platforms */
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            padding: 80px 0;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-
-        .marquee-container::before,
-        .marquee-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 15vw;
-            z-index: 2;
-        }
-
-        .marquee-container::before {
-            left: 0;
-            background: linear-gradient(to right, var(--bg), transparent);
-        }
-
-        .marquee-container::after {
-            right: 0;
-            background: linear-gradient(to left, var(--bg), transparent);
-        }
-
-        .marquee {
-            display: flex;
-            gap: 80px;
-            width: max-content;
-            animation: scroll 30s linear infinite;
-        }
-
-        .marquee span {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-2);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .marquee span i {
-            font-style: normal;
-            font-size: 32px;
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 160px 5%;
-            text-align: center;
-            position: relative;
-        }
-
-        .cta-box {
-            background: var(--gradient);
-            border-radius: 32px;
-            padding: 80px 40px;
-            max-width: 1000px;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
-            animation: spin 10s linear infinite;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta h2 {
-            font-size: 56px;
-            font-weight: 900;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
-        }
-
-        .cta p {
-            font-size: 20px;
-            opacity: 0.9;
-            margin-bottom: 40px;
-        }
-
-        /* Footer */
-        footer {
-            padding: 40px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border);
-            color: var(--text-3);
-        }
-
-        /* Animations */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.5);
-                opacity: 0.5;
-            }
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .bento-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .hero h1 {
-                font-size: 70px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .bento-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .bento-large,
-            .bento-wide {
-                grid-column: span 1;
-            }
-
-            .bento-large {
-                grid-row: span 1;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 50px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
+    <div class="bg-grid"></div>
     <div class="blob" id="blob"></div>
 
     <!-- Navigation -->
     <nav id="navbar">
-        <div class="nav-logo">
-            <div class="icon">⚡</div>
+        <a href="#" class="nav-logo">
+            <div class="icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg></div>
             <span>AGDI</span>
-        </div>
+        </a>
         <div class="nav-links">
             <a href="#vision">Vision</a>
             <a href="#features">Capabilities</a>
             <a href="#platforms">Platforms</a>
         </div>
-        <div>
-            <a href="#install" class="btn btn-primary" style="margin-left: 0;">Get Started</a>
+        <div class="nav-actions">
+            <a href="https://github.com/openclaw/openclaw" target="_blank" class="nav-links"
+                style="color: var(--text-2); display: flex; text-decoration: none; font-weight: 500;">
+                <svg class="icon-svg" style="width: 18px; height: 18px; margin-right: 6px;" viewBox="0 0 24 24">
+                    <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+                    </path>
+                </svg>
+                GitHub
+            </a>
+            <a href="#install" class="btn btn-primary">Get Started</a>
         </div>
     </nav>
 
@@ -680,226 +48,256 @@
     <section class="hero">
         <div class="hero-badge reveal">
             <span class="dot"></span>
-            Version 3.0 — Security Suite + 100 Kali Tools Live
+            ✨ The Next Generation of Personal AI
         </div>
-        <h1 class="reveal">The Operating System<br>for <span class="gradient-text">General Intelligence.</span></h1>
-        <p class="reveal">AGDI isn't just a copilot. It's an autonomous agent that sees your screen, controls your
-            mouse, types on your keyboard, and executes complex workflows across any desktop or mobile device.</p>
+        <h1 class="reveal">The AI That Uses Your Computer<br><span class="gradient-text">Like You Do.</span></h1>
+        <p class="reveal">AGDI isn't just a copilot. It's an autonomous AI agent that sees your screen, controls your
+            mouse, types on your keyboard, and executes complex workflows for you.</p>
 
         <div class="hero-actions reveal">
-            <a href="#install" class="btn btn-gradient">Install AGDI CLI</a>
+            <a href="#install" class="btn btn-gradient">Get Started</a>
             <a href="#vision" class="btn btn-glass">Explore Capabilities</a>
         </div>
 
-        <!-- UI Mockup -->
-        <div class="hero-mockup reveal">
-            <div class="mockup-window">
-                <div class="mockup-inner">
-                    <div class="mockup-header">
-                        <div class="mockup-dots">
-                            <span style="background:#ff5c6c"></span>
-                            <span style="background:#ffb347"></span>
-                            <span style="background:#00e68a"></span>
-                        </div>
-                        <div style="margin-left: 10px; font-size: 13px; color: var(--text-3); font-family: sans-serif;">
-                            agdi-agent-daemon</div>
-                    </div>
-                    <div class="mockup-body">
-                        <div style="color: var(--accent);">> agdi agent --start</div>
-                        <br>
-                        <div style="color: var(--text-2);">[sys] Initializing native drivers (Linux/X11)... OK</div>
-                        <div style="color: var(--text-2);">[sys] Security suite loaded — 87/100 Kali tools available
-                        </div>
-                        <div style="color: var(--text-2);">[nl] Listening for commands...</div>
-                        <br>
-                        <div style="color: var(--text);">User: "Scan 10.0.0.0/24 for open ports, check web vulns on any
-                            HTTP servers, and capture WiFi handshakes."</div>
-                        <br>
-                        <div style="color: var(--accent-alt);">[plan] Delegating 3 sub-agents: NetworkRecon → WebScanner
-                            → WifiSecurity</div>
-                        <div class="typewriter" style="color: #00e68a;">[exec] Agent-1: SYN scan 254 hosts on ports
-                            1-65535...</div>
-                    </div>
-                </div>
+        <!-- AI Core Visual -->
+        <div class="hero-ai-core reveal">
+            <div class="core-rings">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
             </div>
+            <div class="core-orb">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 48px; height: 48px; color: white;">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+            </div>
+            <div class="core-glow"></div>
         </div>
     </section>
 
     <!-- Context Vision -->
     <section class="context-section" id="vision">
         <p class="lead reveal">
-            Operating systems were designed for human hands and eyes. <span>AGDI is the first bridge designed to let AI
-                interact with computers natively. No custom integrations. No APIs required. If a human can do it on a
-                screen, AGDI can do it too.</span>
+            Operating systems were designed for human hands and eyes. <span>We built a secure, autonomous bridge so your
+                AI can see, click, and type natively. 🚀 No complex setup. 💡 No limits.</span>
         </p>
     </section>
 
     <!-- Bento Features -->
     <section class="bento-section" id="features">
-        <div class="bento-header reveal">
-            <h2>Unprecedented capability.</h2>
+        <div class="bento-header reveal active">
+            <h2>Unprecedented <span class="gradient-glow">capability.</span></h2>
+            <div class="bento-accent-line"></div>
         </div>
 
         <div class="bento-grid">
             <!-- Card 1: Large -->
-            <div class="bento-card bento-large reveal bento-glow">
+            <div class="bento-card bento-large reveal"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,212,255,0.4));">
                 <div class="bento-content">
-                    <div class="bento-icon">🖥️</div>
-                    <h3>Native Device Control</h3>
-                    <p>Full control over the physical mouse, keyboard, and display. AGDI natively binds to OS-level APIs
-                        across Windows (P/Invoke), macOS (osascript), Linux (X11), Android (ADB), and iOS
-                        (XCUITest/WebDriverAgent).</p>
-                    <div class="bento-code">
-                        <span class="keyword">await</span> DeviceController.click(<span class="string">500</span>, <span
-                            class="string">250</span>);<br>
-                        <span class="keyword">await</span> DeviceController.type(<span class="string">"Hello
-                            world"</span>);<br>
-                        <span class="keyword">await</span> DeviceController.hotkey([<span class="string">"ctrl"</span>],
-                        <span class="string">"c"</span>);
-                    </div>
+                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg></div>
+                    <h3>🖱️ Mouse & Keyboard Control</h3>
+                    <p>Complete control over your computer. AGDI naturally handles all physical inputs across every
+                        major operating system without complex setup.</p>
+                    <div class="bento-index">01</div>
                 </div>
             </div>
 
             <!-- Card 2 -->
-            <div class="bento-card reveal bento-glow">
+            <div class="bento-card reveal"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,255,136,0.4));">
                 <div class="bento-content">
-                    <div class="bento-icon">💬</div>
-                    <h3>Natural Language Routing</h3>
-                    <p>Translate plain English commands into precise device actions instantly. Bypasses heavy LLM
-                        overhead for common patterns.</p>
+                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg></div>
+                    <h3>👁️ Perfect Screen Vision</h3>
+                    <p>AGDI actually sees your screen just like a human does. It reads text and understands images
+                        securely on your device, in milliseconds.</p>
+                    <div class="bento-index">02</div>
                 </div>
             </div>
 
             <!-- Card 3 -->
-            <div class="bento-card reveal bento-glow">
+            <div class="bento-card reveal"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(161,0,255,0.4));">
                 <div class="bento-content">
-                    <div class="bento-icon">👁️</div>
-                    <h3>Local Screen OCR</h3>
-                    <p>Read text directly from the screen in milliseconds using Tesseract. Zero API costs. Find UI
-                        elements visually, not structurally.</p>
+                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg></div>
+                    <h3>🗣️ Talks Like a Human</h3>
+                    <p>Just tell AGDI what you want in plain English. It understands your natural language and instantly
+                        translates your words into actions.</p>
+                    <div class="bento-index">03</div>
                 </div>
             </div>
 
             <!-- Card 4: Wide -->
-            <div class="bento-card bento-wide reveal bento-glow">
+            <div class="bento-card bento-wide reveal"
+                style="--custom-glow: linear-gradient(135deg, rgba(161,0,255,0.8), rgba(200,50,255,0.8));">
                 <div class="bento-content">
-                    <div class="bento-icon">🤖</div>
-                    <h3>AI-to-AI Delegation</h3>
-                    <p>Why run one agent when you can run ten? Give AGDI a complex directive containing "AND". It
-                        automatically spawns parallel sub-agents, delegates tasks, coordinates executions, and
-                        synthesizes the final result back to you.</p>
+                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <path
+                                d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z">
+                            </path>
+                            <path
+                                d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z">
+                            </path>
+                        </svg></div>
+                    <h3>🧠 Learns How You Work</h3>
+                    <p>AGDI remembers what you do. It watches your workflows and learns your personal habits, getting
+                        smarter and more personalized every single day.</p>
+                    <div class="bento-index">04</div>
                 </div>
             </div>
 
             <!-- Card 5 -->
-            <div class="bento-card reveal bento-glow">
+            <div class="bento-card reveal" data-color="rgba(255,50,50,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,50,50,0.8), rgba(255,100,50,0.8));">
                 <div class="bento-content">
-                    <div class="bento-icon">🛡️</div>
-                    <h3>Trust & Safety Gate</h3>
-                    <p>AGDI categorizes actions by risk. It will auto-click safely, but will pause and prompt for human
-                        approval before modifying files or sending emails.</p>
-                </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="bento-card reveal bento-glow">
-                <div class="bento-content">
-                    <div class="bento-icon">🧠</div>
-                    <h3>Persistent Memory System</h3>
-                    <p>It learns your environment. By observing your workflows, AGDI builds a profile of your screen
-                        layout, preferred apps, and daily habits over time.</p>
-                </div>
-            </div>
-
-            <!-- Card 7: Wide -->
-            <div class="bento-card bento-wide reveal bento-glow">
-                <div class="bento-content">
-                    <div class="bento-icon">🔌</div>
-                    <h3>REST API & Webhooks</h3>
-                    <p>Turn your computer into a programmable API. Trigger device actions remotely from Zapier, mobile
-                        apps, or other servers.</p>
-                    <div class="bento-code">
-                        <span class="keyword">curl</span> -X POST localhost:7778/api/command \<br>
-                        &nbsp;&nbsp;-H <span class="string">"Auth: Bearer token"</span> \<br>
-                        &nbsp;&nbsp;-d <span class="string">'{"command":"open spotify and play jazz"}'</span>
+                    <div class="bento-icon"
+                        style="background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.2); color: #ff5252;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
                     </div>
+                    <h3>🛡️ Always-On Security</h3>
+                    <p>Your personal digital bodyguard. AGDI can autonomously check for vulnerabilities and secure your
+                        device with enterprise-grade protection.</p>
+                    <div class="bento-index">05</div>
                 </div>
             </div>
 
-            <!-- Card 8: Cyber — Large -->
-            <div class="bento-card bento-large reveal bento-glow" style="border-color: rgba(255,50,50,0.15);">
+            <!-- Card 6: Wide -->
+            <div class="bento-card bento-wide reveal"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,255,136,0.4));">
                 <div class="bento-content">
-                    <div class="bento-icon" style="background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.2);">
-                        🔓</div>
-                    <h3>Offensive Security Suite</h3>
-                    <p>Full-stack penetration testing baked in. Network recon, port scanning, service fingerprinting,
-                        SQL injection, XSS detection, directory brute-forcing, WiFi handshake capture, and WPA cracking
-                        — all from a single command.</p>
-                    <div class="bento-code">
-                        <span class="keyword">const</span> recon = <span class="keyword">new</span> <span
-                            class="string">NetworkRecon</span>();<br>
-                        <span class="keyword">await</span> recon.scanPorts({ target: <span
-                            class="string">"10.0.0.1"</span>,<br>
-                        &nbsp;&nbsp;ports: <span class="string">"1-65535"</span>, technique: <span
-                            class="string">"syn"</span> });<br>
-                        <span class="keyword">await</span> recon.dnsEnum(<span class="string">"target.com"</span>);
+                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <polyline points="4 17 10 11 4 5"></polyline>
+                            <line x1="12" y1="19" x2="20" y2="19"></line>
+                        </svg></div>
+                    <h3>🔌 Connects to Everything</h3>
+                    <p>Make your computer part of the smart web. Easily link AGDI to Zapier, your phone, or other tools
+                        to automate actions from anywhere.</p>
+                    <div class="bento-index">06</div>
+                </div>
+            </div>
+
+            <!-- Card 7: Recon — Large -->
+            <div class="bento-card bento-large reveal" data-color="rgba(255,50,50,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,50,50,0.8), rgba(255,100,50,0.8));">
+                <div class="bento-content">
+                    <div class="bento-icon"
+                        style="background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.2); color: #ff5252;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="22" y1="12" x2="18" y2="12"></line>
+                            <line x1="6" y1="12" x2="2" y2="12"></line>
+                            <line x1="12" y1="6" x2="12" y2="2"></line>
+                            <line x1="12" y1="22" x2="12" y2="18"></line>
+                        </svg>
                     </div>
+                    <h3>🕵️ Autonomous Research</h3>
+                    <p>Give AGDI a topic and it will scour the web, read articles, and compile a comprehensive report
+                        for you while you sleep. Perfect for students and professionals.</p>
+                    <div class="bento-index">07</div>
                 </div>
             </div>
 
-            <!-- Card 9: Exploit -->
-            <div class="bento-card reveal bento-glow" style="border-color: rgba(161,0,255,0.15);">
+            <!-- Card 8: Self-Improvement -->
+            <div class="bento-card reveal" data-color="rgba(161,0,255,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(161,0,255,0.8), rgba(200,50,255,0.8));">
                 <div class="bento-content">
-                    <div class="bento-icon" style="background: rgba(161,0,255,0.1); border-color: rgba(161,0,255,0.2);">
-                        💀</div>
-                    <h3>Exploit Engine</h3>
-                    <p>Metasploit bridge, msfvenom payloads, reverse shell generators in 6 languages, CVE lookup, and
-                        ExploitDB search. Full red team toolkit.</p>
-                </div>
-            </div>
-
-            <!-- Card 10: Kali -->
-            <div class="bento-card reveal bento-glow" style="border-color: rgba(0,255,136,0.15);">
-                <div class="bento-content">
-                    <div class="bento-icon" style="background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.2);">
-                        🐉</div>
-                    <h3>100+ Kali Tools</h3>
-                    <p>Direct programmatic access to the entire Kali Linux arsenal: nmap, sqlmap, hydra, hashcat,
-                        aircrack-ng, Wireshark, Metasploit, Burp, Ghidra, and more.</p>
-                </div>
-            </div>
-
-            <!-- Card 11: Packet & Traffic — Wide -->
-            <div class="bento-card bento-wide reveal bento-glow" style="border-color: rgba(0,212,255,0.15);">
-                <div class="bento-content">
-                    <div class="bento-icon">📡</div>
-                    <h3>Packet Capture & Traffic Analysis</h3>
-                    <p>Live packet sniffing with tcpdump/tshark, PCAP analysis, credential extraction from captures, DNS
-                        query enumeration, protocol decoding, and deep traffic statistics — all controllable via the
-                        autonomous agent.</p>
-                    <div class="bento-code">
-                        <span class="keyword">await</span> sniffer.startCapture({ iface: <span
-                            class="string">"eth0"</span>, filter: <span class="string">"port 80"</span> });<br>
-                        <span class="keyword">const</span> creds = <span class="keyword">await</span>
-                        sniffer.extractCredentials(<span class="string">"capture.pcap"</span>);
+                    <div class="bento-icon"
+                        style="background: rgba(161,0,255,0.1); border-color: rgba(161,0,255,0.2); color: #a100ff;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
                     </div>
+                    <h3>🔄 Gets Smarter Over Time</h3>
+                    <p>A built-in self-improvement engine analyzes its own performance and automatically tunes its
+                        strategies to get faster and more reliable.</p>
+                    <div class="bento-index">08</div>
                 </div>
             </div>
-            <!-- Card 12: Security Hardening — Wide -->
-            <div class="bento-card bento-wide reveal bento-glow" style="border-color: rgba(255,215,0,0.15);">
+
+            <!-- Card 9: File Watcher -->
+            <div class="bento-card reveal" data-color="rgba(0,255,136,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(0,255,136,0.8), rgba(50,200,255,0.8));">
                 <div class="bento-content">
-                    <div class="bento-icon" style="background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.2);">
-                        🛡️</div>
-                    <h3>Zero-Trust Security Hardening</h3>
-                    <p>HMAC-chained tamper-evident audit log, shell command blocklist (fork bombs, rm -rf,
-                        pipe-to-shell), file sandbox with path traversal protection, session tokens with IP binding, and
-                        HTTP security headers on every response.</p>
-                    <div class="bento-code">
-                        <span class="keyword">const</span> check = CommandGuard.isSafe(<span class="string">"rm -rf
-                            /"</span>);<br>
-                        &nbsp;&nbsp;// → { safe: <span class="keyword">false</span>, reason: <span
-                            class="string">"Blocked command"</span> }
+                    <div class="bento-icon"
+                        style="background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.2); color: #00ff88;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 17 22 12"></polyline>
+                        </svg>
                     </div>
+                    <h3>📁 Smart File Triggers</h3>
+                    <p>Set rules like "when a PDF arrives in Downloads, open it." AGDI watches your folders and
+                        automatically acts on new, changed, or deleted files.</p>
+                    <div class="bento-index">09</div>
+                </div>
+            </div>
+
+            <!-- Card 10: Packet & Traffic — Wide -->
+            <div class="bento-card bento-wide reveal" data-color="rgba(0,212,255,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(0,212,255,0.8), rgba(161,0,255,0.8));">
+                <div class="bento-content">
+                    <div class="bento-icon"
+                        style="background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.2); color: #00d4ff;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3>🌐 Browser Automation</h3>
+                    <p>Never do repetitive web tasks again. AGDI can log into websites, scrape data, fill out forms, and
+                        handle complex web interactions flawlessly.</p>
+                    <div class="bento-index">10</div>
+                </div>
+            </div>
+
+            <!-- Card 11: Multi-Platform — Wide -->
+            <div class="bento-card bento-wide reveal" data-color="rgba(255,179,71,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(255,179,71,0.8), rgba(255,50,50,0.8));">
+                <div class="bento-content">
+                    <div class="bento-icon"
+                        style="background: rgba(255,179,71,0.1); border-color: rgba(255,179,71,0.2); color: #ffb347;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h3>💻 Runs on Any OS</h3>
+                    <p>Works natively on Linux, macOS, and Windows. AGDI auto-detects your platform and uses the right
+                        native tools — no configuration needed.</p>
+                    <div class="bento-index">11</div>
+                </div>
+            </div>
+
+            <!-- Card 13: Local AI — Wide -->
+            <div class="bento-card bento-wide reveal" data-color="rgba(100,150,255,0.8)"
+                style="--custom-glow: linear-gradient(135deg, rgba(100,150,255,0.8), rgba(161,0,255,0.8));">
+                <div class="bento-content">
+                    <div class="bento-icon"
+                        style="background: rgba(100,150,255,0.1); border-color: rgba(100,150,255,0.2); color: #6496ff;">
+                        <svg class="icon-svg" viewBox="0 0 24 24">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+                            <path d="M3 12A9 3 0 0 0 21 12"></path>
+                        </svg>
+                    </div>
+                    <h3>⚡ Instant Local Execution</h3>
+                    <p>Because AGDI runs directly on your hardware, there's no waiting for cloud API responses. Every
+                        action is executed instantly with zero latency.</p>
+                    <div class="bento-index">12</div>
                 </div>
             </div>
 
@@ -910,23 +308,75 @@
     <div class="marquee-container" id="platforms">
         <div class="marquee">
             <!-- Duplicated for seamless loop -->
-            <span><i>🐧</i> Ubuntu / Kali Linux</span>
-            <span><i>🍎</i> macOS Sonoma</span>
-            <span><i>🪟</i> Windows 11</span>
-            <span><i>🤖</i> Android (ADB)</span>
-            <span><i>📱</i> iOS / iPadOS</span>
-            <span><i>🔒</i> Metasploit</span>
-            <span><i>🕷️</i> Nmap / SQLMap</span>
-            <span><i>📶</i> Aircrack-ng</span>
-            <span><i>🐧</i> Ubuntu / Kali Linux</span>
-            <span><i>🍎</i> macOS Sonoma</span>
-            <span><i>🪟</i> Windows 11</span>
-            <span><i>🤖</i> Android (ADB)</span>
-            <span><i>📱</i> iOS / iPadOS</span>
-            <span><i>🔒</i> Metasploit</span>
-            <span><i>🕷️</i> Nmap / SQLMap</span>
-            <span><i>📶</i> Aircrack-ng</span>
-            <span><i>📱</i> iOS / iPadOS</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg> Ubuntu / Kali Linux</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
+                </svg> macOS Sonoma</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg> Windows 11</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg> Android (ADB)</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg> iOS / iPadOS</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg> Metasploit</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg> Nmap / SQLMap</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                </svg> Aircrack-ng</span>
+
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg> Ubuntu / Kali Linux</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
+                </svg> macOS Sonoma</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg> Windows 11</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg> Android (ADB)</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg> iOS / iPadOS</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg> Metasploit</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg> Nmap / SQLMap</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                </svg> Aircrack-ng</span>
         </div>
     </div>
 
@@ -936,84 +386,76 @@
             <div class="cta-content">
                 <h2>Unleash your computer.</h2>
                 <p>Zero configuration. Installs in seconds. Fully open source.</p>
-                <div
-                    style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px 40px; display: inline-flex; align-items: center; gap: 20px; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: white;">
+                <div class="install-command">
                     <span style="color: #00d4ff;">npx</span> agdi agent
-                    <button style="background:none; border:none; cursor:pointer; color: white; opacity: 0.5;"
-                        title="Copy to clipboard"
-                        onclick="navigator.clipboard.writeText('npx agdi agent'); alert('Copied!');">📋</button>
+                    <button title="Copy to clipboard"
+                        onclick="navigator.clipboard.writeText('npx agdi agent'); this.innerHTML='<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'20 6 9 17 4 12\'></polyline></svg>'; setTimeout(() => this.innerHTML='<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><rect x=\'9\' y=\'9\' width=\'13\' height=\'13\' rx=\'2\' ry=\'2\'></rect><path d=\'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\'></path></svg>', 2000);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div>&copy; 2026 AGDI. Open Source AI Automation.</div>
-        <div style="display: flex; gap: 20px;">
-            <a href="#" style="color: var(--text-2); text-decoration: none;">Documentation</a>
-            <a href="#" style="color: var(--text-2); text-decoration: none;">Twitter/X</a>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="footer-logo">
+                    <div class="icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg></div>
+                    <span>AGDI</span>
+                </a>
+                <p>The first autonomous AI agent built to use computers natively. No custom integrations required.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Capabilities</a></li>
+                    <li><a href="#platforms">Platforms</a></li>
+                    <li><a href="/docs/autonomous/security/index.html">Security Suite</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="/docs/start/getting-started.html">Documentation</a></li>
+                    <li><a href="/docs/autonomous/index.html">Architecture</a></li>
+                    <li><a href="https://github.com/openclaw/openclaw">GitHub</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="#">Discord Server</a></li>
+                    <li><a href="#">Twitter / X</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; 2026 AGDI. Open Source AI Automation.</div>
+            <div style="display: flex; gap: 24px;">
+                <a href="#" style="color: var(--text-3); text-decoration: none; transition: color 0.2s;"
+                    onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">Privacy
+                    Policy</a>
+                <a href="#" style="color: var(--text-3); text-decoration: none; transition: color 0.2s;"
+                    onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">Terms of
+                    Service</a>
+            </div>
         </div>
     </footer>
 
-    <script>
-        // Reveal animations on scroll
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        reveals.forEach(r => observer.observe(r));
-
-        // Navbar blur transition
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.style.padding = '15px 5%';
-                navbar.style.background = 'rgba(10, 11, 18, 0.85)';
-            } else {
-                navbar.style.padding = '20px 5%';
-                navbar.style.background = 'rgba(10, 11, 18, 0.5)';
-            }
-        });
-
-        // Mouse glow effect on bento cards
-        document.querySelectorAll('.bento-glow').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
-
-        // Background blob follows mouse with easing
-        const blob = document.getElementById('blob');
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let blobX = mouseX;
-        let blobY = mouseY;
-
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        function animateBlob() {
-            // Easing calculation
-            blobX += (mouseX - blobX) * 0.05;
-            blobY += (mouseY - blobY) * 0.05;
-            blob.style.left = `${blobX}px`;
-            blob.style.top = `${blobY}px`;
-            requestAnimationFrame(animateBlob);
-        }
-        animateBlob();
-    </script>
+    <script src="main.js"></script>
 </body>
 
 </html>
