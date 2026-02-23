@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cron vs Heartbeat — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="active" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Cron vs Heartbeat: When to Use Each</h1>
+<p>Both heartbeats and cron jobs let you run tasks on a schedule. This guide helps you choose the right mechanism for your use case.</p>
+<h2>Quick Decision Guide</h2>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Recommended</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Check inbox every 30 min</td>
+<td>Heartbeat</td>
+<td>Batches with other checks, context-aware</td>
+</tr>
+<tr>
+<td>Send daily report at 9am sharp</td>
+<td>Cron (isolated)</td>
+<td>Exact timing needed</td>
+</tr>
+<tr>
+<td>Monitor calendar for upcoming events</td>
+<td>Heartbeat</td>
+<td>Natural fit for periodic awareness</td>
+</tr>
+<tr>
+<td>Run weekly deep analysis</td>
+<td>Cron (isolated)</td>
+<td>Standalone task, can use different model</td>
+</tr>
+<tr>
+<td>Remind me in 20 minutes</td>
+<td>Cron (main, <code>--at</code>)</td>
+<td>One-shot with precise timing</td>
+</tr>
+<tr>
+<td>Background project health check</td>
+<td>Heartbeat</td>
+<td>Piggybacks on existing cycle</td>
+</tr>
+</tbody></table>
+<h2>Heartbeat: Periodic Awareness</h2>
+<p>Heartbeats run in the <strong>main session</strong> at a regular interval (default: 30 min). They&#39;re designed for the agent to check on things and surface anything important.</p>
+<h3>When to use heartbeat</h3>
+<ul>
+<li><strong>Multiple periodic checks</strong>: Instead of 5 separate cron jobs checking inbox, calendar, weather, notifications, and project status, a single heartbeat can batch all of these.</li>
+<li><strong>Context-aware decisions</strong>: The agent has full main-session context, so it can make smart decisions about what&#39;s urgent vs. what can wait.</li>
+<li><strong>Conversational continuity</strong>: Heartbeat runs share the same session, so the agent remembers recent conversations and can follow up naturally.</li>
+<li><strong>Low-overhead monitoring</strong>: One heartbeat replaces many small polling tasks.</li>
+</ul>
+<h3>Heartbeat advantages</h3>
+<ul>
+<li><strong>Batches multiple checks</strong>: One agent turn can review inbox, calendar, and notifications together.</li>
+<li><strong>Reduces API calls</strong>: A single heartbeat is cheaper than 5 isolated cron jobs.</li>
+<li><strong>Context-aware</strong>: The agent knows what you&#39;ve been working on and can prioritize accordingly.</li>
+<li><strong>Smart suppression</strong>: If nothing needs attention, the agent replies <code>HEARTBEAT_OK</code> and no message is delivered.</li>
+<li><strong>Natural timing</strong>: Drifts slightly based on queue load, which is fine for most monitoring.</li>
+</ul>
+<h3>Heartbeat example: HEARTBEAT.md checklist</h3>
+<pre><code class="language-md"># Heartbeat checklist
+
+- Check email for urgent messages
+- Review calendar for events in next 2 hours
+- If a background task finished, summarize results
+- If idle for 8+ hours, send a brief check-in
+</code></pre>
+<p>The agent reads this on each heartbeat and handles all items in one turn.</p>
+<h3>Configuring heartbeat</h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;, // interval
+        target: &quot;last&quot;, // where to deliver alerts
+        activeHours: { start: &quot;08:00&quot;, end: &quot;22:00&quot; }, // optional
+      },
+    },
+  },
+}
+</code></pre>
+<p>See <a href="/docs/gateway/heartbeat">Heartbeat</a> for full configuration.</p>
+<h2>Cron: Precise Scheduling</h2>
+<p>Cron jobs run at <strong>exact times</strong> and can run in isolated sessions without affecting main context.</p>
+<h3>When to use cron</h3>
+<ul>
+<li><strong>Exact timing required</strong>: &quot;Send this at 9:00 AM every Monday&quot; (not &quot;sometime around 9&quot;).</li>
+<li><strong>Standalone tasks</strong>: Tasks that don&#39;t need conversational context.</li>
+<li><strong>Different model/thinking</strong>: Heavy analysis that warrants a more powerful model.</li>
+<li><strong>One-shot reminders</strong>: &quot;Remind me in 20 minutes&quot; with <code>--at</code>.</li>
+<li><strong>Noisy/frequent tasks</strong>: Tasks that would clutter main session history.</li>
+<li><strong>External triggers</strong>: Tasks that should run independently of whether the agent is otherwise active.</li>
+</ul>
+<h3>Cron advantages</h3>
+<ul>
+<li><strong>Exact timing</strong>: 5-field cron expressions with timezone support.</li>
+<li><strong>Session isolation</strong>: Runs in <code>cron:&lt;jobId&gt;</code> without polluting main history.</li>
+<li><strong>Model overrides</strong>: Use a cheaper or more powerful model per job.</li>
+<li><strong>Delivery control</strong>: Isolated jobs default to <code>announce</code> (summary); choose <code>none</code> as needed.</li>
+<li><strong>Immediate delivery</strong>: Announce mode posts directly without waiting for heartbeat.</li>
+<li><strong>No agent context needed</strong>: Runs even if main session is idle or compacted.</li>
+<li><strong>One-shot support</strong>: <code>--at</code> for precise future timestamps.</li>
+</ul>
+<h3>Cron example: Daily morning briefing</h3>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Morning briefing&quot; \
+  --cron &quot;0 7 * * *&quot; \
+  --tz &quot;America/New_York&quot; \
+  --session isolated \
+  --message &quot;Generate today&#39;s briefing: weather, calendar, top emails, news summary.&quot; \
+  --model opus \
+  --announce \
+  --channel whatsapp \
+  --to &quot;+15551234567&quot;
+</code></pre>
+<p>This runs at exactly 7:00 AM New York time, uses Opus for quality, and announces a summary directly to WhatsApp.</p>
+<h3>Cron example: One-shot reminder</h3>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Meeting reminder&quot; \
+  --at &quot;20m&quot; \
+  --session main \
+  --system-event &quot;Reminder: standup meeting starts in 10 minutes.&quot; \
+  --wake now \
+  --delete-after-run
+</code></pre>
+<p>See <a href="/docs/automation/cron-jobs">Cron jobs</a> for full CLI reference.</p>
+<h2>Decision Flowchart</h2>
+<pre><code>Does the task need to run at an EXACT time?
+  YES -&gt; Use cron
+  NO  -&gt; Continue...
+
+Does the task need isolation from main session?
+  YES -&gt; Use cron (isolated)
+  NO  -&gt; Continue...
+
+Can this task be batched with other periodic checks?
+  YES -&gt; Use heartbeat (add to HEARTBEAT.md)
+  NO  -&gt; Use cron
+
+Is this a one-shot reminder?
+  YES -&gt; Use cron with --at
+  NO  -&gt; Continue...
+
+Does it need a different model or thinking level?
+  YES -&gt; Use cron (isolated) with --model/--thinking
+  NO  -&gt; Use heartbeat
+</code></pre>
+<h2>Combining Both</h2>
+<p>The most efficient setup uses <strong>both</strong>:</p>
+<ol>
+<li><strong>Heartbeat</strong> handles routine monitoring (inbox, calendar, notifications) in one batched turn every 30 minutes.</li>
+<li><strong>Cron</strong> handles precise schedules (daily reports, weekly reviews) and one-shot reminders.</li>
+</ol>
+<h3>Example: Efficient automation setup</h3>
+<p><strong>HEARTBEAT.md</strong> (checked every 30 min):</p>
+<pre><code class="language-md"># Heartbeat checklist
+
+- Scan inbox for urgent emails
+- Check calendar for events in next 2h
+- Review any pending tasks
+- Light check-in if quiet for 8+ hours
+</code></pre>
+<p><strong>Cron jobs</strong> (precise timing):</p>
+<pre><code class="language-bash"># Daily morning briefing at 7am
+agdi cron add --name &quot;Morning brief&quot; --cron &quot;0 7 * * *&quot; --session isolated --message &quot;...&quot; --announce
+
+# Weekly project review on Mondays at 9am
+agdi cron add --name &quot;Weekly review&quot; --cron &quot;0 9 * * 1&quot; --session isolated --message &quot;...&quot; --model opus
+
+# One-shot reminder
+agdi cron add --name &quot;Call back&quot; --at &quot;2h&quot; --session main --system-event &quot;Call back the client&quot; --wake now
+</code></pre>
+<h2>Lobster: Deterministic workflows with approvals</h2>
+<p>Lobster is the workflow runtime for <strong>multi-step tool pipelines</strong> that need deterministic execution and explicit approvals.
+Use it when the task is more than a single agent turn, and you want a resumable workflow with human checkpoints.</p>
+<h3>When Lobster fits</h3>
+<ul>
+<li><strong>Multi-step automation</strong>: You need a fixed pipeline of tool calls, not a one-off prompt.</li>
+<li><strong>Approval gates</strong>: Side effects should pause until you approve, then resume.</li>
+<li><strong>Resumable runs</strong>: Continue a paused workflow without re-running earlier steps.</li>
+</ul>
+<h3>How it pairs with heartbeat and cron</h3>
+<ul>
+<li><strong>Heartbeat/cron</strong> decide <em>when</em> a run happens.</li>
+<li><strong>Lobster</strong> defines <em>what steps</em> happen once the run starts.</li>
+</ul>
+<p>For scheduled workflows, use cron or heartbeat to trigger an agent turn that calls Lobster.
+For ad-hoc workflows, call Lobster directly.</p>
+<h3>Operational notes (from the code)</h3>
+<ul>
+<li>Lobster runs as a <strong>local subprocess</strong> (<code>lobster</code> CLI) in tool mode and returns a <strong>JSON envelope</strong>.</li>
+<li>If the tool returns <code>needs_approval</code>, you resume with a <code>resumeToken</code> and <code>approve</code> flag.</li>
+<li>The tool is an <strong>optional plugin</strong>; enable it additively via <code>tools.alsoAllow: [&quot;lobster&quot;]</code> (recommended).</li>
+<li>If you pass <code>lobsterPath</code>, it must be an <strong>absolute path</strong>.</li>
+</ul>
+<p>See <a href="/docs/tools/lobster">Lobster</a> for full usage and examples.</p>
+<h2>Main Session vs Isolated Session</h2>
+<p>Both heartbeat and cron can interact with the main session, but differently:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Heartbeat</th>
+<th>Cron (main)</th>
+<th>Cron (isolated)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Session</td>
+<td>Main</td>
+<td>Main (via system event)</td>
+<td><code>cron:&lt;jobId&gt;</code></td>
+</tr>
+<tr>
+<td>History</td>
+<td>Shared</td>
+<td>Shared</td>
+<td>Fresh each run</td>
+</tr>
+<tr>
+<td>Context</td>
+<td>Full</td>
+<td>Full</td>
+<td>None (starts clean)</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Main session model</td>
+<td>Main session model</td>
+<td>Can override</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>Delivered if not <code>HEARTBEAT_OK</code></td>
+<td>Heartbeat prompt + event</td>
+<td>Announce summary (default)</td>
+</tr>
+</tbody></table>
+<h3>When to use main session cron</h3>
+<p>Use <code>--session main</code> with <code>--system-event</code> when you want:</p>
+<ul>
+<li>The reminder/event to appear in main session context</li>
+<li>The agent to handle it during the next heartbeat with full context</li>
+<li>No separate isolated run</li>
+</ul>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Check project&quot; \
+  --every &quot;4h&quot; \
+  --session main \
+  --system-event &quot;Time for a project health check&quot; \
+  --wake now
+</code></pre>
+<h3>When to use isolated cron</h3>
+<p>Use <code>--session isolated</code> when you want:</p>
+<ul>
+<li>A clean slate without prior context</li>
+<li>Different model or thinking settings</li>
+<li>Announce summaries directly to a channel</li>
+<li>History that doesn&#39;t clutter main session</li>
+</ul>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Deep analysis&quot; \
+  --cron &quot;0 6 * * 0&quot; \
+  --session isolated \
+  --message &quot;Weekly codebase analysis...&quot; \
+  --model opus \
+  --thinking high \
+  --announce
+</code></pre>
+<h2>Cost Considerations</h2>
+<table>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Cost Profile</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Heartbeat</td>
+<td>One turn every N minutes; scales with HEARTBEAT.md size</td>
+</tr>
+<tr>
+<td>Cron (main)</td>
+<td>Adds event to next heartbeat (no isolated turn)</td>
+</tr>
+<tr>
+<td>Cron (isolated)</td>
+<td>Full agent turn per job; can use cheaper model</td>
+</tr>
+</tbody></table>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li>Keep <code>HEARTBEAT.md</code> small to minimize token overhead.</li>
+<li>Batch similar checks into heartbeat instead of multiple cron jobs.</li>
+<li>Use <code>target: &quot;none&quot;</code> on heartbeat if you only want internal processing.</li>
+<li>Use isolated cron with a cheaper model for routine tasks.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="/docs/gateway/heartbeat">Heartbeat</a> - full heartbeat configuration</li>
+<li><a href="/docs/automation/cron-jobs">Cron jobs</a> - full cron CLI and API reference</li>
+<li><a href="/docs/cli/system">System</a> - system events + heartbeat controls</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

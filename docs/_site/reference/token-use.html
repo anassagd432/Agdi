@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Use and Costs — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="active" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Token use &amp; costs</h1>
+<p>AGDI tracks <strong>tokens</strong>, not characters. Tokens are model-specific, but most
+OpenAI-style models average ~4 characters per token for English text.</p>
+<h2>How the system prompt is built</h2>
+<p>AGDI assembles its own system prompt on every run. It includes:</p>
+<ul>
+<li>Tool list + short descriptions</li>
+<li>Skills list (only metadata; instructions are loaded on demand with <code>read</code>)</li>
+<li>Self-update instructions</li>
+<li>Workspace + bootstrap files (<code>AGENTS.md</code>, <code>SOUL.md</code>, <code>TOOLS.md</code>, <code>IDENTITY.md</code>, <code>USER.md</code>, <code>HEARTBEAT.md</code>, <code>BOOTSTRAP.md</code> when new, plus <code>MEMORY.md</code> and/or <code>memory.md</code> when present). Large files are truncated by <code>agents.defaults.bootstrapMaxChars</code> (default: 20000), and total bootstrap injection is capped by <code>agents.defaults.bootstrapTotalMaxChars</code> (default: 24000). <code>memory/*.md</code> files are on-demand via memory tools and are not auto-injected.</li>
+<li>Time (UTC + user timezone)</li>
+<li>Reply tags + heartbeat behavior</li>
+<li>Runtime metadata (host/OS/model/thinking)</li>
+</ul>
+<p>See the full breakdown in <a href="/concepts/system-prompt">System Prompt</a>.</p>
+<h2>What counts in the context window</h2>
+<p>Everything the model receives counts toward the context limit:</p>
+<ul>
+<li>System prompt (all sections listed above)</li>
+<li>Conversation history (user + assistant messages)</li>
+<li>Tool calls and tool results</li>
+<li>Attachments/transcripts (images, audio, files)</li>
+<li>Compaction summaries and pruning artifacts</li>
+<li>Provider wrappers or safety headers (not visible, but still counted)</li>
+</ul>
+<p>For a practical breakdown (per injected file, tools, skills, and system prompt size), use <code>/context list</code> or <code>/context detail</code>. See <a href="/concepts/context">Context</a>.</p>
+<h2>How to see current token usage</h2>
+<p>Use these in chat:</p>
+<ul>
+<li><code>/status</code> → <strong>emoji‑rich status card</strong> with the session model, context usage,
+last response input/output tokens, and <strong>estimated cost</strong> (API key only).</li>
+<li><code>/usage off|tokens|full</code> → appends a <strong>per-response usage footer</strong> to every reply.<ul>
+<li>Persists per session (stored as <code>responseUsage</code>).</li>
+<li>OAuth auth <strong>hides cost</strong> (tokens only).</li>
+</ul>
+</li>
+<li><code>/usage cost</code> → shows a local cost summary from AGDI session logs.</li>
+</ul>
+<p>Other surfaces:</p>
+<ul>
+<li><strong>TUI/Web TUI:</strong> <code>/status</code> + <code>/usage</code> are supported.</li>
+<li><strong>CLI:</strong> <code>agdi status --usage</code> and <code>agdi channels list</code> show
+provider quota windows (not per-response costs).</li>
+</ul>
+<h2>Cost estimation (when shown)</h2>
+<p>Costs are estimated from your model pricing config:</p>
+<pre><code>models.providers.&lt;provider&gt;.models[].cost
+</code></pre>
+<p>These are <strong>USD per 1M tokens</strong> for <code>input</code>, <code>output</code>, <code>cacheRead</code>, and
+<code>cacheWrite</code>. If pricing is missing, AGDI shows tokens only. OAuth tokens
+never show dollar cost.</p>
+<h2>Cache TTL and pruning impact</h2>
+<p>Provider prompt caching only applies within the cache TTL window. AGDI can
+optionally run <strong>cache-ttl pruning</strong>: it prunes the session once the cache TTL
+has expired, then resets the cache window so subsequent requests can re-use the
+freshly cached context instead of re-caching the full history. This keeps cache
+write costs lower when a session goes idle past the TTL.</p>
+<p>Configure it in <a href="/gateway/configuration">Gateway configuration</a> and see the
+behavior details in <a href="/concepts/session-pruning">Session pruning</a>.</p>
+<p>Heartbeat can keep the cache <strong>warm</strong> across idle gaps. If your model cache TTL
+is <code>1h</code>, setting the heartbeat interval just under that (e.g., <code>55m</code>) can avoid
+re-caching the full prompt, reducing cache write costs.</p>
+<p>For Anthropic API pricing, cache reads are significantly cheaper than input
+tokens, while cache writes are billed at a higher multiplier. See Anthropic’s
+prompt caching pricing for the latest rates and TTL multipliers:
+<a href="https://docs.anthropic.com/docs/build-with-claude/prompt-caching">https://docs.anthropic.com/docs/build-with-claude/prompt-caching</a></p>
+<h3>Example: keep 1h cache warm with heartbeat</h3>
+<pre><code class="language-yaml">agents:
+  defaults:
+    model:
+      primary: &quot;anthropic/claude-opus-4-6&quot;
+    models:
+      &quot;anthropic/claude-opus-4-6&quot;:
+        params:
+          cacheRetention: &quot;long&quot;
+    heartbeat:
+      every: &quot;55m&quot;
+</code></pre>
+<h2>Tips for reducing token pressure</h2>
+<ul>
+<li>Use <code>/compact</code> to summarize long sessions.</li>
+<li>Trim large tool outputs in your workflows.</li>
+<li>Keep skill descriptions short (skill list is injected into the prompt).</li>
+<li>Prefer smaller models for verbose, exploratory work.</li>
+</ul>
+<p>See <a href="/tools/skills">Skills</a> for the exact skill list overhead formula.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

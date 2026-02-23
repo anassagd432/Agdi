@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Bar — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="active" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Menu Bar Status Logic</h1>
+<h2>What is shown</h2>
+<ul>
+<li>We surface the current agent work state in the menu bar icon and in the first status row of the menu.</li>
+<li>Health status is hidden while work is active; it returns when all sessions are idle.</li>
+<li>The “Nodes” block in the menu lists <strong>devices</strong> only (paired nodes via <code>node.list</code>), not client/presence entries.</li>
+<li>A “Usage” section appears under Context when provider usage snapshots are available.</li>
+</ul>
+<h2>State model</h2>
+<ul>
+<li>Sessions: events arrive with <code>runId</code> (per-run) plus <code>sessionKey</code> in the payload. The “main” session is the key <code>main</code>; if absent, we fall back to the most recently updated session.</li>
+<li>Priority: main always wins. If main is active, its state is shown immediately. If main is idle, the most recently active non‑main session is shown. We do not flip‑flop mid‑activity; we only switch when the current session goes idle or main becomes active.</li>
+<li>Activity kinds:<ul>
+<li><code>job</code>: high‑level command execution (<code>state: started|streaming|done|error</code>).</li>
+<li><code>tool</code>: <code>phase: start|result</code> with <code>toolName</code> and <code>meta/args</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>IconState enum (Swift)</h2>
+<ul>
+<li><code>idle</code></li>
+<li><code>workingMain(ActivityKind)</code></li>
+<li><code>workingOther(ActivityKind)</code></li>
+<li><code>overridden(ActivityKind)</code> (debug override)</li>
+</ul>
+<h3>ActivityKind → glyph</h3>
+<ul>
+<li><code>exec</code> → 💻</li>
+<li><code>read</code> → 📄</li>
+<li><code>write</code> → ✍️</li>
+<li><code>edit</code> → 📝</li>
+<li><code>attach</code> → 📎</li>
+<li>default → 🛠️</li>
+</ul>
+<h3>Visual mapping</h3>
+<ul>
+<li><code>idle</code>: normal critter.</li>
+<li><code>workingMain</code>: badge with glyph, full tint, leg “working” animation.</li>
+<li><code>workingOther</code>: badge with glyph, muted tint, no scurry.</li>
+<li><code>overridden</code>: uses the chosen glyph/tint regardless of activity.</li>
+</ul>
+<h2>Status row text (menu)</h2>
+<ul>
+<li>While work is active: <code>&lt;Session role&gt; · &lt;activity label&gt;</code><ul>
+<li>Examples: <code>Main · exec: pnpm test</code>, <code>Other · read: apps/macos/Sources/AGDI/AppState.swift</code>.</li>
+</ul>
+</li>
+<li>When idle: falls back to the health summary.</li>
+</ul>
+<h2>Event ingestion</h2>
+<ul>
+<li>Source: control‑channel <code>agent</code> events (<code>ControlChannel.handleAgentEvent</code>).</li>
+<li>Parsed fields:<ul>
+<li><code>stream: &quot;job&quot;</code> with <code>data.state</code> for start/stop.</li>
+<li><code>stream: &quot;tool&quot;</code> with <code>data.phase</code>, <code>name</code>, optional <code>meta</code>/<code>args</code>.</li>
+</ul>
+</li>
+<li>Labels:<ul>
+<li><code>exec</code>: first line of <code>args.command</code>.</li>
+<li><code>read</code>/<code>write</code>: shortened path.</li>
+<li><code>edit</code>: path plus inferred change kind from <code>meta</code>/diff counts.</li>
+<li>fallback: tool name.</li>
+</ul>
+</li>
+</ul>
+<h2>Debug override</h2>
+<ul>
+<li>Settings ▸ Debug ▸ “Icon override” picker:<ul>
+<li><code>System (auto)</code> (default)</li>
+<li><code>Working: main</code> (per tool kind)</li>
+<li><code>Working: other</code> (per tool kind)</li>
+<li><code>Idle</code></li>
+</ul>
+</li>
+<li>Stored via <code>@AppStorage(&quot;iconOverride&quot;)</code>; mapped to <code>IconState.overridden</code>.</li>
+</ul>
+<h2>Testing checklist</h2>
+<ul>
+<li>Trigger main session job: verify icon switches immediately and status row shows main label.</li>
+<li>Trigger non‑main session job while main idle: icon/status shows non‑main; stays stable until it finishes.</li>
+<li>Start main while other active: icon flips to main instantly.</li>
+<li>Rapid tool bursts: ensure badge does not flicker (TTL grace on tool results).</li>
+<li>Health row reappears once all sessions idle.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

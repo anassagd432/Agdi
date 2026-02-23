@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Task — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="active" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>LLM Task</h1>
+<p><code>llm-task</code> is an <strong>optional plugin tool</strong> that runs a JSON-only LLM task and
+returns structured output (optionally validated against JSON Schema).</p>
+<p>This is ideal for workflow engines like Lobster: you can add a single LLM step
+without writing custom AGDI code for each workflow.</p>
+<h2>Enable the plugin</h2>
+<ol>
+<li>Enable the plugin:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;llm-task&quot;: { &quot;enabled&quot;: true }
+    }
+  }
+}
+</code></pre>
+<ol start="2">
+<li>Allowlist the tool (it is registered with <code>optional: true</code>):</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;tools&quot;: { &quot;allow&quot;: [&quot;llm-task&quot;] }
+      }
+    ]
+  }
+}
+</code></pre>
+<h2>Config (optional)</h2>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;llm-task&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;config&quot;: {
+          &quot;defaultProvider&quot;: &quot;openai-codex&quot;,
+          &quot;defaultModel&quot;: &quot;gpt-5.2&quot;,
+          &quot;defaultAuthProfileId&quot;: &quot;main&quot;,
+          &quot;allowedModels&quot;: [&quot;openai-codex/gpt-5.3-codex&quot;],
+          &quot;maxTokens&quot;: 800,
+          &quot;timeoutMs&quot;: 30000
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p><code>allowedModels</code> is an allowlist of <code>provider/model</code> strings. If set, any request
+outside the list is rejected.</p>
+<h2>Tool parameters</h2>
+<ul>
+<li><code>prompt</code> (string, required)</li>
+<li><code>input</code> (any, optional)</li>
+<li><code>schema</code> (object, optional JSON Schema)</li>
+<li><code>provider</code> (string, optional)</li>
+<li><code>model</code> (string, optional)</li>
+<li><code>authProfileId</code> (string, optional)</li>
+<li><code>temperature</code> (number, optional)</li>
+<li><code>maxTokens</code> (number, optional)</li>
+<li><code>timeoutMs</code> (number, optional)</li>
+</ul>
+<h2>Output</h2>
+<p>Returns <code>details.json</code> containing the parsed JSON (and validates against
+<code>schema</code> when provided).</p>
+<h2>Example: Lobster workflow step</h2>
+<pre><code class="language-lobster">agdi.invoke --tool llm-task --action json --args-json &#39;{
+  &quot;prompt&quot;: &quot;Given the input email, return intent and draft.&quot;,
+  &quot;input&quot;: {
+    &quot;subject&quot;: &quot;Hello&quot;,
+    &quot;body&quot;: &quot;Can you help?&quot;
+  },
+  &quot;schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;intent&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;draft&quot;: { &quot;type&quot;: &quot;string&quot; }
+    },
+    &quot;required&quot;: [&quot;intent&quot;, &quot;draft&quot;],
+    &quot;additionalProperties&quot;: false
+  }
+}&#39;
+</code></pre>
+<h2>Safety notes</h2>
+<ul>
+<li>The tool is <strong>JSON-only</strong> and instructs the model to output only JSON (no
+code fences, no commentary).</li>
+<li>No tools are exposed to the model for this run.</li>
+<li>Treat output as untrusted unless you validate with <code>schema</code>.</li>
+<li>Put approvals before any side-effecting step (send, post, exec).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

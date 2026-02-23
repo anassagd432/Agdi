@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { AGDIConfig } from "../../config/config.js";
 import type { AnyAgentTool } from "./common.js";
 import { BLUEBUBBLES_GROUP_ACTIONS } from "../../channels/plugins/bluebubbles-actions.js";
 import {
@@ -388,7 +388,7 @@ const MessageToolSchema = buildMessageToolSchemaFromActions(AllMessageActions, {
 type MessageToolOptions = {
   agentAccountId?: string;
   agentSessionKey?: string;
-  config?: OpenClawConfig;
+  config?: AGDIConfig;
   currentChannelId?: string;
   currentChannelProvider?: string;
   currentThreadTs?: string;
@@ -398,7 +398,7 @@ type MessageToolOptions = {
   requireExplicitTarget?: boolean;
 };
 
-function buildMessageToolSchema(cfg: OpenClawConfig) {
+function buildMessageToolSchema(cfg: AGDIConfig) {
   const actions = listChannelMessageActions(cfg);
   const includeButtons = supportsChannelMessageButtons(cfg);
   const includeCards = supportsChannelMessageCards(cfg);
@@ -444,7 +444,7 @@ function filterActionsForContext(params: {
 }
 
 function buildMessageToolDescription(options?: {
-  config?: OpenClawConfig;
+  config?: AGDIConfig;
   currentChannel?: string;
   currentChannelId?: string;
 }): string {

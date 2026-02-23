@@ -3,7 +3,7 @@ import {
   DEFAULT_WEBHOOK_MAX_BODY_BYTES,
   mergeAllowlist,
   summarizeMapping,
-  type OpenClawConfig,
+  type AGDIConfig,
   type RuntimeEnv,
 } from "openclaw/plugin-sdk";
 import type { MSTeamsConversationStore } from "./conversation-store.js";
@@ -21,7 +21,7 @@ import { createMSTeamsAdapter, loadMSTeamsSdkWithAuth } from "./sdk.js";
 import { resolveMSTeamsCredentials } from "./token.js";
 
 export type MonitorMSTeamsOpts = {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   runtime?: RuntimeEnv;
   abortSignal?: AbortSignal;
   conversationStore?: MSTeamsConversationStore;

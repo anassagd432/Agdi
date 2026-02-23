@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux App — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="active" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Linux App</h1>
+<p>The Gateway is fully supported on Linux. <strong>Node is the recommended runtime</strong>.
+Bun is not recommended for the Gateway (WhatsApp/Telegram bugs).</p>
+<p>Native Linux companion apps are planned. Contributions are welcome if you want to help build one.</p>
+<h2>Beginner quick path (VPS)</h2>
+<ol>
+<li>Install Node 22+</li>
+<li><code>npm i -g agdi@latest</code></li>
+<li><code>agdi onboard --install-daemon</code></li>
+<li>From your laptop: <code>ssh -N -L 18789:127.0.0.1:18789 &lt;user&gt;@&lt;host&gt;</code></li>
+<li>Open <code>http://127.0.0.1:18789/</code> and paste your token</li>
+</ol>
+<p>Step-by-step VPS guide: <a href="/docs/install/exe-dev">exe.dev</a></p>
+<h2>Install</h2>
+<ul>
+<li><a href="/docs/start/getting-started">Getting Started</a></li>
+<li><a href="/docs/install/updating">Install &amp; updates</a></li>
+<li>Optional flows: <a href="/docs/install/bun">Bun (experimental)</a>, <a href="/docs/install/nix">Nix</a>, <a href="/docs/install/docker">Docker</a></li>
+</ul>
+<h2>Gateway</h2>
+<ul>
+<li><a href="/docs/gateway">Gateway runbook</a></li>
+<li><a href="/docs/gateway/configuration">Configuration</a></li>
+</ul>
+<h2>Gateway service install (CLI)</h2>
+<p>Use one of these:</p>
+<pre><code>agdi onboard --install-daemon
+</code></pre>
+<p>Or:</p>
+<pre><code>agdi gateway install
+</code></pre>
+<p>Or:</p>
+<pre><code>agdi configure
+</code></pre>
+<p>Select <strong>Gateway service</strong> when prompted.</p>
+<p>Repair/migrate:</p>
+<pre><code>agdi doctor
+</code></pre>
+<h2>System control (systemd user unit)</h2>
+<p>AGDI installs a systemd <strong>user</strong> service by default. Use a <strong>system</strong>
+service for shared or always-on servers. The full unit example and guidance
+live in the <a href="/docs/gateway">Gateway runbook</a>.</p>
+<p>Minimal setup:</p>
+<p>Create <code>~/.config/systemd/user/agdi-gateway[-&lt;profile&gt;].service</code>:</p>
+<pre><code>[Unit]
+Description=AGDI Gateway (profile: &lt;profile&gt;, v&lt;version&gt;)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/agdi gateway --port 18789
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+</code></pre>
+<p>Enable it:</p>
+<pre><code>systemctl --user enable --now agdi-gateway[-&lt;profile&gt;].service
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

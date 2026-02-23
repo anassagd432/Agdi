@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plugins — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="active" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Plugins (Extensions)</h1>
+<h2>Quick start (new to plugins?)</h2>
+<p>A plugin is just a <strong>small code module</strong> that extends AGDI with extra
+features (commands, tools, and Gateway RPC).</p>
+<p>Most of the time, you’ll use plugins when you want a feature that’s not built
+into core AGDI yet (or you want to keep optional features out of your main
+install).</p>
+<p>Fast path:</p>
+<ol>
+<li>See what’s already loaded:</li>
+</ol>
+<pre><code class="language-bash">agdi plugins list
+</code></pre>
+<ol start="2">
+<li>Install an official plugin (example: Voice Call):</li>
+</ol>
+<pre><code class="language-bash">agdi plugins install @agdi/voice-call
+</code></pre>
+<p>Npm specs are <strong>registry-only</strong> (package name + optional version/tag). Git/URL/file
+specs are rejected.</p>
+<ol start="3">
+<li>Restart the Gateway, then configure under <code>plugins.entries.&lt;id&gt;.config</code>.</li>
+</ol>
+<p>See <a href="/docs/plugins/voice-call">Voice Call</a> for a concrete example plugin.</p>
+<h2>Available plugins (official)</h2>
+<ul>
+<li>Microsoft Teams is plugin-only as of 2026.1.15; install <code>@agdi/msteams</code> if you use Teams.</li>
+<li>Memory (Core) — bundled memory search plugin (enabled by default via <code>plugins.slots.memory</code>)</li>
+<li>Memory (LanceDB) — bundled long-term memory plugin (auto-recall/capture; set <code>plugins.slots.memory = &quot;memory-lancedb&quot;</code>)</li>
+<li><a href="/docs/plugins/voice-call">Voice Call</a> — <code>@agdi/voice-call</code></li>
+<li><a href="/docs/plugins/zalouser">Zalo Personal</a> — <code>@agdi/zalouser</code></li>
+<li><a href="/docs/channels/matrix">Matrix</a> — <code>@agdi/matrix</code></li>
+<li><a href="/docs/channels/nostr">Nostr</a> — <code>@agdi/nostr</code></li>
+<li><a href="/docs/channels/zalo">Zalo</a> — <code>@agdi/zalo</code></li>
+<li><a href="/docs/channels/msteams">Microsoft Teams</a> — <code>@agdi/msteams</code></li>
+<li>Google Antigravity OAuth (provider auth) — bundled as <code>google-antigravity-auth</code> (disabled by default)</li>
+<li>Gemini CLI OAuth (provider auth) — bundled as <code>google-gemini-cli-auth</code> (disabled by default)</li>
+<li>Qwen OAuth (provider auth) — bundled as <code>qwen-portal-auth</code> (disabled by default)</li>
+<li>Copilot Proxy (provider auth) — local VS Code Copilot Proxy bridge; distinct from built-in <code>github-copilot</code> device login (bundled, disabled by default)</li>
+</ul>
+<p>AGDI plugins are <strong>TypeScript modules</strong> loaded at runtime via jiti. <strong>Config
+validation does not execute plugin code</strong>; it uses the plugin manifest and JSON
+Schema instead. See <a href="/docs/plugins/manifest">Plugin manifest</a>.</p>
+<p>Plugins can register:</p>
+<ul>
+<li>Gateway RPC methods</li>
+<li>Gateway HTTP handlers</li>
+<li>Agent tools</li>
+<li>CLI commands</li>
+<li>Background services</li>
+<li>Optional config validation</li>
+<li><strong>Skills</strong> (by listing <code>skills</code> directories in the plugin manifest)</li>
+<li><strong>Auto-reply commands</strong> (execute without invoking the AI agent)</li>
+</ul>
+<p>Plugins run <strong>in‑process</strong> with the Gateway, so treat them as trusted code.
+Tool authoring guide: <a href="/docs/plugins/agent-tools">Plugin agent tools</a>.</p>
+<h2>Runtime helpers</h2>
+<p>Plugins can access selected core helpers via <code>api.runtime</code>. For telephony TTS:</p>
+<pre><code class="language-ts">const result = await api.runtime.tts.textToSpeechTelephony({
+  text: &quot;Hello from AGDI&quot;,
+  cfg: api.config,
+});
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Uses core <code>messages.tts</code> configuration (OpenAI or ElevenLabs).</li>
+<li>Returns PCM audio buffer + sample rate. Plugins must resample/encode for providers.</li>
+<li>Edge TTS is not supported for telephony.</li>
+</ul>
+<h2>Discovery &amp; precedence</h2>
+<p>AGDI scans, in order:</p>
+<ol>
+<li>Config paths</li>
+</ol>
+<ul>
+<li><code>plugins.load.paths</code> (file or directory)</li>
+</ul>
+<ol start="2">
+<li>Workspace extensions</li>
+</ol>
+<ul>
+<li><code>&lt;workspace&gt;/.agdi/extensions/*.ts</code></li>
+<li><code>&lt;workspace&gt;/.agdi/extensions/*/index.ts</code></li>
+</ul>
+<ol start="3">
+<li>Global extensions</li>
+</ol>
+<ul>
+<li><code>~/.agdi/extensions/*.ts</code></li>
+<li><code>~/.agdi/extensions/*/index.ts</code></li>
+</ul>
+<ol start="4">
+<li>Bundled extensions (shipped with AGDI, <strong>disabled by default</strong>)</li>
+</ol>
+<ul>
+<li><code>&lt;agdi&gt;/extensions/*</code></li>
+</ul>
+<p>Bundled plugins must be enabled explicitly via <code>plugins.entries.&lt;id&gt;.enabled</code>
+or <code>agdi plugins enable &lt;id&gt;</code>. Installed plugins are enabled by default,
+but can be disabled the same way.</p>
+<p>Each plugin must include a <code>agdi.plugin.json</code> file in its root. If a path
+points at a file, the plugin root is the file&#39;s directory and must contain the
+manifest.</p>
+<p>If multiple plugins resolve to the same id, the first match in the order above
+wins and lower-precedence copies are ignored.</p>
+<h3>Package packs</h3>
+<p>A plugin directory may include a <code>package.json</code> with <code>agdi.extensions</code>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;my-pack&quot;,
+  &quot;agdi&quot;: {
+    &quot;extensions&quot;: [&quot;./src/safety.ts&quot;, &quot;./src/tools.ts&quot;]
+  }
+}
+</code></pre>
+<p>Each entry becomes a plugin. If the pack lists multiple extensions, the plugin id
+becomes <code>name/&lt;fileBase&gt;</code>.</p>
+<p>If your plugin imports npm deps, install them in that directory so
+<code>node_modules</code> is available (<code>npm install</code> / <code>pnpm install</code>).</p>
+<p>Security note: <code>agdi plugins install</code> installs plugin dependencies with
+<code>npm install --ignore-scripts</code> (no lifecycle scripts). Keep plugin dependency
+trees &quot;pure JS/TS&quot; and avoid packages that require <code>postinstall</code> builds.</p>
+<h3>Channel catalog metadata</h3>
+<p>Channel plugins can advertise onboarding metadata via <code>agdi.channel</code> and
+install hints via <code>agdi.install</code>. This keeps the core catalog data-free.</p>
+<p>Example:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;@agdi/nextcloud-talk&quot;,
+  &quot;agdi&quot;: {
+    &quot;extensions&quot;: [&quot;./index.ts&quot;],
+    &quot;channel&quot;: {
+      &quot;id&quot;: &quot;nextcloud-talk&quot;,
+      &quot;label&quot;: &quot;Nextcloud Talk&quot;,
+      &quot;selectionLabel&quot;: &quot;Nextcloud Talk (self-hosted)&quot;,
+      &quot;docsPath&quot;: &quot;/channels/nextcloud-talk&quot;,
+      &quot;docsLabel&quot;: &quot;nextcloud-talk&quot;,
+      &quot;blurb&quot;: &quot;Self-hosted chat via Nextcloud Talk webhook bots.&quot;,
+      &quot;order&quot;: 65,
+      &quot;aliases&quot;: [&quot;nc-talk&quot;, &quot;nc&quot;]
+    },
+    &quot;install&quot;: {
+      &quot;npmSpec&quot;: &quot;@agdi/nextcloud-talk&quot;,
+      &quot;localPath&quot;: &quot;extensions/nextcloud-talk&quot;,
+      &quot;defaultChoice&quot;: &quot;npm&quot;
+    }
+  }
+}
+</code></pre>
+<p>AGDI can also merge <strong>external channel catalogs</strong> (for example, an MPM
+registry export). Drop a JSON file at one of:</p>
+<ul>
+<li><code>~/.agdi/mpm/plugins.json</code></li>
+<li><code>~/.agdi/mpm/catalog.json</code></li>
+<li><code>~/.agdi/plugins/catalog.json</code></li>
+</ul>
+<p>Or point <code>AGDI_PLUGIN_CATALOG_PATHS</code> (or <code>AGDI_MPM_CATALOG_PATHS</code>) at
+one or more JSON files (comma/semicolon/<code>PATH</code>-delimited). Each file should
+contain <code>{ &quot;entries&quot;: [ { &quot;name&quot;: &quot;@scope/pkg&quot;, &quot;agdi&quot;: { &quot;channel&quot;: {...}, &quot;install&quot;: {...} } } ] }</code>.</p>
+<h2>Plugin IDs</h2>
+<p>Default plugin ids:</p>
+<ul>
+<li>Package packs: <code>package.json</code> <code>name</code></li>
+<li>Standalone file: file base name (<code>~/.../voice-call.ts</code> → <code>voice-call</code>)</li>
+</ul>
+<p>If a plugin exports <code>id</code>, AGDI uses it but warns when it doesn’t match the
+configured id.</p>
+<h2>Config</h2>
+<pre><code class="language-json5">{
+  plugins: {
+    enabled: true,
+    allow: [&quot;voice-call&quot;],
+    deny: [&quot;untrusted-plugin&quot;],
+    load: { paths: [&quot;~/Projects/oss/voice-call-extension&quot;] },
+    entries: {
+      &quot;voice-call&quot;: { enabled: true, config: { provider: &quot;twilio&quot; } },
+    },
+  },
+}
+</code></pre>
+<p>Fields:</p>
+<ul>
+<li><code>enabled</code>: master toggle (default: true)</li>
+<li><code>allow</code>: allowlist (optional)</li>
+<li><code>deny</code>: denylist (optional; deny wins)</li>
+<li><code>load.paths</code>: extra plugin files/dirs</li>
+<li><code>entries.&lt;id&gt;</code>: per‑plugin toggles + config</li>
+</ul>
+<p>Config changes <strong>require a gateway restart</strong>.</p>
+<p>Validation rules (strict):</p>
+<ul>
+<li>Unknown plugin ids in <code>entries</code>, <code>allow</code>, <code>deny</code>, or <code>slots</code> are <strong>errors</strong>.</li>
+<li>Unknown <code>channels.&lt;id&gt;</code> keys are <strong>errors</strong> unless a plugin manifest declares
+the channel id.</li>
+<li>Plugin config is validated using the JSON Schema embedded in
+<code>agdi.plugin.json</code> (<code>configSchema</code>).</li>
+<li>If a plugin is disabled, its config is preserved and a <strong>warning</strong> is emitted.</li>
+</ul>
+<h2>Plugin slots (exclusive categories)</h2>
+<p>Some plugin categories are <strong>exclusive</strong> (only one active at a time). Use
+<code>plugins.slots</code> to select which plugin owns the slot:</p>
+<pre><code class="language-json5">{
+  plugins: {
+    slots: {
+      memory: &quot;memory-core&quot;, // or &quot;none&quot; to disable memory plugins
+    },
+  },
+}
+</code></pre>
+<p>If multiple plugins declare <code>kind: &quot;memory&quot;</code>, only the selected one loads. Others
+are disabled with diagnostics.</p>
+<h2>Control UI (schema + labels)</h2>
+<p>The Control UI uses <code>config.schema</code> (JSON Schema + <code>uiHints</code>) to render better forms.</p>
+<p>AGDI augments <code>uiHints</code> at runtime based on discovered plugins:</p>
+<ul>
+<li>Adds per-plugin labels for <code>plugins.entries.&lt;id&gt;</code> / <code>.enabled</code> / <code>.config</code></li>
+<li>Merges optional plugin-provided config field hints under:
+<code>plugins.entries.&lt;id&gt;.config.&lt;field&gt;</code></li>
+</ul>
+<p>If you want your plugin config fields to show good labels/placeholders (and mark secrets as sensitive),
+provide <code>uiHints</code> alongside your JSON Schema in the plugin manifest.</p>
+<p>Example:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;my-plugin&quot;,
+  &quot;configSchema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;additionalProperties&quot;: false,
+    &quot;properties&quot;: {
+      &quot;apiKey&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;region&quot;: { &quot;type&quot;: &quot;string&quot; }
+    }
+  },
+  &quot;uiHints&quot;: {
+    &quot;apiKey&quot;: { &quot;label&quot;: &quot;API Key&quot;, &quot;sensitive&quot;: true },
+    &quot;region&quot;: { &quot;label&quot;: &quot;Region&quot;, &quot;placeholder&quot;: &quot;us-east-1&quot; }
+  }
+}
+</code></pre>
+<h2>CLI</h2>
+<pre><code class="language-bash">agdi plugins list
+agdi plugins info &lt;id&gt;
+agdi plugins install &lt;path&gt;                 # copy a local file/dir into ~/.agdi/extensions/&lt;id&gt;
+agdi plugins install ./extensions/voice-call # relative path ok
+agdi plugins install ./plugin.tgz           # install from a local tarball
+agdi plugins install ./plugin.zip           # install from a local zip
+agdi plugins install -l ./extensions/voice-call # link (no copy) for dev
+agdi plugins install @agdi/voice-call # install from npm
+agdi plugins update &lt;id&gt;
+agdi plugins update --all
+agdi plugins enable &lt;id&gt;
+agdi plugins disable &lt;id&gt;
+agdi plugins doctor
+</code></pre>
+<p><code>plugins update</code> only works for npm installs tracked under <code>plugins.installs</code>.</p>
+<p>Plugins may also register their own top‑level commands (example: <code>agdi voicecall</code>).</p>
+<h2>Plugin API (overview)</h2>
+<p>Plugins export either:</p>
+<ul>
+<li>A function: <code>(api) =&gt; { ... }</code></li>
+<li>An object: <code>{ id, name, configSchema, register(api) { ... } }</code></li>
+</ul>
+<h2>Plugin hooks</h2>
+<p>Plugins can ship hooks and register them at runtime. This lets a plugin bundle
+event-driven automation without a separate hook pack install.</p>
+<h3>Example</h3>
+<pre><code>import { registerPluginHooksFromDir } from &quot;agdi/plugin-sdk&quot;;
+
+export default function register(api) {
+  registerPluginHooksFromDir(api, &quot;./hooks&quot;);
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Hook directories follow the normal hook structure (<code>HOOK.md</code> + <code>handler.ts</code>).</li>
+<li>Hook eligibility rules still apply (OS/bins/env/config requirements).</li>
+<li>Plugin-managed hooks show up in <code>agdi hooks list</code> with <code>plugin:&lt;id&gt;</code>.</li>
+<li>You cannot enable/disable plugin-managed hooks via <code>agdi hooks</code>; enable/disable the plugin instead.</li>
+</ul>
+<h2>Provider plugins (model auth)</h2>
+<p>Plugins can register <strong>model provider auth</strong> flows so users can run OAuth or
+API-key setup inside AGDI (no external scripts needed).</p>
+<p>Register a provider via <code>api.registerProvider(...)</code>. Each provider exposes one
+or more auth methods (OAuth, API key, device code, etc.). These methods power:</p>
+<ul>
+<li><code>agdi models auth login --provider &lt;id&gt; [--method &lt;id&gt;]</code></li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-ts">api.registerProvider({
+  id: &quot;acme&quot;,
+  label: &quot;AcmeAI&quot;,
+  auth: [
+    {
+      id: &quot;oauth&quot;,
+      label: &quot;OAuth&quot;,
+      kind: &quot;oauth&quot;,
+      run: async (ctx) =&gt; {
+        // Run OAuth flow and return auth profiles.
+        return {
+          profiles: [
+            {
+              profileId: &quot;acme:default&quot;,
+              credential: {
+                type: &quot;oauth&quot;,
+                provider: &quot;acme&quot;,
+                access: &quot;...&quot;,
+                refresh: &quot;...&quot;,
+                expires: Date.now() + 3600 * 1000,
+              },
+            },
+          ],
+          defaultModel: &quot;acme/opus-1&quot;,
+        };
+      },
+    },
+  ],
+});
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>run</code> receives a <code>ProviderAuthContext</code> with <code>prompter</code>, <code>runtime</code>,
+<code>openUrl</code>, and <code>oauth.createVpsAwareHandlers</code> helpers.</li>
+<li>Return <code>configPatch</code> when you need to add default models or provider config.</li>
+<li>Return <code>defaultModel</code> so <code>--set-default</code> can update agent defaults.</li>
+</ul>
+<h3>Register a messaging channel</h3>
+<p>Plugins can register <strong>channel plugins</strong> that behave like built‑in channels
+(WhatsApp, Telegram, etc.). Channel config lives under <code>channels.&lt;id&gt;</code> and is
+validated by your channel plugin code.</p>
+<pre><code class="language-ts">const myChannel = {
+  id: &quot;acmechat&quot;,
+  meta: {
+    id: &quot;acmechat&quot;,
+    label: &quot;AcmeChat&quot;,
+    selectionLabel: &quot;AcmeChat (API)&quot;,
+    docsPath: &quot;/channels/acmechat&quot;,
+    blurb: &quot;demo channel plugin.&quot;,
+    aliases: [&quot;acme&quot;],
+  },
+  capabilities: { chatTypes: [&quot;direct&quot;] },
+  config: {
+    listAccountIds: (cfg) =&gt; Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+    resolveAccount: (cfg, accountId) =&gt;
+      cfg.channels?.acmechat?.accounts?.[accountId ?? &quot;default&quot;] ?? {
+        accountId,
+      },
+  },
+  outbound: {
+    deliveryMode: &quot;direct&quot;,
+    sendText: async () =&gt; ({ ok: true }),
+  },
+};
+
+export default function (api) {
+  api.registerChannel({ plugin: myChannel });
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Put config under <code>channels.&lt;id&gt;</code> (not <code>plugins.entries</code>).</li>
+<li><code>meta.label</code> is used for labels in CLI/UI lists.</li>
+<li><code>meta.aliases</code> adds alternate ids for normalization and CLI inputs.</li>
+<li><code>meta.preferOver</code> lists channel ids to skip auto-enable when both are configured.</li>
+<li><code>meta.detailLabel</code> and <code>meta.systemImage</code> let UIs show richer channel labels/icons.</li>
+</ul>
+<h3>Write a new messaging channel (step‑by‑step)</h3>
+<p>Use this when you want a <strong>new chat surface</strong> (a &quot;messaging channel&quot;), not a model provider.
+Model provider docs live under <code>/providers/*</code>.</p>
+<ol>
+<li>Pick an id + config shape</li>
+</ol>
+<ul>
+<li>All channel config lives under <code>channels.&lt;id&gt;</code>.</li>
+<li>Prefer <code>channels.&lt;id&gt;.accounts.&lt;accountId&gt;</code> for multi‑account setups.</li>
+</ul>
+<ol start="2">
+<li>Define the channel metadata</li>
+</ol>
+<ul>
+<li><code>meta.label</code>, <code>meta.selectionLabel</code>, <code>meta.docsPath</code>, <code>meta.blurb</code> control CLI/UI lists.</li>
+<li><code>meta.docsPath</code> should point at a docs page like <code>/channels/&lt;id&gt;</code>.</li>
+<li><code>meta.preferOver</code> lets a plugin replace another channel (auto-enable prefers it).</li>
+<li><code>meta.detailLabel</code> and <code>meta.systemImage</code> are used by UIs for detail text/icons.</li>
+</ul>
+<ol start="3">
+<li>Implement the required adapters</li>
+</ol>
+<ul>
+<li><code>config.listAccountIds</code> + <code>config.resolveAccount</code></li>
+<li><code>capabilities</code> (chat types, media, threads, etc.)</li>
+<li><code>outbound.deliveryMode</code> + <code>outbound.sendText</code> (for basic send)</li>
+</ul>
+<ol start="4">
+<li>Add optional adapters as needed</li>
+</ol>
+<ul>
+<li><code>setup</code> (wizard), <code>security</code> (DM policy), <code>status</code> (health/diagnostics)</li>
+<li><code>gateway</code> (start/stop/login), <code>mentions</code>, <code>threading</code>, <code>streaming</code></li>
+<li><code>actions</code> (message actions), <code>commands</code> (native command behavior)</li>
+</ul>
+<ol start="5">
+<li>Register the channel in your plugin</li>
+</ol>
+<ul>
+<li><code>api.registerChannel({ plugin })</code></li>
+</ul>
+<p>Minimal config example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    acmechat: {
+      accounts: {
+        default: { token: &quot;ACME_TOKEN&quot;, enabled: true },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Minimal channel plugin (outbound‑only):</p>
+<pre><code class="language-ts">const plugin = {
+  id: &quot;acmechat&quot;,
+  meta: {
+    id: &quot;acmechat&quot;,
+    label: &quot;AcmeChat&quot;,
+    selectionLabel: &quot;AcmeChat (API)&quot;,
+    docsPath: &quot;/channels/acmechat&quot;,
+    blurb: &quot;AcmeChat messaging channel.&quot;,
+    aliases: [&quot;acme&quot;],
+  },
+  capabilities: { chatTypes: [&quot;direct&quot;] },
+  config: {
+    listAccountIds: (cfg) =&gt; Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+    resolveAccount: (cfg, accountId) =&gt;
+      cfg.channels?.acmechat?.accounts?.[accountId ?? &quot;default&quot;] ?? {
+        accountId,
+      },
+  },
+  outbound: {
+    deliveryMode: &quot;direct&quot;,
+    sendText: async ({ text }) =&gt; {
+      // deliver `text` to your channel here
+      return { ok: true };
+    },
+  },
+};
+
+export default function (api) {
+  api.registerChannel({ plugin });
+}
+</code></pre>
+<p>Load the plugin (extensions dir or <code>plugins.load.paths</code>), restart the gateway,
+then configure <code>channels.&lt;id&gt;</code> in your config.</p>
+<h3>Agent tools</h3>
+<p>See the dedicated guide: <a href="/docs/plugins/agent-tools">Plugin agent tools</a>.</p>
+<h3>Register a gateway RPC method</h3>
+<pre><code class="language-ts">export default function (api) {
+  api.registerGatewayMethod(&quot;myplugin.status&quot;, ({ respond }) =&gt; {
+    respond(true, { ok: true });
+  });
+}
+</code></pre>
+<h3>Register CLI commands</h3>
+<pre><code class="language-ts">export default function (api) {
+  api.registerCli(
+    ({ program }) =&gt; {
+      program.command(&quot;mycmd&quot;).action(() =&gt; {
+        console.log(&quot;Hello&quot;);
+      });
+    },
+    { commands: [&quot;mycmd&quot;] },
+  );
+}
+</code></pre>
+<h3>Register auto-reply commands</h3>
+<p>Plugins can register custom slash commands that execute <strong>without invoking the
+AI agent</strong>. This is useful for toggle commands, status checks, or quick actions
+that don&#39;t need LLM processing.</p>
+<pre><code class="language-ts">export default function (api) {
+  api.registerCommand({
+    name: &quot;mystatus&quot;,
+    description: &quot;Show plugin status&quot;,
+    handler: (ctx) =&gt; ({
+      text: `Plugin is running! Channel: ${ctx.channel}`,
+    }),
+  });
+}
+</code></pre>
+<p>Command handler context:</p>
+<ul>
+<li><code>senderId</code>: The sender&#39;s ID (if available)</li>
+<li><code>channel</code>: The channel where the command was sent</li>
+<li><code>isAuthorizedSender</code>: Whether the sender is an authorized user</li>
+<li><code>args</code>: Arguments passed after the command (if <code>acceptsArgs: true</code>)</li>
+<li><code>commandBody</code>: The full command text</li>
+<li><code>config</code>: The current AGDI config</li>
+</ul>
+<p>Command options:</p>
+<ul>
+<li><code>name</code>: Command name (without the leading <code>/</code>)</li>
+<li><code>description</code>: Help text shown in command lists</li>
+<li><code>acceptsArgs</code>: Whether the command accepts arguments (default: false). If false and arguments are provided, the command won&#39;t match and the message falls through to other handlers</li>
+<li><code>requireAuth</code>: Whether to require authorized sender (default: true)</li>
+<li><code>handler</code>: Function that returns <code>{ text: string }</code> (can be async)</li>
+</ul>
+<p>Example with authorization and arguments:</p>
+<pre><code class="language-ts">api.registerCommand({
+  name: &quot;setmode&quot;,
+  description: &quot;Set plugin mode&quot;,
+  acceptsArgs: true,
+  requireAuth: true,
+  handler: async (ctx) =&gt; {
+    const mode = ctx.args?.trim() || &quot;default&quot;;
+    await saveMode(mode);
+    return { text: `Mode set to: ${mode}` };
+  },
+});
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Plugin commands are processed <strong>before</strong> built-in commands and the AI agent</li>
+<li>Commands are registered globally and work across all channels</li>
+<li>Command names are case-insensitive (<code>/MyStatus</code> matches <code>/mystatus</code>)</li>
+<li>Command names must start with a letter and contain only letters, numbers, hyphens, and underscores</li>
+<li>Reserved command names (like <code>help</code>, <code>status</code>, <code>reset</code>, etc.) cannot be overridden by plugins</li>
+<li>Duplicate command registration across plugins will fail with a diagnostic error</li>
+</ul>
+<h3>Register background services</h3>
+<pre><code class="language-ts">export default function (api) {
+  api.registerService({
+    id: &quot;my-service&quot;,
+    start: () =&gt; api.logger.info(&quot;ready&quot;),
+    stop: () =&gt; api.logger.info(&quot;bye&quot;),
+  });
+}
+</code></pre>
+<h2>Naming conventions</h2>
+<ul>
+<li>Gateway methods: <code>pluginId.action</code> (example: <code>voicecall.status</code>)</li>
+<li>Tools: <code>snake_case</code> (example: <code>voice_call</code>)</li>
+<li>CLI commands: kebab or camel, but avoid clashing with core commands</li>
+</ul>
+<h2>Skills</h2>
+<p>Plugins can ship a skill in the repo (<code>skills/&lt;name&gt;/SKILL.md</code>).
+Enable it with <code>plugins.entries.&lt;id&gt;.enabled</code> (or other config gates) and ensure
+it’s present in your workspace/managed skills locations.</p>
+<h2>Distribution (npm)</h2>
+<p>Recommended packaging:</p>
+<ul>
+<li>Main package: <code>agdi</code> (this repo)</li>
+<li>Plugins: separate npm packages under <code>@agdi/*</code> (example: <code>@agdi/voice-call</code>)</li>
+</ul>
+<p>Publishing contract:</p>
+<ul>
+<li>Plugin <code>package.json</code> must include <code>agdi.extensions</code> with one or more entry files.</li>
+<li>Entry files can be <code>.js</code> or <code>.ts</code> (jiti loads TS at runtime).</li>
+<li><code>agdi plugins install &lt;npm-spec&gt;</code> uses <code>npm pack</code>, extracts into <code>~/.agdi/extensions/&lt;id&gt;/</code>, and enables it in config.</li>
+<li>Config key stability: scoped packages are normalized to the <strong>unscoped</strong> id for <code>plugins.entries.*</code>.</li>
+</ul>
+<h2>Example plugin: Voice Call</h2>
+<p>This repo includes a voice‑call plugin (Twilio or log fallback):</p>
+<ul>
+<li>Source: <code>extensions/voice-call</code></li>
+<li>Skill: <code>skills/voice-call</code></li>
+<li>CLI: <code>agdi voicecall start|status</code></li>
+<li>Tool: <code>voice_call</code></li>
+<li>RPC: <code>voicecall.start</code>, <code>voicecall.status</code></li>
+<li>Config (twilio): <code>provider: &quot;twilio&quot;</code> + <code>twilio.accountSid/authToken/from</code> (optional <code>statusCallbackUrl</code>, <code>twimlUrl</code>)</li>
+<li>Config (dev): <code>provider: &quot;log&quot;</code> (no network)</li>
+</ul>
+<p>See <a href="/docs/plugins/voice-call">Voice Call</a> and <code>extensions/voice-call/README.md</code> for setup and usage.</p>
+<h2>Safety notes</h2>
+<p>Plugins run in-process with the Gateway. Treat them as trusted code:</p>
+<ul>
+<li>Only install plugins you trust.</li>
+<li>Prefer <code>plugins.allow</code> allowlists.</li>
+<li>Restart the Gateway after changes.</li>
+</ul>
+<h2>Testing plugins</h2>
+<p>Plugins can (and should) ship tests:</p>
+<ul>
+<li>In-repo plugins can keep Vitest tests under <code>src/**</code> (example: <code>src/plugins/voice-call.plugin.test.ts</code>).</li>
+<li>Separately published plugins should run their own CI (lint/build/test) and validate <code>agdi.extensions</code> points at the built entrypoint (<code>dist/index.js</code>).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

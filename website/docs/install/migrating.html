@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migration Guide — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab active" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/docs/install/index.html">Install</a></li><li><a class="" href="/docs/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/docs/install/docker.html">Docker</a></li><li><a class="" href="/docs/install/podman.html">Podman</a></li><li><a class="" href="/docs/install/nix.html">Nix</a></li><li><a class="" href="/docs/install/ansible.html">Ansible</a></li><li><a class="" href="/docs/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/docs/install/updating.html">Updating</a></li><li><a class="active" href="/docs/install/migrating.html">Migration Guide</a></li><li><a class="" href="/docs/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/docs/install/fly.html">Fly.io</a></li><li><a class="" href="/docs/install/hetzner.html">Hetzner</a></li><li><a class="" href="/docs/install/gcp.html">GCP</a></li><li><a class="" href="/docs/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/docs/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/docs/install/railway.html">railway</a></li><li><a class="" href="/docs/install/render.html">render</a></li><li><a class="" href="/docs/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/docs/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Migrating AGDI to a new machine</h1>
+<p>This guide migrates a AGDI Gateway from one machine to another <strong>without redoing onboarding</strong>.</p>
+<p>The migration is simple conceptually:</p>
+<ul>
+<li>Copy the <strong>state directory</strong> (<code>$AGDI_STATE_DIR</code>, default: <code>~/.agdi/</code>) — this includes config, auth, sessions, and channel state.</li>
+<li>Copy your <strong>workspace</strong> (<code>~/.agdi/workspace/</code> by default) — this includes your agent files (memory, prompts, etc.).</li>
+</ul>
+<p>But there are common footguns around <strong>profiles</strong>, <strong>permissions</strong>, and <strong>partial copies</strong>.</p>
+<h2>Before you start (what you are migrating)</h2>
+<h3>1) Identify your state directory</h3>
+<p>Most installs use the default:</p>
+<ul>
+<li><strong>State dir:</strong> <code>~/.agdi/</code></li>
+</ul>
+<p>But it may be different if you use:</p>
+<ul>
+<li><code>--profile &lt;name&gt;</code> (often becomes <code>~/.agdi-&lt;profile&gt;/</code>)</li>
+<li><code>AGDI_STATE_DIR=/some/path</code></li>
+</ul>
+<p>If you’re not sure, run on the <strong>old</strong> machine:</p>
+<pre><code class="language-bash">agdi status
+</code></pre>
+<p>Look for mentions of <code>AGDI_STATE_DIR</code> / profile in the output. If you run multiple gateways, repeat for each profile.</p>
+<h3>2) Identify your workspace</h3>
+<p>Common defaults:</p>
+<ul>
+<li><code>~/.agdi/workspace/</code> (recommended workspace)</li>
+<li>a custom folder you created</li>
+</ul>
+<p>Your workspace is where files like <code>MEMORY.md</code>, <code>USER.md</code>, and <code>memory/*.md</code> live.</p>
+<h3>3) Understand what you will preserve</h3>
+<p>If you copy <strong>both</strong> the state dir and workspace, you keep:</p>
+<ul>
+<li>Gateway configuration (<code>agdi.json</code>)</li>
+<li>Auth profiles / API keys / OAuth tokens</li>
+<li>Session history + agent state</li>
+<li>Channel state (e.g. WhatsApp login/session)</li>
+<li>Your workspace files (memory, skills notes, etc.)</li>
+</ul>
+<p>If you copy <strong>only</strong> the workspace (e.g., via Git), you do <strong>not</strong> preserve:</p>
+<ul>
+<li>sessions</li>
+<li>credentials</li>
+<li>channel logins</li>
+</ul>
+<p>Those live under <code>$AGDI_STATE_DIR</code>.</p>
+<h2>Migration steps (recommended)</h2>
+<h3>Step 0 — Make a backup (old machine)</h3>
+<p>On the <strong>old</strong> machine, stop the gateway first so files aren’t changing mid-copy:</p>
+<pre><code class="language-bash">agdi gateway stop
+</code></pre>
+<p>(Optional but recommended) archive the state dir and workspace:</p>
+<pre><code class="language-bash"># Adjust paths if you use a profile or custom locations
+cd ~
+tar -czf agdi-state.tgz .agdi
+
+tar -czf agdi-workspace.tgz .agdi/workspace
+</code></pre>
+<p>If you have multiple profiles/state dirs (e.g. <code>~/.agdi-main</code>, <code>~/.agdi-work</code>), archive each.</p>
+<h3>Step 1 — Install AGDI on the new machine</h3>
+<p>On the <strong>new</strong> machine, install the CLI (and Node if needed):</p>
+<ul>
+<li>See: <a href="/docs/install">Install</a></li>
+</ul>
+<p>At this stage, it’s OK if onboarding creates a fresh <code>~/.agdi/</code> — you will overwrite it in the next step.</p>
+<h3>Step 2 — Copy the state dir + workspace to the new machine</h3>
+<p>Copy <strong>both</strong>:</p>
+<ul>
+<li><code>$AGDI_STATE_DIR</code> (default <code>~/.agdi/</code>)</li>
+<li>your workspace (default <code>~/.agdi/workspace/</code>)</li>
+</ul>
+<p>Common approaches:</p>
+<ul>
+<li><code>scp</code> the tarballs and extract</li>
+<li><code>rsync -a</code> over SSH</li>
+<li>external drive</li>
+</ul>
+<p>After copying, ensure:</p>
+<ul>
+<li>Hidden directories were included (e.g. <code>.agdi/</code>)</li>
+<li>File ownership is correct for the user running the gateway</li>
+</ul>
+<h3>Step 3 — Run Doctor (migrations + service repair)</h3>
+<p>On the <strong>new</strong> machine:</p>
+<pre><code class="language-bash">agdi doctor
+</code></pre>
+<p>Doctor is the “safe boring” command. It repairs services, applies config migrations, and warns about mismatches.</p>
+<p>Then:</p>
+<pre><code class="language-bash">agdi gateway restart
+agdi status
+</code></pre>
+<h2>Common footguns (and how to avoid them)</h2>
+<h3>Footgun: profile / state-dir mismatch</h3>
+<p>If you ran the old gateway with a profile (or <code>AGDI_STATE_DIR</code>), and the new gateway uses a different one, you’ll see symptoms like:</p>
+<ul>
+<li>config changes not taking effect</li>
+<li>channels missing / logged out</li>
+<li>empty session history</li>
+</ul>
+<p>Fix: run the gateway/service using the <strong>same</strong> profile/state dir you migrated, then rerun:</p>
+<pre><code class="language-bash">agdi doctor
+</code></pre>
+<h3>Footgun: copying only <code>agdi.json</code></h3>
+<p><code>agdi.json</code> is not enough. Many providers store state under:</p>
+<ul>
+<li><code>$AGDI_STATE_DIR/credentials/</code></li>
+<li><code>$AGDI_STATE_DIR/agents/&lt;agentId&gt;/...</code></li>
+</ul>
+<p>Always migrate the entire <code>$AGDI_STATE_DIR</code> folder.</p>
+<h3>Footgun: permissions / ownership</h3>
+<p>If you copied as root or changed users, the gateway may fail to read credentials/sessions.</p>
+<p>Fix: ensure the state dir + workspace are owned by the user running the gateway.</p>
+<h3>Footgun: migrating between remote/local modes</h3>
+<ul>
+<li>If your UI (WebUI/TUI) points at a <strong>remote</strong> gateway, the remote host owns the session store + workspace.</li>
+<li>Migrating your laptop won’t move the remote gateway’s state.</li>
+</ul>
+<p>If you’re in remote mode, migrate the <strong>gateway host</strong>.</p>
+<h3>Footgun: secrets in backups</h3>
+<p><code>$AGDI_STATE_DIR</code> contains secrets (API keys, OAuth tokens, WhatsApp creds). Treat backups like production secrets:</p>
+<ul>
+<li>store encrypted</li>
+<li>avoid sharing over insecure channels</li>
+<li>rotate keys if you suspect exposure</li>
+</ul>
+<h2>Verification checklist</h2>
+<p>On the new machine, confirm:</p>
+<ul>
+<li><code>agdi status</code> shows the gateway running</li>
+<li>Your channels are still connected (e.g. WhatsApp doesn’t require re-pair)</li>
+<li>The dashboard opens and shows existing sessions</li>
+<li>Your workspace files (memory, configs) are present</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="/docs/gateway/doctor">Doctor</a></li>
+<li><a href="/docs/gateway/troubleshooting">Gateway troubleshooting</a></li>
+<li><a href="/docs/help/faq#where-does-agdi-store-its-data">Where does AGDI store its data?</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

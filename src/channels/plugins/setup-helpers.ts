@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../../config/config.js";
+import type { AGDIConfig } from "../../config/config.js";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../../routing/session-key.js";
 
 type ChannelSectionBase = {
@@ -6,14 +6,14 @@ type ChannelSectionBase = {
   accounts?: Record<string, Record<string, unknown>>;
 };
 
-function channelHasAccounts(cfg: OpenClawConfig, channelKey: string): boolean {
+function channelHasAccounts(cfg: AGDIConfig, channelKey: string): boolean {
   const channels = cfg.channels as Record<string, unknown> | undefined;
   const base = channels?.[channelKey] as ChannelSectionBase | undefined;
   return Boolean(base?.accounts && Object.keys(base.accounts).length > 0);
 }
 
 function shouldStoreNameInAccounts(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   channelKey: string;
   accountId: string;
   alwaysUseAccounts?: boolean;
@@ -28,12 +28,12 @@ function shouldStoreNameInAccounts(params: {
 }
 
 export function applyAccountNameToChannelSection(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   channelKey: string;
   accountId: string;
   name?: string;
   alwaysUseAccounts?: boolean;
-}): OpenClawConfig {
+}): AGDIConfig {
   const trimmed = params.name?.trim();
   if (!trimmed) {
     return params.cfg;
@@ -60,7 +60,7 @@ export function applyAccountNameToChannelSection(params: {
           name: trimmed,
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
   }
   const baseAccounts: Record<string, Record<string, unknown>> = base?.accounts ?? {};
   const existingAccount = baseAccounts[accountId] ?? {};
@@ -83,14 +83,14 @@ export function applyAccountNameToChannelSection(params: {
         },
       },
     },
-  } as OpenClawConfig;
+  } as AGDIConfig;
 }
 
 export function migrateBaseNameToDefaultAccount(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   channelKey: string;
   alwaysUseAccounts?: boolean;
-}): OpenClawConfig {
+}): AGDIConfig {
   if (params.alwaysUseAccounts) {
     return params.cfg;
   }
@@ -117,5 +117,5 @@ export function migrateBaseNameToDefaultAccount(params: {
         accounts,
       },
     },
-  } as OpenClawConfig;
+  } as AGDIConfig;
 }

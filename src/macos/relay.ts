@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import process from "node:process";
 
-declare const __OPENCLAW_VERSION__: string | undefined;
+declare const __AGDI_VERSION__: string | undefined;
 
 const BUNDLED_VERSION =
-  (typeof __OPENCLAW_VERSION__ === "string" && __OPENCLAW_VERSION__) ||
-  process.env.OPENCLAW_BUNDLED_VERSION ||
+  (typeof __AGDI_VERSION__ === "string" && __AGDI_VERSION__) ||
+  process.env.AGDI_BUNDLED_VERSION ||
   "0.0.0";
 
 function hasFlag(args: string[], flag: string): boolean {
@@ -49,8 +49,8 @@ async function main() {
   const { loadDotEnv } = await import("../infra/dotenv.js");
   loadDotEnv({ quiet: true });
 
-  const { ensureOpenClawCliOnPath } = await import("../infra/path-env.js");
-  ensureOpenClawCliOnPath();
+  const { ensureAGDICliOnPath } = await import("../infra/path-env.js");
+  ensureAGDICliOnPath();
 
   const { enableConsoleCapture } = await import("../logging.js");
   enableConsoleCapture();
@@ -66,7 +66,7 @@ async function main() {
   installUnhandledRejectionHandler();
 
   process.on("uncaughtException", (error) => {
-    console.error("[openclaw] Uncaught exception:", formatUncaughtError(error));
+    console.error("[agdi] Uncaught exception:", formatUncaughtError(error));
     process.exit(1);
   });
 
@@ -75,7 +75,7 @@ async function main() {
 
 void main().catch((err) => {
   console.error(
-    "[openclaw] Relay failed:",
+    "[agdi] Relay failed:",
     err instanceof Error ? (err.stack ?? err.message) : err,
   );
   process.exit(1);

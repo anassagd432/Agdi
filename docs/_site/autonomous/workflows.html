@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflows & Automation — AGDI Docs</title>
+  <meta name="description" content="Record, replay, schedule, and automate complex multi-step workflows.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="active" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Workflows &amp; Automation</h1>
+<p>AGDI can record your actions, replay them on demand, schedule tasks, watch files, and manage your clipboard intelligently.</p>
+<h2>Workflow Record &amp; Replay</h2>
+<p>Capture a sequence of device actions and replay them perfectly:</p>
+<pre><code class="language-typescript">import { WorkflowReplay } from &quot;agdi/autonomous&quot;;
+
+const workflow = new WorkflowReplay();
+
+// Load a saved workflow
+const saved = await workflow.load(&quot;daily-report.json&quot;);
+
+// Replay it
+const result = await workflow.replay(saved);
+console.log(`Replayed ${result.stepsCompleted} steps in ${result.durationMs}ms`);
+</code></pre>
+<h2>Task Scheduler</h2>
+<p>Cron-like scheduling for automated tasks:</p>
+<pre><code class="language-typescript">import { TaskScheduler } from &quot;agdi/autonomous&quot;;
+
+const scheduler = new TaskScheduler();
+
+// Schedule a task
+scheduler.add({
+  name: &quot;daily-backup&quot;,
+  schedule: { cron: &quot;0 2 * * *&quot; }, // 2 AM daily
+  command: &quot;tar -czf /backup/daily.tar.gz /home/user/documents&quot;,
+});
+
+// Start the scheduler
+scheduler.start();
+</code></pre>
+<h2>File Watcher</h2>
+<p>Trigger actions when files change:</p>
+<pre><code class="language-typescript">import { FileWatcher } from &quot;agdi/autonomous&quot;;
+
+const watcher = new FileWatcher();
+
+watcher.addRule({
+  path: &quot;/home/user/downloads&quot;,
+  pattern: &quot;*.pdf&quot;,
+  action: &quot;move&quot;,
+  destination: &quot;/home/user/documents/pdfs&quot;,
+});
+
+watcher.start();
+</code></pre>
+<h2>Smart Clipboard</h2>
+<p>AI-powered clipboard with history and semantic search:</p>
+<pre><code class="language-typescript">import { SmartClipboard } from &quot;agdi/autonomous&quot;;
+
+const clipboard = new SmartClipboard();
+
+// Get clipboard history
+const history = await clipboard.getHistory(20);
+
+// Search by content
+const results = await clipboard.search(&quot;email address&quot;);
+
+// Pin important entries
+await clipboard.pin(history[0].id);
+</code></pre>
+<h2>REST API</h2>
+<p>Control the autonomous agent remotely:</p>
+<pre><code class="language-bash"># Start the REST API server
+agdi agent --rest-api --port 7778
+
+# Send a command
+curl -X POST http://localhost:7778/api/command \
+  -H &quot;Authorization: Bearer $TOKEN&quot; \
+  -d &#39;{&quot;command&quot;: &quot;open spotify and play jazz&quot;}&#39;
+
+# Take a screenshot
+curl http://localhost:7778/api/screenshot &gt; screen.png
+
+# Get agent status
+curl http://localhost:7778/api/status
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

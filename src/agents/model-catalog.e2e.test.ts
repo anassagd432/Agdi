@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { AGDIConfig } from "../config/config.js";
 import {
   __setModelCatalogImportForTest,
   loadModelCatalog,
@@ -9,11 +9,11 @@ import {
 type PiSdkModule = typeof import("./pi-model-discovery.js");
 
 vi.mock("./models-config.js", () => ({
-  ensureOpenClawModelsJson: vi.fn().mockResolvedValue({ agentDir: "/tmp", wrote: false }),
+  ensureAGDIModelsJson: vi.fn().mockResolvedValue({ agentDir: "/tmp", wrote: false }),
 }));
 
 vi.mock("./agent-paths.js", () => ({
-  resolveOpenClawAgentDir: () => "/tmp/openclaw",
+  resolveAGDIAgentDir: () => "/tmp/agdi",
 }));
 
 describe("loadModelCatalog e2e smoke", () => {
@@ -44,7 +44,7 @@ describe("loadModelCatalog e2e smoke", () => {
       } as unknown as PiSdkModule;
     });
 
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     expect(await loadModelCatalog({ config: cfg })).toEqual([]);
     expect(await loadModelCatalog({ config: cfg })).toEqual([
       { id: "gpt-4.1", name: "GPT-4.1", provider: "openai" },

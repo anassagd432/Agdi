@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hooks — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="active" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Hooks</h1>
+<p>Hooks provide an extensible event-driven system for automating actions in response to agent commands and events. Hooks are automatically discovered from directories and can be managed via CLI commands, similar to how skills work in AGDI.</p>
+<h2>Getting Oriented</h2>
+<p>Hooks are small scripts that run when something happens. There are two kinds:</p>
+<ul>
+<li><strong>Hooks</strong> (this page): run inside the Gateway when agent events fire, like <code>/new</code>, <code>/reset</code>, <code>/stop</code>, or lifecycle events.</li>
+<li><strong>Webhooks</strong>: external HTTP webhooks that let other systems trigger work in AGDI. See <a href="/docs/automation/webhook">Webhook Hooks</a> or use <code>agdi webhooks</code> for Gmail helper commands.</li>
+</ul>
+<p>Hooks can also be bundled inside plugins; see <a href="/docs/tools/plugin#plugin-hooks">Plugins</a>.</p>
+<p>Common uses:</p>
+<ul>
+<li>Save a memory snapshot when you reset a session</li>
+<li>Keep an audit trail of commands for troubleshooting or compliance</li>
+<li>Trigger follow-up automation when a session starts or ends</li>
+<li>Write files into the agent workspace or call external APIs when events fire</li>
+</ul>
+<p>If you can write a small TypeScript function, you can write a hook. Hooks are discovered automatically, and you enable or disable them via the CLI.</p>
+<h2>Overview</h2>
+<p>The hooks system allows you to:</p>
+<ul>
+<li>Save session context to memory when <code>/new</code> is issued</li>
+<li>Log all commands for auditing</li>
+<li>Trigger custom automations on agent lifecycle events</li>
+<li>Extend AGDI&#39;s behavior without modifying core code</li>
+</ul>
+<h2>Getting Started</h2>
+<h3>Bundled Hooks</h3>
+<p>AGDI ships with four bundled hooks that are automatically discovered:</p>
+<ul>
+<li><strong>💾 session-memory</strong>: Saves session context to your agent workspace (default <code>~/.agdi/workspace/memory/</code>) when you issue <code>/new</code></li>
+<li><strong>📎 bootstrap-extra-files</strong>: Injects additional workspace bootstrap files from configured glob/path patterns during <code>agent:bootstrap</code></li>
+<li><strong>📝 command-logger</strong>: Logs all command events to <code>~/.agdi/logs/commands.log</code></li>
+<li><strong>🚀 boot-md</strong>: Runs <code>BOOT.md</code> when the gateway starts (requires internal hooks enabled)</li>
+</ul>
+<p>List available hooks:</p>
+<pre><code class="language-bash">agdi hooks list
+</code></pre>
+<p>Enable a hook:</p>
+<pre><code class="language-bash">agdi hooks enable session-memory
+</code></pre>
+<p>Check hook status:</p>
+<pre><code class="language-bash">agdi hooks check
+</code></pre>
+<p>Get detailed information:</p>
+<pre><code class="language-bash">agdi hooks info session-memory
+</code></pre>
+<h3>Onboarding</h3>
+<p>During onboarding (<code>agdi onboard</code>), you&#39;ll be prompted to enable recommended hooks. The wizard automatically discovers eligible hooks and presents them for selection.</p>
+<h2>Hook Discovery</h2>
+<p>Hooks are automatically discovered from three directories (in order of precedence):</p>
+<ol>
+<li><strong>Workspace hooks</strong>: <code>&lt;workspace&gt;/hooks/</code> (per-agent, highest precedence)</li>
+<li><strong>Managed hooks</strong>: <code>~/.agdi/hooks/</code> (user-installed, shared across workspaces)</li>
+<li><strong>Bundled hooks</strong>: <code>&lt;agdi&gt;/dist/hooks/bundled/</code> (shipped with AGDI)</li>
+</ol>
+<p>Managed hook directories can be either a <strong>single hook</strong> or a <strong>hook pack</strong> (package directory).</p>
+<p>Each hook is a directory containing:</p>
+<pre><code>my-hook/
+├── HOOK.md          # Metadata + documentation
+└── handler.ts       # Handler implementation
+</code></pre>
+<h2>Hook Packs (npm/archives)</h2>
+<p>Hook packs are standard npm packages that export one or more hooks via <code>agdi.hooks</code> in
+<code>package.json</code>. Install them with:</p>
+<pre><code class="language-bash">agdi hooks install &lt;path-or-spec&gt;
+</code></pre>
+<p>Npm specs are registry-only (package name + optional version/tag). Git/URL/file specs are rejected.</p>
+<p>Example <code>package.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;@acme/my-hooks&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;agdi&quot;: {
+    &quot;hooks&quot;: [&quot;./hooks/my-hook&quot;, &quot;./hooks/other-hook&quot;]
+  }
+}
+</code></pre>
+<p>Each entry points to a hook directory containing <code>HOOK.md</code> and <code>handler.ts</code> (or <code>index.ts</code>).
+Hook packs can ship dependencies; they will be installed under <code>~/.agdi/hooks/&lt;id&gt;</code>.</p>
+<p>Security note: <code>agdi hooks install</code> installs dependencies with <code>npm install --ignore-scripts</code>
+(no lifecycle scripts). Keep hook pack dependency trees &quot;pure JS/TS&quot; and avoid packages that rely
+on <code>postinstall</code> builds.</p>
+<h2>Hook Structure</h2>
+<h3>HOOK.md Format</h3>
+<p>The <code>HOOK.md</code> file contains metadata in YAML frontmatter plus Markdown documentation:</p>
+<pre><code class="language-markdown">---
+name: my-hook
+description: &quot;Short description of what this hook does&quot;
+homepage: https://docs.agdi.ai/automation/hooks#my-hook
+metadata:
+  { &quot;agdi&quot;: { &quot;emoji&quot;: &quot;🔗&quot;, &quot;events&quot;: [&quot;command:new&quot;], &quot;requires&quot;: { &quot;bins&quot;: [&quot;node&quot;] } } }
+---
+
+# My Hook
+
+Detailed documentation goes here...
+
+## What It Does
+
+- Listens for `/new` commands
+- Performs some action
+- Logs the result
+
+## Requirements
+
+- Node.js must be installed
+
+## Configuration
+
+No configuration needed.
+</code></pre>
+<h3>Metadata Fields</h3>
+<p>The <code>metadata.agdi</code> object supports:</p>
+<ul>
+<li><strong><code>emoji</code></strong>: Display emoji for CLI (e.g., <code>&quot;💾&quot;</code>)</li>
+<li><strong><code>events</code></strong>: Array of events to listen for (e.g., <code>[&quot;command:new&quot;, &quot;command:reset&quot;]</code>)</li>
+<li><strong><code>export</code></strong>: Named export to use (defaults to <code>&quot;default&quot;</code>)</li>
+<li><strong><code>homepage</code></strong>: Documentation URL</li>
+<li><strong><code>requires</code></strong>: Optional requirements<ul>
+<li><strong><code>bins</code></strong>: Required binaries on PATH (e.g., <code>[&quot;git&quot;, &quot;node&quot;]</code>)</li>
+<li><strong><code>anyBins</code></strong>: At least one of these binaries must be present</li>
+<li><strong><code>env</code></strong>: Required environment variables</li>
+<li><strong><code>config</code></strong>: Required config paths (e.g., <code>[&quot;workspace.dir&quot;]</code>)</li>
+<li><strong><code>os</code></strong>: Required platforms (e.g., <code>[&quot;darwin&quot;, &quot;linux&quot;]</code>)</li>
+</ul>
+</li>
+<li><strong><code>always</code></strong>: Bypass eligibility checks (boolean)</li>
+<li><strong><code>install</code></strong>: Installation methods (for bundled hooks: <code>[{&quot;id&quot;:&quot;bundled&quot;,&quot;kind&quot;:&quot;bundled&quot;}]</code>)</li>
+</ul>
+<h3>Handler Implementation</h3>
+<p>The <code>handler.ts</code> file exports a <code>HookHandler</code> function:</p>
+<pre><code class="language-typescript">import type { HookHandler } from &quot;../../src/hooks/hooks.js&quot;;
+
+const myHandler: HookHandler = async (event) =&gt; {
+  // Only trigger on &#39;new&#39; command
+  if (event.type !== &quot;command&quot; || event.action !== &quot;new&quot;) {
+    return;
+  }
+
+  console.log(`[my-hook] New command triggered`);
+  console.log(`  Session: ${event.sessionKey}`);
+  console.log(`  Timestamp: ${event.timestamp.toISOString()}`);
+
+  // Your custom logic here
+
+  // Optionally send message to user
+  event.messages.push(&quot;✨ My hook executed!&quot;);
+};
+
+export default myHandler;
+</code></pre>
+<h4>Event Context</h4>
+<p>Each event includes:</p>
+<pre><code class="language-typescript">{
+  type: &#39;command&#39; | &#39;session&#39; | &#39;agent&#39; | &#39;gateway&#39;,
+  action: string,              // e.g., &#39;new&#39;, &#39;reset&#39;, &#39;stop&#39;
+  sessionKey: string,          // Session identifier
+  timestamp: Date,             // When the event occurred
+  messages: string[],          // Push messages here to send to user
+  context: {
+    sessionEntry?: SessionEntry,
+    sessionId?: string,
+    sessionFile?: string,
+    commandSource?: string,    // e.g., &#39;whatsapp&#39;, &#39;telegram&#39;
+    senderId?: string,
+    workspaceDir?: string,
+    bootstrapFiles?: WorkspaceBootstrapFile[],
+    cfg?: AGDIConfig
+  }
+}
+</code></pre>
+<h2>Event Types</h2>
+<h3>Command Events</h3>
+<p>Triggered when agent commands are issued:</p>
+<ul>
+<li><strong><code>command</code></strong>: All command events (general listener)</li>
+<li><strong><code>command:new</code></strong>: When <code>/new</code> command is issued</li>
+<li><strong><code>command:reset</code></strong>: When <code>/reset</code> command is issued</li>
+<li><strong><code>command:stop</code></strong>: When <code>/stop</code> command is issued</li>
+</ul>
+<h3>Agent Events</h3>
+<ul>
+<li><strong><code>agent:bootstrap</code></strong>: Before workspace bootstrap files are injected (hooks may mutate <code>context.bootstrapFiles</code>)</li>
+</ul>
+<h3>Gateway Events</h3>
+<p>Triggered when the gateway starts:</p>
+<ul>
+<li><strong><code>gateway:startup</code></strong>: After channels start and hooks are loaded</li>
+</ul>
+<h3>Tool Result Hooks (Plugin API)</h3>
+<p>These hooks are not event-stream listeners; they let plugins synchronously adjust tool results before AGDI persists them.</p>
+<ul>
+<li><strong><code>tool_result_persist</code></strong>: transform tool results before they are written to the session transcript. Must be synchronous; return the updated tool result payload or <code>undefined</code> to keep it as-is. See <a href="/docs/concepts/agent-loop">Agent Loop</a>.</li>
+</ul>
+<h3>Future Events</h3>
+<p>Planned event types:</p>
+<ul>
+<li><strong><code>session:start</code></strong>: When a new session begins</li>
+<li><strong><code>session:end</code></strong>: When a session ends</li>
+<li><strong><code>agent:error</code></strong>: When an agent encounters an error</li>
+<li><strong><code>message:sent</code></strong>: When a message is sent</li>
+<li><strong><code>message:received</code></strong>: When a message is received</li>
+</ul>
+<h2>Creating Custom Hooks</h2>
+<h3>1. Choose Location</h3>
+<ul>
+<li><strong>Workspace hooks</strong> (<code>&lt;workspace&gt;/hooks/</code>): Per-agent, highest precedence</li>
+<li><strong>Managed hooks</strong> (<code>~/.agdi/hooks/</code>): Shared across workspaces</li>
+</ul>
+<h3>2. Create Directory Structure</h3>
+<pre><code class="language-bash">mkdir -p ~/.agdi/hooks/my-hook
+cd ~/.agdi/hooks/my-hook
+</code></pre>
+<h3>3. Create HOOK.md</h3>
+<pre><code class="language-markdown">---
+name: my-hook
+description: &quot;Does something useful&quot;
+metadata: { &quot;agdi&quot;: { &quot;emoji&quot;: &quot;🎯&quot;, &quot;events&quot;: [&quot;command:new&quot;] } }
+---
+
+# My Custom Hook
+
+This hook does something useful when you issue `/new`.
+</code></pre>
+<h3>4. Create handler.ts</h3>
+<pre><code class="language-typescript">import type { HookHandler } from &quot;../../src/hooks/hooks.js&quot;;
+
+const handler: HookHandler = async (event) =&gt; {
+  if (event.type !== &quot;command&quot; || event.action !== &quot;new&quot;) {
+    return;
+  }
+
+  console.log(&quot;[my-hook] Running!&quot;);
+  // Your logic here
+};
+
+export default handler;
+</code></pre>
+<h3>5. Enable and Test</h3>
+<pre><code class="language-bash"># Verify hook is discovered
+agdi hooks list
+
+# Enable it
+agdi hooks enable my-hook
+
+# Restart your gateway process (menu bar app restart on macOS, or restart your dev process)
+
+# Trigger the event
+# Send /new via your messaging channel
+</code></pre>
+<h2>Configuration</h2>
+<h3>New Config Format (Recommended)</h3>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;entries&quot;: {
+        &quot;session-memory&quot;: { &quot;enabled&quot;: true },
+        &quot;command-logger&quot;: { &quot;enabled&quot;: false }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Per-Hook Configuration</h3>
+<p>Hooks can have custom configuration:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;entries&quot;: {
+        &quot;my-hook&quot;: {
+          &quot;enabled&quot;: true,
+          &quot;env&quot;: {
+            &quot;MY_CUSTOM_VAR&quot;: &quot;value&quot;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Extra Directories</h3>
+<p>Load hooks from additional directories:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;load&quot;: {
+        &quot;extraDirs&quot;: [&quot;/path/to/more/hooks&quot;]
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Legacy Config Format (Still Supported)</h3>
+<p>The old config format still works for backwards compatibility:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;handlers&quot;: [
+        {
+          &quot;event&quot;: &quot;command:new&quot;,
+          &quot;module&quot;: &quot;./hooks/handlers/my-handler.ts&quot;,
+          &quot;export&quot;: &quot;default&quot;
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+<p>Note: <code>module</code> must be a workspace-relative path. Absolute paths and traversal outside the workspace are rejected.</p>
+<p><strong>Migration</strong>: Use the new discovery-based system for new hooks. Legacy handlers are loaded after directory-based hooks.</p>
+<h2>CLI Commands</h2>
+<h3>List Hooks</h3>
+<pre><code class="language-bash"># List all hooks
+agdi hooks list
+
+# Show only eligible hooks
+agdi hooks list --eligible
+
+# Verbose output (show missing requirements)
+agdi hooks list --verbose
+
+# JSON output
+agdi hooks list --json
+</code></pre>
+<h3>Hook Information</h3>
+<pre><code class="language-bash"># Show detailed info about a hook
+agdi hooks info session-memory
+
+# JSON output
+agdi hooks info session-memory --json
+</code></pre>
+<h3>Check Eligibility</h3>
+<pre><code class="language-bash"># Show eligibility summary
+agdi hooks check
+
+# JSON output
+agdi hooks check --json
+</code></pre>
+<h3>Enable/Disable</h3>
+<pre><code class="language-bash"># Enable a hook
+agdi hooks enable session-memory
+
+# Disable a hook
+agdi hooks disable command-logger
+</code></pre>
+<h2>Bundled hook reference</h2>
+<h3>session-memory</h3>
+<p>Saves session context to memory when you issue <code>/new</code>.</p>
+<p><strong>Events</strong>: <code>command:new</code></p>
+<p><strong>Requirements</strong>: <code>workspace.dir</code> must be configured</p>
+<p><strong>Output</strong>: <code>&lt;workspace&gt;/memory/YYYY-MM-DD-slug.md</code> (defaults to <code>~/.agdi/workspace</code>)</p>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Uses the pre-reset session entry to locate the correct transcript</li>
+<li>Extracts the last 15 lines of conversation</li>
+<li>Uses LLM to generate a descriptive filename slug</li>
+<li>Saves session metadata to a dated memory file</li>
+</ol>
+<p><strong>Example output</strong>:</p>
+<pre><code class="language-markdown"># Session: 2026-01-16 14:30:00 UTC
+
+- **Session Key**: agent:main:main
+- **Session ID**: abc123def456
+- **Source**: telegram
+</code></pre>
+<p><strong>Filename examples</strong>:</p>
+<ul>
+<li><code>2026-01-16-vendor-pitch.md</code></li>
+<li><code>2026-01-16-api-design.md</code></li>
+<li><code>2026-01-16-1430.md</code> (fallback timestamp if slug generation fails)</li>
+</ul>
+<p><strong>Enable</strong>:</p>
+<pre><code class="language-bash">agdi hooks enable session-memory
+</code></pre>
+<h3>bootstrap-extra-files</h3>
+<p>Injects additional bootstrap files (for example monorepo-local <code>AGENTS.md</code> / <code>TOOLS.md</code>) during <code>agent:bootstrap</code>.</p>
+<p><strong>Events</strong>: <code>agent:bootstrap</code></p>
+<p><strong>Requirements</strong>: <code>workspace.dir</code> must be configured</p>
+<p><strong>Output</strong>: No files written; bootstrap context is modified in-memory only.</p>
+<p><strong>Config</strong>:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;entries&quot;: {
+        &quot;bootstrap-extra-files&quot;: {
+          &quot;enabled&quot;: true,
+          &quot;paths&quot;: [&quot;packages/*/AGENTS.md&quot;, &quot;packages/*/TOOLS.md&quot;]
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>Notes</strong>:</p>
+<ul>
+<li>Paths are resolved relative to workspace.</li>
+<li>Files must stay inside workspace (realpath-checked).</li>
+<li>Only recognized bootstrap basenames are loaded.</li>
+<li>Subagent allowlist is preserved (<code>AGENTS.md</code> and <code>TOOLS.md</code> only).</li>
+</ul>
+<p><strong>Enable</strong>:</p>
+<pre><code class="language-bash">agdi hooks enable bootstrap-extra-files
+</code></pre>
+<h3>command-logger</h3>
+<p>Logs all command events to a centralized audit file.</p>
+<p><strong>Events</strong>: <code>command</code></p>
+<p><strong>Requirements</strong>: None</p>
+<p><strong>Output</strong>: <code>~/.agdi/logs/commands.log</code></p>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Captures event details (command action, timestamp, session key, sender ID, source)</li>
+<li>Appends to log file in JSONL format</li>
+<li>Runs silently in the background</li>
+</ol>
+<p><strong>Example log entries</strong>:</p>
+<pre><code class="language-jsonl">{&quot;timestamp&quot;:&quot;2026-01-16T14:30:00.000Z&quot;,&quot;action&quot;:&quot;new&quot;,&quot;sessionKey&quot;:&quot;agent:main:main&quot;,&quot;senderId&quot;:&quot;+1234567890&quot;,&quot;source&quot;:&quot;telegram&quot;}
+{&quot;timestamp&quot;:&quot;2026-01-16T15:45:22.000Z&quot;,&quot;action&quot;:&quot;stop&quot;,&quot;sessionKey&quot;:&quot;agent:main:main&quot;,&quot;senderId&quot;:&quot;user@example.com&quot;,&quot;source&quot;:&quot;whatsapp&quot;}
+</code></pre>
+<p><strong>View logs</strong>:</p>
+<pre><code class="language-bash"># View recent commands
+tail -n 20 ~/.agdi/logs/commands.log
+
+# Pretty-print with jq
+cat ~/.agdi/logs/commands.log | jq .
+
+# Filter by action
+grep &#39;&quot;action&quot;:&quot;new&quot;&#39; ~/.agdi/logs/commands.log | jq .
+</code></pre>
+<p><strong>Enable</strong>:</p>
+<pre><code class="language-bash">agdi hooks enable command-logger
+</code></pre>
+<h3>boot-md</h3>
+<p>Runs <code>BOOT.md</code> when the gateway starts (after channels start).
+Internal hooks must be enabled for this to run.</p>
+<p><strong>Events</strong>: <code>gateway:startup</code></p>
+<p><strong>Requirements</strong>: <code>workspace.dir</code> must be configured</p>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Reads <code>BOOT.md</code> from your workspace</li>
+<li>Runs the instructions via the agent runner</li>
+<li>Sends any requested outbound messages via the message tool</li>
+</ol>
+<p><strong>Enable</strong>:</p>
+<pre><code class="language-bash">agdi hooks enable boot-md
+</code></pre>
+<h2>Best Practices</h2>
+<h3>Keep Handlers Fast</h3>
+<p>Hooks run during command processing. Keep them lightweight:</p>
+<pre><code class="language-typescript">// ✓ Good - async work, returns immediately
+const handler: HookHandler = async (event) =&gt; {
+  void processInBackground(event); // Fire and forget
+};
+
+// ✗ Bad - blocks command processing
+const handler: HookHandler = async (event) =&gt; {
+  await slowDatabaseQuery(event);
+  await evenSlowerAPICall(event);
+};
+</code></pre>
+<h3>Handle Errors Gracefully</h3>
+<p>Always wrap risky operations:</p>
+<pre><code class="language-typescript">const handler: HookHandler = async (event) =&gt; {
+  try {
+    await riskyOperation(event);
+  } catch (err) {
+    console.error(&quot;[my-handler] Failed:&quot;, err instanceof Error ? err.message : String(err));
+    // Don&#39;t throw - let other handlers run
+  }
+};
+</code></pre>
+<h3>Filter Events Early</h3>
+<p>Return early if the event isn&#39;t relevant:</p>
+<pre><code class="language-typescript">const handler: HookHandler = async (event) =&gt; {
+  // Only handle &#39;new&#39; commands
+  if (event.type !== &quot;command&quot; || event.action !== &quot;new&quot;) {
+    return;
+  }
+
+  // Your logic here
+};
+</code></pre>
+<h3>Use Specific Event Keys</h3>
+<p>Specify exact events in metadata when possible:</p>
+<pre><code class="language-yaml">metadata: { &quot;agdi&quot;: { &quot;events&quot;: [&quot;command:new&quot;] } } # Specific
+</code></pre>
+<p>Rather than:</p>
+<pre><code class="language-yaml">metadata: { &quot;agdi&quot;: { &quot;events&quot;: [&quot;command&quot;] } } # General - more overhead
+</code></pre>
+<h2>Debugging</h2>
+<h3>Enable Hook Logging</h3>
+<p>The gateway logs hook loading at startup:</p>
+<pre><code>Registered hook: session-memory -&gt; command:new
+Registered hook: bootstrap-extra-files -&gt; agent:bootstrap
+Registered hook: command-logger -&gt; command
+Registered hook: boot-md -&gt; gateway:startup
+</code></pre>
+<h3>Check Discovery</h3>
+<p>List all discovered hooks:</p>
+<pre><code class="language-bash">agdi hooks list --verbose
+</code></pre>
+<h3>Check Registration</h3>
+<p>In your handler, log when it&#39;s called:</p>
+<pre><code class="language-typescript">const handler: HookHandler = async (event) =&gt; {
+  console.log(&quot;[my-handler] Triggered:&quot;, event.type, event.action);
+  // Your logic
+};
+</code></pre>
+<h3>Verify Eligibility</h3>
+<p>Check why a hook isn&#39;t eligible:</p>
+<pre><code class="language-bash">agdi hooks info my-hook
+</code></pre>
+<p>Look for missing requirements in the output.</p>
+<h2>Testing</h2>
+<h3>Gateway Logs</h3>
+<p>Monitor gateway logs to see hook execution:</p>
+<pre><code class="language-bash"># macOS
+./scripts/clawlog.sh -f
+
+# Other platforms
+tail -f ~/.agdi/gateway.log
+</code></pre>
+<h3>Test Hooks Directly</h3>
+<p>Test your handlers in isolation:</p>
+<pre><code class="language-typescript">import { test } from &quot;vitest&quot;;
+import { createHookEvent } from &quot;./src/hooks/hooks.js&quot;;
+import myHandler from &quot;./hooks/my-hook/handler.js&quot;;
+
+test(&quot;my handler works&quot;, async () =&gt; {
+  const event = createHookEvent(&quot;command&quot;, &quot;new&quot;, &quot;test-session&quot;, {
+    foo: &quot;bar&quot;,
+  });
+
+  await myHandler(event);
+
+  // Assert side effects
+});
+</code></pre>
+<h2>Architecture</h2>
+<h3>Core Components</h3>
+<ul>
+<li><strong><code>src/hooks/types.ts</code></strong>: Type definitions</li>
+<li><strong><code>src/hooks/workspace.ts</code></strong>: Directory scanning and loading</li>
+<li><strong><code>src/hooks/frontmatter.ts</code></strong>: HOOK.md metadata parsing</li>
+<li><strong><code>src/hooks/config.ts</code></strong>: Eligibility checking</li>
+<li><strong><code>src/hooks/hooks-status.ts</code></strong>: Status reporting</li>
+<li><strong><code>src/hooks/loader.ts</code></strong>: Dynamic module loader</li>
+<li><strong><code>src/cli/hooks-cli.ts</code></strong>: CLI commands</li>
+<li><strong><code>src/gateway/server-startup.ts</code></strong>: Loads hooks at gateway start</li>
+<li><strong><code>src/auto-reply/reply/commands-core.ts</code></strong>: Triggers command events</li>
+</ul>
+<h3>Discovery Flow</h3>
+<pre><code>Gateway startup
+    ↓
+Scan directories (workspace → managed → bundled)
+    ↓
+Parse HOOK.md files
+    ↓
+Check eligibility (bins, env, config, os)
+    ↓
+Load handlers from eligible hooks
+    ↓
+Register handlers for events
+</code></pre>
+<h3>Event Flow</h3>
+<pre><code>User sends /new
+    ↓
+Command validation
+    ↓
+Create hook event
+    ↓
+Trigger hook (all registered handlers)
+    ↓
+Command processing continues
+    ↓
+Session reset
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Hook Not Discovered</h3>
+<ol>
+<li><p>Check directory structure:</p>
+<pre><code class="language-bash">ls -la ~/.agdi/hooks/my-hook/
+# Should show: HOOK.md, handler.ts
+</code></pre>
+</li>
+<li><p>Verify HOOK.md format:</p>
+<pre><code class="language-bash">cat ~/.agdi/hooks/my-hook/HOOK.md
+# Should have YAML frontmatter with name and metadata
+</code></pre>
+</li>
+<li><p>List all discovered hooks:</p>
+<pre><code class="language-bash">agdi hooks list
+</code></pre>
+</li>
+</ol>
+<h3>Hook Not Eligible</h3>
+<p>Check requirements:</p>
+<pre><code class="language-bash">agdi hooks info my-hook
+</code></pre>
+<p>Look for missing:</p>
+<ul>
+<li>Binaries (check PATH)</li>
+<li>Environment variables</li>
+<li>Config values</li>
+<li>OS compatibility</li>
+</ul>
+<h3>Hook Not Executing</h3>
+<ol>
+<li><p>Verify hook is enabled:</p>
+<pre><code class="language-bash">agdi hooks list
+# Should show ✓ next to enabled hooks
+</code></pre>
+</li>
+<li><p>Restart your gateway process so hooks reload.</p>
+</li>
+<li><p>Check gateway logs for errors:</p>
+<pre><code class="language-bash">./scripts/clawlog.sh | grep hook
+</code></pre>
+</li>
+</ol>
+<h3>Handler Errors</h3>
+<p>Check for TypeScript/import errors:</p>
+<pre><code class="language-bash"># Test import directly
+node -e &quot;import(&#39;./path/to/handler.ts&#39;).then(console.log)&quot;
+</code></pre>
+<h2>Migration Guide</h2>
+<h3>From Legacy Config to Discovery</h3>
+<p><strong>Before</strong>:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;handlers&quot;: [
+        {
+          &quot;event&quot;: &quot;command:new&quot;,
+          &quot;module&quot;: &quot;./hooks/handlers/my-handler.ts&quot;
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+<p><strong>After</strong>:</p>
+<ol>
+<li><p>Create hook directory:</p>
+<pre><code class="language-bash">mkdir -p ~/.agdi/hooks/my-hook
+mv ./hooks/handlers/my-handler.ts ~/.agdi/hooks/my-hook/handler.ts
+</code></pre>
+</li>
+<li><p>Create HOOK.md:</p>
+<pre><code class="language-markdown">---
+name: my-hook
+description: &quot;My custom hook&quot;
+metadata: { &quot;agdi&quot;: { &quot;emoji&quot;: &quot;🎯&quot;, &quot;events&quot;: [&quot;command:new&quot;] } }
+---
+
+# My Hook
+
+Does something useful.
+</code></pre>
+</li>
+<li><p>Update config:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;internal&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;entries&quot;: {
+        &quot;my-hook&quot;: { &quot;enabled&quot;: true }
+      }
+    }
+  }
+}
+</code></pre>
+</li>
+<li><p>Verify and restart your gateway process:</p>
+<pre><code class="language-bash">agdi hooks list
+# Should show: 🎯 my-hook ✓
+</code></pre>
+</li>
+</ol>
+<p><strong>Benefits of migration</strong>:</p>
+<ul>
+<li>Automatic discovery</li>
+<li>CLI management</li>
+<li>Eligibility checking</li>
+<li>Better documentation</li>
+<li>Consistent structure</li>
+</ul>
+<h2>See Also</h2>
+<ul>
+<li><a href="/docs/cli/hooks">CLI Reference: hooks</a></li>
+<li><a href="https://github.com/agdi/agdi/tree/main/src/hooks/bundled">Bundled Hooks README</a></li>
+<li><a href="/docs/automation/webhook">Webhook Hooks</a></li>
+<li><a href="/docs/gateway/configuration#hooks">Configuration</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

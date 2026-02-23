@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zalo Personal — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="active" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Zalo Personal (unofficial)</h1>
+<p>Status: experimental. This integration automates a <strong>personal Zalo account</strong> via <code>zca-cli</code>.</p>
+<blockquote>
+<p><strong>Warning:</strong> This is an unofficial integration and may result in account suspension/ban. Use at your own risk.</p>
+</blockquote>
+<h2>Plugin required</h2>
+<p>Zalo Personal ships as a plugin and is not bundled with the core install.</p>
+<ul>
+<li>Install via CLI: <code>agdi plugins install @agdi/zalouser</code></li>
+<li>Or from a source checkout: <code>agdi plugins install ./extensions/zalouser</code></li>
+<li>Details: <a href="/tools/plugin">Plugins</a></li>
+</ul>
+<h2>Prerequisite: zca-cli</h2>
+<p>The Gateway machine must have the <code>zca</code> binary available in <code>PATH</code>.</p>
+<ul>
+<li>Verify: <code>zca --version</code></li>
+<li>If missing, install zca-cli (see <code>extensions/zalouser/README.md</code> or the upstream zca-cli docs).</li>
+</ul>
+<h2>Quick setup (beginner)</h2>
+<ol>
+<li>Install the plugin (see above).</li>
+<li>Login (QR, on the Gateway machine):<ul>
+<li><code>agdi channels login --channel zalouser</code></li>
+<li>Scan the QR code in the terminal with the Zalo mobile app.</li>
+</ul>
+</li>
+<li>Enable the channel:</li>
+</ol>
+<pre><code class="language-json5">{
+  channels: {
+    zalouser: {
+      enabled: true,
+      dmPolicy: &quot;pairing&quot;,
+    },
+  },
+}
+</code></pre>
+<ol start="4">
+<li>Restart the Gateway (or finish onboarding).</li>
+<li>DM access defaults to pairing; approve the pairing code on first contact.</li>
+</ol>
+<h2>What it is</h2>
+<ul>
+<li>Uses <code>zca listen</code> to receive inbound messages.</li>
+<li>Uses <code>zca msg ...</code> to send replies (text/media/link).</li>
+<li>Designed for “personal account” use cases where Zalo Bot API is not available.</li>
+</ul>
+<h2>Naming</h2>
+<p>Channel id is <code>zalouser</code> to make it explicit this automates a <strong>personal Zalo user account</strong> (unofficial). We keep <code>zalo</code> reserved for a potential future official Zalo API integration.</p>
+<h2>Finding IDs (directory)</h2>
+<p>Use the directory CLI to discover peers/groups and their IDs:</p>
+<pre><code class="language-bash">agdi directory self --channel zalouser
+agdi directory peers list --channel zalouser --query &quot;name&quot;
+agdi directory groups list --channel zalouser --query &quot;work&quot;
+</code></pre>
+<h2>Limits</h2>
+<ul>
+<li>Outbound text is chunked to ~2000 characters (Zalo client limits).</li>
+<li>Streaming is blocked by default.</li>
+</ul>
+<h2>Access control (DMs)</h2>
+<p><code>channels.zalouser.dmPolicy</code> supports: <code>pairing | allowlist | open | disabled</code> (default: <code>pairing</code>).
+<code>channels.zalouser.allowFrom</code> accepts user IDs or names. The wizard resolves names to IDs via <code>zca friend find</code> when available.</p>
+<p>Approve via:</p>
+<ul>
+<li><code>agdi pairing list zalouser</code></li>
+<li><code>agdi pairing approve zalouser &lt;code&gt;</code></li>
+</ul>
+<h2>Group access (optional)</h2>
+<ul>
+<li>Default: <code>channels.zalouser.groupPolicy = &quot;open&quot;</code> (groups allowed). Use <code>channels.defaults.groupPolicy</code> to override the default when unset.</li>
+<li>Restrict to an allowlist with:<ul>
+<li><code>channels.zalouser.groupPolicy = &quot;allowlist&quot;</code></li>
+<li><code>channels.zalouser.groups</code> (keys are group IDs or names)</li>
+</ul>
+</li>
+<li>Block all groups: <code>channels.zalouser.groupPolicy = &quot;disabled&quot;</code>.</li>
+<li>The configure wizard can prompt for group allowlists.</li>
+<li>On startup, AGDI resolves group/user names in allowlists to IDs and logs the mapping; unresolved entries are kept as typed.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    zalouser: {
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;123456789&quot;: { allow: true },
+        &quot;Work Chat&quot;: { allow: true },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Multi-account</h2>
+<p>Accounts map to zca profiles. Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    zalouser: {
+      enabled: true,
+      defaultAccount: &quot;default&quot;,
+      accounts: {
+        work: { enabled: true, profile: &quot;work&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Troubleshooting</h2>
+<p><strong><code>zca</code> not found:</strong></p>
+<ul>
+<li>Install zca-cli and ensure it’s on <code>PATH</code> for the Gateway process.</li>
+</ul>
+<p><strong>Login doesn’t stick:</strong></p>
+<ul>
+<li><code>agdi channels status --probe</code></li>
+<li>Re-login: <code>agdi channels logout --channel zalouser &amp;&amp; agdi channels login --channel zalouser</code></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

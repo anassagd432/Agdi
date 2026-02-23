@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mattermost — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="active" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Mattermost (plugin)</h1>
+<p>Status: supported via plugin (bot token + WebSocket events). Channels, groups, and DMs are supported.
+Mattermost is a self-hostable team messaging platform; see the official site at
+<a href="https://mattermost.com">mattermost.com</a> for product details and downloads.</p>
+<h2>Plugin required</h2>
+<p>Mattermost ships as a plugin and is not bundled with the core install.</p>
+<p>Install via CLI (npm registry):</p>
+<pre><code class="language-bash">agdi plugins install @agdi/mattermost
+</code></pre>
+<p>Local checkout (when running from a git repo):</p>
+<pre><code class="language-bash">agdi plugins install ./extensions/mattermost
+</code></pre>
+<p>If you choose Mattermost during configure/onboarding and a git checkout is detected,
+AGDI will offer the local install path automatically.</p>
+<p>Details: <a href="/docs/tools/plugin">Plugins</a></p>
+<h2>Quick setup</h2>
+<ol>
+<li>Install the Mattermost plugin.</li>
+<li>Create a Mattermost bot account and copy the <strong>bot token</strong>.</li>
+<li>Copy the Mattermost <strong>base URL</strong> (e.g., <code>https://chat.example.com</code>).</li>
+<li>Configure AGDI and start the gateway.</li>
+</ol>
+<p>Minimal config:</p>
+<pre><code class="language-json5">{
+  channels: {
+    mattermost: {
+      enabled: true,
+      botToken: &quot;mm-token&quot;,
+      baseUrl: &quot;https://chat.example.com&quot;,
+      dmPolicy: &quot;pairing&quot;,
+    },
+  },
+}
+</code></pre>
+<h2>Environment variables (default account)</h2>
+<p>Set these on the gateway host if you prefer env vars:</p>
+<ul>
+<li><code>MATTERMOST_BOT_TOKEN=...</code></li>
+<li><code>MATTERMOST_URL=https://chat.example.com</code></li>
+</ul>
+<p>Env vars apply only to the <strong>default</strong> account (<code>default</code>). Other accounts must use config values.</p>
+<h2>Chat modes</h2>
+<p>Mattermost responds to DMs automatically. Channel behavior is controlled by <code>chatmode</code>:</p>
+<ul>
+<li><code>oncall</code> (default): respond only when @mentioned in channels.</li>
+<li><code>onmessage</code>: respond to every channel message.</li>
+<li><code>onchar</code>: respond when a message starts with a trigger prefix.</li>
+</ul>
+<p>Config example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    mattermost: {
+      chatmode: &quot;onchar&quot;,
+      oncharPrefixes: [&quot;&gt;&quot;, &quot;!&quot;],
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>onchar</code> still responds to explicit @mentions.</li>
+<li><code>channels.mattermost.requireMention</code> is honored for legacy configs but <code>chatmode</code> is preferred.</li>
+</ul>
+<h2>Access control (DMs)</h2>
+<ul>
+<li>Default: <code>channels.mattermost.dmPolicy = &quot;pairing&quot;</code> (unknown senders get a pairing code).</li>
+<li>Approve via:<ul>
+<li><code>agdi pairing list mattermost</code></li>
+<li><code>agdi pairing approve mattermost &lt;CODE&gt;</code></li>
+</ul>
+</li>
+<li>Public DMs: <code>channels.mattermost.dmPolicy=&quot;open&quot;</code> plus <code>channels.mattermost.allowFrom=[&quot;*&quot;]</code>.</li>
+</ul>
+<h2>Channels (groups)</h2>
+<ul>
+<li>Default: <code>channels.mattermost.groupPolicy = &quot;allowlist&quot;</code> (mention-gated).</li>
+<li>Allowlist senders with <code>channels.mattermost.groupAllowFrom</code> (user IDs or <code>@username</code>).</li>
+<li>Open channels: <code>channels.mattermost.groupPolicy=&quot;open&quot;</code> (mention-gated).</li>
+</ul>
+<h2>Targets for outbound delivery</h2>
+<p>Use these target formats with <code>agdi message send</code> or cron/webhooks:</p>
+<ul>
+<li><code>channel:&lt;id&gt;</code> for a channel</li>
+<li><code>user:&lt;id&gt;</code> for a DM</li>
+<li><code>@username</code> for a DM (resolved via the Mattermost API)</li>
+</ul>
+<p>Bare IDs are treated as channels.</p>
+<h2>Multi-account</h2>
+<p>Mattermost supports multiple accounts under <code>channels.mattermost.accounts</code>:</p>
+<pre><code class="language-json5">{
+  channels: {
+    mattermost: {
+      accounts: {
+        default: { name: &quot;Primary&quot;, botToken: &quot;mm-token&quot;, baseUrl: &quot;https://chat.example.com&quot; },
+        alerts: { name: &quot;Alerts&quot;, botToken: &quot;mm-token-2&quot;, baseUrl: &quot;https://alerts.example.com&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Troubleshooting</h2>
+<ul>
+<li>No replies in channels: ensure the bot is in the channel and mention it (oncall), use a trigger prefix (onchar), or set <code>chatmode: &quot;onmessage&quot;</code>.</li>
+<li>Auth errors: check the bot token, base URL, and whether the account is enabled.</li>
+<li>Multi-account issues: env vars only apply to the <code>default</code> account.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

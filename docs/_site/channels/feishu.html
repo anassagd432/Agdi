@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feishu — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="active" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Feishu bot</h1>
+<p>Feishu (Lark) is a team chat platform used by companies for messaging and collaboration. This plugin connects AGDI to a Feishu/Lark bot using the platform’s WebSocket event subscription so messages can be received without exposing a public webhook URL.</p>
+<hr>
+<h2>Plugin required</h2>
+<p>Install the Feishu plugin:</p>
+<pre><code class="language-bash">agdi plugins install @agdi/feishu
+</code></pre>
+<p>Local checkout (when running from a git repo):</p>
+<pre><code class="language-bash">agdi plugins install ./extensions/feishu
+</code></pre>
+<hr>
+<h2>Quickstart</h2>
+<p>There are two ways to add the Feishu channel:</p>
+<h3>Method 1: onboarding wizard (recommended)</h3>
+<p>If you just installed AGDI, run the wizard:</p>
+<pre><code class="language-bash">agdi onboard
+</code></pre>
+<p>The wizard guides you through:</p>
+<ol>
+<li>Creating a Feishu app and collecting credentials</li>
+<li>Configuring app credentials in AGDI</li>
+<li>Starting the gateway</li>
+</ol>
+<p>✅ <strong>After configuration</strong>, check gateway status:</p>
+<ul>
+<li><code>agdi gateway status</code></li>
+<li><code>agdi logs --follow</code></li>
+</ul>
+<h3>Method 2: CLI setup</h3>
+<p>If you already completed initial install, add the channel via CLI:</p>
+<pre><code class="language-bash">agdi channels add
+</code></pre>
+<p>Choose <strong>Feishu</strong>, then enter the App ID and App Secret.</p>
+<p>✅ <strong>After configuration</strong>, manage the gateway:</p>
+<ul>
+<li><code>agdi gateway status</code></li>
+<li><code>agdi gateway restart</code></li>
+<li><code>agdi logs --follow</code></li>
+</ul>
+<hr>
+<h2>Step 1: Create a Feishu app</h2>
+<h3>1. Open Feishu Open Platform</h3>
+<p>Visit <a href="https://open.feishu.cn/app">Feishu Open Platform</a> and sign in.</p>
+<p>Lark (global) tenants should use <a href="https://open.larksuite.com/app">https://open.larksuite.com/app</a> and set <code>domain: &quot;lark&quot;</code> in the Feishu config.</p>
+<h3>2. Create an app</h3>
+<ol>
+<li>Click <strong>Create enterprise app</strong></li>
+<li>Fill in the app name + description</li>
+<li>Choose an app icon</li>
+</ol>
+<p><img src="../images/feishu-step2-create-app.png" alt="Create enterprise app"></p>
+<h3>3. Copy credentials</h3>
+<p>From <strong>Credentials &amp; Basic Info</strong>, copy:</p>
+<ul>
+<li><strong>App ID</strong> (format: <code>cli_xxx</code>)</li>
+<li><strong>App Secret</strong></li>
+</ul>
+<p>❗ <strong>Important:</strong> keep the App Secret private.</p>
+<p><img src="../images/feishu-step3-credentials.png" alt="Get credentials"></p>
+<h3>4. Configure permissions</h3>
+<p>On <strong>Permissions</strong>, click <strong>Batch import</strong> and paste:</p>
+<pre><code class="language-json">{
+  &quot;scopes&quot;: {
+    &quot;tenant&quot;: [
+      &quot;aily:file:read&quot;,
+      &quot;aily:file:write&quot;,
+      &quot;application:application.app_message_stats.overview:readonly&quot;,
+      &quot;application:application:self_manage&quot;,
+      &quot;application:bot.menu:write&quot;,
+      &quot;contact:user.employee_id:readonly&quot;,
+      &quot;corehr:file:download&quot;,
+      &quot;event:ip_list&quot;,
+      &quot;im:chat.access_event.bot_p2p_chat:read&quot;,
+      &quot;im:chat.members:bot_access&quot;,
+      &quot;im:message&quot;,
+      &quot;im:message.group_at_msg:readonly&quot;,
+      &quot;im:message.p2p_msg:readonly&quot;,
+      &quot;im:message:readonly&quot;,
+      &quot;im:message:send_as_bot&quot;,
+      &quot;im:resource&quot;
+    ],
+    &quot;user&quot;: [&quot;aily:file:read&quot;, &quot;aily:file:write&quot;, &quot;im:chat.access_event.bot_p2p_chat:read&quot;]
+  }
+}
+</code></pre>
+<p><img src="../images/feishu-step4-permissions.png" alt="Configure permissions"></p>
+<h3>5. Enable bot capability</h3>
+<p>In <strong>App Capability</strong> &gt; <strong>Bot</strong>:</p>
+<ol>
+<li>Enable bot capability</li>
+<li>Set the bot name</li>
+</ol>
+<p><img src="../images/feishu-step5-bot-capability.png" alt="Enable bot capability"></p>
+<h3>6. Configure event subscription</h3>
+<p>⚠️ <strong>Important:</strong> before setting event subscription, make sure:</p>
+<ol>
+<li>You already ran <code>agdi channels add</code> for Feishu</li>
+<li>The gateway is running (<code>agdi gateway status</code>)</li>
+</ol>
+<p>In <strong>Event Subscription</strong>:</p>
+<ol>
+<li>Choose <strong>Use long connection to receive events</strong> (WebSocket)</li>
+<li>Add the event: <code>im.message.receive_v1</code></li>
+</ol>
+<p>⚠️ If the gateway is not running, the long-connection setup may fail to save.</p>
+<p><img src="../images/feishu-step6-event-subscription.png" alt="Configure event subscription"></p>
+<h3>7. Publish the app</h3>
+<ol>
+<li>Create a version in <strong>Version Management &amp; Release</strong></li>
+<li>Submit for review and publish</li>
+<li>Wait for admin approval (enterprise apps usually auto-approve)</li>
+</ol>
+<hr>
+<h2>Step 2: Configure AGDI</h2>
+<h3>Configure with the wizard (recommended)</h3>
+<pre><code class="language-bash">agdi channels add
+</code></pre>
+<p>Choose <strong>Feishu</strong> and paste your App ID + App Secret.</p>
+<h3>Configure via config file</h3>
+<p>Edit <code>~/.agdi/agdi.json</code>:</p>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      enabled: true,
+      dmPolicy: &quot;pairing&quot;,
+      accounts: {
+        main: {
+          appId: &quot;cli_xxx&quot;,
+          appSecret: &quot;xxx&quot;,
+          botName: &quot;My AI assistant&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Configure via environment variables</h3>
+<pre><code class="language-bash">export FEISHU_APP_ID=&quot;cli_xxx&quot;
+export FEISHU_APP_SECRET=&quot;xxx&quot;
+</code></pre>
+<h3>Lark (global) domain</h3>
+<p>If your tenant is on Lark (international), set the domain to <code>lark</code> (or a full domain string). You can set it at <code>channels.feishu.domain</code> or per account (<code>channels.feishu.accounts.&lt;id&gt;.domain</code>).</p>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      domain: &quot;lark&quot;,
+      accounts: {
+        main: {
+          appId: &quot;cli_xxx&quot;,
+          appSecret: &quot;xxx&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<hr>
+<h2>Step 3: Start + test</h2>
+<h3>1. Start the gateway</h3>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<h3>2. Send a test message</h3>
+<p>In Feishu, find your bot and send a message.</p>
+<h3>3. Approve pairing</h3>
+<p>By default, the bot replies with a pairing code. Approve it:</p>
+<pre><code class="language-bash">agdi pairing approve feishu &lt;CODE&gt;
+</code></pre>
+<p>After approval, you can chat normally.</p>
+<hr>
+<h2>Overview</h2>
+<ul>
+<li><strong>Feishu bot channel</strong>: Feishu bot managed by the gateway</li>
+<li><strong>Deterministic routing</strong>: replies always return to Feishu</li>
+<li><strong>Session isolation</strong>: DMs share a main session; groups are isolated</li>
+<li><strong>WebSocket connection</strong>: long connection via Feishu SDK, no public URL needed</li>
+</ul>
+<hr>
+<h2>Access control</h2>
+<h3>Direct messages</h3>
+<ul>
+<li><p><strong>Default</strong>: <code>dmPolicy: &quot;pairing&quot;</code> (unknown users get a pairing code)</p>
+</li>
+<li><p><strong>Approve pairing</strong>:</p>
+<pre><code class="language-bash">agdi pairing list feishu
+agdi pairing approve feishu &lt;CODE&gt;
+</code></pre>
+</li>
+<li><p><strong>Allowlist mode</strong>: set <code>channels.feishu.allowFrom</code> with allowed Open IDs</p>
+</li>
+</ul>
+<h3>Group chats</h3>
+<p><strong>1. Group policy</strong> (<code>channels.feishu.groupPolicy</code>):</p>
+<ul>
+<li><code>&quot;open&quot;</code> = allow everyone in groups (default)</li>
+<li><code>&quot;allowlist&quot;</code> = only allow <code>groupAllowFrom</code></li>
+<li><code>&quot;disabled&quot;</code> = disable group messages</li>
+</ul>
+<p><strong>2. Mention requirement</strong> (<code>channels.feishu.groups.&lt;chat_id&gt;.requireMention</code>):</p>
+<ul>
+<li><code>true</code> = require @mention (default)</li>
+<li><code>false</code> = respond without mentions</li>
+</ul>
+<hr>
+<h2>Group configuration examples</h2>
+<h3>Allow all groups, require @mention (default)</h3>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      groupPolicy: &quot;open&quot;,
+      // Default requireMention: true
+    },
+  },
+}
+</code></pre>
+<h3>Allow all groups, no @mention required</h3>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      groups: {
+        oc_xxx: { requireMention: false },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Allow specific users in groups only</h3>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;ou_xxx&quot;, &quot;ou_yyy&quot;],
+    },
+  },
+}
+</code></pre>
+<hr>
+<h2>Get group/user IDs</h2>
+<h3>Group IDs (chat_id)</h3>
+<p>Group IDs look like <code>oc_xxx</code>.</p>
+<p><strong>Method 1 (recommended)</strong></p>
+<ol>
+<li>Start the gateway and @mention the bot in the group</li>
+<li>Run <code>agdi logs --follow</code> and look for <code>chat_id</code></li>
+</ol>
+<p><strong>Method 2</strong></p>
+<p>Use the Feishu API debugger to list group chats.</p>
+<h3>User IDs (open_id)</h3>
+<p>User IDs look like <code>ou_xxx</code>.</p>
+<p><strong>Method 1 (recommended)</strong></p>
+<ol>
+<li>Start the gateway and DM the bot</li>
+<li>Run <code>agdi logs --follow</code> and look for <code>open_id</code></li>
+</ol>
+<p><strong>Method 2</strong></p>
+<p>Check pairing requests for user Open IDs:</p>
+<pre><code class="language-bash">agdi pairing list feishu
+</code></pre>
+<hr>
+<h2>Common commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/status</code></td>
+<td>Show bot status</td>
+</tr>
+<tr>
+<td><code>/reset</code></td>
+<td>Reset the session</td>
+</tr>
+<tr>
+<td><code>/model</code></td>
+<td>Show/switch model</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Note: Feishu does not support native command menus yet, so commands must be sent as text.</p>
+</blockquote>
+<h2>Gateway management commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agdi gateway status</code></td>
+<td>Show gateway status</td>
+</tr>
+<tr>
+<td><code>agdi gateway install</code></td>
+<td>Install/start gateway service</td>
+</tr>
+<tr>
+<td><code>agdi gateway stop</code></td>
+<td>Stop gateway service</td>
+</tr>
+<tr>
+<td><code>agdi gateway restart</code></td>
+<td>Restart gateway service</td>
+</tr>
+<tr>
+<td><code>agdi logs --follow</code></td>
+<td>Tail gateway logs</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Bot does not respond in group chats</h3>
+<ol>
+<li>Ensure the bot is added to the group</li>
+<li>Ensure you @mention the bot (default behavior)</li>
+<li>Check <code>groupPolicy</code> is not set to <code>&quot;disabled&quot;</code></li>
+<li>Check logs: <code>agdi logs --follow</code></li>
+</ol>
+<h3>Bot does not receive messages</h3>
+<ol>
+<li>Ensure the app is published and approved</li>
+<li>Ensure event subscription includes <code>im.message.receive_v1</code></li>
+<li>Ensure <strong>long connection</strong> is enabled</li>
+<li>Ensure app permissions are complete</li>
+<li>Ensure the gateway is running: <code>agdi gateway status</code></li>
+<li>Check logs: <code>agdi logs --follow</code></li>
+</ol>
+<h3>App Secret leak</h3>
+<ol>
+<li>Reset the App Secret in Feishu Open Platform</li>
+<li>Update the App Secret in your config</li>
+<li>Restart the gateway</li>
+</ol>
+<h3>Message send failures</h3>
+<ol>
+<li>Ensure the app has <code>im:message:send_as_bot</code> permission</li>
+<li>Ensure the app is published</li>
+<li>Check logs for detailed errors</li>
+</ol>
+<hr>
+<h2>Advanced configuration</h2>
+<h3>Multiple accounts</h3>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      accounts: {
+        main: {
+          appId: &quot;cli_xxx&quot;,
+          appSecret: &quot;xxx&quot;,
+          botName: &quot;Primary bot&quot;,
+        },
+        backup: {
+          appId: &quot;cli_yyy&quot;,
+          appSecret: &quot;yyy&quot;,
+          botName: &quot;Backup bot&quot;,
+          enabled: false,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Message limits</h3>
+<ul>
+<li><code>textChunkLimit</code>: outbound text chunk size (default: 2000 chars)</li>
+<li><code>mediaMaxMb</code>: media upload/download limit (default: 30MB)</li>
+</ul>
+<h3>Streaming</h3>
+<p>Feishu supports streaming replies via interactive cards. When enabled, the bot updates a card as it generates text.</p>
+<pre><code class="language-json5">{
+  channels: {
+    feishu: {
+      streaming: true, // enable streaming card output (default true)
+      blockStreaming: true, // enable block-level streaming (default true)
+    },
+  },
+}
+</code></pre>
+<p>Set <code>streaming: false</code> to wait for the full reply before sending.</p>
+<h3>Multi-agent routing</h3>
+<p>Use <code>bindings</code> to route Feishu DMs or groups to different agents.</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      { id: &quot;main&quot; },
+      {
+        id: &quot;clawd-fan&quot;,
+        workspace: &quot;/home/user/clawd-fan&quot;,
+        agentDir: &quot;/home/user/.agdi/agents/clawd-fan/agent&quot;,
+      },
+      {
+        id: &quot;clawd-xi&quot;,
+        workspace: &quot;/home/user/clawd-xi&quot;,
+        agentDir: &quot;/home/user/.agdi/agents/clawd-xi/agent&quot;,
+      },
+    ],
+  },
+  bindings: [
+    {
+      agentId: &quot;main&quot;,
+      match: {
+        channel: &quot;feishu&quot;,
+        peer: { kind: &quot;direct&quot;, id: &quot;ou_xxx&quot; },
+      },
+    },
+    {
+      agentId: &quot;clawd-fan&quot;,
+      match: {
+        channel: &quot;feishu&quot;,
+        peer: { kind: &quot;direct&quot;, id: &quot;ou_yyy&quot; },
+      },
+    },
+    {
+      agentId: &quot;clawd-xi&quot;,
+      match: {
+        channel: &quot;feishu&quot;,
+        peer: { kind: &quot;group&quot;, id: &quot;oc_zzz&quot; },
+      },
+    },
+  ],
+}
+</code></pre>
+<p>Routing fields:</p>
+<ul>
+<li><code>match.channel</code>: <code>&quot;feishu&quot;</code></li>
+<li><code>match.peer.kind</code>: <code>&quot;direct&quot;</code> or <code>&quot;group&quot;</code></li>
+<li><code>match.peer.id</code>: user Open ID (<code>ou_xxx</code>) or group ID (<code>oc_xxx</code>)</li>
+</ul>
+<p>See <a href="#get-groupuser-ids">Get group/user IDs</a> for lookup tips.</p>
+<hr>
+<h2>Configuration reference</h2>
+<p>Full configuration: <a href="/gateway/configuration">Gateway configuration</a></p>
+<p>Key options:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>channels.feishu.enabled</code></td>
+<td>Enable/disable channel</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.domain</code></td>
+<td>API domain (<code>feishu</code> or <code>lark</code>)</td>
+<td><code>feishu</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.accounts.&lt;id&gt;.appId</code></td>
+<td>App ID</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>channels.feishu.accounts.&lt;id&gt;.appSecret</code></td>
+<td>App Secret</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>channels.feishu.accounts.&lt;id&gt;.domain</code></td>
+<td>Per-account API domain override</td>
+<td><code>feishu</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.dmPolicy</code></td>
+<td>DM policy</td>
+<td><code>pairing</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.allowFrom</code></td>
+<td>DM allowlist (open_id list)</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>channels.feishu.groupPolicy</code></td>
+<td>Group policy</td>
+<td><code>open</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.groupAllowFrom</code></td>
+<td>Group allowlist</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>channels.feishu.groups.&lt;chat_id&gt;.requireMention</code></td>
+<td>Require @mention</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.groups.&lt;chat_id&gt;.enabled</code></td>
+<td>Enable group</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.textChunkLimit</code></td>
+<td>Message chunk size</td>
+<td><code>2000</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.mediaMaxMb</code></td>
+<td>Media size limit</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.streaming</code></td>
+<td>Enable streaming card output</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>channels.feishu.blockStreaming</code></td>
+<td>Enable block streaming</td>
+<td><code>true</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>dmPolicy reference</h2>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&quot;pairing&quot;</code></td>
+<td><strong>Default.</strong> Unknown users get a pairing code; must be approved</td>
+</tr>
+<tr>
+<td><code>&quot;allowlist&quot;</code></td>
+<td>Only users in <code>allowFrom</code> can chat</td>
+</tr>
+<tr>
+<td><code>&quot;open&quot;</code></td>
+<td>Allow all users (requires <code>&quot;*&quot;</code> in allowFrom)</td>
+</tr>
+<tr>
+<td><code>&quot;disabled&quot;</code></td>
+<td>Disable DMs</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Supported message types</h2>
+<h3>Receive</h3>
+<ul>
+<li>✅ Text</li>
+<li>✅ Rich text (post)</li>
+<li>✅ Images</li>
+<li>✅ Files</li>
+<li>✅ Audio</li>
+<li>✅ Video</li>
+<li>✅ Stickers</li>
+</ul>
+<h3>Send</h3>
+<ul>
+<li>✅ Text</li>
+<li>✅ Images</li>
+<li>✅ Files</li>
+<li>✅ Audio</li>
+<li>⚠️ Rich text (partial support)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

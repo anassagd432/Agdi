@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrome Extension — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="active" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Chrome extension (browser relay)</h1>
+<p>The AGDI Chrome extension lets the agent control your <strong>existing Chrome tabs</strong> (your normal Chrome window) instead of launching a separate agdi-managed Chrome profile.</p>
+<p>Attach/detach happens via a <strong>single Chrome toolbar button</strong>.</p>
+<h2>What it is (concept)</h2>
+<p>There are three parts:</p>
+<ul>
+<li><strong>Browser control service</strong> (Gateway or node): the API the agent/tool calls (via the Gateway)</li>
+<li><strong>Local relay server</strong> (loopback CDP): bridges between the control server and the extension (<code>http://127.0.0.1:18792</code> by default)</li>
+<li><strong>Chrome MV3 extension</strong>: attaches to the active tab using <code>chrome.debugger</code> and pipes CDP messages to the relay</li>
+</ul>
+<p>AGDI then controls the attached tab through the normal <code>browser</code> tool surface (selecting the right profile).</p>
+<h2>Install / load (unpacked)</h2>
+<ol>
+<li>Install the extension to a stable local path:</li>
+</ol>
+<pre><code class="language-bash">agdi browser extension install
+</code></pre>
+<ol start="2">
+<li>Print the installed extension directory path:</li>
+</ol>
+<pre><code class="language-bash">agdi browser extension path
+</code></pre>
+<ol start="3">
+<li>Chrome → <code>chrome://extensions</code></li>
+</ol>
+<ul>
+<li>Enable “Developer mode”</li>
+<li>“Load unpacked” → select the directory printed above</li>
+</ul>
+<ol start="4">
+<li>Pin the extension.</li>
+</ol>
+<h2>Updates (no build step)</h2>
+<p>The extension ships inside the AGDI release (npm package) as static files. There is no separate “build” step.</p>
+<p>After upgrading AGDI:</p>
+<ul>
+<li>Re-run <code>agdi browser extension install</code> to refresh the installed files under your AGDI state directory.</li>
+<li>Chrome → <code>chrome://extensions</code> → click “Reload” on the extension.</li>
+</ul>
+<h2>Use it (no extra config)</h2>
+<p>AGDI ships with a built-in browser profile named <code>chrome</code> that targets the extension relay on the default port.</p>
+<p>Use it:</p>
+<ul>
+<li>CLI: <code>agdi browser --browser-profile chrome tabs</code></li>
+<li>Agent tool: <code>browser</code> with <code>profile=&quot;chrome&quot;</code></li>
+</ul>
+<p>If you want a different name or a different relay port, create your own profile:</p>
+<pre><code class="language-bash">agdi browser create-profile \
+  --name my-chrome \
+  --driver extension \
+  --cdp-url http://127.0.0.1:18792 \
+  --color &quot;#00AA00&quot;
+</code></pre>
+<h2>Attach / detach (toolbar button)</h2>
+<ul>
+<li>Open the tab you want AGDI to control.</li>
+<li>Click the extension icon.<ul>
+<li>Badge shows <code>ON</code> when attached.</li>
+</ul>
+</li>
+<li>Click again to detach.</li>
+</ul>
+<h2>Which tab does it control?</h2>
+<ul>
+<li>It does <strong>not</strong> automatically control “whatever tab you’re looking at”.</li>
+<li>It controls <strong>only the tab(s) you explicitly attached</strong> by clicking the toolbar button.</li>
+<li>To switch: open the other tab and click the extension icon there.</li>
+</ul>
+<h2>Badge + common errors</h2>
+<ul>
+<li><code>ON</code>: attached; AGDI can drive that tab.</li>
+<li><code>…</code>: connecting to the local relay.</li>
+<li><code>!</code>: relay not reachable (most common: browser relay server isn’t running on this machine).</li>
+</ul>
+<p>If you see <code>!</code>:</p>
+<ul>
+<li>Make sure the Gateway is running locally (default setup), or run a node host on this machine if the Gateway runs elsewhere.</li>
+<li>Open the extension Options page; it shows whether the relay is reachable.</li>
+</ul>
+<h2>Remote Gateway (use a node host)</h2>
+<h3>Local Gateway (same machine as Chrome) — usually <strong>no extra steps</strong></h3>
+<p>If the Gateway runs on the same machine as Chrome, it starts the browser control service on loopback
+and auto-starts the relay server. The extension talks to the local relay; the CLI/tool calls go to the Gateway.</p>
+<h3>Remote Gateway (Gateway runs elsewhere) — <strong>run a node host</strong></h3>
+<p>If your Gateway runs on another machine, start a node host on the machine that runs Chrome.
+The Gateway will proxy browser actions to that node; the extension + relay stay local to the browser machine.</p>
+<p>If multiple nodes are connected, pin one with <code>gateway.nodes.browser.node</code> or set <code>gateway.nodes.browser.mode</code>.</p>
+<h2>Sandboxing (tool containers)</h2>
+<p>If your agent session is sandboxed (<code>agents.defaults.sandbox.mode != &quot;off&quot;</code>), the <code>browser</code> tool can be restricted:</p>
+<ul>
+<li>By default, sandboxed sessions often target the <strong>sandbox browser</strong> (<code>target=&quot;sandbox&quot;</code>), not your host Chrome.</li>
+<li>Chrome extension relay takeover requires controlling the <strong>host</strong> browser control server.</li>
+</ul>
+<p>Options:</p>
+<ul>
+<li>Easiest: use the extension from a <strong>non-sandboxed</strong> session/agent.</li>
+<li>Or allow host browser control for sandboxed sessions:</li>
+</ul>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        browser: {
+          allowHostControl: true,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Then ensure the tool isn’t denied by tool policy, and (if needed) call <code>browser</code> with <code>target=&quot;host&quot;</code>.</p>
+<p>Debugging: <code>agdi sandbox explain</code></p>
+<h2>Remote access tips</h2>
+<ul>
+<li>Keep the Gateway and node host on the same tailnet; avoid exposing relay ports to LAN or public Internet.</li>
+<li>Pair nodes intentionally; disable browser proxy routing if you don’t want remote control (<code>gateway.nodes.browser.mode=&quot;off&quot;</code>).</li>
+</ul>
+<h2>How “extension path” works</h2>
+<p><code>agdi browser extension path</code> prints the <strong>installed</strong> on-disk directory containing the extension files.</p>
+<p>The CLI intentionally does <strong>not</strong> print a <code>node_modules</code> path. Always run <code>agdi browser extension install</code> first to copy the extension to a stable location under your AGDI state directory.</p>
+<p>If you move or delete that install directory, Chrome will mark the extension as broken until you reload it from a valid path.</p>
+<h2>Security implications (read this)</h2>
+<p>This is powerful and risky. Treat it like giving the model “hands on your browser”.</p>
+<ul>
+<li>The extension uses Chrome’s debugger API (<code>chrome.debugger</code>). When attached, the model can:<ul>
+<li>click/type/navigate in that tab</li>
+<li>read page content</li>
+<li>access whatever the tab’s logged-in session can access</li>
+</ul>
+</li>
+<li><strong>This is not isolated</strong> like the dedicated agdi-managed profile.<ul>
+<li>If you attach to your daily-driver profile/tab, you’re granting access to that account state.</li>
+</ul>
+</li>
+</ul>
+<p>Recommendations:</p>
+<ul>
+<li>Prefer a dedicated Chrome profile (separate from your personal browsing) for extension relay usage.</li>
+<li>Keep the Gateway and any node hosts tailnet-only; rely on Gateway auth + node pairing.</li>
+<li>Avoid exposing relay ports over LAN (<code>0.0.0.0</code>) and avoid Funnel (public).</li>
+<li>The relay blocks non-extension origins and requires an internal auth token for CDP clients.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li>Browser tool overview: <a href="/tools/browser">Browser</a></li>
+<li>Security audit: <a href="/gateway/security">Security</a></li>
+<li>Tailscale setup: <a href="/gateway/tailscale">Tailscale</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

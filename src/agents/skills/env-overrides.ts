@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../../config/config.js";
+import type { AGDIConfig } from "../../config/config.js";
 import type { SkillEntry, SkillSnapshot } from "./types.js";
 import { resolveSkillConfig } from "./config.js";
 import { resolveSkillKey } from "./frontmatter.js";
@@ -40,7 +40,7 @@ function createEnvReverter(updates: EnvUpdate[]) {
   };
 }
 
-export function applySkillEnvOverrides(params: { skills: SkillEntry[]; config?: OpenClawConfig }) {
+export function applySkillEnvOverrides(params: { skills: SkillEntry[]; config?: AGDIConfig }) {
   const { skills, config } = params;
   const updates: EnvUpdate[] = [];
 
@@ -63,7 +63,7 @@ export function applySkillEnvOverrides(params: { skills: SkillEntry[]; config?: 
 
 export function applySkillEnvOverridesFromSnapshot(params: {
   snapshot?: SkillSnapshot;
-  config?: OpenClawConfig;
+  config?: AGDIConfig;
 }) {
   const { snapshot, config } = params;
   if (!snapshot) {

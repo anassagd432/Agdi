@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thinking Levels — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="active" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Thinking Levels (/think directives)</h1>
+<h2>What it does</h2>
+<ul>
+<li>Inline directive in any inbound body: <code>/t &lt;level&gt;</code>, <code>/think:&lt;level&gt;</code>, or <code>/thinking &lt;level&gt;</code>.</li>
+<li>Levels (aliases): <code>off | minimal | low | medium | high | xhigh</code> (GPT-5.2 + Codex models only)<ul>
+<li>minimal → “think”</li>
+<li>low → “think hard”</li>
+<li>medium → “think harder”</li>
+<li>high → “ultrathink” (max budget)</li>
+<li>xhigh → “ultrathink+” (GPT-5.2 + Codex models only)</li>
+<li><code>x-high</code>, <code>x_high</code>, <code>extra-high</code>, <code>extra high</code>, and <code>extra_high</code> map to <code>xhigh</code>.</li>
+<li><code>highest</code>, <code>max</code> map to <code>high</code>.</li>
+</ul>
+</li>
+<li>Provider notes:<ul>
+<li>Z.AI (<code>zai/*</code>) only supports binary thinking (<code>on</code>/<code>off</code>). Any non-<code>off</code> level is treated as <code>on</code> (mapped to <code>low</code>).</li>
+</ul>
+</li>
+</ul>
+<h2>Resolution order</h2>
+<ol>
+<li>Inline directive on the message (applies only to that message).</li>
+<li>Session override (set by sending a directive-only message).</li>
+<li>Global default (<code>agents.defaults.thinkingDefault</code> in config).</li>
+<li>Fallback: low for reasoning-capable models; off otherwise.</li>
+</ol>
+<h2>Setting a session default</h2>
+<ul>
+<li>Send a message that is <strong>only</strong> the directive (whitespace allowed), e.g. <code>/think:medium</code> or <code>/t high</code>.</li>
+<li>That sticks for the current session (per-sender by default); cleared by <code>/think:off</code> or session idle reset.</li>
+<li>Confirmation reply is sent (<code>Thinking level set to high.</code> / <code>Thinking disabled.</code>). If the level is invalid (e.g. <code>/thinking big</code>), the command is rejected with a hint and the session state is left unchanged.</li>
+<li>Send <code>/think</code> (or <code>/think:</code>) with no argument to see the current thinking level.</li>
+</ul>
+<h2>Application by agent</h2>
+<ul>
+<li><strong>Embedded Pi</strong>: the resolved level is passed to the in-process Pi agent runtime.</li>
+</ul>
+<h2>Verbose directives (/verbose or /v)</h2>
+<ul>
+<li>Levels: <code>on</code> (minimal) | <code>full</code> | <code>off</code> (default).</li>
+<li>Directive-only message toggles session verbose and replies <code>Verbose logging enabled.</code> / <code>Verbose logging disabled.</code>; invalid levels return a hint without changing state.</li>
+<li><code>/verbose off</code> stores an explicit session override; clear it via the Sessions UI by choosing <code>inherit</code>.</li>
+<li>Inline directive affects only that message; session/global defaults apply otherwise.</li>
+<li>Send <code>/verbose</code> (or <code>/verbose:</code>) with no argument to see the current verbose level.</li>
+<li>When verbose is on, agents that emit structured tool results (Pi, other JSON agents) send each tool call back as its own metadata-only message, prefixed with <code>&lt;emoji&gt; &lt;tool-name&gt;: &lt;arg&gt;</code> when available (path/command). These tool summaries are sent as soon as each tool starts (separate bubbles), not as streaming deltas.</li>
+<li>When verbose is <code>full</code>, tool outputs are also forwarded after completion (separate bubble, truncated to a safe length). If you toggle <code>/verbose on|full|off</code> while a run is in-flight, subsequent tool bubbles honor the new setting.</li>
+</ul>
+<h2>Reasoning visibility (/reasoning)</h2>
+<ul>
+<li>Levels: <code>on|off|stream</code>.</li>
+<li>Directive-only message toggles whether thinking blocks are shown in replies.</li>
+<li>When enabled, reasoning is sent as a <strong>separate message</strong> prefixed with <code>Reasoning:</code>.</li>
+<li><code>stream</code> (Telegram only): streams reasoning into the Telegram draft bubble while the reply is generating, then sends the final answer without reasoning.</li>
+<li>Alias: <code>/reason</code>.</li>
+<li>Send <code>/reasoning</code> (or <code>/reasoning:</code>) with no argument to see the current reasoning level.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>Elevated mode docs live in <a href="/docs/tools/elevated">Elevated mode</a>.</li>
+</ul>
+<h2>Heartbeats</h2>
+<ul>
+<li>Heartbeat probe body is the configured heartbeat prompt (default: <code>Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.</code>). Inline directives in a heartbeat message apply as usual (but avoid changing session defaults from heartbeats).</li>
+<li>Heartbeat delivery defaults to the final payload only. To also send the separate <code>Reasoning:</code> message (when available), set <code>agents.defaults.heartbeat.includeReasoning: true</code> or per-agent <code>agents.list[].heartbeat.includeReasoning: true</code>.</li>
+</ul>
+<h2>Web chat UI</h2>
+<ul>
+<li>The web chat thinking selector mirrors the session&#39;s stored level from the inbound session store/config when the page loads.</li>
+<li>Picking another level applies only to the next message (<code>thinkingOnce</code>); after sending, the selector snaps back to the stored session level.</li>
+<li>To change the session default, send a <code>/think:&lt;level&gt;</code> directive (as before); the selector will reflect it after the next reload.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

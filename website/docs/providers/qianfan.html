@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qianfan — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab active" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/providers/index.html">Model Providers</a></li><li><a class="" href="/docs/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/docs/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/docs/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/docs/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/docs/providers/openai.html">OpenAI</a></li><li><a class="" href="/docs/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/docs/providers/litellm.html">litellm</a></li><li><a class="" href="/docs/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/docs/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/docs/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/docs/providers/minimax.html">MiniMax</a></li><li><a class="" href="/docs/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/docs/providers/glm.html">GLM Models</a></li><li><a class="" href="/docs/providers/zai.html">Z.AI</a></li><li><a class="" href="/docs/providers/synthetic.html">Synthetic</a></li><li><a class="active" href="/docs/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Qianfan Provider Guide</h1>
+<p>Qianfan is Baidu&#39;s MaaS platform, provides a <strong>unified API</strong> that routes requests to many models behind a single
+endpoint and API key. It is OpenAI-compatible, so most OpenAI SDKs work by switching the base URL.</p>
+<h2>Prerequisites</h2>
+<ol>
+<li>A Baidu Cloud account with Qianfan API access</li>
+<li>An API key from the Qianfan console</li>
+<li>AGDI installed on your system</li>
+</ol>
+<h2>Getting Your API Key</h2>
+<ol>
+<li>Visit the <a href="https://console.bce.baidu.com/qianfan/ais/console/apiKey">Qianfan Console</a></li>
+<li>Create a new application or select an existing one</li>
+<li>Generate an API key (format: <code>bce-v3/ALTAK-...</code>)</li>
+<li>Copy the API key for use with AGDI</li>
+</ol>
+<h2>CLI setup</h2>
+<pre><code class="language-bash">agdi onboard --auth-choice qianfan-api-key
+</code></pre>
+<h2>Related Documentation</h2>
+<ul>
+<li><a href="/docs/gateway/configuration">AGDI Configuration</a></li>
+<li><a href="/docs/concepts/model-providers">Model Providers</a></li>
+<li><a href="/docs/concepts/agent">Agent Setup</a></li>
+<li><a href="https://cloud.baidu.com/doc/qianfan-api/s/3m7of64lb">Qianfan API Documentation</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

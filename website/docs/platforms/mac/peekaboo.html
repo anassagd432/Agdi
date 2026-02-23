@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peekaboo Bridge — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="active" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Peekaboo Bridge (macOS UI automation)</h1>
+<p>AGDI can host <strong>PeekabooBridge</strong> as a local, permission‑aware UI automation
+broker. This lets the <code>peekaboo</code> CLI drive UI automation while reusing the
+macOS app’s TCC permissions.</p>
+<h2>What this is (and isn’t)</h2>
+<ul>
+<li><strong>Host</strong>: AGDI.app can act as a PeekabooBridge host.</li>
+<li><strong>Client</strong>: use the <code>peekaboo</code> CLI (no separate <code>agdi ui ...</code> surface).</li>
+<li><strong>UI</strong>: visual overlays stay in Peekaboo.app; AGDI is a thin broker host.</li>
+</ul>
+<h2>Enable the bridge</h2>
+<p>In the macOS app:</p>
+<ul>
+<li>Settings → <strong>Enable Peekaboo Bridge</strong></li>
+</ul>
+<p>When enabled, AGDI starts a local UNIX socket server. If disabled, the host
+is stopped and <code>peekaboo</code> will fall back to other available hosts.</p>
+<h2>Client discovery order</h2>
+<p>Peekaboo clients typically try hosts in this order:</p>
+<ol>
+<li>Peekaboo.app (full UX)</li>
+<li>Claude.app (if installed)</li>
+<li>AGDI.app (thin broker)</li>
+</ol>
+<p>Use <code>peekaboo bridge status --verbose</code> to see which host is active and which
+socket path is in use. You can override with:</p>
+<pre><code class="language-bash">export PEEKABOO_BRIDGE_SOCKET=/path/to/bridge.sock
+</code></pre>
+<h2>Security &amp; permissions</h2>
+<ul>
+<li>The bridge validates <strong>caller code signatures</strong>; an allowlist of TeamIDs is
+enforced (Peekaboo host TeamID + AGDI app TeamID).</li>
+<li>Requests time out after ~10 seconds.</li>
+<li>If required permissions are missing, the bridge returns a clear error message
+rather than launching System Settings.</li>
+</ul>
+<h2>Snapshot behavior (automation)</h2>
+<p>Snapshots are stored in memory and expire automatically after a short window.
+If you need longer retention, re‑capture from the client.</p>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If <code>peekaboo</code> reports “bridge client is not authorized”, ensure the client is
+properly signed or run the host with <code>PEEKABOO_ALLOW_UNSIGNED_SOCKET_CLIENTS=1</code>
+in <strong>debug</strong> mode only.</li>
+<li>If no hosts are found, open one of the host apps (Peekaboo.app or AGDI.app)
+and confirm permissions are granted.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

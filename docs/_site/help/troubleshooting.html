@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="active" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Troubleshooting</h1>
+<p>If you only have 2 minutes, use this page as a triage front door.</p>
+<h2>First 60 seconds</h2>
+<p>Run this exact ladder in order:</p>
+<pre><code class="language-bash">agdi status
+agdi status --all
+agdi gateway probe
+agdi gateway status
+agdi doctor
+agdi channels status --probe
+agdi logs --follow
+</code></pre>
+<p>Good output in one line:</p>
+<ul>
+<li><code>agdi status</code> → shows configured channels and no obvious auth errors.</li>
+<li><code>agdi status --all</code> → full report is present and shareable.</li>
+<li><code>agdi gateway probe</code> → expected gateway target is reachable.</li>
+<li><code>agdi gateway status</code> → <code>Runtime: running</code> and <code>RPC probe: ok</code>.</li>
+<li><code>agdi doctor</code> → no blocking config/service errors.</li>
+<li><code>agdi channels status --probe</code> → channels report <code>connected</code> or <code>ready</code>.</li>
+<li><code>agdi logs --follow</code> → steady activity, no repeating fatal errors.</li>
+</ul>
+<h2>Decision tree</h2>
+<pre><code class="language-mermaid">flowchart TD
+  A[AGDI is not working] --&gt; B{What breaks first}
+  B --&gt; C[No replies]
+  B --&gt; D[Dashboard or Control UI will not connect]
+  B --&gt; E[Gateway will not start or service not running]
+  B --&gt; F[Channel connects but messages do not flow]
+  B --&gt; G[Cron or heartbeat did not fire or did not deliver]
+  B --&gt; H[Node is paired but camera canvas screen exec fails]
+  B --&gt; I[Browser tool fails]
+
+  C --&gt; C1[/No replies section/]
+  D --&gt; D1[/Control UI section/]
+  E --&gt; E1[/Gateway section/]
+  F --&gt; F1[/Channel flow section/]
+  G --&gt; G1[/Automation section/]
+  H --&gt; H1[/Node tools section/]
+  I --&gt; I1[/Browser section/]
+</code></pre>
+<pre><code>```bash
+agdi status
+agdi gateway status
+agdi channels status --probe
+agdi pairing list &lt;channel&gt;
+agdi logs --follow
+```
+
+Good output looks like:
+
+- `Runtime: running`
+- `RPC probe: ok`
+- Your channel shows connected/ready in `channels status --probe`
+- Sender appears approved (or DM policy is open/allowlist)
+
+Common log signatures:
+
+- `drop guild message (mention required` → mention gating blocked the message in Discord.
+- `pairing request` → sender is unapproved and waiting for DM pairing approval.
+- `blocked` / `allowlist` in channel logs → sender, room, or group is filtered.
+
+Deep pages:
+
+- [/gateway/troubleshooting#no-replies](/gateway/troubleshooting#no-replies)
+- [/channels/troubleshooting](/channels/troubleshooting)
+- [/channels/pairing](/channels/pairing)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+```
+
+Good output looks like:
+
+- `Dashboard: http://...` is shown in `agdi gateway status`
+- `RPC probe: ok`
+- No auth loop in logs
+
+Common log signatures:
+
+- `device identity required` → HTTP/non-secure context cannot complete device auth.
+- `unauthorized` / reconnect loop → wrong token/password or auth mode mismatch.
+- `gateway connect failed:` → UI is targeting the wrong URL/port or unreachable gateway.
+
+Deep pages:
+
+- [/gateway/troubleshooting#dashboard-control-ui-connectivity](/gateway/troubleshooting#dashboard-control-ui-connectivity)
+- [/web/control-ui](/web/control-ui)
+- [/gateway/authentication](/gateway/authentication)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+```
+
+Good output looks like:
+
+- `Service: ... (loaded)`
+- `Runtime: running`
+- `RPC probe: ok`
+
+Common log signatures:
+
+- `Gateway start blocked: set gateway.mode=local` → gateway mode is unset/remote.
+- `refusing to bind gateway ... without auth` → non-loopback bind without token/password.
+- `another gateway instance is already listening` or `EADDRINUSE` → port already taken.
+
+Deep pages:
+
+- [/gateway/troubleshooting#gateway-service-not-running](/gateway/troubleshooting#gateway-service-not-running)
+- [/gateway/background-process](/gateway/background-process)
+- [/gateway/configuration](/gateway/configuration)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+```
+
+Good output looks like:
+
+- Channel transport is connected.
+- Pairing/allowlist checks pass.
+- Mentions are detected where required.
+
+Common log signatures:
+
+- `mention required` → group mention gating blocked processing.
+- `pairing` / `pending` → DM sender is not approved yet.
+- `not_in_channel`, `missing_scope`, `Forbidden`, `401/403` → channel permission token issue.
+
+Deep pages:
+
+- [/gateway/troubleshooting#channel-connected-messages-not-flowing](/gateway/troubleshooting#channel-connected-messages-not-flowing)
+- [/channels/troubleshooting](/channels/troubleshooting)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi cron status
+agdi cron list
+agdi cron runs --id &lt;jobId&gt; --limit 20
+agdi logs --follow
+```
+
+Good output looks like:
+
+- `cron.status` shows enabled with a next wake.
+- `cron runs` shows recent `ok` entries.
+- Heartbeat is enabled and not outside active hours.
+
+Common log signatures:
+
+- `cron: scheduler disabled; jobs will not run automatically` → cron is disabled.
+- `heartbeat skipped` with `reason=quiet-hours` → outside configured active hours.
+- `requests-in-flight` → main lane busy; heartbeat wake was deferred.
+- `unknown accountId` → heartbeat delivery target account does not exist.
+
+Deep pages:
+
+- [/gateway/troubleshooting#cron-and-heartbeat-delivery](/gateway/troubleshooting#cron-and-heartbeat-delivery)
+- [/automation/troubleshooting](/automation/troubleshooting)
+- [/gateway/heartbeat](/gateway/heartbeat)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi nodes status
+agdi nodes describe --node &lt;idOrNameOrIp&gt;
+agdi logs --follow
+```
+
+Good output looks like:
+
+- Node is listed as connected and paired for role `node`.
+- Capability exists for the command you are invoking.
+- Permission state is granted for the tool.
+
+Common log signatures:
+
+- `NODE_BACKGROUND_UNAVAILABLE` → bring node app to foreground.
+- `*_PERMISSION_REQUIRED` → OS permission was denied/missing.
+- `SYSTEM_RUN_DENIED: approval required` → exec approval is pending.
+- `SYSTEM_RUN_DENIED: allowlist miss` → command not on exec allowlist.
+
+Deep pages:
+
+- [/gateway/troubleshooting#node-paired-tool-fails](/gateway/troubleshooting#node-paired-tool-fails)
+- [/nodes/troubleshooting](/nodes/troubleshooting)
+- [/tools/exec-approvals](/tools/exec-approvals)
+
+
+
+
+```bash
+agdi status
+agdi gateway status
+agdi browser status
+agdi logs --follow
+agdi doctor
+```
+
+Good output looks like:
+
+- Browser status shows `running: true` and a chosen browser/profile.
+- `agdi` profile starts or `chrome` relay has an attached tab.
+
+Common log signatures:
+
+- `Failed to start Chrome CDP on port` → local browser launch failed.
+- `browser.executablePath not found` → configured binary path is wrong.
+- `Chrome extension relay is running, but no tab is connected` → extension not attached.
+- `Browser attachOnly is enabled ... not reachable` → attach-only profile has no live CDP target.
+
+Deep pages:
+
+- [/gateway/troubleshooting#browser-tool-fails](/gateway/troubleshooting#browser-tool-fails)
+- [/tools/browser-linux-troubleshooting](/tools/browser-linux-troubleshooting)
+- [/tools/chrome-extension](/tools/chrome-extension)
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

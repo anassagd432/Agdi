@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandbox CLI — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="active" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Sandbox CLI</h1>
+<p>Manage Docker-based sandbox containers for isolated agent execution.</p>
+<h2>Overview</h2>
+<p>AGDI can run agents in isolated Docker containers for security. The <code>sandbox</code> commands help you manage these containers, especially after updates or configuration changes.</p>
+<h2>Commands</h2>
+<h3><code>agdi sandbox explain</code></h3>
+<p>Inspect the <strong>effective</strong> sandbox mode/scope/workspace access, sandbox tool policy, and elevated gates (with fix-it config key paths).</p>
+<pre><code class="language-bash">agdi sandbox explain
+agdi sandbox explain --session agent:main:main
+agdi sandbox explain --agent work
+agdi sandbox explain --json
+</code></pre>
+<h3><code>agdi sandbox list</code></h3>
+<p>List all sandbox containers with their status and configuration.</p>
+<pre><code class="language-bash">agdi sandbox list
+agdi sandbox list --browser  # List only browser containers
+agdi sandbox list --json     # JSON output
+</code></pre>
+<p><strong>Output includes:</strong></p>
+<ul>
+<li>Container name and status (running/stopped)</li>
+<li>Docker image and whether it matches config</li>
+<li>Age (time since creation)</li>
+<li>Idle time (time since last use)</li>
+<li>Associated session/agent</li>
+</ul>
+<h3><code>agdi sandbox recreate</code></h3>
+<p>Remove sandbox containers to force recreation with updated images/config.</p>
+<pre><code class="language-bash">agdi sandbox recreate --all                # Recreate all containers
+agdi sandbox recreate --session main       # Specific session
+agdi sandbox recreate --agent mybot        # Specific agent
+agdi sandbox recreate --browser            # Only browser containers
+agdi sandbox recreate --all --force        # Skip confirmation
+</code></pre>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--all</code>: Recreate all sandbox containers</li>
+<li><code>--session &lt;key&gt;</code>: Recreate container for specific session</li>
+<li><code>--agent &lt;id&gt;</code>: Recreate containers for specific agent</li>
+<li><code>--browser</code>: Only recreate browser containers</li>
+<li><code>--force</code>: Skip confirmation prompt</li>
+</ul>
+<p><strong>Important:</strong> Containers are automatically recreated when the agent is next used.</p>
+<h2>Use Cases</h2>
+<h3>After updating Docker images</h3>
+<pre><code class="language-bash"># Pull new image
+docker pull agdi-sandbox:latest
+docker tag agdi-sandbox:latest agdi-sandbox:bookworm-slim
+
+# Update config to use new image
+# Edit config: agents.defaults.sandbox.docker.image (or agents.list[].sandbox.docker.image)
+
+# Recreate containers
+agdi sandbox recreate --all
+</code></pre>
+<h3>After changing sandbox configuration</h3>
+<pre><code class="language-bash"># Edit config: agents.defaults.sandbox.* (or agents.list[].sandbox.*)
+
+# Recreate to apply new config
+agdi sandbox recreate --all
+</code></pre>
+<h3>After changing setupCommand</h3>
+<pre><code class="language-bash">agdi sandbox recreate --all
+# or just one agent:
+agdi sandbox recreate --agent family
+</code></pre>
+<h3>For a specific agent only</h3>
+<pre><code class="language-bash"># Update only one agent&#39;s containers
+agdi sandbox recreate --agent alfred
+</code></pre>
+<h2>Why is this needed?</h2>
+<p><strong>Problem:</strong> When you update sandbox Docker images or configuration:</p>
+<ul>
+<li>Existing containers continue running with old settings</li>
+<li>Containers are only pruned after 24h of inactivity</li>
+<li>Regularly-used agents keep old containers running indefinitely</li>
+</ul>
+<p><strong>Solution:</strong> Use <code>agdi sandbox recreate</code> to force removal of old containers. They&#39;ll be recreated automatically with current settings when next needed.</p>
+<p>Tip: prefer <code>agdi sandbox recreate</code> over manual <code>docker rm</code>. It uses the
+Gateway’s container naming and avoids mismatches when scope/session keys change.</p>
+<h2>Configuration</h2>
+<p>Sandbox settings live in <code>~/.agdi/agdi.json</code> under <code>agents.defaults.sandbox</code> (per-agent overrides go in <code>agents.list[].sandbox</code>):</p>
+<pre><code class="language-jsonc">{
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;sandbox&quot;: {
+        &quot;mode&quot;: &quot;all&quot;, // off, non-main, all
+        &quot;scope&quot;: &quot;agent&quot;, // session, agent, shared
+        &quot;docker&quot;: {
+          &quot;image&quot;: &quot;agdi-sandbox:bookworm-slim&quot;,
+          &quot;containerPrefix&quot;: &quot;agdi-sbx-&quot;,
+          // ... more Docker options
+        },
+        &quot;prune&quot;: {
+          &quot;idleHours&quot;: 24, // Auto-prune after 24h idle
+          &quot;maxAgeDays&quot;: 7, // Auto-prune after 7 days
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>See Also</h2>
+<ul>
+<li><a href="/gateway/sandboxing">Sandbox Documentation</a></li>
+<li><a href="/concepts/agent-workspace">Agent Configuration</a></li>
+<li><a href="/gateway/doctor">Doctor Command</a> - Check sandbox setup</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

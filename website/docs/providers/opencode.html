@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenCode Zen — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab active" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/providers/index.html">Model Providers</a></li><li><a class="" href="/docs/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/docs/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/docs/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/docs/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/docs/providers/openai.html">OpenAI</a></li><li><a class="" href="/docs/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/docs/providers/litellm.html">litellm</a></li><li><a class="" href="/docs/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/docs/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/docs/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/docs/providers/minimax.html">MiniMax</a></li><li><a class="active" href="/docs/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/docs/providers/glm.html">GLM Models</a></li><li><a class="" href="/docs/providers/zai.html">Z.AI</a></li><li><a class="" href="/docs/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/docs/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>OpenCode Zen</h1>
+<p>OpenCode Zen is a <strong>curated list of models</strong> recommended by the OpenCode team for coding agents.
+It is an optional, hosted model access path that uses an API key and the <code>opencode</code> provider.
+Zen is currently in beta.</p>
+<h2>CLI setup</h2>
+<pre><code class="language-bash">agdi onboard --auth-choice opencode-zen
+# or non-interactive
+agdi onboard --opencode-zen-api-key &quot;$OPENCODE_API_KEY&quot;
+</code></pre>
+<h2>Config snippet</h2>
+<pre><code class="language-json5">{
+  env: { OPENCODE_API_KEY: &quot;sk-...&quot; },
+  agents: { defaults: { model: { primary: &quot;opencode/claude-opus-4-6&quot; } } },
+}
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li><code>OPENCODE_ZEN_API_KEY</code> is also supported.</li>
+<li>You sign in to Zen, add billing details, and copy your API key.</li>
+<li>OpenCode Zen bills per request; check the OpenCode dashboard for details.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

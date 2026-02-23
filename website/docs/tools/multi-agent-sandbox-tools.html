@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent Sandbox & Tools — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="active" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Multi-Agent Sandbox &amp; Tools Configuration</h1>
+<h2>Overview</h2>
+<p>Each agent in a multi-agent setup can now have its own:</p>
+<ul>
+<li><strong>Sandbox configuration</strong> (<code>agents.list[].sandbox</code> overrides <code>agents.defaults.sandbox</code>)</li>
+<li><strong>Tool restrictions</strong> (<code>tools.allow</code> / <code>tools.deny</code>, plus <code>agents.list[].tools</code>)</li>
+</ul>
+<p>This allows you to run multiple agents with different security profiles:</p>
+<ul>
+<li>Personal assistant with full access</li>
+<li>Family/work agents with restricted tools</li>
+<li>Public-facing agents in sandboxes</li>
+</ul>
+<p><code>setupCommand</code> belongs under <code>sandbox.docker</code> (global or per-agent) and runs once
+when the container is created.</p>
+<p>Auth is per-agent: each agent reads from its own <code>agentDir</code> auth store at:</p>
+<pre><code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json
+</code></pre>
+<p>Credentials are <strong>not</strong> shared between agents. Never reuse <code>agentDir</code> across agents.
+If you want to share creds, copy <code>auth-profiles.json</code> into the other agent&#39;s <code>agentDir</code>.</p>
+<p>For how sandboxing behaves at runtime, see <a href="/docs/gateway/sandboxing">Sandboxing</a>.
+For debugging “why is this blocked?”, see <a href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated">Sandbox vs Tool Policy vs Elevated</a> and <code>agdi sandbox explain</code>.</p>
+<hr>
+<h2>Configuration Examples</h2>
+<h3>Example 1: Personal + Restricted Family Agent</h3>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;default&quot;: true,
+        &quot;name&quot;: &quot;Personal Assistant&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;off&quot; }
+      },
+      {
+        &quot;id&quot;: &quot;family&quot;,
+        &quot;name&quot;: &quot;Family Bot&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace-family&quot;,
+        &quot;sandbox&quot;: {
+          &quot;mode&quot;: &quot;all&quot;,
+          &quot;scope&quot;: &quot;agent&quot;
+        },
+        &quot;tools&quot;: {
+          &quot;allow&quot;: [&quot;read&quot;],
+          &quot;deny&quot;: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;process&quot;, &quot;browser&quot;]
+        }
+      }
+    ]
+  },
+  &quot;bindings&quot;: [
+    {
+      &quot;agentId&quot;: &quot;family&quot;,
+      &quot;match&quot;: {
+        &quot;provider&quot;: &quot;whatsapp&quot;,
+        &quot;accountId&quot;: &quot;*&quot;,
+        &quot;peer&quot;: {
+          &quot;kind&quot;: &quot;group&quot;,
+          &quot;id&quot;: &quot;120363424282127706@g.us&quot;
+        }
+      }
+    }
+  ]
+}
+</code></pre>
+<p><strong>Result:</strong></p>
+<ul>
+<li><code>main</code> agent: Runs on host, full tool access</li>
+<li><code>family</code> agent: Runs in Docker (one container per agent), only <code>read</code> tool</li>
+</ul>
+<hr>
+<h3>Example 2: Work Agent with Shared Sandbox</h3>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;personal&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace-personal&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;off&quot; }
+      },
+      {
+        &quot;id&quot;: &quot;work&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace-work&quot;,
+        &quot;sandbox&quot;: {
+          &quot;mode&quot;: &quot;all&quot;,
+          &quot;scope&quot;: &quot;shared&quot;,
+          &quot;workspaceRoot&quot;: &quot;/tmp/work-sandboxes&quot;
+        },
+        &quot;tools&quot;: {
+          &quot;allow&quot;: [&quot;read&quot;, &quot;write&quot;, &quot;apply_patch&quot;, &quot;exec&quot;],
+          &quot;deny&quot;: [&quot;browser&quot;, &quot;gateway&quot;, &quot;discord&quot;]
+        }
+      }
+    ]
+  }
+}
+</code></pre>
+<hr>
+<h3>Example 2b: Global coding profile + messaging-only agent</h3>
+<pre><code class="language-json">{
+  &quot;tools&quot;: { &quot;profile&quot;: &quot;coding&quot; },
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;support&quot;,
+        &quot;tools&quot;: { &quot;profile&quot;: &quot;messaging&quot;, &quot;allow&quot;: [&quot;slack&quot;] }
+      }
+    ]
+  }
+}
+</code></pre>
+<p><strong>Result:</strong></p>
+<ul>
+<li>default agents get coding tools</li>
+<li><code>support</code> agent is messaging-only (+ Slack tool)</li>
+</ul>
+<hr>
+<h3>Example 3: Different Sandbox Modes per Agent</h3>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;sandbox&quot;: {
+        &quot;mode&quot;: &quot;non-main&quot;, // Global default
+        &quot;scope&quot;: &quot;session&quot;
+      }
+    },
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace&quot;,
+        &quot;sandbox&quot;: {
+          &quot;mode&quot;: &quot;off&quot; // Override: main never sandboxed
+        }
+      },
+      {
+        &quot;id&quot;: &quot;public&quot;,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace-public&quot;,
+        &quot;sandbox&quot;: {
+          &quot;mode&quot;: &quot;all&quot;, // Override: public always sandboxed
+          &quot;scope&quot;: &quot;agent&quot;
+        },
+        &quot;tools&quot;: {
+          &quot;allow&quot;: [&quot;read&quot;],
+          &quot;deny&quot;: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;]
+        }
+      }
+    ]
+  }
+}
+</code></pre>
+<hr>
+<h2>Configuration Precedence</h2>
+<p>When both global (<code>agents.defaults.*</code>) and agent-specific (<code>agents.list[].*</code>) configs exist:</p>
+<h3>Sandbox Config</h3>
+<p>Agent-specific settings override global:</p>
+<pre><code>agents.list[].sandbox.mode &gt; agents.defaults.sandbox.mode
+agents.list[].sandbox.scope &gt; agents.defaults.sandbox.scope
+agents.list[].sandbox.workspaceRoot &gt; agents.defaults.sandbox.workspaceRoot
+agents.list[].sandbox.workspaceAccess &gt; agents.defaults.sandbox.workspaceAccess
+agents.list[].sandbox.docker.* &gt; agents.defaults.sandbox.docker.*
+agents.list[].sandbox.browser.* &gt; agents.defaults.sandbox.browser.*
+agents.list[].sandbox.prune.* &gt; agents.defaults.sandbox.prune.*
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li><code>agents.list[].sandbox.{docker,browser,prune}.*</code> overrides <code>agents.defaults.sandbox.{docker,browser,prune}.*</code> for that agent (ignored when sandbox scope resolves to <code>&quot;shared&quot;</code>).</li>
+</ul>
+<h3>Tool Restrictions</h3>
+<p>The filtering order is:</p>
+<ol>
+<li><strong>Tool profile</strong> (<code>tools.profile</code> or <code>agents.list[].tools.profile</code>)</li>
+<li><strong>Provider tool profile</strong> (<code>tools.byProvider[provider].profile</code> or <code>agents.list[].tools.byProvider[provider].profile</code>)</li>
+<li><strong>Global tool policy</strong> (<code>tools.allow</code> / <code>tools.deny</code>)</li>
+<li><strong>Provider tool policy</strong> (<code>tools.byProvider[provider].allow/deny</code>)</li>
+<li><strong>Agent-specific tool policy</strong> (<code>agents.list[].tools.allow/deny</code>)</li>
+<li><strong>Agent provider policy</strong> (<code>agents.list[].tools.byProvider[provider].allow/deny</code>)</li>
+<li><strong>Sandbox tool policy</strong> (<code>tools.sandbox.tools</code> or <code>agents.list[].tools.sandbox.tools</code>)</li>
+<li><strong>Subagent tool policy</strong> (<code>tools.subagents.tools</code>, if applicable)</li>
+</ol>
+<p>Each level can further restrict tools, but cannot grant back denied tools from earlier levels.
+If <code>agents.list[].tools.sandbox.tools</code> is set, it replaces <code>tools.sandbox.tools</code> for that agent.
+If <code>agents.list[].tools.profile</code> is set, it overrides <code>tools.profile</code> for that agent.
+Provider tool keys accept either <code>provider</code> (e.g. <code>google-antigravity</code>) or <code>provider/model</code> (e.g. <code>openai/gpt-5.2</code>).</p>
+<h3>Tool groups (shorthands)</h3>
+<p>Tool policies (global, agent, sandbox) support <code>group:*</code> entries that expand to multiple concrete tools:</p>
+<ul>
+<li><code>group:runtime</code>: <code>exec</code>, <code>bash</code>, <code>process</code></li>
+<li><code>group:fs</code>: <code>read</code>, <code>write</code>, <code>edit</code>, <code>apply_patch</code></li>
+<li><code>group:sessions</code>: <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>sessions_spawn</code>, <code>session_status</code></li>
+<li><code>group:memory</code>: <code>memory_search</code>, <code>memory_get</code></li>
+<li><code>group:ui</code>: <code>browser</code>, <code>canvas</code></li>
+<li><code>group:automation</code>: <code>cron</code>, <code>gateway</code></li>
+<li><code>group:messaging</code>: <code>message</code></li>
+<li><code>group:nodes</code>: <code>nodes</code></li>
+<li><code>group:agdi</code>: all built-in AGDI tools (excludes provider plugins)</li>
+</ul>
+<h3>Elevated Mode</h3>
+<p><code>tools.elevated</code> is the global baseline (sender-based allowlist). <code>agents.list[].tools.elevated</code> can further restrict elevated for specific agents (both must allow).</p>
+<p>Mitigation patterns:</p>
+<ul>
+<li>Deny <code>exec</code> for untrusted agents (<code>agents.list[].tools.deny: [&quot;exec&quot;]</code>)</li>
+<li>Avoid allowlisting senders that route to restricted agents</li>
+<li>Disable elevated globally (<code>tools.elevated.enabled: false</code>) if you only want sandboxed execution</li>
+<li>Disable elevated per agent (<code>agents.list[].tools.elevated.enabled: false</code>) for sensitive profiles</li>
+</ul>
+<hr>
+<h2>Migration from Single Agent</h2>
+<p><strong>Before (single agent):</strong></p>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;workspace&quot;: &quot;~/.agdi/workspace&quot;,
+      &quot;sandbox&quot;: {
+        &quot;mode&quot;: &quot;non-main&quot;
+      }
+    }
+  },
+  &quot;tools&quot;: {
+    &quot;sandbox&quot;: {
+      &quot;tools&quot;: {
+        &quot;allow&quot;: [&quot;read&quot;, &quot;write&quot;, &quot;apply_patch&quot;, &quot;exec&quot;],
+        &quot;deny&quot;: []
+      }
+    }
+  }
+}
+</code></pre>
+<p><strong>After (multi-agent with different profiles):</strong></p>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;default&quot;: true,
+        &quot;workspace&quot;: &quot;~/.agdi/workspace&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;off&quot; }
+      }
+    ]
+  }
+}
+</code></pre>
+<p>Legacy <code>agent.*</code> configs are migrated by <code>agdi doctor</code>; prefer <code>agents.defaults</code> + <code>agents.list</code> going forward.</p>
+<hr>
+<h2>Tool Restriction Examples</h2>
+<h3>Read-only Agent</h3>
+<pre><code class="language-json">{
+  &quot;tools&quot;: {
+    &quot;allow&quot;: [&quot;read&quot;],
+    &quot;deny&quot;: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;process&quot;]
+  }
+}
+</code></pre>
+<h3>Safe Execution Agent (no file modifications)</h3>
+<pre><code class="language-json">{
+  &quot;tools&quot;: {
+    &quot;allow&quot;: [&quot;read&quot;, &quot;exec&quot;, &quot;process&quot;],
+    &quot;deny&quot;: [&quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;browser&quot;, &quot;gateway&quot;]
+  }
+}
+</code></pre>
+<h3>Communication-only Agent</h3>
+<pre><code class="language-json">{
+  &quot;tools&quot;: {
+    &quot;sessions&quot;: { &quot;visibility&quot;: &quot;tree&quot; },
+    &quot;allow&quot;: [&quot;sessions_list&quot;, &quot;sessions_send&quot;, &quot;sessions_history&quot;, &quot;session_status&quot;],
+    &quot;deny&quot;: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;read&quot;, &quot;browser&quot;]
+  }
+}
+</code></pre>
+<hr>
+<h2>Common Pitfall: &quot;non-main&quot;</h2>
+<p><code>agents.defaults.sandbox.mode: &quot;non-main&quot;</code> is based on <code>session.mainKey</code> (default <code>&quot;main&quot;</code>),
+not the agent id. Group/channel sessions always get their own keys, so they
+are treated as non-main and will be sandboxed. If you want an agent to never
+sandbox, set <code>agents.list[].sandbox.mode: &quot;off&quot;</code>.</p>
+<hr>
+<h2>Testing</h2>
+<p>After configuring multi-agent sandbox and tools:</p>
+<ol>
+<li><p><strong>Check agent resolution:</strong></p>
+<pre><code class="language-exec">agdi agents list --bindings
+</code></pre>
+</li>
+<li><p><strong>Verify sandbox containers:</strong></p>
+<pre><code class="language-exec">docker ps --filter &quot;name=agdi-sbx-&quot;
+</code></pre>
+</li>
+<li><p><strong>Test tool restrictions:</strong></p>
+<ul>
+<li>Send a message requiring restricted tools</li>
+<li>Verify the agent cannot use denied tools</li>
+</ul>
+</li>
+<li><p><strong>Monitor logs:</strong></p>
+<pre><code class="language-exec">tail -f &quot;${AGDI_STATE_DIR:-$HOME/.agdi}/logs/gateway.log&quot; | grep -E &quot;routing|sandbox|tools&quot;
+</code></pre>
+</li>
+</ol>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Agent not sandboxed despite <code>mode: &quot;all&quot;</code></h3>
+<ul>
+<li>Check if there&#39;s a global <code>agents.defaults.sandbox.mode</code> that overrides it</li>
+<li>Agent-specific config takes precedence, so set <code>agents.list[].sandbox.mode: &quot;all&quot;</code></li>
+</ul>
+<h3>Tools still available despite deny list</h3>
+<ul>
+<li>Check tool filtering order: global → agent → sandbox → subagent</li>
+<li>Each level can only further restrict, not grant back</li>
+<li>Verify with logs: <code>[tools] filtering tools for agent:${agentId}</code></li>
+</ul>
+<h3>Container not isolated per agent</h3>
+<ul>
+<li>Set <code>scope: &quot;agent&quot;</code> in agent-specific sandbox config</li>
+<li>Default is <code>&quot;session&quot;</code> which creates one container per session</li>
+</ul>
+<hr>
+<h2>See Also</h2>
+<ul>
+<li><a href="/docs/concepts/multi-agent">Multi-Agent Routing</a></li>
+<li><a href="/docs/gateway/configuration#agentsdefaults-sandbox">Sandbox Configuration</a></li>
+<li><a href="/docs/concepts/session">Session Management</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

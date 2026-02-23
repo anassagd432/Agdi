@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exec Tool — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="active" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Exec tool</h1>
+<p>Run shell commands in the workspace. Supports foreground + background execution via <code>process</code>.
+If <code>process</code> is disallowed, <code>exec</code> runs synchronously and ignores <code>yieldMs</code>/<code>background</code>.
+Background sessions are scoped per agent; <code>process</code> only sees sessions from the same agent.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>command</code> (required)</li>
+<li><code>workdir</code> (defaults to cwd)</li>
+<li><code>env</code> (key/value overrides)</li>
+<li><code>yieldMs</code> (default 10000): auto-background after delay</li>
+<li><code>background</code> (bool): background immediately</li>
+<li><code>timeout</code> (seconds, default 1800): kill on expiry</li>
+<li><code>pty</code> (bool): run in a pseudo-terminal when available (TTY-only CLIs, coding agents, terminal UIs)</li>
+<li><code>host</code> (<code>sandbox | gateway | node</code>): where to execute</li>
+<li><code>security</code> (<code>deny | allowlist | full</code>): enforcement mode for <code>gateway</code>/<code>node</code></li>
+<li><code>ask</code> (<code>off | on-miss | always</code>): approval prompts for <code>gateway</code>/<code>node</code></li>
+<li><code>node</code> (string): node id/name for <code>host=node</code></li>
+<li><code>elevated</code> (bool): request elevated mode (gateway host); <code>security=full</code> is only forced when elevated resolves to <code>full</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>host</code> defaults to <code>sandbox</code>.</li>
+<li><code>elevated</code> is ignored when sandboxing is off (exec already runs on the host).</li>
+<li><code>gateway</code>/<code>node</code> approvals are controlled by <code>~/.agdi/exec-approvals.json</code>.</li>
+<li><code>node</code> requires a paired node (companion app or headless node host).</li>
+<li>If multiple nodes are available, set <code>exec.node</code> or <code>tools.exec.node</code> to select one.</li>
+<li>On non-Windows hosts, exec uses <code>SHELL</code> when set; if <code>SHELL</code> is <code>fish</code>, it prefers <code>bash</code> (or <code>sh</code>)
+from <code>PATH</code> to avoid fish-incompatible scripts, then falls back to <code>SHELL</code> if neither exists.</li>
+<li>Host execution (<code>gateway</code>/<code>node</code>) rejects <code>env.PATH</code> and loader overrides (<code>LD_*</code>/<code>DYLD_*</code>) to
+prevent binary hijacking or injected code.</li>
+<li>Important: sandboxing is <strong>off by default</strong>. If sandboxing is off, <code>host=sandbox</code> runs directly on
+the gateway host (no container) and <strong>does not require approvals</strong>. To require approvals, run with
+<code>host=gateway</code> and configure exec approvals (or enable sandboxing).</li>
+</ul>
+<h2>Config</h2>
+<ul>
+<li><code>tools.exec.notifyOnExit</code> (default: true): when true, backgrounded exec sessions enqueue a system event and request a heartbeat on exit.</li>
+<li><code>tools.exec.approvalRunningNoticeMs</code> (default: 10000): emit a single “running” notice when an approval-gated exec runs longer than this (0 disables).</li>
+<li><code>tools.exec.host</code> (default: <code>sandbox</code>)</li>
+<li><code>tools.exec.security</code> (default: <code>deny</code> for sandbox, <code>allowlist</code> for gateway + node when unset)</li>
+<li><code>tools.exec.ask</code> (default: <code>on-miss</code>)</li>
+<li><code>tools.exec.node</code> (default: unset)</li>
+<li><code>tools.exec.pathPrepend</code>: list of directories to prepend to <code>PATH</code> for exec runs (gateway + sandbox only).</li>
+<li><code>tools.exec.safeBins</code>: stdin-only safe binaries that can run without explicit allowlist entries.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  tools: {
+    exec: {
+      pathPrepend: [&quot;~/bin&quot;, &quot;/opt/oss/bin&quot;],
+    },
+  },
+}
+</code></pre>
+<h3>PATH handling</h3>
+<ul>
+<li><code>host=gateway</code>: merges your login-shell <code>PATH</code> into the exec environment. <code>env.PATH</code> overrides are
+rejected for host execution. The daemon itself still runs with a minimal <code>PATH</code>:<ul>
+<li>macOS: <code>/opt/homebrew/bin</code>, <code>/usr/local/bin</code>, <code>/usr/bin</code>, <code>/bin</code></li>
+<li>Linux: <code>/usr/local/bin</code>, <code>/usr/bin</code>, <code>/bin</code></li>
+</ul>
+</li>
+<li><code>host=sandbox</code>: runs <code>sh -lc</code> (login shell) inside the container, so <code>/etc/profile</code> may reset <code>PATH</code>.
+AGDI prepends <code>env.PATH</code> after profile sourcing via an internal env var (no shell interpolation);
+<code>tools.exec.pathPrepend</code> applies here too.</li>
+<li><code>host=node</code>: only non-blocked env overrides you pass are sent to the node. <code>env.PATH</code> overrides are
+rejected for host execution and ignored by node hosts. If you need additional PATH entries on a node,
+configure the node host service environment (systemd/launchd) or install tools in standard locations.</li>
+</ul>
+<p>Per-agent node binding (use the agent list index in config):</p>
+<pre><code class="language-bash">agdi config get agents.list
+agdi config set agents.list[0].tools.exec.node &quot;node-id-or-name&quot;
+</code></pre>
+<p>Control UI: the Nodes tab includes a small “Exec node binding” panel for the same settings.</p>
+<h2>Session overrides (<code>/exec</code>)</h2>
+<p>Use <code>/exec</code> to set <strong>per-session</strong> defaults for <code>host</code>, <code>security</code>, <code>ask</code>, and <code>node</code>.
+Send <code>/exec</code> with no arguments to show the current values.</p>
+<p>Example:</p>
+<pre><code>/exec host=gateway security=allowlist ask=on-miss node=mac-1
+</code></pre>
+<h2>Authorization model</h2>
+<p><code>/exec</code> is only honored for <strong>authorized senders</strong> (channel allowlists/pairing plus <code>commands.useAccessGroups</code>).
+It updates <strong>session state only</strong> and does not write config. To hard-disable exec, deny it via tool
+policy (<code>tools.deny: [&quot;exec&quot;]</code> or per-agent). Host approvals still apply unless you explicitly set
+<code>security=full</code> and <code>ask=off</code>.</p>
+<h2>Exec approvals (companion app / node host)</h2>
+<p>Sandboxed agents can require per-request approval before <code>exec</code> runs on the gateway or node host.
+See <a href="/tools/exec-approvals">Exec approvals</a> for the policy, allowlist, and UI flow.</p>
+<p>When approvals are required, the exec tool returns immediately with
+<code>status: &quot;approval-pending&quot;</code> and an approval id. Once approved (or denied / timed out),
+the Gateway emits system events (<code>Exec finished</code> / <code>Exec denied</code>). If the command is still
+running after <code>tools.exec.approvalRunningNoticeMs</code>, a single <code>Exec running</code> notice is emitted.</p>
+<h2>Allowlist + safe bins</h2>
+<p>Allowlist enforcement matches <strong>resolved binary paths only</strong> (no basename matches). When
+<code>security=allowlist</code>, shell commands are auto-allowed only if every pipeline segment is
+allowlisted or a safe bin. Chaining (<code>;</code>, <code>&amp;&amp;</code>, <code>||</code>) and redirections are rejected in
+allowlist mode unless every top-level segment satisfies the allowlist (including safe bins).
+Redirections remain unsupported.</p>
+<h2>Examples</h2>
+<p>Foreground:</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;exec&quot;, &quot;command&quot;: &quot;ls -la&quot; }
+</code></pre>
+<p>Background + poll:</p>
+<pre><code class="language-json">{&quot;tool&quot;:&quot;exec&quot;,&quot;command&quot;:&quot;npm run build&quot;,&quot;yieldMs&quot;:1000}
+{&quot;tool&quot;:&quot;process&quot;,&quot;action&quot;:&quot;poll&quot;,&quot;sessionId&quot;:&quot;&lt;id&gt;&quot;}
+</code></pre>
+<p>Send keys (tmux-style):</p>
+<pre><code class="language-json">{&quot;tool&quot;:&quot;process&quot;,&quot;action&quot;:&quot;send-keys&quot;,&quot;sessionId&quot;:&quot;&lt;id&gt;&quot;,&quot;keys&quot;:[&quot;Enter&quot;]}
+{&quot;tool&quot;:&quot;process&quot;,&quot;action&quot;:&quot;send-keys&quot;,&quot;sessionId&quot;:&quot;&lt;id&gt;&quot;,&quot;keys&quot;:[&quot;C-c&quot;]}
+{&quot;tool&quot;:&quot;process&quot;,&quot;action&quot;:&quot;send-keys&quot;,&quot;sessionId&quot;:&quot;&lt;id&gt;&quot;,&quot;keys&quot;:[&quot;Up&quot;,&quot;Up&quot;,&quot;Enter&quot;]}
+</code></pre>
+<p>Submit (send CR only):</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;process&quot;, &quot;action&quot;: &quot;submit&quot;, &quot;sessionId&quot;: &quot;&lt;id&gt;&quot; }
+</code></pre>
+<p>Paste (bracketed by default):</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;process&quot;, &quot;action&quot;: &quot;paste&quot;, &quot;sessionId&quot;: &quot;&lt;id&gt;&quot;, &quot;text&quot;: &quot;line1\nline2\n&quot; }
+</code></pre>
+<h2>apply_patch (experimental)</h2>
+<p><code>apply_patch</code> is a subtool of <code>exec</code> for structured multi-file edits.
+Enable it explicitly:</p>
+<pre><code class="language-json5">{
+  tools: {
+    exec: {
+      applyPatch: { enabled: true, workspaceOnly: true, allowModels: [&quot;gpt-5.2&quot;] },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Only available for OpenAI/OpenAI Codex models.</li>
+<li>Tool policy still applies; <code>allow: [&quot;exec&quot;]</code> implicitly allows <code>apply_patch</code>.</li>
+<li>Config lives under <code>tools.exec.applyPatch</code>.</li>
+<li><code>tools.exec.applyPatch.workspaceOnly</code> defaults to <code>true</code> (workspace-contained). Set it to <code>false</code> only if you intentionally want <code>apply_patch</code> to write/delete outside the workspace directory.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

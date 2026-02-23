@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding (macOS App) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab active" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Home</h4><ul><li><a class="" href="/index.html">AGDI</a></li></ul></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/start/showcase.html">Showcase</a></li></ul></div><div class="sidebar-group"><h4>Core concepts</h4><ul><li><a class="" href="/concepts/features.html">Features</a></li></ul></div><div class="sidebar-group"><h4>First steps</h4><ul><li><a class="" href="/start/getting-started.html">Getting Started</a></li><li><a class="" href="/start/onboarding-overview.html">Onboarding Overview</a></li><li><a class="" href="/start/wizard.html">Onboarding Wizard (CLI)</a></li><li><a class="active" href="/start/onboarding.html">Onboarding (macOS App)</a></li></ul></div><div class="sidebar-group"><h4>Guides</h4><ul><li><a class="" href="/start/openclaw.html">Personal Assistant Setup</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Onboarding (macOS App)</h1>
+<p>This doc describes the <strong>current</strong> first‑run onboarding flow. The goal is a
+smooth “day 0” experience: pick where the Gateway runs, connect auth, run the
+wizard, and let the agent bootstrap itself.
+For a general overview of onboarding paths, see <a href="/start/onboarding-overview">Onboarding Overview</a>.</p>
+<Frame>
+<img src="/assets/macos-onboarding/01-macos-warning.jpeg" alt="" />
+</Frame>
+
+
+<Frame>
+<img src="/assets/macos-onboarding/02-local-networks.jpeg" alt="" />
+</Frame>
+
+
+<Frame caption="Read the security notice displayed and decide accordingly">
+<img src="/assets/macos-onboarding/03-security-notice.png" alt="" />
+</Frame>
+
+
+<Frame>
+<img src="/assets/macos-onboarding/04-choose-gateway.png" alt="" />
+</Frame>
+
+<p>Where does the <strong>Gateway</strong> run?</p>
+<ul>
+<li><strong>This Mac (Local only):</strong> onboarding can run OAuth flows and write credentials
+locally.</li>
+<li><strong>Remote (over SSH/Tailnet):</strong> onboarding does <strong>not</strong> run OAuth locally;
+credentials must exist on the gateway host.</li>
+<li><strong>Configure later:</strong> skip setup and leave the app unconfigured.</li>
+</ul>
+<p><strong>Gateway auth tip:</strong></p>
+<ul>
+<li>The wizard now generates a <strong>token</strong> even for loopback, so local WS clients must authenticate.</li>
+<li>If you disable auth, any local process can connect; use that only on fully trusted machines.</li>
+<li>Use a <strong>token</strong> for multi‑machine access or non‑loopback binds.</li>
+</ul>
+<Frame caption="Choose what permissions do you want to give AGDI">
+<img src="/assets/macos-onboarding/05-permissions.png" alt="" />
+</Frame>
+
+<p>Onboarding requests TCC permissions needed for:</p>
+<ul>
+<li><p>Automation (AppleScript)</p>
+</li>
+<li><p>Notifications</p>
+</li>
+<li><p>Accessibility</p>
+</li>
+<li><p>Screen Recording</p>
+</li>
+<li><p>Microphone</p>
+</li>
+<li><p>Speech Recognition</p>
+</li>
+<li><p>Camera</p>
+</li>
+<li><p>Location</p>
+<p>This step is optional
+The app can install the global <code>agdi</code> CLI via npm/pnpm so terminal
+workflows and launchd tasks work out of the box.</p>
+<p>After setup, the app opens a dedicated onboarding chat session so the agent can
+introduce itself and guide next steps. This keeps first‑run guidance separate
+from your normal conversation. See <a href="/start/bootstrapping">Bootstrapping</a> for
+what happens on the gateway host during the first agent run.</p>
+</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

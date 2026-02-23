@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Scanner — AGDI Docs</title>
+  <meta name="description" content="SQL injection, XSS, directory brute-forcing, header audit, SSL analysis, and WAF detection.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab active" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/docs/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/docs/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/docs/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="active" href="/docs/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/docs/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/docs/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/docs/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/docs/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/docs/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/docs/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/docs/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Web Security Scanner</h1>
+<p>Automated web application vulnerability scanner with detection for the OWASP Top 10.</p>
+<h2>Scan Types</h2>
+<table>
+<thead>
+<tr>
+<th>Scan</th>
+<th>Severity</th>
+<th>What it detects</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SQL Injection</strong></td>
+<td>Critical</td>
+<td>Error-based, blind, time-based, NoSQL injection</td>
+</tr>
+<tr>
+<td><strong>XSS</strong></td>
+<td>High</td>
+<td>Reflected XSS via 12 payload vectors</td>
+</tr>
+<tr>
+<td><strong>Directory Brute</strong></td>
+<td>Medium—High</td>
+<td>Hidden admin panels, .git, .env, config files</td>
+</tr>
+<tr>
+<td><strong>Header Audit</strong></td>
+<td>Medium</td>
+<td>Missing HSTS, CSP, X-Frame-Options, etc.</td>
+</tr>
+<tr>
+<td><strong>SSL/TLS</strong></td>
+<td>High</td>
+<td>Weak ciphers, old protocols, self-signed certs</td>
+</tr>
+<tr>
+<td><strong>CORS</strong></td>
+<td>Medium—High</td>
+<td>Misconfigured Access-Control-Allow-Origin</td>
+</tr>
+<tr>
+<td><strong>Open Redirect</strong></td>
+<td>Medium</td>
+<td>Unvalidated redirect parameters</td>
+</tr>
+<tr>
+<td><strong>WAF Detection</strong></td>
+<td>Info</td>
+<td>Cloudflare, Akamai, ModSecurity, AWS WAF, etc.</td>
+</tr>
+</tbody></table>
+<h2>Usage</h2>
+<pre><code class="language-typescript">import { WebSecurityScanner } from &quot;agdi/autonomous&quot;;
+
+const scanner = new WebSecurityScanner();
+
+// Full automated scan
+const findings = await scanner.fullScan({
+  url: &quot;https://target.com&quot;,
+  depth: 3,
+  insecure: true,
+});
+
+// Individual scans
+await scanner.auditHeaders(&quot;https://target.com&quot;);
+await scanner.testSqli(&quot;https://target.com/search?q=test&quot;);
+await scanner.testXss(&quot;https://target.com/search?q=test&quot;);
+await scanner.dirBrute(&quot;https://target.com&quot;);
+await scanner.checkCors(&quot;https://target.com&quot;);
+await scanner.checkSsl(&quot;https://target.com&quot;);
+await scanner.detectWaf(&quot;https://target.com&quot;);
+
+// Event-driven
+scanner.on((event) =&gt; {
+  if (event.kind === &quot;finding&quot;) {
+    console.log(`[${event.finding.severity}] ${event.finding.description}`);
+  }
+});
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

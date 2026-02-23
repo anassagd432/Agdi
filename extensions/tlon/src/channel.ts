@@ -3,7 +3,7 @@ import type {
   ChannelOutboundAdapter,
   ChannelPlugin,
   ChannelSetupInput,
-  OpenClawConfig,
+  AGDIConfig,
 } from "openclaw/plugin-sdk";
 import {
   applyAccountNameToChannelSection,
@@ -33,10 +33,10 @@ type TlonSetupInput = ChannelSetupInput & {
 };
 
 function applyTlonSetupConfig(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   accountId: string;
   input: TlonSetupInput;
-}): OpenClawConfig {
+}): AGDIConfig {
   const { cfg, accountId, input } = params;
   const useDefault = accountId === DEFAULT_ACCOUNT_ID;
   const namedConfig = applyAccountNameToChannelSection({
@@ -204,7 +204,7 @@ export const tlonPlugin: ChannelPlugin = {
               enabled,
             },
           },
-        } as OpenClawConfig;
+        } as AGDIConfig;
       }
       return {
         ...cfg,
@@ -221,7 +221,7 @@ export const tlonPlugin: ChannelPlugin = {
             },
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     },
     deleteAccount: ({ cfg, accountId }) => {
       const useDefault = !accountId || accountId === "default";
@@ -237,7 +237,7 @@ export const tlonPlugin: ChannelPlugin = {
             ...cfg.channels,
             tlon: rest,
           },
-        } as OpenClawConfig;
+        } as AGDIConfig;
       }
       // oxlint-disable-next-line no-unused-vars
       const { [accountId]: removed, ...remainingAccounts } = (cfg.channels?.tlon?.accounts ??
@@ -251,7 +251,7 @@ export const tlonPlugin: ChannelPlugin = {
             accounts: remainingAccounts,
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     },
     isConfigured: (account) => account.configured,
     describeAccount: (account) => ({

@@ -11,9 +11,9 @@ const noopAsync = async () => {};
 const noop = () => {};
 const authProfilePathFor = (agentDir: string) => path.join(agentDir, "auth-profiles.json");
 const requireAgentDir = () => {
-  const agentDir = process.env.OPENCLAW_AGENT_DIR;
+  const agentDir = process.env.AGDI_AGENT_DIR;
   if (!agentDir) {
-    throw new Error("OPENCLAW_AGENT_DIR not set");
+    throw new Error("AGDI_AGENT_DIR not set");
   }
   return agentDir;
 };
@@ -44,18 +44,18 @@ function createPrompter(overrides: Partial<WizardPrompter>): WizardPrompter {
 
 describe("applyAuthChoice (moonshot)", () => {
   const envSnapshot = captureEnv([
-    "OPENCLAW_STATE_DIR",
-    "OPENCLAW_AGENT_DIR",
+    "AGDI_STATE_DIR",
+    "AGDI_AGENT_DIR",
     "PI_CODING_AGENT_DIR",
     "MOONSHOT_API_KEY",
   ]);
   let tempStateDir: string | null = null;
 
   async function setupTempState() {
-    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-auth-"));
-    process.env.OPENCLAW_STATE_DIR = tempStateDir;
-    process.env.OPENCLAW_AGENT_DIR = path.join(tempStateDir, "agent");
-    process.env.PI_CODING_AGENT_DIR = process.env.OPENCLAW_AGENT_DIR;
+    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-auth-"));
+    process.env.AGDI_STATE_DIR = tempStateDir;
+    process.env.AGDI_AGENT_DIR = path.join(tempStateDir, "agent");
+    process.env.PI_CODING_AGENT_DIR = process.env.AGDI_AGENT_DIR;
     delete process.env.MOONSHOT_API_KEY;
   }
 

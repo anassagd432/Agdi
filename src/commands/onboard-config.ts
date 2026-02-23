@@ -1,9 +1,9 @@
-import type { OpenClawConfig } from "../config/config.js";
+import type { AGDIConfig } from "../config/config.js";
 
 export function applyOnboardingLocalWorkspaceConfig(
-  baseConfig: OpenClawConfig,
+  baseConfig: AGDIConfig,
   workspaceDir: string,
-): OpenClawConfig {
+): AGDIConfig {
   return {
     ...baseConfig,
     agents: {

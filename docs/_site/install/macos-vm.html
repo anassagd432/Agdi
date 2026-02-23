@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS VMs — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="active" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI on macOS VMs (Sandboxing)</h1>
+<h2>Recommended default (most users)</h2>
+<ul>
+<li><strong>Small Linux VPS</strong> for an always-on Gateway and low cost. See <a href="/vps">VPS hosting</a>.</li>
+<li><strong>Dedicated hardware</strong> (Mac mini or Linux box) if you want full control and a <strong>residential IP</strong> for browser automation. Many sites block data center IPs, so local browsing often works better.</li>
+<li><strong>Hybrid:</strong> keep the Gateway on a cheap VPS, and connect your Mac as a <strong>node</strong> when you need browser/UI automation. See <a href="/nodes">Nodes</a> and <a href="/gateway/remote">Gateway remote</a>.</li>
+</ul>
+<p>Use a macOS VM when you specifically need macOS-only capabilities (iMessage/BlueBubbles) or want strict isolation from your daily Mac.</p>
+<h2>macOS VM options</h2>
+<h3>Local VM on your Apple Silicon Mac (Lume)</h3>
+<p>Run AGDI in a sandboxed macOS VM on your existing Apple Silicon Mac using <a href="https://cua.ai/docs/lume">Lume</a>.</p>
+<p>This gives you:</p>
+<ul>
+<li>Full macOS environment in isolation (your host stays clean)</li>
+<li>iMessage support via BlueBubbles (impossible on Linux/Windows)</li>
+<li>Instant reset by cloning VMs</li>
+<li>No extra hardware or cloud costs</li>
+</ul>
+<h3>Hosted Mac providers (cloud)</h3>
+<p>If you want macOS in the cloud, hosted Mac providers work too:</p>
+<ul>
+<li><a href="https://www.macstadium.com/">MacStadium</a> (hosted Macs)</li>
+<li>Other hosted Mac vendors also work; follow their VM + SSH docs</li>
+</ul>
+<p>Once you have SSH access to a macOS VM, continue at step 6 below.</p>
+<hr>
+<h2>Quick path (Lume, experienced users)</h2>
+<ol>
+<li>Install Lume</li>
+<li><code>lume create agdi --os macos --ipsw latest</code></li>
+<li>Complete Setup Assistant, enable Remote Login (SSH)</li>
+<li><code>lume run agdi --no-display</code></li>
+<li>SSH in, install AGDI, configure channels</li>
+<li>Done</li>
+</ol>
+<hr>
+<h2>What you need (Lume)</h2>
+<ul>
+<li>Apple Silicon Mac (M1/M2/M3/M4)</li>
+<li>macOS Sequoia or later on the host</li>
+<li>~60 GB free disk space per VM</li>
+<li>~20 minutes</li>
+</ul>
+<hr>
+<h2>1) Install Lume</h2>
+<pre><code class="language-bash">/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/trycua/cua/main/libs/lume/scripts/install.sh)&quot;
+</code></pre>
+<p>If <code>~/.local/bin</code> isn&#39;t in your PATH:</p>
+<pre><code class="language-bash">echo &#39;export PATH=&quot;$PATH:$HOME/.local/bin&quot;&#39; &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc
+</code></pre>
+<p>Verify:</p>
+<pre><code class="language-bash">lume --version
+</code></pre>
+<p>Docs: <a href="https://cua.ai/docs/lume/guide/getting-started/installation">Lume Installation</a></p>
+<hr>
+<h2>2) Create the macOS VM</h2>
+<pre><code class="language-bash">lume create agdi --os macos --ipsw latest
+</code></pre>
+<p>This downloads macOS and creates the VM. A VNC window opens automatically.</p>
+<p>Note: The download can take a while depending on your connection.</p>
+<hr>
+<h2>3) Complete Setup Assistant</h2>
+<p>In the VNC window:</p>
+<ol>
+<li>Select language and region</li>
+<li>Skip Apple ID (or sign in if you want iMessage later)</li>
+<li>Create a user account (remember the username and password)</li>
+<li>Skip all optional features</li>
+</ol>
+<p>After setup completes, enable SSH:</p>
+<ol>
+<li>Open System Settings → General → Sharing</li>
+<li>Enable &quot;Remote Login&quot;</li>
+</ol>
+<hr>
+<h2>4) Get the VM&#39;s IP address</h2>
+<pre><code class="language-bash">lume get agdi
+</code></pre>
+<p>Look for the IP address (usually <code>192.168.64.x</code>).</p>
+<hr>
+<h2>5) SSH into the VM</h2>
+<pre><code class="language-bash">ssh youruser@192.168.64.X
+</code></pre>
+<p>Replace <code>youruser</code> with the account you created, and the IP with your VM&#39;s IP.</p>
+<hr>
+<h2>6) Install AGDI</h2>
+<p>Inside the VM:</p>
+<pre><code class="language-bash">npm install -g agdi@latest
+agdi onboard --install-daemon
+</code></pre>
+<p>Follow the onboarding prompts to set up your model provider (Anthropic, OpenAI, etc.).</p>
+<hr>
+<h2>7) Configure channels</h2>
+<p>Edit the config file:</p>
+<pre><code class="language-bash">nano ~/.agdi/agdi.json
+</code></pre>
+<p>Add your channels:</p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;whatsapp&quot;: {
+      &quot;dmPolicy&quot;: &quot;allowlist&quot;,
+      &quot;allowFrom&quot;: [&quot;+15551234567&quot;]
+    },
+    &quot;telegram&quot;: {
+      &quot;botToken&quot;: &quot;YOUR_BOT_TOKEN&quot;
+    }
+  }
+}
+</code></pre>
+<p>Then login to WhatsApp (scan QR):</p>
+<pre><code class="language-bash">agdi channels login
+</code></pre>
+<hr>
+<h2>8) Run the VM headlessly</h2>
+<p>Stop the VM and restart without display:</p>
+<pre><code class="language-bash">lume stop agdi
+lume run agdi --no-display
+</code></pre>
+<p>The VM runs in the background. AGDI&#39;s daemon keeps the gateway running.</p>
+<p>To check status:</p>
+<pre><code class="language-bash">ssh youruser@192.168.64.X &quot;agdi status&quot;
+</code></pre>
+<hr>
+<h2>Bonus: iMessage integration</h2>
+<p>This is the killer feature of running on macOS. Use <a href="https://bluebubbles.app">BlueBubbles</a> to add iMessage to AGDI.</p>
+<p>Inside the VM:</p>
+<ol>
+<li>Download BlueBubbles from bluebubbles.app</li>
+<li>Sign in with your Apple ID</li>
+<li>Enable the Web API and set a password</li>
+<li>Point BlueBubbles webhooks at your gateway (example: <code>https://your-gateway-host:3000/bluebubbles-webhook?password=&lt;password&gt;</code>)</li>
+</ol>
+<p>Add to your AGDI config:</p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;bluebubbles&quot;: {
+      &quot;serverUrl&quot;: &quot;http://localhost:1234&quot;,
+      &quot;password&quot;: &quot;your-api-password&quot;,
+      &quot;webhookPath&quot;: &quot;/bluebubbles-webhook&quot;
+    }
+  }
+}
+</code></pre>
+<p>Restart the gateway. Now your agent can send and receive iMessages.</p>
+<p>Full setup details: <a href="/channels/bluebubbles">BlueBubbles channel</a></p>
+<hr>
+<h2>Save a golden image</h2>
+<p>Before customizing further, snapshot your clean state:</p>
+<pre><code class="language-bash">lume stop agdi
+lume clone agdi agdi-golden
+</code></pre>
+<p>Reset anytime:</p>
+<pre><code class="language-bash">lume stop agdi &amp;&amp; lume delete agdi
+lume clone agdi-golden agdi
+lume run agdi --no-display
+</code></pre>
+<hr>
+<h2>Running 24/7</h2>
+<p>Keep the VM running by:</p>
+<ul>
+<li>Keeping your Mac plugged in</li>
+<li>Disabling sleep in System Settings → Energy Saver</li>
+<li>Using <code>caffeinate</code> if needed</li>
+</ul>
+<p>For true always-on, consider a dedicated Mac mini or a small VPS. See <a href="/vps">VPS hosting</a>.</p>
+<hr>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Can&#39;t SSH into VM</td>
+<td>Check &quot;Remote Login&quot; is enabled in VM&#39;s System Settings</td>
+</tr>
+<tr>
+<td>VM IP not showing</td>
+<td>Wait for VM to fully boot, run <code>lume get agdi</code> again</td>
+</tr>
+<tr>
+<td>Lume command not found</td>
+<td>Add <code>~/.local/bin</code> to your PATH</td>
+</tr>
+<tr>
+<td>WhatsApp QR not scanning</td>
+<td>Ensure you&#39;re logged into the VM (not host) when running <code>agdi channels login</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Related docs</h2>
+<ul>
+<li><a href="/vps">VPS hosting</a></li>
+<li><a href="/nodes">Nodes</a></li>
+<li><a href="/gateway/remote">Gateway remote</a></li>
+<li><a href="/channels/bluebubbles">BlueBubbles channel</a></li>
+<li><a href="https://cua.ai/docs/lume/guide/getting-started/quickstart">Lume Quickstart</a></li>
+<li><a href="https://cua.ai/docs/lume/reference/cli-reference">Lume CLI Reference</a></li>
+<li><a href="https://cua.ai/docs/lume/guide/fundamentals/unattended-setup">Unattended VM Setup</a> (advanced)</li>
+<li><a href="/install/docker">Docker Sandboxing</a> (alternative isolation approach)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

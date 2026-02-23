@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="active" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Signal (signal-cli)</h1>
+<p>Status: external CLI integration. Gateway talks to <code>signal-cli</code> over HTTP JSON-RPC + SSE.</p>
+<h2>Prerequisites</h2>
+<ul>
+<li>AGDI installed on your server (Linux flow below tested on Ubuntu 24).</li>
+<li><code>signal-cli</code> available on the host where the gateway runs.</li>
+<li>A phone number that can receive one verification SMS (for SMS registration path).</li>
+<li>Browser access for Signal captcha (<code>signalcaptchas.org</code>) during registration.</li>
+</ul>
+<h2>Quick setup (beginner)</h2>
+<ol>
+<li>Use a <strong>separate Signal number</strong> for the bot (recommended).</li>
+<li>Install <code>signal-cli</code> (Java required if you use the JVM build).</li>
+<li>Choose one setup path:<ul>
+<li><strong>Path A (QR link):</strong> <code>signal-cli link -n &quot;AGDI&quot;</code> and scan with Signal.</li>
+<li><strong>Path B (SMS register):</strong> register a dedicated number with captcha + SMS verification.</li>
+</ul>
+</li>
+<li>Configure AGDI and restart the gateway.</li>
+<li>Send a first DM and approve pairing (<code>agdi pairing approve signal &lt;CODE&gt;</code>).</li>
+</ol>
+<p>Minimal config:</p>
+<pre><code class="language-json5">{
+  channels: {
+    signal: {
+      enabled: true,
+      account: &quot;+15551234567&quot;,
+      cliPath: &quot;signal-cli&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;+15557654321&quot;],
+    },
+  },
+}
+</code></pre>
+<p>Field reference:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>account</code></td>
+<td>Bot phone number in E.164 format (<code>+15551234567</code>)</td>
+</tr>
+<tr>
+<td><code>cliPath</code></td>
+<td>Path to <code>signal-cli</code> (<code>signal-cli</code> if on <code>PATH</code>)</td>
+</tr>
+<tr>
+<td><code>dmPolicy</code></td>
+<td>DM access policy (<code>pairing</code> recommended)</td>
+</tr>
+<tr>
+<td><code>allowFrom</code></td>
+<td>Phone numbers or <code>uuid:&lt;id&gt;</code> values allowed to DM</td>
+</tr>
+</tbody></table>
+<h2>What it is</h2>
+<ul>
+<li>Signal channel via <code>signal-cli</code> (not embedded libsignal).</li>
+<li>Deterministic routing: replies always go back to Signal.</li>
+<li>DMs share the agent&#39;s main session; groups are isolated (<code>agent:&lt;agentId&gt;:signal:group:&lt;groupId&gt;</code>).</li>
+</ul>
+<h2>Config writes</h2>
+<p>By default, Signal is allowed to write config updates triggered by <code>/config set|unset</code> (requires <code>commands.config: true</code>).</p>
+<p>Disable with:</p>
+<pre><code class="language-json5">{
+  channels: { signal: { configWrites: false } },
+}
+</code></pre>
+<h2>The number model (important)</h2>
+<ul>
+<li>The gateway connects to a <strong>Signal device</strong> (the <code>signal-cli</code> account).</li>
+<li>If you run the bot on <strong>your personal Signal account</strong>, it will ignore your own messages (loop protection).</li>
+<li>For &quot;I text the bot and it replies,&quot; use a <strong>separate bot number</strong>.</li>
+</ul>
+<h2>Setup path A: link existing Signal account (QR)</h2>
+<ol>
+<li>Install <code>signal-cli</code> (JVM or native build).</li>
+<li>Link a bot account:<ul>
+<li><code>signal-cli link -n &quot;AGDI&quot;</code> then scan the QR in Signal.</li>
+</ul>
+</li>
+<li>Configure Signal and start the gateway.</li>
+</ol>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    signal: {
+      enabled: true,
+      account: &quot;+15551234567&quot;,
+      cliPath: &quot;signal-cli&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;+15557654321&quot;],
+    },
+  },
+}
+</code></pre>
+<p>Multi-account support: use <code>channels.signal.accounts</code> with per-account config and optional <code>name</code>. See <a href="/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts"><code>gateway/configuration</code></a> for the shared pattern.</p>
+<h2>Setup path B: register dedicated bot number (SMS, Linux)</h2>
+<p>Use this when you want a dedicated bot number instead of linking an existing Signal app account.</p>
+<ol>
+<li>Get a number that can receive SMS (or voice verification for landlines).<ul>
+<li>Use a dedicated bot number to avoid account/session conflicts.</li>
+</ul>
+</li>
+<li>Install <code>signal-cli</code> on the gateway host:</li>
+</ol>
+<pre><code class="language-bash">VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/AsamK/signal-cli/releases/latest | sed -e &#39;s/^.*\/v//&#39;)
+curl -L -O &quot;https://github.com/AsamK/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}-Linux-native.tar.gz&quot;
+sudo tar xf &quot;signal-cli-${VERSION}-Linux-native.tar.gz&quot; -C /opt
+sudo ln -sf /opt/signal-cli /usr/local/bin/
+signal-cli --version
+</code></pre>
+<p>If you use the JVM build (<code>signal-cli-${VERSION}.tar.gz</code>), install JRE 25+ first.
+Keep <code>signal-cli</code> updated; upstream notes that old releases can break as Signal server APIs change.</p>
+<ol start="3">
+<li>Register and verify the number:</li>
+</ol>
+<pre><code class="language-bash">signal-cli -a +&lt;BOT_PHONE_NUMBER&gt; register
+</code></pre>
+<p>If captcha is required:</p>
+<ol>
+<li>Open <code>https://signalcaptchas.org/registration/generate.html</code>.</li>
+<li>Complete captcha, copy the <code>signalcaptcha://...</code> link target from &quot;Open Signal&quot;.</li>
+<li>Run from the same external IP as the browser session when possible.</li>
+<li>Run registration again immediately (captcha tokens expire quickly):</li>
+</ol>
+<pre><code class="language-bash">signal-cli -a +&lt;BOT_PHONE_NUMBER&gt; register --captcha &#39;&lt;SIGNALCAPTCHA_URL&gt;&#39;
+signal-cli -a +&lt;BOT_PHONE_NUMBER&gt; verify &lt;VERIFICATION_CODE&gt;
+</code></pre>
+<ol start="4">
+<li>Configure AGDI, restart gateway, verify channel:</li>
+</ol>
+<pre><code class="language-bash"># If you run the gateway as a user systemd service:
+systemctl --user restart agdi-gateway
+
+# Then verify:
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<ol start="5">
+<li>Pair your DM sender:<ul>
+<li>Send any message to the bot number.</li>
+<li>Approve code on the server: <code>agdi pairing approve signal &lt;PAIRING_CODE&gt;</code>.</li>
+<li>Save the bot number as a contact on your phone to avoid &quot;Unknown contact&quot;.</li>
+</ul>
+</li>
+</ol>
+<p>Important: registering a phone number account with <code>signal-cli</code> can de-authenticate the main Signal app session for that number. Prefer a dedicated bot number, or use QR link mode if you need to keep your existing phone app setup.</p>
+<p>Upstream references:</p>
+<ul>
+<li><code>signal-cli</code> README: <code>https://github.com/AsamK/signal-cli</code></li>
+<li>Captcha flow: <code>https://github.com/AsamK/signal-cli/wiki/Registration-with-captcha</code></li>
+<li>Linking flow: <code>https://github.com/AsamK/signal-cli/wiki/Linking-other-devices-(Provisioning)</code></li>
+</ul>
+<h2>External daemon mode (httpUrl)</h2>
+<p>If you want to manage <code>signal-cli</code> yourself (slow JVM cold starts, container init, or shared CPUs), run the daemon separately and point AGDI at it:</p>
+<pre><code class="language-json5">{
+  channels: {
+    signal: {
+      httpUrl: &quot;http://127.0.0.1:8080&quot;,
+      autoStart: false,
+    },
+  },
+}
+</code></pre>
+<p>This skips auto-spawn and the startup wait inside AGDI. For slow starts when auto-spawning, set <code>channels.signal.startupTimeoutMs</code>.</p>
+<h2>Access control (DMs + groups)</h2>
+<p>DMs:</p>
+<ul>
+<li>Default: <code>channels.signal.dmPolicy = &quot;pairing&quot;</code>.</li>
+<li>Unknown senders receive a pairing code; messages are ignored until approved (codes expire after 1 hour).</li>
+<li>Approve via:<ul>
+<li><code>agdi pairing list signal</code></li>
+<li><code>agdi pairing approve signal &lt;CODE&gt;</code></li>
+</ul>
+</li>
+<li>Pairing is the default token exchange for Signal DMs. Details: <a href="/channels/pairing">Pairing</a></li>
+<li>UUID-only senders (from <code>sourceUuid</code>) are stored as <code>uuid:&lt;id&gt;</code> in <code>channels.signal.allowFrom</code>.</li>
+</ul>
+<p>Groups:</p>
+<ul>
+<li><code>channels.signal.groupPolicy = open | allowlist | disabled</code>.</li>
+<li><code>channels.signal.groupAllowFrom</code> controls who can trigger in groups when <code>allowlist</code> is set.</li>
+</ul>
+<h2>How it works (behavior)</h2>
+<ul>
+<li><code>signal-cli</code> runs as a daemon; the gateway reads events via SSE.</li>
+<li>Inbound messages are normalized into the shared channel envelope.</li>
+<li>Replies always route back to the same number or group.</li>
+</ul>
+<h2>Media + limits</h2>
+<ul>
+<li>Outbound text is chunked to <code>channels.signal.textChunkLimit</code> (default 4000).</li>
+<li>Optional newline chunking: set <code>channels.signal.chunkMode=&quot;newline&quot;</code> to split on blank lines (paragraph boundaries) before length chunking.</li>
+<li>Attachments supported (base64 fetched from <code>signal-cli</code>).</li>
+<li>Default media cap: <code>channels.signal.mediaMaxMb</code> (default 8).</li>
+<li>Use <code>channels.signal.ignoreAttachments</code> to skip downloading media.</li>
+<li>Group history context uses <code>channels.signal.historyLimit</code> (or <code>channels.signal.accounts.*.historyLimit</code>), falling back to <code>messages.groupChat.historyLimit</code>. Set <code>0</code> to disable (default 50).</li>
+</ul>
+<h2>Typing + read receipts</h2>
+<ul>
+<li><strong>Typing indicators</strong>: AGDI sends typing signals via <code>signal-cli sendTyping</code> and refreshes them while a reply is running.</li>
+<li><strong>Read receipts</strong>: when <code>channels.signal.sendReadReceipts</code> is true, AGDI forwards read receipts for allowed DMs.</li>
+<li>Signal-cli does not expose read receipts for groups.</li>
+</ul>
+<h2>Reactions (message tool)</h2>
+<ul>
+<li>Use <code>message action=react</code> with <code>channel=signal</code>.</li>
+<li>Targets: sender E.164 or UUID (use <code>uuid:&lt;id&gt;</code> from pairing output; bare UUID works too).</li>
+<li><code>messageId</code> is the Signal timestamp for the message you’re reacting to.</li>
+<li>Group reactions require <code>targetAuthor</code> or <code>targetAuthorUuid</code>.</li>
+</ul>
+<p>Examples:</p>
+<pre><code>message action=react channel=signal target=uuid:123e4567-e89b-12d3-a456-426614174000 messageId=1737630212345 emoji=🔥
+message action=react channel=signal target=+15551234567 messageId=1737630212345 emoji=🔥 remove=true
+message action=react channel=signal target=signal:group:&lt;groupId&gt; targetAuthor=uuid:&lt;sender-uuid&gt; messageId=1737630212345 emoji=✅
+</code></pre>
+<p>Config:</p>
+<ul>
+<li><code>channels.signal.actions.reactions</code>: enable/disable reaction actions (default true).</li>
+<li><code>channels.signal.reactionLevel</code>: <code>off | ack | minimal | extensive</code>.<ul>
+<li><code>off</code>/<code>ack</code> disables agent reactions (message tool <code>react</code> will error).</li>
+<li><code>minimal</code>/<code>extensive</code> enables agent reactions and sets the guidance level.</li>
+</ul>
+</li>
+<li>Per-account overrides: <code>channels.signal.accounts.&lt;id&gt;.actions.reactions</code>, <code>channels.signal.accounts.&lt;id&gt;.reactionLevel</code>.</li>
+</ul>
+<h2>Delivery targets (CLI/cron)</h2>
+<ul>
+<li>DMs: <code>signal:+15551234567</code> (or plain E.164).</li>
+<li>UUID DMs: <code>uuid:&lt;id&gt;</code> (or bare UUID).</li>
+<li>Groups: <code>signal:group:&lt;groupId&gt;</code>.</li>
+<li>Usernames: <code>username:&lt;name&gt;</code> (if supported by your Signal account).</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p>Run this ladder first:</p>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Then confirm DM pairing state if needed:</p>
+<pre><code class="language-bash">agdi pairing list signal
+</code></pre>
+<p>Common failures:</p>
+<ul>
+<li>Daemon reachable but no replies: verify account/daemon settings (<code>httpUrl</code>, <code>account</code>) and receive mode.</li>
+<li>DMs ignored: sender is pending pairing approval.</li>
+<li>Group messages ignored: group sender/mention gating blocks delivery.</li>
+<li>Config validation errors after edits: run <code>agdi doctor --fix</code>.</li>
+<li>Signal missing from diagnostics: confirm <code>channels.signal.enabled: true</code>.</li>
+</ul>
+<p>Extra checks:</p>
+<pre><code class="language-bash">agdi pairing list signal
+pgrep -af signal-cli
+grep -i &quot;signal&quot; &quot;/tmp/agdi/agdi-$(date +%Y-%m-%d).log&quot; | tail -20
+</code></pre>
+<p>For triage flow: <a href="/channels/troubleshooting">/channels/troubleshooting</a>.</p>
+<h2>Security notes</h2>
+<ul>
+<li><code>signal-cli</code> stores account keys locally (typically <code>~/.local/share/signal-cli/data/</code>).</li>
+<li>Back up Signal account state before server migration or rebuild.</li>
+<li>Keep <code>channels.signal.dmPolicy: &quot;pairing&quot;</code> unless you explicitly want broader DM access.</li>
+<li>SMS verification is only needed for registration or recovery flows, but losing control of the number/account can complicate re-registration.</li>
+</ul>
+<h2>Configuration reference (Signal)</h2>
+<p>Full configuration: <a href="/gateway/configuration">Configuration</a></p>
+<p>Provider options:</p>
+<ul>
+<li><code>channels.signal.enabled</code>: enable/disable channel startup.</li>
+<li><code>channels.signal.account</code>: E.164 for the bot account.</li>
+<li><code>channels.signal.cliPath</code>: path to <code>signal-cli</code>.</li>
+<li><code>channels.signal.httpUrl</code>: full daemon URL (overrides host/port).</li>
+<li><code>channels.signal.httpHost</code>, <code>channels.signal.httpPort</code>: daemon bind (default 127.0.0.1:8080).</li>
+<li><code>channels.signal.autoStart</code>: auto-spawn daemon (default true if <code>httpUrl</code> unset).</li>
+<li><code>channels.signal.startupTimeoutMs</code>: startup wait timeout in ms (cap 120000).</li>
+<li><code>channels.signal.receiveMode</code>: <code>on-start | manual</code>.</li>
+<li><code>channels.signal.ignoreAttachments</code>: skip attachment downloads.</li>
+<li><code>channels.signal.ignoreStories</code>: ignore stories from the daemon.</li>
+<li><code>channels.signal.sendReadReceipts</code>: forward read receipts.</li>
+<li><code>channels.signal.dmPolicy</code>: <code>pairing | allowlist | open | disabled</code> (default: pairing).</li>
+<li><code>channels.signal.allowFrom</code>: DM allowlist (E.164 or <code>uuid:&lt;id&gt;</code>). <code>open</code> requires <code>&quot;*&quot;</code>. Signal has no usernames; use phone/UUID ids.</li>
+<li><code>channels.signal.groupPolicy</code>: <code>open | allowlist | disabled</code> (default: allowlist).</li>
+<li><code>channels.signal.groupAllowFrom</code>: group sender allowlist.</li>
+<li><code>channels.signal.historyLimit</code>: max group messages to include as context (0 disables).</li>
+<li><code>channels.signal.dmHistoryLimit</code>: DM history limit in user turns. Per-user overrides: <code>channels.signal.dms[&quot;&lt;phone_or_uuid&gt;&quot;].historyLimit</code>.</li>
+<li><code>channels.signal.textChunkLimit</code>: outbound chunk size (chars).</li>
+<li><code>channels.signal.chunkMode</code>: <code>length</code> (default) or <code>newline</code> to split on blank lines (paragraph boundaries) before length chunking.</li>
+<li><code>channels.signal.mediaMaxMb</code>: inbound/outbound media cap (MB).</li>
+</ul>
+<p>Related global options:</p>
+<ul>
+<li><code>agents.list[].groupChat.mentionPatterns</code> (Signal does not support native mentions).</li>
+<li><code>messages.groupChat.mentionPatterns</code> (global fallback).</li>
+<li><code>messages.responsePrefix</code>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

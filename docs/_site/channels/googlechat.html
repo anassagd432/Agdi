@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Chat — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="active" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Google Chat (Chat API)</h1>
+<p>Status: ready for DMs + spaces via Google Chat API webhooks (HTTP only).</p>
+<h2>Quick setup (beginner)</h2>
+<ol>
+<li>Create a Google Cloud project and enable the <strong>Google Chat API</strong>.<ul>
+<li>Go to: <a href="https://console.cloud.google.com/apis/api/chat.googleapis.com/credentials">Google Chat API Credentials</a></li>
+<li>Enable the API if it is not already enabled.</li>
+</ul>
+</li>
+<li>Create a <strong>Service Account</strong>:<ul>
+<li>Press <strong>Create Credentials</strong> &gt; <strong>Service Account</strong>.</li>
+<li>Name it whatever you want (e.g., <code>agdi-chat</code>).</li>
+<li>Leave permissions blank (press <strong>Continue</strong>).</li>
+<li>Leave principals with access blank (press <strong>Done</strong>).</li>
+</ul>
+</li>
+<li>Create and download the <strong>JSON Key</strong>:<ul>
+<li>In the list of service accounts, click on the one you just created.</li>
+<li>Go to the <strong>Keys</strong> tab.</li>
+<li>Click <strong>Add Key</strong> &gt; <strong>Create new key</strong>.</li>
+<li>Select <strong>JSON</strong> and press <strong>Create</strong>.</li>
+</ul>
+</li>
+<li>Store the downloaded JSON file on your gateway host (e.g., <code>~/.agdi/googlechat-service-account.json</code>).</li>
+<li>Create a Google Chat app in the <a href="https://console.cloud.google.com/apis/api/chat.googleapis.com/hangouts-chat">Google Cloud Console Chat Configuration</a>:<ul>
+<li>Fill in the <strong>Application info</strong>:<ul>
+<li><strong>App name</strong>: (e.g. <code>AGDI</code>)</li>
+<li><strong>Avatar URL</strong>: (e.g. <code>https://agdi.ai/logo.png</code>)</li>
+<li><strong>Description</strong>: (e.g. <code>Personal AI Assistant</code>)</li>
+</ul>
+</li>
+<li>Enable <strong>Interactive features</strong>.</li>
+<li>Under <strong>Functionality</strong>, check <strong>Join spaces and group conversations</strong>.</li>
+<li>Under <strong>Connection settings</strong>, select <strong>HTTP endpoint URL</strong>.</li>
+<li>Under <strong>Triggers</strong>, select <strong>Use a common HTTP endpoint URL for all triggers</strong> and set it to your gateway&#39;s public URL followed by <code>/googlechat</code>.<ul>
+<li><em>Tip: Run <code>agdi status</code> to find your gateway&#39;s public URL.</em></li>
+</ul>
+</li>
+<li>Under <strong>Visibility</strong>, check <strong>Make this Chat app available to specific people and groups in &lt;Your Domain&gt;</strong>.</li>
+<li>Enter your email address (e.g. <code>user@example.com</code>) in the text box.</li>
+<li>Click <strong>Save</strong> at the bottom.</li>
+</ul>
+</li>
+<li><strong>Enable the app status</strong>:<ul>
+<li>After saving, <strong>refresh the page</strong>.</li>
+<li>Look for the <strong>App status</strong> section (usually near the top or bottom after saving).</li>
+<li>Change the status to <strong>Live - available to users</strong>.</li>
+<li>Click <strong>Save</strong> again.</li>
+</ul>
+</li>
+<li>Configure AGDI with the service account path + webhook audience:<ul>
+<li>Env: <code>GOOGLE_CHAT_SERVICE_ACCOUNT_FILE=/path/to/service-account.json</code></li>
+<li>Or config: <code>channels.googlechat.serviceAccountFile: &quot;/path/to/service-account.json&quot;</code>.</li>
+</ul>
+</li>
+<li>Set the webhook audience type + value (matches your Chat app config).</li>
+<li>Start the gateway. Google Chat will POST to your webhook path.</li>
+</ol>
+<h2>Add to Google Chat</h2>
+<p>Once the gateway is running and your email is added to the visibility list:</p>
+<ol>
+<li>Go to <a href="https://chat.google.com/">Google Chat</a>.</li>
+<li>Click the <strong>+</strong> (plus) icon next to <strong>Direct Messages</strong>.</li>
+<li>In the search bar (where you usually add people), type the <strong>App name</strong> you configured in the Google Cloud Console.<ul>
+<li><strong>Note</strong>: The bot will <em>not</em> appear in the &quot;Marketplace&quot; browse list because it is a private app. You must search for it by name.</li>
+</ul>
+</li>
+<li>Select your bot from the results.</li>
+<li>Click <strong>Add</strong> or <strong>Chat</strong> to start a 1:1 conversation.</li>
+<li>Send &quot;Hello&quot; to trigger the assistant!</li>
+</ol>
+<h2>Public URL (Webhook-only)</h2>
+<p>Google Chat webhooks require a public HTTPS endpoint. For security, <strong>only expose the <code>/googlechat</code> path</strong> to the internet. Keep the AGDI dashboard and other sensitive endpoints on your private network.</p>
+<h3>Option A: Tailscale Funnel (Recommended)</h3>
+<p>Use Tailscale Serve for the private dashboard and Funnel for the public webhook path. This keeps <code>/</code> private while exposing only <code>/googlechat</code>.</p>
+<ol>
+<li><p><strong>Check what address your gateway is bound to:</strong></p>
+<pre><code class="language-bash">ss -tlnp | grep 18789
+</code></pre>
+<p>Note the IP address (e.g., <code>127.0.0.1</code>, <code>0.0.0.0</code>, or your Tailscale IP like <code>100.x.x.x</code>).</p>
+</li>
+<li><p><strong>Expose the dashboard to the tailnet only (port 8443):</strong></p>
+<pre><code class="language-bash"># If bound to localhost (127.0.0.1 or 0.0.0.0):
+tailscale serve --bg --https 8443 http://127.0.0.1:18789
+
+# If bound to Tailscale IP only (e.g., 100.106.161.80):
+tailscale serve --bg --https 8443 http://100.106.161.80:18789
+</code></pre>
+</li>
+<li><p><strong>Expose only the webhook path publicly:</strong></p>
+<pre><code class="language-bash"># If bound to localhost (127.0.0.1 or 0.0.0.0):
+tailscale funnel --bg --set-path /googlechat http://127.0.0.1:18789/googlechat
+
+# If bound to Tailscale IP only (e.g., 100.106.161.80):
+tailscale funnel --bg --set-path /googlechat http://100.106.161.80:18789/googlechat
+</code></pre>
+</li>
+<li><p><strong>Authorize the node for Funnel access:</strong>
+If prompted, visit the authorization URL shown in the output to enable Funnel for this node in your tailnet policy.</p>
+</li>
+<li><p><strong>Verify the configuration:</strong></p>
+<pre><code class="language-bash">tailscale serve status
+tailscale funnel status
+</code></pre>
+</li>
+</ol>
+<p>Your public webhook URL will be:
+<code>https://&lt;node-name&gt;.&lt;tailnet&gt;.ts.net/googlechat</code></p>
+<p>Your private dashboard stays tailnet-only:
+<code>https://&lt;node-name&gt;.&lt;tailnet&gt;.ts.net:8443/</code></p>
+<p>Use the public URL (without <code>:8443</code>) in the Google Chat app config.</p>
+<blockquote>
+<p>Note: This configuration persists across reboots. To remove it later, run <code>tailscale funnel reset</code> and <code>tailscale serve reset</code>.</p>
+</blockquote>
+<h3>Option B: Reverse Proxy (Caddy)</h3>
+<p>If you use a reverse proxy like Caddy, only proxy the specific path:</p>
+<pre><code class="language-caddy">your-domain.com {
+    reverse_proxy /googlechat* localhost:18789
+}
+</code></pre>
+<p>With this config, any request to <code>your-domain.com/</code> will be ignored or returned as 404, while <code>your-domain.com/googlechat</code> is safely routed to AGDI.</p>
+<h3>Option C: Cloudflare Tunnel</h3>
+<p>Configure your tunnel&#39;s ingress rules to only route the webhook path:</p>
+<ul>
+<li><strong>Path</strong>: <code>/googlechat</code> -&gt; <code>http://localhost:18789/googlechat</code></li>
+<li><strong>Default Rule</strong>: HTTP 404 (Not Found)</li>
+</ul>
+<h2>How it works</h2>
+<ol>
+<li>Google Chat sends webhook POSTs to the gateway. Each request includes an <code>Authorization: Bearer &lt;token&gt;</code> header.</li>
+<li>AGDI verifies the token against the configured <code>audienceType</code> + <code>audience</code>:<ul>
+<li><code>audienceType: &quot;app-url&quot;</code> → audience is your HTTPS webhook URL.</li>
+<li><code>audienceType: &quot;project-number&quot;</code> → audience is the Cloud project number.</li>
+</ul>
+</li>
+<li>Messages are routed by space:<ul>
+<li>DMs use session key <code>agent:&lt;agentId&gt;:googlechat:dm:&lt;spaceId&gt;</code>.</li>
+<li>Spaces use session key <code>agent:&lt;agentId&gt;:googlechat:group:&lt;spaceId&gt;</code>.</li>
+</ul>
+</li>
+<li>DM access is pairing by default. Unknown senders receive a pairing code; approve with:<ul>
+<li><code>agdi pairing approve googlechat &lt;code&gt;</code></li>
+</ul>
+</li>
+<li>Group spaces require @-mention by default. Use <code>botUser</code> if mention detection needs the app’s user name.</li>
+</ol>
+<h2>Targets</h2>
+<p>Use these identifiers for delivery and allowlists:</p>
+<ul>
+<li>Direct messages: <code>users/&lt;userId&gt;</code> (recommended) or raw email <code>name@example.com</code> (mutable principal).</li>
+<li>Deprecated: <code>users/&lt;email&gt;</code> is treated as a user id, not an email allowlist.</li>
+<li>Spaces: <code>spaces/&lt;spaceId&gt;</code>.</li>
+</ul>
+<h2>Config highlights</h2>
+<pre><code class="language-json5">{
+  channels: {
+    googlechat: {
+      enabled: true,
+      serviceAccountFile: &quot;/path/to/service-account.json&quot;,
+      audienceType: &quot;app-url&quot;,
+      audience: &quot;https://gateway.example.com/googlechat&quot;,
+      webhookPath: &quot;/googlechat&quot;,
+      botUser: &quot;users/1234567890&quot;, // optional; helps mention detection
+      dm: {
+        policy: &quot;pairing&quot;,
+        allowFrom: [&quot;users/1234567890&quot;, &quot;name@example.com&quot;],
+      },
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;spaces/AAAA&quot;: {
+          allow: true,
+          requireMention: true,
+          users: [&quot;users/1234567890&quot;],
+          systemPrompt: &quot;Short answers only.&quot;,
+        },
+      },
+      actions: { reactions: true },
+      typingIndicator: &quot;message&quot;,
+      mediaMaxMb: 20,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Service account credentials can also be passed inline with <code>serviceAccount</code> (JSON string).</li>
+<li>Default webhook path is <code>/googlechat</code> if <code>webhookPath</code> isn’t set.</li>
+<li>Reactions are available via the <code>reactions</code> tool and <code>channels action</code> when <code>actions.reactions</code> is enabled.</li>
+<li><code>typingIndicator</code> supports <code>none</code>, <code>message</code> (default), and <code>reaction</code> (reaction requires user OAuth).</li>
+<li>Attachments are downloaded through the Chat API and stored in the media pipeline (size capped by <code>mediaMaxMb</code>).</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>405 Method Not Allowed</h3>
+<p>If Google Cloud Logs Explorer shows errors like:</p>
+<pre><code>status code: 405, reason phrase: HTTP error response: HTTP/1.1 405 Method Not Allowed
+</code></pre>
+<p>This means the webhook handler isn&#39;t registered. Common causes:</p>
+<ol>
+<li><p><strong>Channel not configured</strong>: The <code>channels.googlechat</code> section is missing from your config. Verify with:</p>
+<pre><code class="language-bash">agdi config get channels.googlechat
+</code></pre>
+<p>If it returns &quot;Config path not found&quot;, add the configuration (see <a href="#config-highlights">Config highlights</a>).</p>
+</li>
+<li><p><strong>Plugin not enabled</strong>: Check plugin status:</p>
+<pre><code class="language-bash">agdi plugins list | grep googlechat
+</code></pre>
+<p>If it shows &quot;disabled&quot;, add <code>plugins.entries.googlechat.enabled: true</code> to your config.</p>
+</li>
+<li><p><strong>Gateway not restarted</strong>: After adding config, restart the gateway:</p>
+<pre><code class="language-bash">agdi gateway restart
+</code></pre>
+</li>
+</ol>
+<p>Verify the channel is running:</p>
+<pre><code class="language-bash">agdi channels status
+# Should show: Google Chat default: enabled, configured, ...
+</code></pre>
+<h3>Other issues</h3>
+<ul>
+<li>Check <code>agdi channels status --probe</code> for auth errors or missing audience config.</li>
+<li>If no messages arrive, confirm the Chat app&#39;s webhook URL + event subscriptions.</li>
+<li>If mention gating blocks replies, set <code>botUser</code> to the app&#39;s user resource name and verify <code>requireMention</code>.</li>
+<li>Use <code>agdi logs --follow</code> while sending a test message to see if requests reach the gateway.</li>
+</ul>
+<p>Related docs:</p>
+<ul>
+<li><a href="/gateway/configuration">Gateway configuration</a></li>
+<li><a href="/gateway/security">Security</a></li>
+<li><a href="/tools/reactions">Reactions</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

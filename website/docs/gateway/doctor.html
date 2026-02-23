@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="active" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Doctor</h1>
+<p><code>agdi doctor</code> is the repair + migration tool for AGDI. It fixes stale
+config/state, checks health, and provides actionable repair steps.</p>
+<h2>Quick start</h2>
+<pre><code class="language-bash">agdi doctor
+</code></pre>
+<h3>Headless / automation</h3>
+<pre><code class="language-bash">agdi doctor --yes
+</code></pre>
+<p>Accept defaults without prompting (including restart/service/sandbox repair steps when applicable).</p>
+<pre><code class="language-bash">agdi doctor --repair
+</code></pre>
+<p>Apply recommended repairs without prompting (repairs + restarts where safe).</p>
+<pre><code class="language-bash">agdi doctor --repair --force
+</code></pre>
+<p>Apply aggressive repairs too (overwrites custom supervisor configs).</p>
+<pre><code class="language-bash">agdi doctor --non-interactive
+</code></pre>
+<p>Run without prompts and only apply safe migrations (config normalization + on-disk state moves). Skips restart/service/sandbox actions that require human confirmation.
+Legacy state migrations run automatically when detected.</p>
+<pre><code class="language-bash">agdi doctor --deep
+</code></pre>
+<p>Scan system services for extra gateway installs (launchd/systemd/schtasks).</p>
+<p>If you want to review changes before writing, open the config file first:</p>
+<pre><code class="language-bash">cat ~/.agdi/agdi.json
+</code></pre>
+<h2>What it does (summary)</h2>
+<ul>
+<li>Optional pre-flight update for git installs (interactive only).</li>
+<li>UI protocol freshness check (rebuilds Control UI when the protocol schema is newer).</li>
+<li>Health check + restart prompt.</li>
+<li>Skills status summary (eligible/missing/blocked).</li>
+<li>Config normalization for legacy values.</li>
+<li>OpenCode Zen provider override warnings (<code>models.providers.opencode</code>).</li>
+<li>Legacy on-disk state migration (sessions/agent dir/WhatsApp auth).</li>
+<li>State integrity and permissions checks (sessions, transcripts, state dir).</li>
+<li>Config file permission checks (chmod 600) when running locally.</li>
+<li>Model auth health: checks OAuth expiry, can refresh expiring tokens, and reports auth-profile cooldown/disabled states.</li>
+<li>Extra workspace dir detection (<code>~/agdi</code>).</li>
+<li>Sandbox image repair when sandboxing is enabled.</li>
+<li>Legacy service migration and extra gateway detection.</li>
+<li>Gateway runtime checks (service installed but not running; cached launchd label).</li>
+<li>Channel status warnings (probed from the running gateway).</li>
+<li>Supervisor config audit (launchd/systemd/schtasks) with optional repair.</li>
+<li>Gateway runtime best-practice checks (Node vs Bun, version-manager paths).</li>
+<li>Gateway port collision diagnostics (default <code>18789</code>).</li>
+<li>Security warnings for open DM policies.</li>
+<li>Gateway auth warnings when no <code>gateway.auth.token</code> is set (local mode; offers token generation).</li>
+<li>systemd linger check on Linux.</li>
+<li>Source install checks (pnpm workspace mismatch, missing UI assets, missing tsx binary).</li>
+<li>Writes updated config + wizard metadata.</li>
+</ul>
+<h2>Detailed behavior and rationale</h2>
+<h3>0) Optional update (git installs)</h3>
+<p>If this is a git checkout and doctor is running interactively, it offers to
+update (fetch/rebase/build) before running doctor.</p>
+<h3>1) Config normalization</h3>
+<p>If the config contains legacy value shapes (for example <code>messages.ackReaction</code>
+without a channel-specific override), doctor normalizes them into the current
+schema.</p>
+<h3>2) Legacy config key migrations</h3>
+<p>When the config contains deprecated keys, other commands refuse to run and ask
+you to run <code>agdi doctor</code>.</p>
+<p>Doctor will:</p>
+<ul>
+<li>Explain which legacy keys were found.</li>
+<li>Show the migration it applied.</li>
+<li>Rewrite <code>~/.agdi/agdi.json</code> with the updated schema.</li>
+</ul>
+<p>The Gateway also auto-runs doctor migrations on startup when it detects a
+legacy config format, so stale configs are repaired without manual intervention.</p>
+<p>Current migrations:</p>
+<ul>
+<li><code>routing.allowFrom</code> → <code>channels.whatsapp.allowFrom</code></li>
+<li><code>routing.groupChat.requireMention</code> → <code>channels.whatsapp/telegram/imessage.groups.&quot;*&quot;.requireMention</code></li>
+<li><code>routing.groupChat.historyLimit</code> → <code>messages.groupChat.historyLimit</code></li>
+<li><code>routing.groupChat.mentionPatterns</code> → <code>messages.groupChat.mentionPatterns</code></li>
+<li><code>routing.queue</code> → <code>messages.queue</code></li>
+<li><code>routing.bindings</code> → top-level <code>bindings</code></li>
+<li><code>routing.agents</code>/<code>routing.defaultAgentId</code> → <code>agents.list</code> + <code>agents.list[].default</code></li>
+<li><code>routing.agentToAgent</code> → <code>tools.agentToAgent</code></li>
+<li><code>routing.transcribeAudio</code> → <code>tools.media.audio.models</code></li>
+<li><code>bindings[].match.accountID</code> → <code>bindings[].match.accountId</code></li>
+<li><code>identity</code> → <code>agents.list[].identity</code></li>
+<li><code>agent.*</code> → <code>agents.defaults</code> + <code>tools.*</code> (tools/elevated/exec/sandbox/subagents)</li>
+<li><code>agent.model</code>/<code>allowedModels</code>/<code>modelAliases</code>/<code>modelFallbacks</code>/<code>imageModelFallbacks</code>
+→ <code>agents.defaults.models</code> + <code>agents.defaults.model.primary/fallbacks</code> + <code>agents.defaults.imageModel.primary/fallbacks</code></li>
+</ul>
+<h3>2b) OpenCode Zen provider overrides</h3>
+<p>If you’ve added <code>models.providers.opencode</code> (or <code>opencode-zen</code>) manually, it
+overrides the built-in OpenCode Zen catalog from <code>@mariozechner/pi-ai</code>. That can
+force every model onto a single API or zero out costs. Doctor warns so you can
+remove the override and restore per-model API routing + costs.</p>
+<h3>3) Legacy state migrations (disk layout)</h3>
+<p>Doctor can migrate older on-disk layouts into the current structure:</p>
+<ul>
+<li>Sessions store + transcripts:<ul>
+<li>from <code>~/.agdi/sessions/</code> to <code>~/.agdi/agents/&lt;agentId&gt;/sessions/</code></li>
+</ul>
+</li>
+<li>Agent dir:<ul>
+<li>from <code>~/.agdi/agent/</code> to <code>~/.agdi/agents/&lt;agentId&gt;/agent/</code></li>
+</ul>
+</li>
+<li>WhatsApp auth state (Baileys):<ul>
+<li>from legacy <code>~/.agdi/credentials/*.json</code> (except <code>oauth.json</code>)</li>
+<li>to <code>~/.agdi/credentials/whatsapp/&lt;accountId&gt;/...</code> (default account id: <code>default</code>)</li>
+</ul>
+</li>
+</ul>
+<p>These migrations are best-effort and idempotent; doctor will emit warnings when
+it leaves any legacy folders behind as backups. The Gateway/CLI also auto-migrates
+the legacy sessions + agent dir on startup so history/auth/models land in the
+per-agent path without a manual doctor run. WhatsApp auth is intentionally only
+migrated via <code>agdi doctor</code>.</p>
+<h3>4) State integrity checks (session persistence, routing, and safety)</h3>
+<p>The state directory is the operational brainstem. If it vanishes, you lose
+sessions, credentials, logs, and config (unless you have backups elsewhere).</p>
+<p>Doctor checks:</p>
+<ul>
+<li><strong>State dir missing</strong>: warns about catastrophic state loss, prompts to recreate
+the directory, and reminds you that it cannot recover missing data.</li>
+<li><strong>State dir permissions</strong>: verifies writability; offers to repair permissions
+(and emits a <code>chown</code> hint when owner/group mismatch is detected).</li>
+<li><strong>Session dirs missing</strong>: <code>sessions/</code> and the session store directory are
+required to persist history and avoid <code>ENOENT</code> crashes.</li>
+<li><strong>Transcript mismatch</strong>: warns when recent session entries have missing
+transcript files.</li>
+<li><strong>Main session “1-line JSONL”</strong>: flags when the main transcript has only one
+line (history is not accumulating).</li>
+<li><strong>Multiple state dirs</strong>: warns when multiple <code>~/.agdi</code> folders exist across
+home directories or when <code>AGDI_STATE_DIR</code> points elsewhere (history can
+split between installs).</li>
+<li><strong>Remote mode reminder</strong>: if <code>gateway.mode=remote</code>, doctor reminds you to run
+it on the remote host (the state lives there).</li>
+<li><strong>Config file permissions</strong>: warns if <code>~/.agdi/agdi.json</code> is
+group/world readable and offers to tighten to <code>600</code>.</li>
+</ul>
+<h3>5) Model auth health (OAuth expiry)</h3>
+<p>Doctor inspects OAuth profiles in the auth store, warns when tokens are
+expiring/expired, and can refresh them when safe. If the Anthropic Claude Code
+profile is stale, it suggests running <code>claude setup-token</code> (or pasting a setup-token).
+Refresh prompts only appear when running interactively (TTY); <code>--non-interactive</code>
+skips refresh attempts.</p>
+<p>Doctor also reports auth profiles that are temporarily unusable due to:</p>
+<ul>
+<li>short cooldowns (rate limits/timeouts/auth failures)</li>
+<li>longer disables (billing/credit failures)</li>
+</ul>
+<h3>6) Hooks model validation</h3>
+<p>If <code>hooks.gmail.model</code> is set, doctor validates the model reference against the
+catalog and allowlist and warns when it won’t resolve or is disallowed.</p>
+<h3>7) Sandbox image repair</h3>
+<p>When sandboxing is enabled, doctor checks Docker images and offers to build or
+switch to legacy names if the current image is missing.</p>
+<h3>8) Gateway service migrations and cleanup hints</h3>
+<p>Doctor detects legacy gateway services (launchd/systemd/schtasks) and
+offers to remove them and install the AGDI service using the current gateway
+port. It can also scan for extra gateway-like services and print cleanup hints.
+Profile-named AGDI gateway services are considered first-class and are not
+flagged as &quot;extra.&quot;</p>
+<h3>9) Security warnings</h3>
+<p>Doctor emits warnings when a provider is open to DMs without an allowlist, or
+when a policy is configured in a dangerous way.</p>
+<h3>10) systemd linger (Linux)</h3>
+<p>If running as a systemd user service, doctor ensures lingering is enabled so the
+gateway stays alive after logout.</p>
+<h3>11) Skills status</h3>
+<p>Doctor prints a quick summary of eligible/missing/blocked skills for the current
+workspace.</p>
+<h3>12) Gateway auth checks (local token)</h3>
+<p>Doctor warns when <code>gateway.auth</code> is missing on a local gateway and offers to
+generate a token. Use <code>agdi doctor --generate-gateway-token</code> to force token
+creation in automation.</p>
+<h3>13) Gateway health check + restart</h3>
+<p>Doctor runs a health check and offers to restart the gateway when it looks
+unhealthy.</p>
+<h3>14) Channel status warnings</h3>
+<p>If the gateway is healthy, doctor runs a channel status probe and reports
+warnings with suggested fixes.</p>
+<h3>15) Supervisor config audit + repair</h3>
+<p>Doctor checks the installed supervisor config (launchd/systemd/schtasks) for
+missing or outdated defaults (e.g., systemd network-online dependencies and
+restart delay). When it finds a mismatch, it recommends an update and can
+rewrite the service file/task to the current defaults.</p>
+<p>Notes:</p>
+<ul>
+<li><code>agdi doctor</code> prompts before rewriting supervisor config.</li>
+<li><code>agdi doctor --yes</code> accepts the default repair prompts.</li>
+<li><code>agdi doctor --repair</code> applies recommended fixes without prompts.</li>
+<li><code>agdi doctor --repair --force</code> overwrites custom supervisor configs.</li>
+<li>You can always force a full rewrite via <code>agdi gateway install --force</code>.</li>
+</ul>
+<h3>16) Gateway runtime + port diagnostics</h3>
+<p>Doctor inspects the service runtime (PID, last exit status) and warns when the
+service is installed but not actually running. It also checks for port collisions
+on the gateway port (default <code>18789</code>) and reports likely causes (gateway already
+running, SSH tunnel).</p>
+<h3>17) Gateway runtime best practices</h3>
+<p>Doctor warns when the gateway service runs on Bun or a version-managed Node path
+(<code>nvm</code>, <code>fnm</code>, <code>volta</code>, <code>asdf</code>, etc.). WhatsApp + Telegram channels require Node,
+and version-manager paths can break after upgrades because the service does not
+load your shell init. Doctor offers to migrate to a system Node install when
+available (Homebrew/apt/choco).</p>
+<h3>18) Config write + wizard metadata</h3>
+<p>Doctor persists any config changes and stamps wizard metadata to record the
+doctor run.</p>
+<h3>19) Workspace tips (backup + memory system)</h3>
+<p>Doctor suggests a workspace memory system when missing and prints a backup tip
+if the workspace is not already under git.</p>
+<p>See <a href="/docs/concepts/agent-workspace">/concepts/agent-workspace</a> for a full guide to
+workspace structure and git backup (recommended private GitHub or GitLab).</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

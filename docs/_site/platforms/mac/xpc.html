@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS IPC — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="active" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI macOS IPC architecture</h1>
+<p><strong>Current model:</strong> a local Unix socket connects the <strong>node host service</strong> to the <strong>macOS app</strong> for exec approvals + <code>system.run</code>. A <code>agdi-mac</code> debug CLI exists for discovery/connect checks; agent actions still flow through the Gateway WebSocket and <code>node.invoke</code>. UI automation uses PeekabooBridge.</p>
+<h2>Goals</h2>
+<ul>
+<li>Single GUI app instance that owns all TCC-facing work (notifications, screen recording, mic, speech, AppleScript).</li>
+<li>A small surface for automation: Gateway + node commands, plus PeekabooBridge for UI automation.</li>
+<li>Predictable permissions: always the same signed bundle ID, launched by launchd, so TCC grants stick.</li>
+</ul>
+<h2>How it works</h2>
+<h3>Gateway + node transport</h3>
+<ul>
+<li>The app runs the Gateway (local mode) and connects to it as a node.</li>
+<li>Agent actions are performed via <code>node.invoke</code> (e.g. <code>system.run</code>, <code>system.notify</code>, <code>canvas.*</code>).</li>
+</ul>
+<h3>Node service + app IPC</h3>
+<ul>
+<li>A headless node host service connects to the Gateway WebSocket.</li>
+<li><code>system.run</code> requests are forwarded to the macOS app over a local Unix socket.</li>
+<li>The app performs the exec in UI context, prompts if needed, and returns output.</li>
+</ul>
+<p>Diagram (SCI):</p>
+<pre><code>Agent -&gt; Gateway -&gt; Node Service (WS)
+                      |  IPC (UDS + token + HMAC + TTL)
+                      v
+                  Mac App (UI + TCC + system.run)
+</code></pre>
+<h3>PeekabooBridge (UI automation)</h3>
+<ul>
+<li>UI automation uses a separate UNIX socket named <code>bridge.sock</code> and the PeekabooBridge JSON protocol.</li>
+<li>Host preference order (client-side): Peekaboo.app → Claude.app → AGDI.app → local execution.</li>
+<li>Security: bridge hosts require an allowed TeamID; DEBUG-only same-UID escape hatch is guarded by <code>PEEKABOO_ALLOW_UNSIGNED_SOCKET_CLIENTS=1</code> (Peekaboo convention).</li>
+<li>See: <a href="/platforms/mac/peekaboo">PeekabooBridge usage</a> for details.</li>
+</ul>
+<h2>Operational flows</h2>
+<ul>
+<li>Restart/rebuild: <code>SIGN_IDENTITY=&quot;Apple Development: &lt;Developer Name&gt; (&lt;TEAMID&gt;)&quot; scripts/restart-mac.sh</code><ul>
+<li>Kills existing instances</li>
+<li>Swift build + package</li>
+<li>Writes/bootstraps/kickstarts the LaunchAgent</li>
+</ul>
+</li>
+<li>Single instance: app exits early if another instance with the same bundle ID is running.</li>
+</ul>
+<h2>Hardening notes</h2>
+<ul>
+<li>Prefer requiring a TeamID match for all privileged surfaces.</li>
+<li>PeekabooBridge: <code>PEEKABOO_ALLOW_UNSIGNED_SOCKET_CLIENTS=1</code> (DEBUG-only) may allow same-UID callers for local development.</li>
+<li>All communication remains local-only; no network sockets are exposed.</li>
+<li>TCC prompts originate only from the GUI app bundle; keep the signed bundle ID stable across rebuilds.</li>
+<li>IPC hardening: socket mode <code>0600</code>, token, peer-UID checks, HMAC challenge/response, short TTL.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

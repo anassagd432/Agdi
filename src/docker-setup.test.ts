@@ -39,7 +39,7 @@ exit 0
 }
 
 async function createDockerSetupSandbox(): Promise<DockerSetupSandbox> {
-  const rootDir = await mkdtemp(join(tmpdir(), "openclaw-docker-setup-"));
+  const rootDir = await mkdtemp(join(tmpdir(), "agdi-docker-setup-"));
   const scriptPath = join(rootDir, "docker-setup.sh");
   const dockerfilePath = join(rootDir, "Dockerfile");
   const composePath = join(rootDir, "docker-compose.yml");
@@ -51,7 +51,7 @@ async function createDockerSetupSandbox(): Promise<DockerSetupSandbox> {
   await writeFile(dockerfilePath, "FROM scratch\n");
   await writeFile(
     composePath,
-    "services:\n  openclaw-gateway:\n    image: noop\n  openclaw-cli:\n    image: noop\n",
+    "services:\n  agdi-gateway:\n    image: noop\n  agdi-cli:\n    image: noop\n",
   );
   await writeDockerStub(binDir, logPath);
 
@@ -69,9 +69,9 @@ function createEnv(
     LC_ALL: process.env.LC_ALL,
     TMPDIR: process.env.TMPDIR,
     DOCKER_STUB_LOG: sandbox.logPath,
-    OPENCLAW_GATEWAY_TOKEN: "test-token",
-    OPENCLAW_CONFIG_DIR: join(sandbox.rootDir, "config"),
-    OPENCLAW_WORKSPACE_DIR: join(sandbox.rootDir, "openclaw"),
+    AGDI_GATEWAY_TOKEN: "test-token",
+    AGDI_CONFIG_DIR: join(sandbox.rootDir, "config"),
+    AGDI_WORKSPACE_DIR: join(sandbox.rootDir, "agdi"),
   };
 
   for (const [key, value] of Object.entries(overrides)) {
@@ -118,23 +118,23 @@ describe("docker-setup.sh", () => {
     const result = spawnSync("bash", [sandbox.scriptPath], {
       cwd: sandbox.rootDir,
       env: createEnv(sandbox, {
-        OPENCLAW_DOCKER_APT_PACKAGES: "ffmpeg build-essential",
-        OPENCLAW_EXTRA_MOUNTS: undefined,
-        OPENCLAW_HOME_VOLUME: "openclaw-home",
+        AGDI_DOCKER_APT_PACKAGES: "ffmpeg build-essential",
+        AGDI_EXTRA_MOUNTS: undefined,
+        AGDI_HOME_VOLUME: "agdi-home",
       }),
       stdio: ["ignore", "ignore", "pipe"],
     });
     expect(result.status).toBe(0);
     const envFile = await readFile(join(sandbox.rootDir, ".env"), "utf8");
-    expect(envFile).toContain("OPENCLAW_DOCKER_APT_PACKAGES=ffmpeg build-essential");
-    expect(envFile).toContain("OPENCLAW_EXTRA_MOUNTS=");
-    expect(envFile).toContain("OPENCLAW_HOME_VOLUME=openclaw-home");
+    expect(envFile).toContain("AGDI_DOCKER_APT_PACKAGES=ffmpeg build-essential");
+    expect(envFile).toContain("AGDI_EXTRA_MOUNTS=");
+    expect(envFile).toContain("AGDI_HOME_VOLUME=agdi-home");
     const extraCompose = await readFile(join(sandbox.rootDir, "docker-compose.extra.yml"), "utf8");
-    expect(extraCompose).toContain("openclaw-home:/home/node");
+    expect(extraCompose).toContain("agdi-home:/home/node");
     expect(extraCompose).toContain("volumes:");
-    expect(extraCompose).toContain("openclaw-home:");
+    expect(extraCompose).toContain("agdi-home:");
     const log = await readFile(sandbox.logPath, "utf8");
-    expect(log).toContain("--build-arg OPENCLAW_DOCKER_APT_PACKAGES=ffmpeg build-essential");
+    expect(log).toContain("--build-arg AGDI_DOCKER_APT_PACKAGES=ffmpeg build-essential");
   });
 
   it("avoids associative arrays so the script remains Bash 3.2-compatible", async () => {

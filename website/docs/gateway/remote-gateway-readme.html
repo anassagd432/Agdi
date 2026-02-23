@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remote Gateway Setup — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="active" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Running AGDI.app with a Remote Gateway</h1>
+<p>AGDI.app uses SSH tunneling to connect to a remote gateway. This guide shows you how to set it up.</p>
+<h2>Overview</h2>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Client[&quot;Client Machine&quot;]
+        direction TB
+        A[&quot;AGDI.app&quot;]
+        B[&quot;ws://127.0.0.1:18789\n(local port)&quot;]
+        T[&quot;SSH Tunnel&quot;]
+
+        A --&gt; B
+        B --&gt; T
+    end
+    subgraph Remote[&quot;Remote Machine&quot;]
+        direction TB
+        C[&quot;Gateway WebSocket&quot;]
+        D[&quot;ws://127.0.0.1:18789&quot;]
+
+        C --&gt; D
+    end
+    T --&gt; C
+</code></pre>
+<h2>Quick Setup</h2>
+<h3>Step 1: Add SSH Config</h3>
+<p>Edit <code>~/.ssh/config</code> and add:</p>
+<pre><code class="language-ssh">Host remote-gateway
+    HostName &lt;REMOTE_IP&gt;          # e.g., 172.27.187.184
+    User &lt;REMOTE_USER&gt;            # e.g., jefferson
+    LocalForward 18789 127.0.0.1:18789
+    IdentityFile ~/.ssh/id_rsa
+</code></pre>
+<p>Replace <code>&lt;REMOTE_IP&gt;</code> and <code>&lt;REMOTE_USER&gt;</code> with your values.</p>
+<h3>Step 2: Copy SSH Key</h3>
+<p>Copy your public key to the remote machine (enter password once):</p>
+<pre><code class="language-bash">ssh-copy-id -i ~/.ssh/id_rsa &lt;REMOTE_USER&gt;@&lt;REMOTE_IP&gt;
+</code></pre>
+<h3>Step 3: Set Gateway Token</h3>
+<pre><code class="language-bash">launchctl setenv AGDI_GATEWAY_TOKEN &quot;&lt;your-token&gt;&quot;
+</code></pre>
+<h3>Step 4: Start SSH Tunnel</h3>
+<pre><code class="language-bash">ssh -N remote-gateway &amp;
+</code></pre>
+<h3>Step 5: Restart AGDI.app</h3>
+<pre><code class="language-bash"># Quit AGDI.app (⌘Q), then reopen:
+open /path/to/AGDI.app
+</code></pre>
+<p>The app will now connect to the remote gateway through the SSH tunnel.</p>
+<hr>
+<h2>Auto-Start Tunnel on Login</h2>
+<p>To have the SSH tunnel start automatically when you log in, create a Launch Agent.</p>
+<h3>Create the PLIST file</h3>
+<p>Save this as <code>~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist</code>:</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;bot.molt.ssh-tunnel&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/usr/bin/ssh&lt;/string&gt;
+        &lt;string&gt;-N&lt;/string&gt;
+        &lt;string&gt;remote-gateway&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre>
+<h3>Load the Launch Agent</h3>
+<pre><code class="language-bash">launchctl bootstrap gui/$UID ~/Library/LaunchAgents/bot.molt.ssh-tunnel.plist
+</code></pre>
+<p>The tunnel will now:</p>
+<ul>
+<li>Start automatically when you log in</li>
+<li>Restart if it crashes</li>
+<li>Keep running in the background</li>
+</ul>
+<p>Legacy note: remove any leftover <code>com.agdi.ssh-tunnel</code> LaunchAgent if present.</p>
+<hr>
+<h2>Troubleshooting</h2>
+<p><strong>Check if tunnel is running:</strong></p>
+<pre><code class="language-bash">ps aux | grep &quot;ssh -N remote-gateway&quot; | grep -v grep
+lsof -i :18789
+</code></pre>
+<p><strong>Restart the tunnel:</strong></p>
+<pre><code class="language-bash">launchctl kickstart -k gui/$UID/bot.molt.ssh-tunnel
+</code></pre>
+<p><strong>Stop the tunnel:</strong></p>
+<pre><code class="language-bash">launchctl bootout gui/$UID/bot.molt.ssh-tunnel
+</code></pre>
+<hr>
+<h2>How It Works</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>LocalForward 18789 127.0.0.1:18789</code></td>
+<td>Forwards local port 18789 to remote port 18789</td>
+</tr>
+<tr>
+<td><code>ssh -N</code></td>
+<td>SSH without executing remote commands (just port forwarding)</td>
+</tr>
+<tr>
+<td><code>KeepAlive</code></td>
+<td>Automatically restarts tunnel if it crashes</td>
+</tr>
+<tr>
+<td><code>RunAtLoad</code></td>
+<td>Starts tunnel when the agent loads</td>
+</tr>
+</tbody></table>
+<p>AGDI.app connects to <code>ws://127.0.0.1:18789</code> on your client machine. The SSH tunnel forwards that connection to port 18789 on the remote machine where the Gateway is running.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

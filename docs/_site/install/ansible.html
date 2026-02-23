@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="active" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Ansible Installation</h1>
+<p>The recommended way to deploy AGDI to production servers is via <strong><a href="https://github.com/agdi/agdi-ansible">agdi-ansible</a></strong> — an automated installer with security-first architecture.</p>
+<h2>Quick Start</h2>
+<p>One-command install:</p>
+<pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/agdi/agdi-ansible/main/install.sh | bash
+</code></pre>
+<blockquote>
+<p><strong>📦 Full guide: <a href="https://github.com/agdi/agdi-ansible">github.com/agdi/agdi-ansible</a></strong></p>
+<p>The agdi-ansible repo is the source of truth for Ansible deployment. This page is a quick overview.</p>
+</blockquote>
+<h2>What You Get</h2>
+<ul>
+<li>🔒 <strong>Firewall-first security</strong>: UFW + Docker isolation (only SSH + Tailscale accessible)</li>
+<li>🔐 <strong>Tailscale VPN</strong>: Secure remote access without exposing services publicly</li>
+<li>🐳 <strong>Docker</strong>: Isolated sandbox containers, localhost-only bindings</li>
+<li>🛡️ <strong>Defense in depth</strong>: 4-layer security architecture</li>
+<li>🚀 <strong>One-command setup</strong>: Complete deployment in minutes</li>
+<li>🔧 <strong>Systemd integration</strong>: Auto-start on boot with hardening</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li><strong>OS</strong>: Debian 11+ or Ubuntu 20.04+</li>
+<li><strong>Access</strong>: Root or sudo privileges</li>
+<li><strong>Network</strong>: Internet connection for package installation</li>
+<li><strong>Ansible</strong>: 2.14+ (installed automatically by quick-start script)</li>
+</ul>
+<h2>What Gets Installed</h2>
+<p>The Ansible playbook installs and configures:</p>
+<ol>
+<li><strong>Tailscale</strong> (mesh VPN for secure remote access)</li>
+<li><strong>UFW firewall</strong> (SSH + Tailscale ports only)</li>
+<li><strong>Docker CE + Compose V2</strong> (for agent sandboxes)</li>
+<li><strong>Node.js 22.x + pnpm</strong> (runtime dependencies)</li>
+<li><strong>AGDI</strong> (host-based, not containerized)</li>
+<li><strong>Systemd service</strong> (auto-start with security hardening)</li>
+</ol>
+<p>Note: The gateway runs <strong>directly on the host</strong> (not in Docker), but agent sandboxes use Docker for isolation. See <a href="/gateway/sandboxing">Sandboxing</a> for details.</p>
+<h2>Post-Install Setup</h2>
+<p>After installation completes, switch to the agdi user:</p>
+<pre><code class="language-bash">sudo -i -u agdi
+</code></pre>
+<p>The post-install script will guide you through:</p>
+<ol>
+<li><strong>Onboarding wizard</strong>: Configure AGDI settings</li>
+<li><strong>Provider login</strong>: Connect WhatsApp/Telegram/Discord/Signal</li>
+<li><strong>Gateway testing</strong>: Verify the installation</li>
+<li><strong>Tailscale setup</strong>: Connect to your VPN mesh</li>
+</ol>
+<h3>Quick commands</h3>
+<pre><code class="language-bash"># Check service status
+sudo systemctl status agdi
+
+# View live logs
+sudo journalctl -u agdi -f
+
+# Restart gateway
+sudo systemctl restart agdi
+
+# Provider login (run as agdi user)
+sudo -i -u agdi
+agdi channels login
+</code></pre>
+<h2>Security Architecture</h2>
+<h3>4-Layer Defense</h3>
+<ol>
+<li><strong>Firewall (UFW)</strong>: Only SSH (22) + Tailscale (41641/udp) exposed publicly</li>
+<li><strong>VPN (Tailscale)</strong>: Gateway accessible only via VPN mesh</li>
+<li><strong>Docker Isolation</strong>: DOCKER-USER iptables chain prevents external port exposure</li>
+<li><strong>Systemd Hardening</strong>: NoNewPrivileges, PrivateTmp, unprivileged user</li>
+</ol>
+<h3>Verification</h3>
+<p>Test external attack surface:</p>
+<pre><code class="language-bash">nmap -p- YOUR_SERVER_IP
+</code></pre>
+<p>Should show <strong>only port 22</strong> (SSH) open. All other services (gateway, Docker) are locked down.</p>
+<h3>Docker Availability</h3>
+<p>Docker is installed for <strong>agent sandboxes</strong> (isolated tool execution), not for running the gateway itself. The gateway binds to localhost only and is accessible via Tailscale VPN.</p>
+<p>See <a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> for sandbox configuration.</p>
+<h2>Manual Installation</h2>
+<p>If you prefer manual control over the automation:</p>
+<pre><code class="language-bash"># 1. Install prerequisites
+sudo apt update &amp;&amp; sudo apt install -y ansible git
+
+# 2. Clone repository
+git clone https://github.com/agdi/agdi-ansible.git
+cd agdi-ansible
+
+# 3. Install Ansible collections
+ansible-galaxy collection install -r requirements.yml
+
+# 4. Run playbook
+./run-playbook.sh
+
+# Or run directly (then manually execute /tmp/agdi-setup.sh after)
+# ansible-playbook playbook.yml --ask-become-pass
+</code></pre>
+<h2>Updating AGDI</h2>
+<p>The Ansible installer sets up AGDI for manual updates. See <a href="/install/updating">Updating</a> for the standard update flow.</p>
+<p>To re-run the Ansible playbook (e.g., for configuration changes):</p>
+<pre><code class="language-bash">cd agdi-ansible
+./run-playbook.sh
+</code></pre>
+<p>Note: This is idempotent and safe to run multiple times.</p>
+<h2>Troubleshooting</h2>
+<h3>Firewall blocks my connection</h3>
+<p>If you&#39;re locked out:</p>
+<ul>
+<li>Ensure you can access via Tailscale VPN first</li>
+<li>SSH access (port 22) is always allowed</li>
+<li>The gateway is <strong>only</strong> accessible via Tailscale by design</li>
+</ul>
+<h3>Service won&#39;t start</h3>
+<pre><code class="language-bash"># Check logs
+sudo journalctl -u agdi -n 100
+
+# Verify permissions
+sudo ls -la /opt/agdi
+
+# Test manual start
+sudo -i -u agdi
+cd ~/agdi
+pnpm start
+</code></pre>
+<h3>Docker sandbox issues</h3>
+<pre><code class="language-bash"># Verify Docker is running
+sudo systemctl status docker
+
+# Check sandbox image
+sudo docker images | grep agdi-sandbox
+
+# Build sandbox image if missing
+cd /opt/agdi/agdi
+sudo -u agdi ./scripts/sandbox-setup.sh
+</code></pre>
+<h3>Provider login fails</h3>
+<p>Make sure you&#39;re running as the <code>agdi</code> user:</p>
+<pre><code class="language-bash">sudo -i -u agdi
+agdi channels login
+</code></pre>
+<h2>Advanced Configuration</h2>
+<p>For detailed security architecture and troubleshooting:</p>
+<ul>
+<li><a href="https://github.com/agdi/agdi-ansible/blob/main/docs/security.md">Security Architecture</a></li>
+<li><a href="https://github.com/agdi/agdi-ansible/blob/main/docs/architecture.md">Technical Details</a></li>
+<li><a href="https://github.com/agdi/agdi-ansible/blob/main/docs/troubleshooting.md">Troubleshooting Guide</a></li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="https://github.com/agdi/agdi-ansible">agdi-ansible</a> — full deployment guide</li>
+<li><a href="/install/docker">Docker</a> — containerized gateway setup</li>
+<li><a href="/gateway/sandboxing">Sandboxing</a> — agent sandbox configuration</li>
+<li><a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> — per-agent isolation</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

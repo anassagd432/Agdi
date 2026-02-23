@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Channel Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="active" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Channel troubleshooting</h1>
+<p>Use this page when a channel connects but behavior is wrong.</p>
+<h2>Command ladder</h2>
+<p>Run these in order first:</p>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Healthy baseline:</p>
+<ul>
+<li><code>Runtime: running</code></li>
+<li><code>RPC probe: ok</code></li>
+<li>Channel probe shows connected/ready</li>
+</ul>
+<h2>WhatsApp</h2>
+<h3>WhatsApp failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Connected but no DM replies</td>
+<td><code>agdi pairing list whatsapp</code></td>
+<td>Approve sender or switch DM policy/allowlist.</td>
+</tr>
+<tr>
+<td>Group messages ignored</td>
+<td>Check <code>requireMention</code> + mention patterns in config</td>
+<td>Mention the bot or relax mention policy for that group.</td>
+</tr>
+<tr>
+<td>Random disconnect/relogin loops</td>
+<td><code>agdi channels status --probe</code> + logs</td>
+<td>Re-login and verify credentials directory is healthy.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/whatsapp#troubleshooting-quick">/channels/whatsapp#troubleshooting-quick</a></p>
+<h2>Telegram</h2>
+<h3>Telegram failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/start</code> but no usable reply flow</td>
+<td><code>agdi pairing list telegram</code></td>
+<td>Approve pairing or change DM policy.</td>
+</tr>
+<tr>
+<td>Bot online but group stays silent</td>
+<td>Verify mention requirement and bot privacy mode</td>
+<td>Disable privacy mode for group visibility or mention bot.</td>
+</tr>
+<tr>
+<td>Send failures with network errors</td>
+<td>Inspect logs for Telegram API call failures</td>
+<td>Fix DNS/IPv6/proxy routing to <code>api.telegram.org</code>.</td>
+</tr>
+<tr>
+<td>Upgraded and allowlist blocks you</td>
+<td><code>agdi security audit</code> and config allowlists</td>
+<td>Run <code>agdi doctor --fix</code> or replace <code>@username</code> with numeric sender IDs.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/telegram#troubleshooting">/channels/telegram#troubleshooting</a></p>
+<h2>Discord</h2>
+<h3>Discord failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bot online but no guild replies</td>
+<td><code>agdi channels status --probe</code></td>
+<td>Allow guild/channel and verify message content intent.</td>
+</tr>
+<tr>
+<td>Group messages ignored</td>
+<td>Check logs for mention gating drops</td>
+<td>Mention bot or set guild/channel <code>requireMention: false</code>.</td>
+</tr>
+<tr>
+<td>DM replies missing</td>
+<td><code>agdi pairing list discord</code></td>
+<td>Approve DM pairing or adjust DM policy.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/discord#troubleshooting">/channels/discord#troubleshooting</a></p>
+<h2>Slack</h2>
+<h3>Slack failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Socket mode connected but no responses</td>
+<td><code>agdi channels status --probe</code></td>
+<td>Verify app token + bot token and required scopes.</td>
+</tr>
+<tr>
+<td>DMs blocked</td>
+<td><code>agdi pairing list slack</code></td>
+<td>Approve pairing or relax DM policy.</td>
+</tr>
+<tr>
+<td>Channel message ignored</td>
+<td>Check <code>groupPolicy</code> and channel allowlist</td>
+<td>Allow the channel or switch policy to <code>open</code>.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/slack#troubleshooting">/channels/slack#troubleshooting</a></p>
+<h2>iMessage and BlueBubbles</h2>
+<h3>iMessage and BlueBubbles failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No inbound events</td>
+<td>Verify webhook/server reachability and app permissions</td>
+<td>Fix webhook URL or BlueBubbles server state.</td>
+</tr>
+<tr>
+<td>Can send but no receive on macOS</td>
+<td>Check macOS privacy permissions for Messages automation</td>
+<td>Re-grant TCC permissions and restart channel process.</td>
+</tr>
+<tr>
+<td>DM sender blocked</td>
+<td><code>agdi pairing list imessage</code> or <code>agdi pairing list bluebubbles</code></td>
+<td>Approve pairing or update allowlist.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting:</p>
+<ul>
+<li><a href="/docs/channels/imessage#troubleshooting-macos-privacy-and-security-tcc">/channels/imessage#troubleshooting-macos-privacy-and-security-tcc</a></li>
+<li><a href="/docs/channels/bluebubbles#troubleshooting">/channels/bluebubbles#troubleshooting</a></li>
+</ul>
+<h2>Signal</h2>
+<h3>Signal failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Daemon reachable but bot silent</td>
+<td><code>agdi channels status --probe</code></td>
+<td>Verify <code>signal-cli</code> daemon URL/account and receive mode.</td>
+</tr>
+<tr>
+<td>DM blocked</td>
+<td><code>agdi pairing list signal</code></td>
+<td>Approve sender or adjust DM policy.</td>
+</tr>
+<tr>
+<td>Group replies do not trigger</td>
+<td>Check group allowlist and mention patterns</td>
+<td>Add sender/group or loosen gating.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/signal#troubleshooting">/channels/signal#troubleshooting</a></p>
+<h2>Matrix</h2>
+<h3>Matrix failure signatures</h3>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fastest check</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Logged in but ignores room messages</td>
+<td><code>agdi channels status --probe</code></td>
+<td>Check <code>groupPolicy</code> and room allowlist.</td>
+</tr>
+<tr>
+<td>DMs do not process</td>
+<td><code>agdi pairing list matrix</code></td>
+<td>Approve sender or adjust DM policy.</td>
+</tr>
+<tr>
+<td>Encrypted rooms fail</td>
+<td>Verify crypto module and encryption settings</td>
+<td>Enable encryption support and rejoin/sync room.</td>
+</tr>
+</tbody></table>
+<p>Full troubleshooting: <a href="/docs/channels/matrix#troubleshooting">/channels/matrix#troubleshooting</a></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

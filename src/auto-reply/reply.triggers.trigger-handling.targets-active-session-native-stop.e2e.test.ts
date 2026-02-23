@@ -173,7 +173,7 @@ describe("trigger handling", () => {
         agents: {
           defaults: {
             model: "anthropic/claude-opus-4-5",
-            workspace: join(home, "openclaw"),
+            workspace: join(home, "agdi"),
           },
           list: [{ id: "coding", model: "minimax/MiniMax-M2.1" }],
         },

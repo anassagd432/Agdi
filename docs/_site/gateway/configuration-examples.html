@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration Examples — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="active" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Configuration Examples</h1>
+<p>Examples below are aligned with the current config schema. For the exhaustive reference and per-field notes, see <a href="/gateway/configuration">Configuration</a>.</p>
+<h2>Quick start</h2>
+<h3>Absolute minimum</h3>
+<pre><code class="language-json5">{
+  agent: { workspace: &quot;~/.agdi/workspace&quot; },
+  channels: { whatsapp: { allowFrom: [&quot;+15555550123&quot;] } },
+}
+</code></pre>
+<p>Save to <code>~/.agdi/agdi.json</code> and you can DM the bot from that number.</p>
+<h3>Recommended starter</h3>
+<pre><code class="language-json5">{
+  identity: {
+    name: &quot;Clawd&quot;,
+    theme: &quot;helpful assistant&quot;,
+    emoji: &quot;🦞&quot;,
+  },
+  agent: {
+    workspace: &quot;~/.agdi/workspace&quot;,
+    model: { primary: &quot;anthropic/claude-sonnet-4-5&quot; },
+  },
+  channels: {
+    whatsapp: {
+      allowFrom: [&quot;+15555550123&quot;],
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+  },
+}
+</code></pre>
+<h2>Expanded example (major options)</h2>
+<blockquote>
+<p>JSON5 lets you use comments and trailing commas. Regular JSON works too.</p>
+</blockquote>
+<pre><code class="language-json5">{
+  // Environment + shell
+  env: {
+    OPENROUTER_API_KEY: &quot;sk-or-...&quot;,
+    vars: {
+      GROQ_API_KEY: &quot;gsk-...&quot;,
+    },
+    shellEnv: {
+      enabled: true,
+      timeoutMs: 15000,
+    },
+  },
+
+  // Auth profile metadata (secrets live in auth-profiles.json)
+  auth: {
+    profiles: {
+      &quot;anthropic:me@example.com&quot;: {
+        provider: &quot;anthropic&quot;,
+        mode: &quot;oauth&quot;,
+        email: &quot;me@example.com&quot;,
+      },
+      &quot;anthropic:work&quot;: { provider: &quot;anthropic&quot;, mode: &quot;api_key&quot; },
+      &quot;openai:default&quot;: { provider: &quot;openai&quot;, mode: &quot;api_key&quot; },
+      &quot;openai-codex:default&quot;: { provider: &quot;openai-codex&quot;, mode: &quot;oauth&quot; },
+    },
+    order: {
+      anthropic: [&quot;anthropic:me@example.com&quot;, &quot;anthropic:work&quot;],
+      openai: [&quot;openai:default&quot;],
+      &quot;openai-codex&quot;: [&quot;openai-codex:default&quot;],
+    },
+  },
+
+  // Identity
+  identity: {
+    name: &quot;Samantha&quot;,
+    theme: &quot;helpful sloth&quot;,
+    emoji: &quot;🦥&quot;,
+  },
+
+  // Logging
+  logging: {
+    level: &quot;info&quot;,
+    file: &quot;/tmp/agdi/agdi.log&quot;,
+    consoleLevel: &quot;info&quot;,
+    consoleStyle: &quot;pretty&quot;,
+    redactSensitive: &quot;tools&quot;,
+  },
+
+  // Message formatting
+  messages: {
+    messagePrefix: &quot;[agdi]&quot;,
+    responsePrefix: &quot;&gt;&quot;,
+    ackReaction: &quot;👀&quot;,
+    ackReactionScope: &quot;group-mentions&quot;,
+  },
+
+  // Routing + queue
+  routing: {
+    groupChat: {
+      mentionPatterns: [&quot;@agdi&quot;, &quot;agdi&quot;],
+      historyLimit: 50,
+    },
+    queue: {
+      mode: &quot;collect&quot;,
+      debounceMs: 1000,
+      cap: 20,
+      drop: &quot;summarize&quot;,
+      byChannel: {
+        whatsapp: &quot;collect&quot;,
+        telegram: &quot;collect&quot;,
+        discord: &quot;collect&quot;,
+        slack: &quot;collect&quot;,
+        signal: &quot;collect&quot;,
+        imessage: &quot;collect&quot;,
+        webchat: &quot;collect&quot;,
+      },
+    },
+  },
+
+  // Tooling
+  tools: {
+    media: {
+      audio: {
+        enabled: true,
+        maxBytes: 20971520,
+        models: [
+          { provider: &quot;openai&quot;, model: &quot;gpt-4o-mini-transcribe&quot; },
+          // Optional CLI fallback (Whisper binary):
+          // { type: &quot;cli&quot;, command: &quot;whisper&quot;, args: [&quot;--model&quot;, &quot;base&quot;, &quot;{{MediaPath}}&quot;] }
+        ],
+        timeoutSeconds: 120,
+      },
+      video: {
+        enabled: true,
+        maxBytes: 52428800,
+        models: [{ provider: &quot;google&quot;, model: &quot;gemini-3-flash-preview&quot; }],
+      },
+    },
+  },
+
+  // Session behavior
+  session: {
+    scope: &quot;per-sender&quot;,
+    reset: {
+      mode: &quot;daily&quot;,
+      atHour: 4,
+      idleMinutes: 60,
+    },
+    resetByChannel: {
+      discord: { mode: &quot;idle&quot;, idleMinutes: 10080 },
+    },
+    resetTriggers: [&quot;/new&quot;, &quot;/reset&quot;],
+    store: &quot;~/.agdi/agents/default/sessions/sessions.json&quot;,
+    maintenance: {
+      mode: &quot;warn&quot;,
+      pruneAfter: &quot;30d&quot;,
+      maxEntries: 500,
+      rotateBytes: &quot;10mb&quot;,
+    },
+    typingIntervalSeconds: 5,
+    sendPolicy: {
+      default: &quot;allow&quot;,
+      rules: [{ action: &quot;deny&quot;, match: { channel: &quot;discord&quot;, chatType: &quot;group&quot; } }],
+    },
+  },
+
+  // Channels
+  channels: {
+    whatsapp: {
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;+15555550123&quot;],
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;+15555550123&quot;],
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+
+    telegram: {
+      enabled: true,
+      botToken: &quot;YOUR_TELEGRAM_BOT_TOKEN&quot;,
+      allowFrom: [&quot;123456789&quot;],
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;123456789&quot;],
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+
+    discord: {
+      enabled: true,
+      token: &quot;YOUR_DISCORD_BOT_TOKEN&quot;,
+      dm: { enabled: true, allowFrom: [&quot;steipete&quot;] },
+      guilds: {
+        &quot;123456789012345678&quot;: {
+          slug: &quot;friends-of-agdi&quot;,
+          requireMention: false,
+          channels: {
+            general: { allow: true },
+            help: { allow: true, requireMention: true },
+          },
+        },
+      },
+    },
+
+    slack: {
+      enabled: true,
+      botToken: &quot;xoxb-REPLACE_ME&quot;,
+      appToken: &quot;xapp-REPLACE_ME&quot;,
+      channels: {
+        &quot;#general&quot;: { allow: true, requireMention: true },
+      },
+      dm: { enabled: true, allowFrom: [&quot;U123&quot;] },
+      slashCommand: {
+        enabled: true,
+        name: &quot;agdi&quot;,
+        sessionPrefix: &quot;slack:slash&quot;,
+        ephemeral: true,
+      },
+    },
+  },
+
+  // Agent runtime
+  agents: {
+    defaults: {
+      workspace: &quot;~/.agdi/workspace&quot;,
+      userTimezone: &quot;America/Chicago&quot;,
+      model: {
+        primary: &quot;anthropic/claude-sonnet-4-5&quot;,
+        fallbacks: [&quot;anthropic/claude-opus-4-6&quot;, &quot;openai/gpt-5.2&quot;],
+      },
+      imageModel: {
+        primary: &quot;openrouter/anthropic/claude-sonnet-4-5&quot;,
+      },
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;opus&quot; },
+        &quot;anthropic/claude-sonnet-4-5&quot;: { alias: &quot;sonnet&quot; },
+        &quot;openai/gpt-5.2&quot;: { alias: &quot;gpt&quot; },
+      },
+      thinkingDefault: &quot;low&quot;,
+      verboseDefault: &quot;off&quot;,
+      elevatedDefault: &quot;on&quot;,
+      blockStreamingDefault: &quot;off&quot;,
+      blockStreamingBreak: &quot;text_end&quot;,
+      blockStreamingChunk: {
+        minChars: 800,
+        maxChars: 1200,
+        breakPreference: &quot;paragraph&quot;,
+      },
+      blockStreamingCoalesce: {
+        idleMs: 1000,
+      },
+      humanDelay: {
+        mode: &quot;natural&quot;,
+      },
+      timeoutSeconds: 600,
+      mediaMaxMb: 5,
+      typingIntervalSeconds: 5,
+      maxConcurrent: 3,
+      heartbeat: {
+        every: &quot;30m&quot;,
+        model: &quot;anthropic/claude-sonnet-4-5&quot;,
+        target: &quot;last&quot;,
+        to: &quot;+15555550123&quot;,
+        prompt: &quot;HEARTBEAT&quot;,
+        ackMaxChars: 300,
+      },
+      memorySearch: {
+        provider: &quot;gemini&quot;,
+        model: &quot;gemini-embedding-001&quot;,
+        remote: {
+          apiKey: &quot;${GEMINI_API_KEY}&quot;,
+        },
+        extraPaths: [&quot;../team-docs&quot;, &quot;/srv/shared-notes&quot;],
+      },
+      sandbox: {
+        mode: &quot;non-main&quot;,
+        perSession: true,
+        workspaceRoot: &quot;~/.agdi/sandboxes&quot;,
+        docker: {
+          image: &quot;agdi-sandbox:bookworm-slim&quot;,
+          workdir: &quot;/workspace&quot;,
+          readOnlyRoot: true,
+          tmpfs: [&quot;/tmp&quot;, &quot;/var/tmp&quot;, &quot;/run&quot;],
+          network: &quot;none&quot;,
+          user: &quot;1000:1000&quot;,
+        },
+        browser: {
+          enabled: false,
+        },
+      },
+    },
+  },
+
+  tools: {
+    allow: [&quot;exec&quot;, &quot;process&quot;, &quot;read&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;],
+    deny: [&quot;browser&quot;, &quot;canvas&quot;],
+    exec: {
+      backgroundMs: 10000,
+      timeoutSec: 1800,
+      cleanupMs: 1800000,
+    },
+    elevated: {
+      enabled: true,
+      allowFrom: {
+        whatsapp: [&quot;+15555550123&quot;],
+        telegram: [&quot;123456789&quot;],
+        discord: [&quot;steipete&quot;],
+        slack: [&quot;U123&quot;],
+        signal: [&quot;+15555550123&quot;],
+        imessage: [&quot;user@example.com&quot;],
+        webchat: [&quot;session:demo&quot;],
+      },
+    },
+  },
+
+  // Custom model providers
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      &quot;custom-proxy&quot;: {
+        baseUrl: &quot;http://localhost:4000/v1&quot;,
+        apiKey: &quot;LITELLM_KEY&quot;,
+        api: &quot;openai-responses&quot;,
+        authHeader: true,
+        headers: { &quot;X-Proxy-Region&quot;: &quot;us-west&quot; },
+        models: [
+          {
+            id: &quot;llama-3.1-8b&quot;,
+            name: &quot;Llama 3.1 8B&quot;,
+            api: &quot;openai-responses&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 128000,
+            maxTokens: 32000,
+          },
+        ],
+      },
+    },
+  },
+
+  // Cron jobs
+  cron: {
+    enabled: true,
+    store: &quot;~/.agdi/cron/cron.json&quot;,
+    maxConcurrentRuns: 2,
+    sessionRetention: &quot;24h&quot;,
+  },
+
+  // Webhooks
+  hooks: {
+    enabled: true,
+    path: &quot;/hooks&quot;,
+    token: &quot;shared-secret&quot;,
+    presets: [&quot;gmail&quot;],
+    transformsDir: &quot;~/.agdi/hooks/transforms&quot;,
+    mappings: [
+      {
+        id: &quot;gmail-hook&quot;,
+        match: { path: &quot;gmail&quot; },
+        action: &quot;agent&quot;,
+        wakeMode: &quot;now&quot;,
+        name: &quot;Gmail&quot;,
+        sessionKey: &quot;hook:gmail:{{messages[0].id}}&quot;,
+        messageTemplate: &quot;From: {{messages[0].from}}\nSubject: {{messages[0].subject}}&quot;,
+        textTemplate: &quot;{{messages[0].snippet}}&quot;,
+        deliver: true,
+        channel: &quot;last&quot;,
+        to: &quot;+15555550123&quot;,
+        thinking: &quot;low&quot;,
+        timeoutSeconds: 300,
+        transform: {
+          module: &quot;gmail.js&quot;,
+          export: &quot;transformGmail&quot;,
+        },
+      },
+    ],
+    gmail: {
+      account: &quot;agdi@gmail.com&quot;,
+      label: &quot;INBOX&quot;,
+      topic: &quot;projects/&lt;project-id&gt;/topics/gog-gmail-watch&quot;,
+      subscription: &quot;gog-gmail-watch-push&quot;,
+      pushToken: &quot;shared-push-token&quot;,
+      hookUrl: &quot;http://127.0.0.1:18789/hooks/gmail&quot;,
+      includeBody: true,
+      maxBytes: 20000,
+      renewEveryMinutes: 720,
+      serve: { bind: &quot;127.0.0.1&quot;, port: 8788, path: &quot;/&quot; },
+      tailscale: { mode: &quot;funnel&quot;, path: &quot;/gmail-pubsub&quot; },
+    },
+  },
+
+  // Gateway + networking
+  gateway: {
+    mode: &quot;local&quot;,
+    port: 18789,
+    bind: &quot;loopback&quot;,
+    controlUi: { enabled: true, basePath: &quot;/agdi&quot; },
+    auth: {
+      mode: &quot;token&quot;,
+      token: &quot;gateway-token&quot;,
+      allowTailscale: true,
+    },
+    tailscale: { mode: &quot;serve&quot;, resetOnExit: false },
+    remote: { url: &quot;ws://gateway.tailnet:18789&quot;, token: &quot;remote-token&quot; },
+    reload: { mode: &quot;hybrid&quot;, debounceMs: 300 },
+  },
+
+  skills: {
+    allowBundled: [&quot;gemini&quot;, &quot;peekaboo&quot;],
+    load: {
+      extraDirs: [&quot;~/Projects/agent-scripts/skills&quot;],
+    },
+    install: {
+      preferBrew: true,
+      nodeManager: &quot;npm&quot;,
+    },
+    entries: {
+      &quot;nano-banana-pro&quot;: {
+        enabled: true,
+        apiKey: &quot;GEMINI_KEY_HERE&quot;,
+        env: { GEMINI_API_KEY: &quot;GEMINI_KEY_HERE&quot; },
+      },
+      peekaboo: { enabled: true },
+    },
+  },
+}
+</code></pre>
+<h2>Common patterns</h2>
+<h3>Multi-platform setup</h3>
+<pre><code class="language-json5">{
+  agent: { workspace: &quot;~/.agdi/workspace&quot; },
+  channels: {
+    whatsapp: { allowFrom: [&quot;+15555550123&quot;] },
+    telegram: {
+      enabled: true,
+      botToken: &quot;YOUR_TOKEN&quot;,
+      allowFrom: [&quot;123456789&quot;],
+    },
+    discord: {
+      enabled: true,
+      token: &quot;YOUR_TOKEN&quot;,
+      dm: { allowFrom: [&quot;yourname&quot;] },
+    },
+  },
+}
+</code></pre>
+<h3>Secure DM mode (shared inbox / multi-user DMs)</h3>
+<p>If more than one person can DM your bot (multiple entries in <code>allowFrom</code>, pairing approvals for multiple people, or <code>dmPolicy: &quot;open&quot;</code>), enable <strong>secure DM mode</strong> so DMs from different senders don’t share one context by default:</p>
+<pre><code class="language-json5">{
+  // Secure DM mode (recommended for multi-user or sensitive DM agents)
+  session: { dmScope: &quot;per-channel-peer&quot; },
+
+  channels: {
+    // Example: WhatsApp multi-user inbox
+    whatsapp: {
+      dmPolicy: &quot;allowlist&quot;,
+      allowFrom: [&quot;+15555550123&quot;, &quot;+15555550124&quot;],
+    },
+
+    // Example: Discord multi-user inbox
+    discord: {
+      enabled: true,
+      token: &quot;YOUR_DISCORD_BOT_TOKEN&quot;,
+      dm: { enabled: true, allowFrom: [&quot;alice&quot;, &quot;bob&quot;] },
+    },
+  },
+}
+</code></pre>
+<h3>OAuth with API key failover</h3>
+<pre><code class="language-json5">{
+  auth: {
+    profiles: {
+      &quot;anthropic:subscription&quot;: {
+        provider: &quot;anthropic&quot;,
+        mode: &quot;oauth&quot;,
+        email: &quot;me@example.com&quot;,
+      },
+      &quot;anthropic:api&quot;: {
+        provider: &quot;anthropic&quot;,
+        mode: &quot;api_key&quot;,
+      },
+    },
+    order: {
+      anthropic: [&quot;anthropic:subscription&quot;, &quot;anthropic:api&quot;],
+    },
+  },
+  agent: {
+    workspace: &quot;~/.agdi/workspace&quot;,
+    model: {
+      primary: &quot;anthropic/claude-sonnet-4-5&quot;,
+      fallbacks: [&quot;anthropic/claude-opus-4-6&quot;],
+    },
+  },
+}
+</code></pre>
+<h3>Anthropic subscription + API key, MiniMax fallback</h3>
+<pre><code class="language-json5">{
+  auth: {
+    profiles: {
+      &quot;anthropic:subscription&quot;: {
+        provider: &quot;anthropic&quot;,
+        mode: &quot;oauth&quot;,
+        email: &quot;user@example.com&quot;,
+      },
+      &quot;anthropic:api&quot;: {
+        provider: &quot;anthropic&quot;,
+        mode: &quot;api_key&quot;,
+      },
+    },
+    order: {
+      anthropic: [&quot;anthropic:subscription&quot;, &quot;anthropic:api&quot;],
+    },
+  },
+  models: {
+    providers: {
+      minimax: {
+        baseUrl: &quot;https://api.minimax.io/anthropic&quot;,
+        api: &quot;anthropic-messages&quot;,
+        apiKey: &quot;${MINIMAX_API_KEY}&quot;,
+      },
+    },
+  },
+  agent: {
+    workspace: &quot;~/.agdi/workspace&quot;,
+    model: {
+      primary: &quot;anthropic/claude-opus-4-6&quot;,
+      fallbacks: [&quot;minimax/MiniMax-M2.1&quot;],
+    },
+  },
+}
+</code></pre>
+<h3>Work bot (restricted access)</h3>
+<pre><code class="language-json5">{
+  identity: {
+    name: &quot;WorkBot&quot;,
+    theme: &quot;professional assistant&quot;,
+  },
+  agent: {
+    workspace: &quot;~/work-agdi&quot;,
+    elevated: { enabled: false },
+  },
+  channels: {
+    slack: {
+      enabled: true,
+      botToken: &quot;xoxb-...&quot;,
+      channels: {
+        &quot;#engineering&quot;: { allow: true, requireMention: true },
+        &quot;#general&quot;: { allow: true, requireMention: true },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Local models only</h3>
+<pre><code class="language-json5">{
+  agent: {
+    workspace: &quot;~/.agdi/workspace&quot;,
+    model: { primary: &quot;lmstudio/minimax-m2.1-gs32&quot; },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      lmstudio: {
+        baseUrl: &quot;http://127.0.0.1:1234/v1&quot;,
+        apiKey: &quot;lmstudio&quot;,
+        api: &quot;openai-responses&quot;,
+        models: [
+          {
+            id: &quot;minimax-m2.1-gs32&quot;,
+            name: &quot;MiniMax M2.1 GS32&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 196608,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Tips</h2>
+<ul>
+<li>If you set <code>dmPolicy: &quot;open&quot;</code>, the matching <code>allowFrom</code> list must include <code>&quot;*&quot;</code>.</li>
+<li>Provider IDs differ (phone numbers, user IDs, channel IDs). Use the provider docs to confirm the format.</li>
+<li>Optional sections to add later: <code>web</code>, <code>browser</code>, <code>ui</code>, <code>discovery</code>, <code>canvasHost</code>, <code>talk</code>, <code>signal</code>, <code>imessage</code>.</li>
+<li>See <a href="/channels/whatsapp">Providers</a> and <a href="/gateway/troubleshooting">Troubleshooting</a> for deeper setup notes.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

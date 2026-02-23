@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polls — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="active" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Polls</h1>
+<h2>Supported channels</h2>
+<ul>
+<li>WhatsApp (web channel)</li>
+<li>Discord</li>
+<li>MS Teams (Adaptive Cards)</li>
+</ul>
+<h2>CLI</h2>
+<pre><code class="language-bash"># WhatsApp
+agdi message poll --target +15555550123 \
+  --poll-question &quot;Lunch today?&quot; --poll-option &quot;Yes&quot; --poll-option &quot;No&quot; --poll-option &quot;Maybe&quot;
+agdi message poll --target 123456789@g.us \
+  --poll-question &quot;Meeting time?&quot; --poll-option &quot;10am&quot; --poll-option &quot;2pm&quot; --poll-option &quot;4pm&quot; --poll-multi
+
+# Discord
+agdi message poll --channel discord --target channel:123456789 \
+  --poll-question &quot;Snack?&quot; --poll-option &quot;Pizza&quot; --poll-option &quot;Sushi&quot;
+agdi message poll --channel discord --target channel:123456789 \
+  --poll-question &quot;Plan?&quot; --poll-option &quot;A&quot; --poll-option &quot;B&quot; --poll-duration-hours 48
+
+# MS Teams
+agdi message poll --channel msteams --target conversation:19:abc@thread.tacv2 \
+  --poll-question &quot;Lunch?&quot; --poll-option &quot;Pizza&quot; --poll-option &quot;Sushi&quot;
+</code></pre>
+<p>Options:</p>
+<ul>
+<li><code>--channel</code>: <code>whatsapp</code> (default), <code>discord</code>, or <code>msteams</code></li>
+<li><code>--poll-multi</code>: allow selecting multiple options</li>
+<li><code>--poll-duration-hours</code>: Discord-only (defaults to 24 when omitted)</li>
+</ul>
+<h2>Gateway RPC</h2>
+<p>Method: <code>poll</code></p>
+<p>Params:</p>
+<ul>
+<li><code>to</code> (string, required)</li>
+<li><code>question</code> (string, required)</li>
+<li><code>options</code> (string[], required)</li>
+<li><code>maxSelections</code> (number, optional)</li>
+<li><code>durationHours</code> (number, optional)</li>
+<li><code>channel</code> (string, optional, default: <code>whatsapp</code>)</li>
+<li><code>idempotencyKey</code> (string, required)</li>
+</ul>
+<h2>Channel differences</h2>
+<ul>
+<li>WhatsApp: 2-12 options, <code>maxSelections</code> must be within option count, ignores <code>durationHours</code>.</li>
+<li>Discord: 2-10 options, <code>durationHours</code> clamped to 1-768 hours (default 24). <code>maxSelections &gt; 1</code> enables multi-select; Discord does not support a strict selection count.</li>
+<li>MS Teams: Adaptive Card polls (AGDI-managed). No native poll API; <code>durationHours</code> is ignored.</li>
+</ul>
+<h2>Agent tool (Message)</h2>
+<p>Use the <code>message</code> tool with <code>poll</code> action (<code>to</code>, <code>pollQuestion</code>, <code>pollOption</code>, optional <code>pollMulti</code>, <code>pollDurationHours</code>, <code>channel</code>).</p>
+<p>Note: Discord has no “pick exactly N” mode; <code>pollMulti</code> maps to multi-select.
+Teams polls are rendered as Adaptive Cards and require the gateway to stay online
+to record votes in <code>~/.agdi/msteams-polls.json</code>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

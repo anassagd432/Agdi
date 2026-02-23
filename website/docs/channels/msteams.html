@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft Teams — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="active" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Microsoft Teams (plugin)</h1>
+<blockquote>
+<p>&quot;Abandon all hope, ye who enter here.&quot;</p>
+</blockquote>
+<p>Updated: 2026-01-21</p>
+<p>Status: text + DM attachments are supported; channel/group file sending requires <code>sharePointSiteId</code> + Graph permissions (see <a href="#sending-files-in-group-chats">Sending files in group chats</a>). Polls are sent via Adaptive Cards.</p>
+<h2>Plugin required</h2>
+<p>Microsoft Teams ships as a plugin and is not bundled with the core install.</p>
+<p><strong>Breaking change (2026.1.15):</strong> MS Teams moved out of core. If you use it, you must install the plugin.</p>
+<p>Explainable: keeps core installs lighter and lets MS Teams dependencies update independently.</p>
+<p>Install via CLI (npm registry):</p>
+<pre><code class="language-bash">agdi plugins install @agdi/msteams
+</code></pre>
+<p>Local checkout (when running from a git repo):</p>
+<pre><code class="language-bash">agdi plugins install ./extensions/msteams
+</code></pre>
+<p>If you choose Teams during configure/onboarding and a git checkout is detected,
+AGDI will offer the local install path automatically.</p>
+<p>Details: <a href="/docs/tools/plugin">Plugins</a></p>
+<h2>Quick setup (beginner)</h2>
+<ol>
+<li>Install the Microsoft Teams plugin.</li>
+<li>Create an <strong>Azure Bot</strong> (App ID + client secret + tenant ID).</li>
+<li>Configure AGDI with those credentials.</li>
+<li>Expose <code>/api/messages</code> (port 3978 by default) via a public URL or tunnel.</li>
+<li>Install the Teams app package and start the gateway.</li>
+</ol>
+<p>Minimal config:</p>
+<pre><code class="language-json5">{
+  channels: {
+    msteams: {
+      enabled: true,
+      appId: &quot;&lt;APP_ID&gt;&quot;,
+      appPassword: &quot;&lt;APP_PASSWORD&gt;&quot;,
+      tenantId: &quot;&lt;TENANT_ID&gt;&quot;,
+      webhook: { port: 3978, path: &quot;/api/messages&quot; },
+    },
+  },
+}
+</code></pre>
+<p>Note: group chats are blocked by default (<code>channels.msteams.groupPolicy: &quot;allowlist&quot;</code>). To allow group replies, set <code>channels.msteams.groupAllowFrom</code> (or use <code>groupPolicy: &quot;open&quot;</code> to allow any member, mention-gated).</p>
+<h2>Goals</h2>
+<ul>
+<li>Talk to AGDI via Teams DMs, group chats, or channels.</li>
+<li>Keep routing deterministic: replies always go back to the channel they arrived on.</li>
+<li>Default to safe channel behavior (mentions required unless configured otherwise).</li>
+</ul>
+<h2>Config writes</h2>
+<p>By default, Microsoft Teams is allowed to write config updates triggered by <code>/config set|unset</code> (requires <code>commands.config: true</code>).</p>
+<p>Disable with:</p>
+<pre><code class="language-json5">{
+  channels: { msteams: { configWrites: false } },
+}
+</code></pre>
+<h2>Access control (DMs + groups)</h2>
+<p><strong>DM access</strong></p>
+<ul>
+<li>Default: <code>channels.msteams.dmPolicy = &quot;pairing&quot;</code>. Unknown senders are ignored until approved.</li>
+<li><code>channels.msteams.allowFrom</code> accepts AAD object IDs, UPNs, or display names. The wizard resolves names to IDs via Microsoft Graph when credentials allow.</li>
+</ul>
+<p><strong>Group access</strong></p>
+<ul>
+<li>Default: <code>channels.msteams.groupPolicy = &quot;allowlist&quot;</code> (blocked unless you add <code>groupAllowFrom</code>). Use <code>channels.defaults.groupPolicy</code> to override the default when unset.</li>
+<li><code>channels.msteams.groupAllowFrom</code> controls which senders can trigger in group chats/channels (falls back to <code>channels.msteams.allowFrom</code>).</li>
+<li>Set <code>groupPolicy: &quot;open&quot;</code> to allow any member (still mention‑gated by default).</li>
+<li>To allow <strong>no channels</strong>, set <code>channels.msteams.groupPolicy: &quot;disabled&quot;</code>.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    msteams: {
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;user@org.com&quot;],
+    },
+  },
+}
+</code></pre>
+<p><strong>Teams + channel allowlist</strong></p>
+<ul>
+<li>Scope group/channel replies by listing teams and channels under <code>channels.msteams.teams</code>.</li>
+<li>Keys can be team IDs or names; channel keys can be conversation IDs or names.</li>
+<li>When <code>groupPolicy=&quot;allowlist&quot;</code> and a teams allowlist is present, only listed teams/channels are accepted (mention‑gated).</li>
+<li>The configure wizard accepts <code>Team/Channel</code> entries and stores them for you.</li>
+<li>On startup, AGDI resolves team/channel and user allowlist names to IDs (when Graph permissions allow)
+and logs the mapping; unresolved entries are kept as typed.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    msteams: {
+      groupPolicy: &quot;allowlist&quot;,
+      teams: {
+        &quot;My Team&quot;: {
+          channels: {
+            General: { requireMention: true },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>How it works</h2>
+<ol>
+<li>Install the Microsoft Teams plugin.</li>
+<li>Create an <strong>Azure Bot</strong> (App ID + secret + tenant ID).</li>
+<li>Build a <strong>Teams app package</strong> that references the bot and includes the RSC permissions below.</li>
+<li>Upload/install the Teams app into a team (or personal scope for DMs).</li>
+<li>Configure <code>msteams</code> in <code>~/.agdi/agdi.json</code> (or env vars) and start the gateway.</li>
+<li>The gateway listens for Bot Framework webhook traffic on <code>/api/messages</code> by default.</li>
+</ol>
+<h2>Azure Bot Setup (Prerequisites)</h2>
+<p>Before configuring AGDI, you need to create an Azure Bot resource.</p>
+<h3>Step 1: Create Azure Bot</h3>
+<ol>
+<li><p>Go to <a href="https://portal.azure.com/#create/Microsoft.AzureBot">Create Azure Bot</a></p>
+</li>
+<li><p>Fill in the <strong>Basics</strong> tab:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bot handle</strong></td>
+<td>Your bot name, e.g., <code>agdi-msteams</code> (must be unique)</td>
+</tr>
+<tr>
+<td><strong>Subscription</strong></td>
+<td>Select your Azure subscription</td>
+</tr>
+<tr>
+<td><strong>Resource group</strong></td>
+<td>Create new or use existing</td>
+</tr>
+<tr>
+<td><strong>Pricing tier</strong></td>
+<td><strong>Free</strong> for dev/testing</td>
+</tr>
+<tr>
+<td><strong>Type of App</strong></td>
+<td><strong>Single Tenant</strong> (recommended - see note below)</td>
+</tr>
+<tr>
+<td><strong>Creation type</strong></td>
+<td><strong>Create new Microsoft App ID</strong></td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<blockquote>
+<p><strong>Deprecation notice:</strong> Creation of new multi-tenant bots was deprecated after 2025-07-31. Use <strong>Single Tenant</strong> for new bots.</p>
+</blockquote>
+<ol start="3">
+<li>Click <strong>Review + create</strong> → <strong>Create</strong> (wait ~1-2 minutes)</li>
+</ol>
+<h3>Step 2: Get Credentials</h3>
+<ol>
+<li>Go to your Azure Bot resource → <strong>Configuration</strong></li>
+<li>Copy <strong>Microsoft App ID</strong> → this is your <code>appId</code></li>
+<li>Click <strong>Manage Password</strong> → go to the App Registration</li>
+<li>Under <strong>Certificates &amp; secrets</strong> → <strong>New client secret</strong> → copy the <strong>Value</strong> → this is your <code>appPassword</code></li>
+<li>Go to <strong>Overview</strong> → copy <strong>Directory (tenant) ID</strong> → this is your <code>tenantId</code></li>
+</ol>
+<h3>Step 3: Configure Messaging Endpoint</h3>
+<ol>
+<li>In Azure Bot → <strong>Configuration</strong></li>
+<li>Set <strong>Messaging endpoint</strong> to your webhook URL:<ul>
+<li>Production: <code>https://your-domain.com/api/messages</code></li>
+<li>Local dev: Use a tunnel (see <a href="#local-development-tunneling">Local Development</a> below)</li>
+</ul>
+</li>
+</ol>
+<h3>Step 4: Enable Teams Channel</h3>
+<ol>
+<li>In Azure Bot → <strong>Channels</strong></li>
+<li>Click <strong>Microsoft Teams</strong> → Configure → Save</li>
+<li>Accept the Terms of Service</li>
+</ol>
+<h2>Local Development (Tunneling)</h2>
+<p>Teams can&#39;t reach <code>localhost</code>. Use a tunnel for local development:</p>
+<p><strong>Option A: ngrok</strong></p>
+<pre><code class="language-bash">ngrok http 3978
+# Copy the https URL, e.g., https://abc123.ngrok.io
+# Set messaging endpoint to: https://abc123.ngrok.io/api/messages
+</code></pre>
+<p><strong>Option B: Tailscale Funnel</strong></p>
+<pre><code class="language-bash">tailscale funnel 3978
+# Use your Tailscale funnel URL as the messaging endpoint
+</code></pre>
+<h2>Teams Developer Portal (Alternative)</h2>
+<p>Instead of manually creating a manifest ZIP, you can use the <a href="https://dev.teams.microsoft.com/apps">Teams Developer Portal</a>:</p>
+<ol>
+<li>Click <strong>+ New app</strong></li>
+<li>Fill in basic info (name, description, developer info)</li>
+<li>Go to <strong>App features</strong> → <strong>Bot</strong></li>
+<li>Select <strong>Enter a bot ID manually</strong> and paste your Azure Bot App ID</li>
+<li>Check scopes: <strong>Personal</strong>, <strong>Team</strong>, <strong>Group Chat</strong></li>
+<li>Click <strong>Distribute</strong> → <strong>Download app package</strong></li>
+<li>In Teams: <strong>Apps</strong> → <strong>Manage your apps</strong> → <strong>Upload a custom app</strong> → select the ZIP</li>
+</ol>
+<p>This is often easier than hand-editing JSON manifests.</p>
+<h2>Testing the Bot</h2>
+<p><strong>Option A: Azure Web Chat (verify webhook first)</strong></p>
+<ol>
+<li>In Azure Portal → your Azure Bot resource → <strong>Test in Web Chat</strong></li>
+<li>Send a message - you should see a response</li>
+<li>This confirms your webhook endpoint works before Teams setup</li>
+</ol>
+<p><strong>Option B: Teams (after app installation)</strong></p>
+<ol>
+<li>Install the Teams app (sideload or org catalog)</li>
+<li>Find the bot in Teams and send a DM</li>
+<li>Check gateway logs for incoming activity</li>
+</ol>
+<h2>Setup (minimal text-only)</h2>
+<ol>
+<li><p><strong>Install the Microsoft Teams plugin</strong></p>
+<ul>
+<li>From npm: <code>agdi plugins install @agdi/msteams</code></li>
+<li>From a local checkout: <code>agdi plugins install ./extensions/msteams</code></li>
+</ul>
+</li>
+<li><p><strong>Bot registration</strong></p>
+<ul>
+<li>Create an Azure Bot (see above) and note:<ul>
+<li>App ID</li>
+<li>Client secret (App password)</li>
+<li>Tenant ID (single-tenant)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Teams app manifest</strong></p>
+<ul>
+<li>Include a <code>bot</code> entry with <code>botId = &lt;App ID&gt;</code>.</li>
+<li>Scopes: <code>personal</code>, <code>team</code>, <code>groupChat</code>.</li>
+<li><code>supportsFiles: true</code> (required for personal scope file handling).</li>
+<li>Add RSC permissions (below).</li>
+<li>Create icons: <code>outline.png</code> (32x32) and <code>color.png</code> (192x192).</li>
+<li>Zip all three files together: <code>manifest.json</code>, <code>outline.png</code>, <code>color.png</code>.</li>
+</ul>
+</li>
+<li><p><strong>Configure AGDI</strong></p>
+<pre><code class="language-json">{
+  &quot;msteams&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;appId&quot;: &quot;&lt;APP_ID&gt;&quot;,
+    &quot;appPassword&quot;: &quot;&lt;APP_PASSWORD&gt;&quot;,
+    &quot;tenantId&quot;: &quot;&lt;TENANT_ID&gt;&quot;,
+    &quot;webhook&quot;: { &quot;port&quot;: 3978, &quot;path&quot;: &quot;/api/messages&quot; }
+  }
+}
+</code></pre>
+<p>You can also use environment variables instead of config keys:</p>
+<ul>
+<li><code>MSTEAMS_APP_ID</code></li>
+<li><code>MSTEAMS_APP_PASSWORD</code></li>
+<li><code>MSTEAMS_TENANT_ID</code></li>
+</ul>
+</li>
+<li><p><strong>Bot endpoint</strong></p>
+<ul>
+<li>Set the Azure Bot Messaging Endpoint to:<ul>
+<li><code>https://&lt;host&gt;:3978/api/messages</code> (or your chosen path/port).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Run the gateway</strong></p>
+<ul>
+<li>The Teams channel starts automatically when the plugin is installed and <code>msteams</code> config exists with credentials.</li>
+</ul>
+</li>
+</ol>
+<h2>History context</h2>
+<ul>
+<li><code>channels.msteams.historyLimit</code> controls how many recent channel/group messages are wrapped into the prompt.</li>
+<li>Falls back to <code>messages.groupChat.historyLimit</code>. Set <code>0</code> to disable (default 50).</li>
+<li>DM history can be limited with <code>channels.msteams.dmHistoryLimit</code> (user turns). Per-user overrides: <code>channels.msteams.dms[&quot;&lt;user_id&gt;&quot;].historyLimit</code>.</li>
+</ul>
+<h2>Current Teams RSC Permissions (Manifest)</h2>
+<p>These are the <strong>existing resourceSpecific permissions</strong> in our Teams app manifest. They only apply inside the team/chat where the app is installed.</p>
+<p><strong>For channels (team scope):</strong></p>
+<ul>
+<li><code>ChannelMessage.Read.Group</code> (Application) - receive all channel messages without @mention</li>
+<li><code>ChannelMessage.Send.Group</code> (Application)</li>
+<li><code>Member.Read.Group</code> (Application)</li>
+<li><code>Owner.Read.Group</code> (Application)</li>
+<li><code>ChannelSettings.Read.Group</code> (Application)</li>
+<li><code>TeamMember.Read.Group</code> (Application)</li>
+<li><code>TeamSettings.Read.Group</code> (Application)</li>
+</ul>
+<p><strong>For group chats:</strong></p>
+<ul>
+<li><code>ChatMessage.Read.Chat</code> (Application) - receive all group chat messages without @mention</li>
+</ul>
+<h2>Example Teams Manifest (redacted)</h2>
+<p>Minimal, valid example with the required fields. Replace IDs and URLs.</p>
+<pre><code class="language-json">{
+  &quot;$schema&quot;: &quot;https://developer.microsoft.com/en-us/json-schemas/teams/v1.23/MicrosoftTeams.schema.json&quot;,
+  &quot;manifestVersion&quot;: &quot;1.23&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;id&quot;: &quot;00000000-0000-0000-0000-000000000000&quot;,
+  &quot;name&quot;: { &quot;short&quot;: &quot;AGDI&quot; },
+  &quot;developer&quot;: {
+    &quot;name&quot;: &quot;Your Org&quot;,
+    &quot;websiteUrl&quot;: &quot;https://example.com&quot;,
+    &quot;privacyUrl&quot;: &quot;https://example.com/privacy&quot;,
+    &quot;termsOfUseUrl&quot;: &quot;https://example.com/terms&quot;
+  },
+  &quot;description&quot;: { &quot;short&quot;: &quot;AGDI in Teams&quot;, &quot;full&quot;: &quot;AGDI in Teams&quot; },
+  &quot;icons&quot;: { &quot;outline&quot;: &quot;outline.png&quot;, &quot;color&quot;: &quot;color.png&quot; },
+  &quot;accentColor&quot;: &quot;#5B6DEF&quot;,
+  &quot;bots&quot;: [
+    {
+      &quot;botId&quot;: &quot;11111111-1111-1111-1111-111111111111&quot;,
+      &quot;scopes&quot;: [&quot;personal&quot;, &quot;team&quot;, &quot;groupChat&quot;],
+      &quot;isNotificationOnly&quot;: false,
+      &quot;supportsCalling&quot;: false,
+      &quot;supportsVideo&quot;: false,
+      &quot;supportsFiles&quot;: true
+    }
+  ],
+  &quot;webApplicationInfo&quot;: {
+    &quot;id&quot;: &quot;11111111-1111-1111-1111-111111111111&quot;
+  },
+  &quot;authorization&quot;: {
+    &quot;permissions&quot;: {
+      &quot;resourceSpecific&quot;: [
+        { &quot;name&quot;: &quot;ChannelMessage.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;ChannelMessage.Send.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;Member.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;Owner.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;ChannelSettings.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;TeamMember.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;TeamSettings.Read.Group&quot;, &quot;type&quot;: &quot;Application&quot; },
+        { &quot;name&quot;: &quot;ChatMessage.Read.Chat&quot;, &quot;type&quot;: &quot;Application&quot; }
+      ]
+    }
+  }
+}
+</code></pre>
+<h3>Manifest caveats (must-have fields)</h3>
+<ul>
+<li><code>bots[].botId</code> <strong>must</strong> match the Azure Bot App ID.</li>
+<li><code>webApplicationInfo.id</code> <strong>must</strong> match the Azure Bot App ID.</li>
+<li><code>bots[].scopes</code> must include the surfaces you plan to use (<code>personal</code>, <code>team</code>, <code>groupChat</code>).</li>
+<li><code>bots[].supportsFiles: true</code> is required for file handling in personal scope.</li>
+<li><code>authorization.permissions.resourceSpecific</code> must include channel read/send if you want channel traffic.</li>
+</ul>
+<h3>Updating an existing app</h3>
+<p>To update an already-installed Teams app (e.g., to add RSC permissions):</p>
+<ol>
+<li>Update your <code>manifest.json</code> with the new settings</li>
+<li><strong>Increment the <code>version</code> field</strong> (e.g., <code>1.0.0</code> → <code>1.1.0</code>)</li>
+<li><strong>Re-zip</strong> the manifest with icons (<code>manifest.json</code>, <code>outline.png</code>, <code>color.png</code>)</li>
+<li>Upload the new zip:<ul>
+<li><strong>Option A (Teams Admin Center):</strong> Teams Admin Center → Teams apps → Manage apps → find your app → Upload new version</li>
+<li><strong>Option B (Sideload):</strong> In Teams → Apps → Manage your apps → Upload a custom app</li>
+</ul>
+</li>
+<li><strong>For team channels:</strong> Reinstall the app in each team for new permissions to take effect</li>
+<li><strong>Fully quit and relaunch Teams</strong> (not just close the window) to clear cached app metadata</li>
+</ol>
+<h2>Capabilities: RSC only vs Graph</h2>
+<h3>With <strong>Teams RSC only</strong> (app installed, no Graph API permissions)</h3>
+<p>Works:</p>
+<ul>
+<li>Read channel message <strong>text</strong> content.</li>
+<li>Send channel message <strong>text</strong> content.</li>
+<li>Receive <strong>personal (DM)</strong> file attachments.</li>
+</ul>
+<p>Does NOT work:</p>
+<ul>
+<li>Channel/group <strong>image or file contents</strong> (payload only includes HTML stub).</li>
+<li>Downloading attachments stored in SharePoint/OneDrive.</li>
+<li>Reading message history (beyond the live webhook event).</li>
+</ul>
+<h3>With <strong>Teams RSC + Microsoft Graph Application permissions</strong></h3>
+<p>Adds:</p>
+<ul>
+<li>Downloading hosted contents (images pasted into messages).</li>
+<li>Downloading file attachments stored in SharePoint/OneDrive.</li>
+<li>Reading channel/chat message history via Graph.</li>
+</ul>
+<h3>RSC vs Graph API</h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>RSC Permissions</th>
+<th>Graph API</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Real-time messages</strong></td>
+<td>Yes (via webhook)</td>
+<td>No (polling only)</td>
+</tr>
+<tr>
+<td><strong>Historical messages</strong></td>
+<td>No</td>
+<td>Yes (can query history)</td>
+</tr>
+<tr>
+<td><strong>Setup complexity</strong></td>
+<td>App manifest only</td>
+<td>Requires admin consent + token flow</td>
+</tr>
+<tr>
+<td><strong>Works offline</strong></td>
+<td>No (must be running)</td>
+<td>Yes (query anytime)</td>
+</tr>
+</tbody></table>
+<p><strong>Bottom line:</strong> RSC is for real-time listening; Graph API is for historical access. For catching up on missed messages while offline, you need Graph API with <code>ChannelMessage.Read.All</code> (requires admin consent).</p>
+<h2>Graph-enabled media + history (required for channels)</h2>
+<p>If you need images/files in <strong>channels</strong> or want to fetch <strong>message history</strong>, you must enable Microsoft Graph permissions and grant admin consent.</p>
+<ol>
+<li>In Entra ID (Azure AD) <strong>App Registration</strong>, add Microsoft Graph <strong>Application permissions</strong>:<ul>
+<li><code>ChannelMessage.Read.All</code> (channel attachments + history)</li>
+<li><code>Chat.Read.All</code> or <code>ChatMessage.Read.All</code> (group chats)</li>
+</ul>
+</li>
+<li><strong>Grant admin consent</strong> for the tenant.</li>
+<li>Bump the Teams app <strong>manifest version</strong>, re-upload, and <strong>reinstall the app in Teams</strong>.</li>
+<li><strong>Fully quit and relaunch Teams</strong> to clear cached app metadata.</li>
+</ol>
+<p><strong>Additional permission for user mentions:</strong> User @mentions work out of the box for users in the conversation. However, if you want to dynamically search and mention users who are <strong>not in the current conversation</strong>, add <code>User.Read.All</code> (Application) permission and grant admin consent.</p>
+<h2>Known Limitations</h2>
+<h3>Webhook timeouts</h3>
+<p>Teams delivers messages via HTTP webhook. If processing takes too long (e.g., slow LLM responses), you may see:</p>
+<ul>
+<li>Gateway timeouts</li>
+<li>Teams retrying the message (causing duplicates)</li>
+<li>Dropped replies</li>
+</ul>
+<p>AGDI handles this by returning quickly and sending replies proactively, but very slow responses may still cause issues.</p>
+<h3>Formatting</h3>
+<p>Teams markdown is more limited than Slack or Discord:</p>
+<ul>
+<li>Basic formatting works: <strong>bold</strong>, <em>italic</em>, <code>code</code>, links</li>
+<li>Complex markdown (tables, nested lists) may not render correctly</li>
+<li>Adaptive Cards are supported for polls and arbitrary card sends (see below)</li>
+</ul>
+<h2>Configuration</h2>
+<p>Key settings (see <code>/gateway/configuration</code> for shared channel patterns):</p>
+<ul>
+<li><code>channels.msteams.enabled</code>: enable/disable the channel.</li>
+<li><code>channels.msteams.appId</code>, <code>channels.msteams.appPassword</code>, <code>channels.msteams.tenantId</code>: bot credentials.</li>
+<li><code>channels.msteams.webhook.port</code> (default <code>3978</code>)</li>
+<li><code>channels.msteams.webhook.path</code> (default <code>/api/messages</code>)</li>
+<li><code>channels.msteams.dmPolicy</code>: <code>pairing | allowlist | open | disabled</code> (default: pairing)</li>
+<li><code>channels.msteams.allowFrom</code>: allowlist for DMs (AAD object IDs, UPNs, or display names). The wizard resolves names to IDs during setup when Graph access is available.</li>
+<li><code>channels.msteams.textChunkLimit</code>: outbound text chunk size.</li>
+<li><code>channels.msteams.chunkMode</code>: <code>length</code> (default) or <code>newline</code> to split on blank lines (paragraph boundaries) before length chunking.</li>
+<li><code>channels.msteams.mediaAllowHosts</code>: allowlist for inbound attachment hosts (defaults to Microsoft/Teams domains).</li>
+<li><code>channels.msteams.mediaAuthAllowHosts</code>: allowlist for attaching Authorization headers on media retries (defaults to Graph + Bot Framework hosts).</li>
+<li><code>channels.msteams.requireMention</code>: require @mention in channels/groups (default true).</li>
+<li><code>channels.msteams.replyStyle</code>: <code>thread | top-level</code> (see <a href="#reply-style-threads-vs-posts">Reply Style</a>).</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.replyStyle</code>: per-team override.</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.requireMention</code>: per-team override.</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.tools</code>: default per-team tool policy overrides (<code>allow</code>/<code>deny</code>/<code>alsoAllow</code>) used when a channel override is missing.</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.toolsBySender</code>: default per-team per-sender tool policy overrides (<code>&quot;*&quot;</code> wildcard supported).</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.channels.&lt;conversationId&gt;.replyStyle</code>: per-channel override.</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.channels.&lt;conversationId&gt;.requireMention</code>: per-channel override.</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.channels.&lt;conversationId&gt;.tools</code>: per-channel tool policy overrides (<code>allow</code>/<code>deny</code>/<code>alsoAllow</code>).</li>
+<li><code>channels.msteams.teams.&lt;teamId&gt;.channels.&lt;conversationId&gt;.toolsBySender</code>: per-channel per-sender tool policy overrides (<code>&quot;*&quot;</code> wildcard supported).</li>
+<li><code>channels.msteams.sharePointSiteId</code>: SharePoint site ID for file uploads in group chats/channels (see <a href="#sending-files-in-group-chats">Sending files in group chats</a>).</li>
+</ul>
+<h2>Routing &amp; Sessions</h2>
+<ul>
+<li>Session keys follow the standard agent format (see <a href="/docs/concepts/session">/concepts/session</a>):<ul>
+<li>Direct messages share the main session (<code>agent:&lt;agentId&gt;:&lt;mainKey&gt;</code>).</li>
+<li>Channel/group messages use conversation id:<ul>
+<li><code>agent:&lt;agentId&gt;:msteams:channel:&lt;conversationId&gt;</code></li>
+<li><code>agent:&lt;agentId&gt;:msteams:group:&lt;conversationId&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Reply Style: Threads vs Posts</h2>
+<p>Teams recently introduced two channel UI styles over the same underlying data model:</p>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Description</th>
+<th>Recommended <code>replyStyle</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Posts</strong> (classic)</td>
+<td>Messages appear as cards with threaded replies underneath</td>
+<td><code>thread</code> (default)</td>
+</tr>
+<tr>
+<td><strong>Threads</strong> (Slack-like)</td>
+<td>Messages flow linearly, more like Slack</td>
+<td><code>top-level</code></td>
+</tr>
+</tbody></table>
+<p><strong>The problem:</strong> The Teams API does not expose which UI style a channel uses. If you use the wrong <code>replyStyle</code>:</p>
+<ul>
+<li><code>thread</code> in a Threads-style channel → replies appear nested awkwardly</li>
+<li><code>top-level</code> in a Posts-style channel → replies appear as separate top-level posts instead of in-thread</li>
+</ul>
+<p><strong>Solution:</strong> Configure <code>replyStyle</code> per-channel based on how the channel is set up:</p>
+<pre><code class="language-json">{
+  &quot;msteams&quot;: {
+    &quot;replyStyle&quot;: &quot;thread&quot;,
+    &quot;teams&quot;: {
+      &quot;19:abc...@thread.tacv2&quot;: {
+        &quot;channels&quot;: {
+          &quot;19:xyz...@thread.tacv2&quot;: {
+            &quot;replyStyle&quot;: &quot;top-level&quot;
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h2>Attachments &amp; Images</h2>
+<p><strong>Current limitations:</strong></p>
+<ul>
+<li><strong>DMs:</strong> Images and file attachments work via Teams bot file APIs.</li>
+<li><strong>Channels/groups:</strong> Attachments live in M365 storage (SharePoint/OneDrive). The webhook payload only includes an HTML stub, not the actual file bytes. <strong>Graph API permissions are required</strong> to download channel attachments.</li>
+</ul>
+<p>Without Graph permissions, channel messages with images will be received as text-only (the image content is not accessible to the bot).
+By default, AGDI only downloads media from Microsoft/Teams hostnames. Override with <code>channels.msteams.mediaAllowHosts</code> (use <code>[&quot;*&quot;]</code> to allow any host).
+Authorization headers are only attached for hosts in <code>channels.msteams.mediaAuthAllowHosts</code> (defaults to Graph + Bot Framework hosts). Keep this list strict (avoid multi-tenant suffixes).</p>
+<h2>Sending files in group chats</h2>
+<p>Bots can send files in DMs using the FileConsentCard flow (built-in). However, <strong>sending files in group chats/channels</strong> requires additional setup:</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>How files are sent</th>
+<th>Setup needed</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DMs</strong></td>
+<td>FileConsentCard → user accepts → bot uploads</td>
+<td>Works out of the box</td>
+</tr>
+<tr>
+<td><strong>Group chats/channels</strong></td>
+<td>Upload to SharePoint → share link</td>
+<td>Requires <code>sharePointSiteId</code> + Graph permissions</td>
+</tr>
+<tr>
+<td><strong>Images (any context)</strong></td>
+<td>Base64-encoded inline</td>
+<td>Works out of the box</td>
+</tr>
+</tbody></table>
+<h3>Why group chats need SharePoint</h3>
+<p>Bots don&#39;t have a personal OneDrive drive (the <code>/me/drive</code> Graph API endpoint doesn&#39;t work for application identities). To send files in group chats/channels, the bot uploads to a <strong>SharePoint site</strong> and creates a sharing link.</p>
+<h3>Setup</h3>
+<ol>
+<li><p><strong>Add Graph API permissions</strong> in Entra ID (Azure AD) → App Registration:</p>
+<ul>
+<li><code>Sites.ReadWrite.All</code> (Application) - upload files to SharePoint</li>
+<li><code>Chat.Read.All</code> (Application) - optional, enables per-user sharing links</li>
+</ul>
+</li>
+<li><p><strong>Grant admin consent</strong> for the tenant.</p>
+</li>
+<li><p><strong>Get your SharePoint site ID:</strong></p>
+<pre><code class="language-bash"># Via Graph Explorer or curl with a valid token:
+curl -H &quot;Authorization: Bearer $TOKEN&quot; \
+  &quot;https://graph.microsoft.com/v1.0/sites/{hostname}:/{site-path}&quot;
+
+# Example: for a site at &quot;contoso.sharepoint.com/sites/BotFiles&quot;
+curl -H &quot;Authorization: Bearer $TOKEN&quot; \
+  &quot;https://graph.microsoft.com/v1.0/sites/contoso.sharepoint.com:/sites/BotFiles&quot;
+
+# Response includes: &quot;id&quot;: &quot;contoso.sharepoint.com,guid1,guid2&quot;
+</code></pre>
+</li>
+<li><p><strong>Configure AGDI:</strong></p>
+<pre><code class="language-json5">{
+  channels: {
+    msteams: {
+      // ... other config ...
+      sharePointSiteId: &quot;contoso.sharepoint.com,guid1,guid2&quot;,
+    },
+  },
+}
+</code></pre>
+</li>
+</ol>
+<h3>Sharing behavior</h3>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Sharing behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Sites.ReadWrite.All</code> only</td>
+<td>Organization-wide sharing link (anyone in org can access)</td>
+</tr>
+<tr>
+<td><code>Sites.ReadWrite.All</code> + <code>Chat.Read.All</code></td>
+<td>Per-user sharing link (only chat members can access)</td>
+</tr>
+</tbody></table>
+<p>Per-user sharing is more secure as only the chat participants can access the file. If <code>Chat.Read.All</code> permission is missing, the bot falls back to organization-wide sharing.</p>
+<h3>Fallback behavior</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Group chat + file + <code>sharePointSiteId</code> configured</td>
+<td>Upload to SharePoint, send sharing link</td>
+</tr>
+<tr>
+<td>Group chat + file + no <code>sharePointSiteId</code></td>
+<td>Attempt OneDrive upload (may fail), send text only</td>
+</tr>
+<tr>
+<td>Personal chat + file</td>
+<td>FileConsentCard flow (works without SharePoint)</td>
+</tr>
+<tr>
+<td>Any context + image</td>
+<td>Base64-encoded inline (works without SharePoint)</td>
+</tr>
+</tbody></table>
+<h3>Files stored location</h3>
+<p>Uploaded files are stored in a <code>/AGDIShared/</code> folder in the configured SharePoint site&#39;s default document library.</p>
+<h2>Polls (Adaptive Cards)</h2>
+<p>AGDI sends Teams polls as Adaptive Cards (there is no native Teams poll API).</p>
+<ul>
+<li>CLI: <code>agdi message poll --channel msteams --target conversation:&lt;id&gt; ...</code></li>
+<li>Votes are recorded by the gateway in <code>~/.agdi/msteams-polls.json</code>.</li>
+<li>The gateway must stay online to record votes.</li>
+<li>Polls do not auto-post result summaries yet (inspect the store file if needed).</li>
+</ul>
+<h2>Adaptive Cards (arbitrary)</h2>
+<p>Send any Adaptive Card JSON to Teams users or conversations using the <code>message</code> tool or CLI.</p>
+<p>The <code>card</code> parameter accepts an Adaptive Card JSON object. When <code>card</code> is provided, the message text is optional.</p>
+<p><strong>Agent tool:</strong></p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;send&quot;,
+  &quot;channel&quot;: &quot;msteams&quot;,
+  &quot;target&quot;: &quot;user:&lt;id&gt;&quot;,
+  &quot;card&quot;: {
+    &quot;type&quot;: &quot;AdaptiveCard&quot;,
+    &quot;version&quot;: &quot;1.5&quot;,
+    &quot;body&quot;: [{ &quot;type&quot;: &quot;TextBlock&quot;, &quot;text&quot;: &quot;Hello!&quot; }]
+  }
+}
+</code></pre>
+<p><strong>CLI:</strong></p>
+<pre><code class="language-bash">agdi message send --channel msteams \
+  --target &quot;conversation:19:abc...@thread.tacv2&quot; \
+  --card &#39;{&quot;type&quot;:&quot;AdaptiveCard&quot;,&quot;version&quot;:&quot;1.5&quot;,&quot;body&quot;:[{&quot;type&quot;:&quot;TextBlock&quot;,&quot;text&quot;:&quot;Hello!&quot;}]}&#39;
+</code></pre>
+<p>See <a href="https://adaptivecards.io/">Adaptive Cards documentation</a> for card schema and examples. For target format details, see <a href="#target-formats">Target formats</a> below.</p>
+<h2>Target formats</h2>
+<p>MSTeams targets use prefixes to distinguish between users and conversations:</p>
+<table>
+<thead>
+<tr>
+<th>Target type</th>
+<th>Format</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>User (by ID)</td>
+<td><code>user:&lt;aad-object-id&gt;</code></td>
+<td><code>user:40a1a0ed-4ff2-4164-a219-55518990c197</code></td>
+</tr>
+<tr>
+<td>User (by name)</td>
+<td><code>user:&lt;display-name&gt;</code></td>
+<td><code>user:John Smith</code> (requires Graph API)</td>
+</tr>
+<tr>
+<td>Group/channel</td>
+<td><code>conversation:&lt;conversation-id&gt;</code></td>
+<td><code>conversation:19:abc123...@thread.tacv2</code></td>
+</tr>
+<tr>
+<td>Group/channel (raw)</td>
+<td><code>&lt;conversation-id&gt;</code></td>
+<td><code>19:abc123...@thread.tacv2</code> (if contains <code>@thread</code>)</td>
+</tr>
+</tbody></table>
+<p><strong>CLI examples:</strong></p>
+<pre><code class="language-bash"># Send to a user by ID
+agdi message send --channel msteams --target &quot;user:40a1a0ed-...&quot; --message &quot;Hello&quot;
+
+# Send to a user by display name (triggers Graph API lookup)
+agdi message send --channel msteams --target &quot;user:John Smith&quot; --message &quot;Hello&quot;
+
+# Send to a group chat or channel
+agdi message send --channel msteams --target &quot;conversation:19:abc...@thread.tacv2&quot; --message &quot;Hello&quot;
+
+# Send an Adaptive Card to a conversation
+agdi message send --channel msteams --target &quot;conversation:19:abc...@thread.tacv2&quot; \
+  --card &#39;{&quot;type&quot;:&quot;AdaptiveCard&quot;,&quot;version&quot;:&quot;1.5&quot;,&quot;body&quot;:[{&quot;type&quot;:&quot;TextBlock&quot;,&quot;text&quot;:&quot;Hello&quot;}]}&#39;
+</code></pre>
+<p><strong>Agent tool examples:</strong></p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;send&quot;,
+  &quot;channel&quot;: &quot;msteams&quot;,
+  &quot;target&quot;: &quot;user:John Smith&quot;,
+  &quot;message&quot;: &quot;Hello!&quot;
+}
+</code></pre>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;send&quot;,
+  &quot;channel&quot;: &quot;msteams&quot;,
+  &quot;target&quot;: &quot;conversation:19:abc...@thread.tacv2&quot;,
+  &quot;card&quot;: {
+    &quot;type&quot;: &quot;AdaptiveCard&quot;,
+    &quot;version&quot;: &quot;1.5&quot;,
+    &quot;body&quot;: [{ &quot;type&quot;: &quot;TextBlock&quot;, &quot;text&quot;: &quot;Hello&quot; }]
+  }
+}
+</code></pre>
+<p>Note: Without the <code>user:</code> prefix, names default to group/team resolution. Always use <code>user:</code> when targeting people by display name.</p>
+<h2>Proactive messaging</h2>
+<ul>
+<li>Proactive messages are only possible <strong>after</strong> a user has interacted, because we store conversation references at that point.</li>
+<li>See <code>/gateway/configuration</code> for <code>dmPolicy</code> and allowlist gating.</li>
+</ul>
+<h2>Team and Channel IDs (Common Gotcha)</h2>
+<p>The <code>groupId</code> query parameter in Teams URLs is <strong>NOT</strong> the team ID used for configuration. Extract IDs from the URL path instead:</p>
+<p><strong>Team URL:</strong></p>
+<pre><code>https://teams.microsoft.com/l/team/19%3ABk4j...%40thread.tacv2/conversations?groupId=...
+                                    └────────────────────────────┘
+                                    Team ID (URL-decode this)
+</code></pre>
+<p><strong>Channel URL:</strong></p>
+<pre><code>https://teams.microsoft.com/l/channel/19%3A15bc...%40thread.tacv2/ChannelName?groupId=...
+                                      └─────────────────────────┘
+                                      Channel ID (URL-decode this)
+</code></pre>
+<p><strong>For config:</strong></p>
+<ul>
+<li>Team ID = path segment after <code>/team/</code> (URL-decoded, e.g., <code>19:Bk4j...@thread.tacv2</code>)</li>
+<li>Channel ID = path segment after <code>/channel/</code> (URL-decoded)</li>
+<li><strong>Ignore</strong> the <code>groupId</code> query parameter</li>
+</ul>
+<h2>Private Channels</h2>
+<p>Bots have limited support in private channels:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Standard Channels</th>
+<th>Private Channels</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bot installation</td>
+<td>Yes</td>
+<td>Limited</td>
+</tr>
+<tr>
+<td>Real-time messages (webhook)</td>
+<td>Yes</td>
+<td>May not work</td>
+</tr>
+<tr>
+<td>RSC permissions</td>
+<td>Yes</td>
+<td>May behave differently</td>
+</tr>
+<tr>
+<td>@mentions</td>
+<td>Yes</td>
+<td>If bot is accessible</td>
+</tr>
+<tr>
+<td>Graph API history</td>
+<td>Yes</td>
+<td>Yes (with permissions)</td>
+</tr>
+</tbody></table>
+<p><strong>Workarounds if private channels don&#39;t work:</strong></p>
+<ol>
+<li>Use standard channels for bot interactions</li>
+<li>Use DMs - users can always message the bot directly</li>
+<li>Use Graph API for historical access (requires <code>ChannelMessage.Read.All</code>)</li>
+</ol>
+<h2>Troubleshooting</h2>
+<h3>Common issues</h3>
+<ul>
+<li><strong>Images not showing in channels:</strong> Graph permissions or admin consent missing. Reinstall the Teams app and fully quit/reopen Teams.</li>
+<li><strong>No responses in channel:</strong> mentions are required by default; set <code>channels.msteams.requireMention=false</code> or configure per team/channel.</li>
+<li><strong>Version mismatch (Teams still shows old manifest):</strong> remove + re-add the app and fully quit Teams to refresh.</li>
+<li><strong>401 Unauthorized from webhook:</strong> Expected when testing manually without Azure JWT - means endpoint is reachable but auth failed. Use Azure Web Chat to test properly.</li>
+</ul>
+<h3>Manifest upload errors</h3>
+<ul>
+<li><strong>&quot;Icon file cannot be empty&quot;:</strong> The manifest references icon files that are 0 bytes. Create valid PNG icons (32x32 for <code>outline.png</code>, 192x192 for <code>color.png</code>).</li>
+<li><strong>&quot;webApplicationInfo.Id already in use&quot;:</strong> The app is still installed in another team/chat. Find and uninstall it first, or wait 5-10 minutes for propagation.</li>
+<li><strong>&quot;Something went wrong&quot; on upload:</strong> Upload via <a href="https://admin.teams.microsoft.com">https://admin.teams.microsoft.com</a> instead, open browser DevTools (F12) → Network tab, and check the response body for the actual error.</li>
+<li><strong>Sideload failing:</strong> Try &quot;Upload an app to your org&#39;s app catalog&quot; instead of &quot;Upload a custom app&quot; - this often bypasses sideload restrictions.</li>
+</ul>
+<h3>RSC permissions not working</h3>
+<ol>
+<li>Verify <code>webApplicationInfo.id</code> matches your bot&#39;s App ID exactly</li>
+<li>Re-upload the app and reinstall in the team/chat</li>
+<li>Check if your org admin has blocked RSC permissions</li>
+<li>Confirm you&#39;re using the right scope: <code>ChannelMessage.Read.Group</code> for teams, <code>ChatMessage.Read.Chat</code> for group chats</li>
+</ol>
+<h2>References</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration">Create Azure Bot</a> - Azure Bot setup guide</li>
+<li><a href="https://dev.teams.microsoft.com/apps">Teams Developer Portal</a> - create/manage Teams apps</li>
+<li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema">Teams app manifest schema</a></li>
+<li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/channel-messages-with-rsc">Receive channel messages with RSC</a></li>
+<li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/graph-api/rsc/resource-specific-consent">RSC permissions reference</a></li>
+<li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bots-filesv4">Teams bot file handling</a> (channel/group requires Graph)</li>
+<li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/send-proactive-messages">Proactive messaging</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

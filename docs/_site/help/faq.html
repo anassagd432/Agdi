@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="active" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>FAQ</h1>
+<p>Quick answers plus deeper troubleshooting for real-world setups (local dev, VPS, multi-agent, OAuth/API keys, model failover). For runtime diagnostics, see <a href="/gateway/troubleshooting">Troubleshooting</a>. For the full config reference, see <a href="/gateway/configuration">Configuration</a>.</p>
+<h2>Table of contents</h2>
+<ul>
+<li>[Quick start and first-run setup]<ul>
+<li><a href="#im-stuck-whats-the-fastest-way-to-get-unstuck">Im stuck whats the fastest way to get unstuck?</a></li>
+<li><a href="#whats-the-recommended-way-to-install-and-set-up-agdi">What&#39;s the recommended way to install and set up AGDI?</a></li>
+<li><a href="#how-do-i-open-the-dashboard-after-onboarding">How do I open the dashboard after onboarding?</a></li>
+<li><a href="#how-do-i-authenticate-the-dashboard-token-on-localhost-vs-remote">How do I authenticate the dashboard (token) on localhost vs remote?</a></li>
+<li><a href="#what-runtime-do-i-need">What runtime do I need?</a></li>
+<li><a href="#does-it-run-on-raspberry-pi">Does it run on Raspberry Pi?</a></li>
+<li><a href="#any-tips-for-raspberry-pi-installs">Any tips for Raspberry Pi installs?</a></li>
+<li><a href="#it-is-stuck-on-wake-up-my-friend-onboarding-will-not-hatch-what-now">It is stuck on &quot;wake up my friend&quot; / onboarding will not hatch. What now?</a></li>
+<li><a href="#can-i-migrate-my-setup-to-a-new-machine-mac-mini-without-redoing-onboarding">Can I migrate my setup to a new machine (Mac mini) without redoing onboarding?</a></li>
+<li><a href="#where-do-i-see-what-is-new-in-the-latest-version">Where do I see what is new in the latest version?</a></li>
+<li><a href="#i-cant-access-docsagdiai-ssl-error-what-now">I can&#39;t access docs.agdi.ai (SSL error). What now?</a></li>
+<li><a href="#whats-the-difference-between-stable-and-beta">What&#39;s the difference between stable and beta?</a></li>
+<li><a href="#how-do-i-install-the-beta-version-and-whats-the-difference-between-beta-and-dev">How do I install the beta version, and what&#39;s the difference between beta and dev?</a></li>
+<li><a href="#how-do-i-try-the-latest-bits">How do I try the latest bits?</a></li>
+<li><a href="#how-long-does-install-and-onboarding-usually-take">How long does install and onboarding usually take?</a></li>
+<li><a href="#installer-stuck-how-do-i-get-more-feedback">Installer stuck? How do I get more feedback?</a></li>
+<li><a href="#windows-install-says-git-not-found-or-agdi-not-recognized">Windows install says git not found or agdi not recognized</a></li>
+<li><a href="#the-docs-didnt-answer-my-question-how-do-i-get-a-better-answer">The docs didn&#39;t answer my question - how do I get a better answer?</a></li>
+<li><a href="#how-do-i-install-agdi-on-linux">How do I install AGDI on Linux?</a></li>
+<li><a href="#how-do-i-install-agdi-on-a-vps">How do I install AGDI on a VPS?</a></li>
+<li><a href="#where-are-the-cloudvps-install-guides">Where are the cloud/VPS install guides?</a></li>
+<li><a href="#can-i-ask-agdi-to-update-itself">Can I ask AGDI to update itself?</a></li>
+<li><a href="#what-does-the-onboarding-wizard-actually-do">What does the onboarding wizard actually do?</a></li>
+<li><a href="#do-i-need-a-claude-or-openai-subscription-to-run-this">Do I need a Claude or OpenAI subscription to run this?</a></li>
+<li><a href="#can-i-use-claude-max-subscription-without-an-api-key">Can I use Claude Max subscription without an API key</a></li>
+<li><a href="#how-does-anthropic-setuptoken-auth-work">How does Anthropic &quot;setup-token&quot; auth work?</a></li>
+<li><a href="#where-do-i-find-an-anthropic-setuptoken">Where do I find an Anthropic setup-token?</a></li>
+<li><a href="#do-you-support-claude-subscription-auth-claude-pro-or-max">Do you support Claude subscription auth (Claude Pro or Max)?</a></li>
+<li><a href="#why-am-i-seeing-http-429-ratelimiterror-from-anthropic">Why am I seeing <code>HTTP 429: rate_limit_error</code> from Anthropic?</a></li>
+<li><a href="#is-aws-bedrock-supported">Is AWS Bedrock supported?</a></li>
+<li><a href="#how-does-codex-auth-work">How does Codex auth work?</a></li>
+<li><a href="#do-you-support-openai-subscription-auth-codex-oauth">Do you support OpenAI subscription auth (Codex OAuth)?</a></li>
+<li><a href="#how-do-i-set-up-gemini-cli-oauth">How do I set up Gemini CLI OAuth</a></li>
+<li><a href="#is-a-local-model-ok-for-casual-chats">Is a local model OK for casual chats?</a></li>
+<li><a href="#how-do-i-keep-hosted-model-traffic-in-a-specific-region">How do I keep hosted model traffic in a specific region?</a></li>
+<li><a href="#do-i-have-to-buy-a-mac-mini-to-install-this">Do I have to buy a Mac Mini to install this?</a></li>
+<li><a href="#do-i-need-a-mac-mini-for-imessage-support">Do I need a Mac mini for iMessage support?</a></li>
+<li><a href="#if-i-buy-a-mac-mini-to-run-agdi-can-i-connect-it-to-my-macbook-pro">If I buy a Mac mini to run AGDI, can I connect it to my MacBook Pro?</a></li>
+<li><a href="#can-i-use-bun">Can I use Bun?</a></li>
+<li><a href="#telegram-what-goes-in-allowfrom">Telegram: what goes in <code>allowFrom</code>?</a></li>
+<li><a href="#can-multiple-people-use-one-whatsapp-number-with-different-agdi-instances">Can multiple people use one WhatsApp number with different AGDI instances?</a></li>
+<li><a href="#can-i-run-a-fast-chat-agent-and-an-opus-for-coding-agent">Can I run a &quot;fast chat&quot; agent and an &quot;Opus for coding&quot; agent?</a></li>
+<li><a href="#does-homebrew-work-on-linux">Does Homebrew work on Linux?</a></li>
+<li><a href="#whats-the-difference-between-the-hackable-git-install-and-npm-install">What&#39;s the difference between the hackable (git) install and npm install?</a></li>
+<li><a href="#can-i-switch-between-npm-and-git-installs-later">Can I switch between npm and git installs later?</a></li>
+<li><a href="#should-i-run-the-gateway-on-my-laptop-or-a-vps">Should I run the Gateway on my laptop or a VPS?</a></li>
+<li><a href="#how-important-is-it-to-run-agdi-on-a-dedicated-machine">How important is it to run AGDI on a dedicated machine?</a></li>
+<li><a href="#what-are-the-minimum-vps-requirements-and-recommended-os">What are the minimum VPS requirements and recommended OS?</a></li>
+<li><a href="#can-i-run-agdi-in-a-vm-and-what-are-the-requirements">Can I run AGDI in a VM and what are the requirements</a></li>
+</ul>
+</li>
+<li><a href="#what-is-agdi">What is AGDI?</a><ul>
+<li><a href="#what-is-agdi-in-one-paragraph">What is AGDI, in one paragraph?</a></li>
+<li><a href="#whats-the-value-proposition">What&#39;s the value proposition?</a></li>
+<li><a href="#i-just-set-it-up-what-should-i-do-first">I just set it up what should I do first</a></li>
+<li><a href="#what-are-the-top-five-everyday-use-cases-for-agdi">What are the top five everyday use cases for AGDI</a></li>
+<li><a href="#can-agdi-help-with-lead-gen-outreach-ads-and-blogs-for-a-saas">Can AGDI help with lead gen outreach ads and blogs for a SaaS</a></li>
+<li><a href="#what-are-the-advantages-vs-claude-code-for-web-development">What are the advantages vs Claude Code for web development?</a></li>
+</ul>
+</li>
+<li><a href="#skills-and-automation">Skills and automation</a><ul>
+<li><a href="#how-do-i-customize-skills-without-keeping-the-repo-dirty">How do I customize skills without keeping the repo dirty?</a></li>
+<li><a href="#can-i-load-skills-from-a-custom-folder">Can I load skills from a custom folder?</a></li>
+<li><a href="#how-can-i-use-different-models-for-different-tasks">How can I use different models for different tasks?</a></li>
+<li><a href="#the-bot-freezes-while-doing-heavy-work-how-do-i-offload-that">The bot freezes while doing heavy work. How do I offload that?</a></li>
+<li><a href="#cron-or-reminders-do-not-fire-what-should-i-check">Cron or reminders do not fire. What should I check?</a></li>
+<li><a href="#how-do-i-install-skills-on-linux">How do I install skills on Linux?</a></li>
+<li><a href="#can-agdi-run-tasks-on-a-schedule-or-continuously-in-the-background">Can AGDI run tasks on a schedule or continuously in the background?</a></li>
+<li><a href="#can-i-run-apple-macos-only-skills-from-linux">Can I run Apple macOS-only skills from Linux?</a></li>
+<li><a href="#do-you-have-a-notion-or-heygen-integration">Do you have a Notion or HeyGen integration?</a></li>
+<li><a href="#how-do-i-install-the-chrome-extension-for-browser-takeover">How do I install the Chrome extension for browser takeover?</a></li>
+</ul>
+</li>
+<li><a href="#sandboxing-and-memory">Sandboxing and memory</a><ul>
+<li><a href="#is-there-a-dedicated-sandboxing-doc">Is there a dedicated sandboxing doc?</a></li>
+<li><a href="#how-do-i-bind-a-host-folder-into-the-sandbox">How do I bind a host folder into the sandbox?</a></li>
+<li><a href="#how-does-memory-work">How does memory work?</a></li>
+<li><a href="#memory-keeps-forgetting-things-how-do-i-make-it-stick">Memory keeps forgetting things. How do I make it stick?</a></li>
+<li><a href="#does-memory-persist-forever-what-are-the-limits">Does memory persist forever? What are the limits?</a></li>
+<li><a href="#does-semantic-memory-search-require-an-openai-api-key">Does semantic memory search require an OpenAI API key?</a></li>
+</ul>
+</li>
+<li><a href="#where-things-live-on-disk">Where things live on disk</a><ul>
+<li><a href="#is-all-data-used-with-agdi-saved-locally">Is all data used with AGDI saved locally?</a></li>
+<li><a href="#where-does-agdi-store-its-data">Where does AGDI store its data?</a></li>
+<li><a href="#where-should-agentsmd-soulmd-usermd-memorymd-live">Where should AGENTS.md / SOUL.md / USER.md / MEMORY.md live?</a></li>
+<li><a href="#whats-the-recommended-backup-strategy">What&#39;s the recommended backup strategy?</a></li>
+<li><a href="#how-do-i-completely-uninstall-agdi">How do I completely uninstall AGDI?</a></li>
+<li><a href="#can-agents-work-outside-the-workspace">Can agents work outside the workspace?</a></li>
+<li><a href="#im-in-remote-mode-where-is-the-session-store">I&#39;m in remote mode - where is the session store?</a></li>
+</ul>
+</li>
+<li><a href="#config-basics">Config basics</a><ul>
+<li><a href="#what-format-is-the-config-where-is-it">What format is the config? Where is it?</a></li>
+<li><a href="#i-set-gatewaybind-lan-or-tailnet-and-now-nothing-listens-the-ui-says-unauthorized">I set <code>gateway.bind: &quot;lan&quot;</code> (or <code>&quot;tailnet&quot;</code>) and now nothing listens / the UI says unauthorized</a></li>
+<li><a href="#why-do-i-need-a-token-on-localhost-now">Why do I need a token on localhost now?</a></li>
+<li><a href="#do-i-have-to-restart-after-changing-config">Do I have to restart after changing config?</a></li>
+<li><a href="#how-do-i-enable-web-search-and-web-fetch">How do I enable web search (and web fetch)?</a></li>
+<li><a href="#configapply-wiped-my-config-how-do-i-recover-and-avoid-this">config.apply wiped my config. How do I recover and avoid this?</a></li>
+<li><a href="#how-do-i-run-a-central-gateway-with-specialized-workers-across-devices">How do I run a central Gateway with specialized workers across devices?</a></li>
+<li><a href="#can-the-agdi-browser-run-headless">Can the AGDI browser run headless?</a></li>
+<li><a href="#how-do-i-use-brave-for-browser-control">How do I use Brave for browser control?</a></li>
+</ul>
+</li>
+<li><a href="#remote-gateways-and-nodes">Remote gateways and nodes</a><ul>
+<li><a href="#how-do-commands-propagate-between-telegram-the-gateway-and-nodes">How do commands propagate between Telegram, the gateway, and nodes?</a></li>
+<li><a href="#how-can-my-agent-access-my-computer-if-the-gateway-is-hosted-remotely">How can my agent access my computer if the Gateway is hosted remotely?</a></li>
+<li><a href="#tailscale-is-connected-but-i-get-no-replies-what-now">Tailscale is connected but I get no replies. What now?</a></li>
+<li><a href="#can-two-agdi-instances-talk-to-each-other-local-vps">Can two AGDI instances talk to each other (local + VPS)?</a></li>
+<li><a href="#do-i-need-separate-vpses-for-multiple-agents">Do I need separate VPSes for multiple agents</a></li>
+<li><a href="#is-there-a-benefit-to-using-a-node-on-my-personal-laptop-instead-of-ssh-from-a-vps">Is there a benefit to using a node on my personal laptop instead of SSH from a VPS?</a></li>
+<li><a href="#do-nodes-run-a-gateway-service">Do nodes run a gateway service?</a></li>
+<li><a href="#is-there-an-api-rpc-way-to-apply-config">Is there an API / RPC way to apply config?</a></li>
+<li><a href="#whats-a-minimal-sane-config-for-a-first-install">What&#39;s a minimal &quot;sane&quot; config for a first install?</a></li>
+<li><a href="#how-do-i-set-up-tailscale-on-a-vps-and-connect-from-my-mac">How do I set up Tailscale on a VPS and connect from my Mac?</a></li>
+<li><a href="#how-do-i-connect-a-mac-node-to-a-remote-gateway-tailscale-serve">How do I connect a Mac node to a remote Gateway (Tailscale Serve)?</a></li>
+<li><a href="#should-i-install-on-a-second-laptop-or-just-add-a-node">Should I install on a second laptop or just add a node?</a></li>
+</ul>
+</li>
+<li><a href="#env-vars-and-env-loading">Env vars and .env loading</a><ul>
+<li><a href="#how-does-agdi-load-environment-variables">How does AGDI load environment variables?</a></li>
+<li><a href="#i-started-the-gateway-via-the-service-and-my-env-vars-disappeared-what-now">&quot;I started the Gateway via the service and my env vars disappeared.&quot; What now?</a></li>
+<li><a href="#i-set-copilotgithubtoken-but-models-status-shows-shell-env-off-why">I set <code>COPILOT_GITHUB_TOKEN</code>, but models status shows &quot;Shell env: off.&quot; Why?</a></li>
+</ul>
+</li>
+<li><a href="#sessions-and-multiple-chats">Sessions and multiple chats</a><ul>
+<li><a href="#how-do-i-start-a-fresh-conversation">How do I start a fresh conversation?</a></li>
+<li><a href="#do-sessions-reset-automatically-if-i-never-send-new">Do sessions reset automatically if I never send <code>/new</code>?</a></li>
+<li><a href="#is-there-a-way-to-make-a-team-of-agdi-instances-one-ceo-and-many-agents">Is there a way to make a team of AGDI instances one CEO and many agents</a></li>
+<li><a href="#why-did-context-get-truncated-midtask-how-do-i-prevent-it">Why did context get truncated mid-task? How do I prevent it?</a></li>
+<li><a href="#how-do-i-completely-reset-agdi-but-keep-it-installed">How do I completely reset AGDI but keep it installed?</a></li>
+<li><a href="#im-getting-context-too-large-errors-how-do-i-reset-or-compact">I&#39;m getting &quot;context too large&quot; errors - how do I reset or compact?</a></li>
+<li><a href="#why-am-i-seeing-llm-request-rejected-messagesncontentxtooluseinput-field-required">Why am I seeing &quot;LLM request rejected: messages.N.content.X.tool_use.input: Field required&quot;?</a></li>
+<li><a href="#why-am-i-getting-heartbeat-messages-every-30-minutes">Why am I getting heartbeat messages every 30 minutes?</a></li>
+<li><a href="#do-i-need-to-add-a-bot-account-to-a-whatsapp-group">Do I need to add a &quot;bot account&quot; to a WhatsApp group?</a></li>
+<li><a href="#how-do-i-get-the-jid-of-a-whatsapp-group">How do I get the JID of a WhatsApp group?</a></li>
+<li><a href="#why-doesnt-agdi-reply-in-a-group">Why doesn&#39;t AGDI reply in a group?</a></li>
+<li><a href="#do-groupsthreads-share-context-with-dms">Do groups/threads share context with DMs?</a></li>
+<li><a href="#how-many-workspaces-and-agents-can-i-create">How many workspaces and agents can I create?</a></li>
+<li><a href="#can-i-run-multiple-bots-or-chats-at-the-same-time-slack-and-how-should-i-set-that-up">Can I run multiple bots or chats at the same time (Slack), and how should I set that up?</a></li>
+</ul>
+</li>
+<li><a href="#models-defaults-selection-aliases-switching">Models: defaults, selection, aliases, switching</a><ul>
+<li><a href="#what-is-the-default-model">What is the &quot;default model&quot;?</a></li>
+<li><a href="#what-model-do-you-recommend">What model do you recommend?</a></li>
+<li><a href="#how-do-i-switch-models-without-wiping-my-config">How do I switch models without wiping my config?</a></li>
+<li><a href="#can-i-use-selfhosted-models-llamacpp-vllm-ollama">Can I use self-hosted models (llama.cpp, vLLM, Ollama)?</a></li>
+<li><a href="#what-do-agdi-flawd-and-krill-use-for-models">What do AGDI, Flawd, and Krill use for models?</a></li>
+<li><a href="#how-do-i-switch-models-on-the-fly-without-restarting">How do I switch models on the fly (without restarting)?</a></li>
+<li><a href="#can-i-use-gpt-52-for-daily-tasks-and-codex-53-for-coding">Can I use GPT 5.2 for daily tasks and Codex 5.3 for coding</a></li>
+<li><a href="#why-do-i-see-model-is-not-allowed-and-then-no-reply">Why do I see &quot;Model … is not allowed&quot; and then no reply?</a></li>
+<li><a href="#why-do-i-see-unknown-model-minimaxminimaxm21">Why do I see &quot;Unknown model: minimax/MiniMax-M2.1&quot;?</a></li>
+<li><a href="#can-i-use-minimax-as-my-default-and-openai-for-complex-tasks">Can I use MiniMax as my default and OpenAI for complex tasks?</a></li>
+<li><a href="#are-opus-sonnet-gpt-builtin-shortcuts">Are opus / sonnet / gpt built-in shortcuts?</a></li>
+<li><a href="#how-do-i-defineoverride-model-shortcuts-aliases">How do I define/override model shortcuts (aliases)?</a></li>
+<li><a href="#how-do-i-add-models-from-other-providers-like-openrouter-or-zai">How do I add models from other providers like OpenRouter or Z.AI?</a></li>
+</ul>
+</li>
+<li><a href="#model-failover-and-all-models-failed">Model failover and &quot;All models failed&quot;</a><ul>
+<li><a href="#how-does-failover-work">How does failover work?</a></li>
+<li><a href="#what-does-this-error-mean">What does this error mean?</a></li>
+<li><a href="#fix-checklist-for-no-credentials-found-for-profile-anthropicdefault">Fix checklist for <code>No credentials found for profile &quot;anthropic:default&quot;</code></a></li>
+<li><a href="#why-did-it-also-try-google-gemini-and-fail">Why did it also try Google Gemini and fail?</a></li>
+</ul>
+</li>
+<li><a href="#auth-profiles-what-they-are-and-how-to-manage-them">Auth profiles: what they are and how to manage them</a><ul>
+<li><a href="#what-is-an-auth-profile">What is an auth profile?</a></li>
+<li><a href="#what-are-typical-profile-ids">What are typical profile IDs?</a></li>
+<li><a href="#can-i-control-which-auth-profile-is-tried-first">Can I control which auth profile is tried first?</a></li>
+<li><a href="#oauth-vs-api-key-whats-the-difference">OAuth vs API key: what&#39;s the difference?</a></li>
+</ul>
+</li>
+<li><a href="#gateway-ports-already-running-and-remote-mode">Gateway: ports, &quot;already running&quot;, and remote mode</a><ul>
+<li><a href="#what-port-does-the-gateway-use">What port does the Gateway use?</a></li>
+<li><a href="#why-does-agdi-gateway-status-say-runtime-running-but-rpc-probe-failed">Why does <code>agdi gateway status</code> say <code>Runtime: running</code> but <code>RPC probe: failed</code>?</a></li>
+<li><a href="#why-does-agdi-gateway-status-show-config-cli-and-config-service-different">Why does <code>agdi gateway status</code> show <code>Config (cli)</code> and <code>Config (service)</code> different?</a></li>
+<li><a href="#what-does-another-gateway-instance-is-already-listening-mean">What does &quot;another gateway instance is already listening&quot; mean?</a></li>
+<li><a href="#how-do-i-run-agdi-in-remote-mode-client-connects-to-a-gateway-elsewhere">How do I run AGDI in remote mode (client connects to a Gateway elsewhere)?</a></li>
+<li><a href="#the-control-ui-says-unauthorized-or-keeps-reconnecting-what-now">The Control UI says &quot;unauthorized&quot; (or keeps reconnecting). What now?</a></li>
+<li><a href="#i-set-gatewaybind-tailnet-but-it-cant-bind-nothing-listens">I set <code>gateway.bind: &quot;tailnet&quot;</code> but it can&#39;t bind / nothing listens</a></li>
+<li><a href="#can-i-run-multiple-gateways-on-the-same-host">Can I run multiple Gateways on the same host?</a></li>
+<li><a href="#what-does-invalid-handshake-code-1008-mean">What does &quot;invalid handshake&quot; / code 1008 mean?</a></li>
+</ul>
+</li>
+<li><a href="#logging-and-debugging">Logging and debugging</a><ul>
+<li><a href="#where-are-logs">Where are logs?</a></li>
+<li><a href="#how-do-i-startstoprestart-the-gateway-service">How do I start/stop/restart the Gateway service?</a></li>
+<li><a href="#i-closed-my-terminal-on-windows-how-do-i-restart-agdi">I closed my terminal on Windows - how do I restart AGDI?</a></li>
+<li><a href="#the-gateway-is-up-but-replies-never-arrive-what-should-i-check">The Gateway is up but replies never arrive. What should I check?</a></li>
+<li><a href="#disconnected-from-gateway-no-reason-what-now">&quot;Disconnected from gateway: no reason&quot; - what now?</a></li>
+<li><a href="#telegram-setmycommands-fails-with-network-errors-what-should-i-check">Telegram setMyCommands fails with network errors. What should I check?</a></li>
+<li><a href="#tui-shows-no-output-what-should-i-check">TUI shows no output. What should I check?</a></li>
+<li><a href="#how-do-i-completely-stop-then-start-the-gateway">How do I completely stop then start the Gateway?</a></li>
+<li><a href="#eli5-agdi-gateway-restart-vs-agdi-gateway">ELI5: <code>agdi gateway restart</code> vs <code>agdi gateway</code></a></li>
+<li><a href="#whats-the-fastest-way-to-get-more-details-when-something-fails">What&#39;s the fastest way to get more details when something fails?</a></li>
+</ul>
+</li>
+<li><a href="#media-and-attachments">Media and attachments</a><ul>
+<li><a href="#my-skill-generated-an-imagepdf-but-nothing-was-sent">My skill generated an image/PDF, but nothing was sent</a></li>
+</ul>
+</li>
+<li><a href="#security-and-access-control">Security and access control</a><ul>
+<li><a href="#is-it-safe-to-expose-agdi-to-inbound-dms">Is it safe to expose AGDI to inbound DMs?</a></li>
+<li><a href="#is-prompt-injection-only-a-concern-for-public-bots">Is prompt injection only a concern for public bots?</a></li>
+<li><a href="#should-my-bot-have-its-own-email-github-account-or-phone-number">Should my bot have its own email GitHub account or phone number</a></li>
+<li><a href="#can-i-give-it-autonomy-over-my-text-messages-and-is-that-safe">Can I give it autonomy over my text messages and is that safe</a></li>
+<li><a href="#can-i-use-cheaper-models-for-personal-assistant-tasks">Can I use cheaper models for personal assistant tasks?</a></li>
+<li><a href="#i-ran-start-in-telegram-but-didnt-get-a-pairing-code">I ran <code>/start</code> in Telegram but didn&#39;t get a pairing code</a></li>
+<li><a href="#whatsapp-will-it-message-my-contacts-how-does-pairing-work">WhatsApp: will it message my contacts? How does pairing work?</a></li>
+</ul>
+</li>
+<li><a href="#chat-commands-aborting-tasks-and-it-wont-stop">Chat commands, aborting tasks, and &quot;it won&#39;t stop&quot;</a><ul>
+<li><a href="#how-do-i-stop-internal-system-messages-from-showing-in-chat">How do I stop internal system messages from showing in chat</a></li>
+<li><a href="#how-do-i-stopcancel-a-running-task">How do I stop/cancel a running task?</a></li>
+<li><a href="#how-do-i-send-a-discord-message-from-telegram-crosscontext-messaging-denied">How do I send a Discord message from Telegram? (&quot;Cross-context messaging denied&quot;)</a></li>
+<li><a href="#why-does-it-feel-like-the-bot-ignores-rapidfire-messages">Why does it feel like the bot &quot;ignores&quot; rapid-fire messages?</a></li>
+</ul>
+</li>
+</ul>
+<h2>First 60 seconds if something&#39;s broken</h2>
+<ol>
+<li><p><strong>Quick status (first check)</strong></p>
+<pre><code class="language-bash">agdi status
+</code></pre>
+<p>Fast local summary: OS + update, gateway/service reachability, agents/sessions, provider config + runtime issues (when gateway is reachable).</p>
+</li>
+<li><p><strong>Pasteable report (safe to share)</strong></p>
+<pre><code class="language-bash">agdi status --all
+</code></pre>
+<p>Read-only diagnosis with log tail (tokens redacted).</p>
+</li>
+<li><p><strong>Daemon + port state</strong></p>
+<pre><code class="language-bash">agdi gateway status
+</code></pre>
+<p>Shows supervisor runtime vs RPC reachability, the probe target URL, and which config the service likely used.</p>
+</li>
+<li><p><strong>Deep probes</strong></p>
+<pre><code class="language-bash">agdi status --deep
+</code></pre>
+<p>Runs gateway health checks + provider probes (requires a reachable gateway). See <a href="/gateway/health">Health</a>.</p>
+</li>
+<li><p><strong>Tail the latest log</strong></p>
+<pre><code class="language-bash">agdi logs --follow
+</code></pre>
+<p>If RPC is down, fall back to:</p>
+<pre><code class="language-bash">tail -f &quot;$(ls -t /tmp/agdi/agdi-*.log | head -1)&quot;
+</code></pre>
+<p>File logs are separate from service logs; see <a href="/logging">Logging</a> and <a href="/gateway/troubleshooting">Troubleshooting</a>.</p>
+</li>
+<li><p><strong>Run the doctor (repairs)</strong></p>
+<pre><code class="language-bash">agdi doctor
+</code></pre>
+<p>Repairs/migrates config/state + runs health checks. See <a href="/gateway/doctor">Doctor</a>.</p>
+</li>
+<li><p><strong>Gateway snapshot</strong></p>
+<pre><code class="language-bash">agdi health --json
+agdi health --verbose   # shows the target URL + config path on errors
+</code></pre>
+<p>Asks the running gateway for a full snapshot (WS-only). See <a href="/gateway/health">Health</a>.</p>
+</li>
+</ol>
+<h2>Quick start and first-run setup</h2>
+<h3>Im stuck whats the fastest way to get unstuck</h3>
+<p>Use a local AI agent that can <strong>see your machine</strong>. That is far more effective than asking
+in Discord, because most &quot;I&#39;m stuck&quot; cases are <strong>local config or environment issues</strong> that
+remote helpers cannot inspect.</p>
+<ul>
+<li><strong>Claude Code</strong>: <a href="https://www.anthropic.com/claude-code/">https://www.anthropic.com/claude-code/</a></li>
+<li><strong>OpenAI Codex</strong>: <a href="https://openai.com/codex/">https://openai.com/codex/</a></li>
+</ul>
+<p>These tools can read the repo, run commands, inspect logs, and help fix your machine-level
+setup (PATH, services, permissions, auth files). Give them the <strong>full source checkout</strong> via
+the hackable (git) install:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --install-method git
+</code></pre>
+<p>This installs AGDI <strong>from a git checkout</strong>, so the agent can read the code + docs and
+reason about the exact version you are running. You can always switch back to stable later
+by re-running the installer without <code>--install-method git</code>.</p>
+<p>Tip: ask the agent to <strong>plan and supervise</strong> the fix (step-by-step), then execute only the
+necessary commands. That keeps changes small and easier to audit.</p>
+<p>If you discover a real bug or fix, please file a GitHub issue or send a PR:
+<a href="https://github.com/agdi/agdi/issues">https://github.com/agdi/agdi/issues</a>
+<a href="https://github.com/agdi/agdi/pulls">https://github.com/agdi/agdi/pulls</a></p>
+<p>Start with these commands (share outputs when asking for help):</p>
+<pre><code class="language-bash">agdi status
+agdi models status
+agdi doctor
+</code></pre>
+<p>What they do:</p>
+<ul>
+<li><code>agdi status</code>: quick snapshot of gateway/agent health + basic config.</li>
+<li><code>agdi models status</code>: checks provider auth + model availability.</li>
+<li><code>agdi doctor</code>: validates and repairs common config/state issues.</li>
+</ul>
+<p>Other useful CLI checks: <code>agdi status --all</code>, <code>agdi logs --follow</code>,
+<code>agdi gateway status</code>, <code>agdi health --verbose</code>.</p>
+<p>Quick debug loop: <a href="#first-60-seconds-if-somethings-broken">First 60 seconds if something&#39;s broken</a>.
+Install docs: <a href="/install">Install</a>, <a href="/install/installer">Installer flags</a>, <a href="/install/updating">Updating</a>.</p>
+<h3>What&#39;s the recommended way to install and set up AGDI</h3>
+<p>The repo recommends running from source and using the onboarding wizard:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash
+agdi onboard --install-daemon
+</code></pre>
+<p>The wizard can also build UI assets automatically. After onboarding, you typically run the Gateway on port <strong>18789</strong>.</p>
+<p>From source (contributors/dev):</p>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+pnpm install
+pnpm build
+pnpm ui:build # auto-installs UI deps on first run
+agdi onboard
+</code></pre>
+<p>If you don&#39;t have a global install yet, run it via <code>pnpm agdi onboard</code>.</p>
+<h3>How do I open the dashboard after onboarding</h3>
+<p>The wizard opens your browser with a clean (non-tokenized) dashboard URL right after onboarding and also prints the link in the summary. Keep that tab open; if it didn&#39;t launch, copy/paste the printed URL on the same machine.</p>
+<h3>How do I authenticate the dashboard token on localhost vs remote</h3>
+<p><strong>Localhost (same machine):</strong></p>
+<ul>
+<li>Open <code>http://127.0.0.1:18789/</code>.</li>
+<li>If it asks for auth, paste the token from <code>gateway.auth.token</code> (or <code>AGDI_GATEWAY_TOKEN</code>) into Control UI settings.</li>
+<li>Retrieve it from the gateway host: <code>agdi config get gateway.auth.token</code> (or generate one: <code>agdi doctor --generate-gateway-token</code>).</li>
+</ul>
+<p><strong>Not on localhost:</strong></p>
+<ul>
+<li><strong>Tailscale Serve</strong> (recommended): keep bind loopback, run <code>agdi gateway --tailscale serve</code>, open <code>https://&lt;magicdns&gt;/</code>. If <code>gateway.auth.allowTailscale</code> is <code>true</code>, identity headers satisfy auth (no token).</li>
+<li><strong>Tailnet bind</strong>: run <code>agdi gateway --bind tailnet --token &quot;&lt;token&gt;&quot;</code>, open <code>http://&lt;tailscale-ip&gt;:18789/</code>, paste token in dashboard settings.</li>
+<li><strong>SSH tunnel</strong>: <code>ssh -N -L 18789:127.0.0.1:18789 user@host</code> then open <code>http://127.0.0.1:18789/</code> and paste the token in Control UI settings.</li>
+</ul>
+<p>See <a href="/web/dashboard">Dashboard</a> and <a href="/web">Web surfaces</a> for bind modes and auth details.</p>
+<h3>What runtime do I need</h3>
+<p>Node <strong>&gt;= 22</strong> is required. <code>pnpm</code> is recommended. Bun is <strong>not recommended</strong> for the Gateway.</p>
+<h3>Does it run on Raspberry Pi</h3>
+<p>Yes. The Gateway is lightweight - docs list <strong>512MB-1GB RAM</strong>, <strong>1 core</strong>, and about <strong>500MB</strong>
+disk as enough for personal use, and note that a <strong>Raspberry Pi 4 can run it</strong>.</p>
+<p>If you want extra headroom (logs, media, other services), <strong>2GB is recommended</strong>, but it&#39;s
+not a hard minimum.</p>
+<p>Tip: a small Pi/VPS can host the Gateway, and you can pair <strong>nodes</strong> on your laptop/phone for
+local screen/camera/canvas or command execution. See <a href="/nodes">Nodes</a>.</p>
+<h3>Any tips for Raspberry Pi installs</h3>
+<p>Short version: it works, but expect rough edges.</p>
+<ul>
+<li>Use a <strong>64-bit</strong> OS and keep Node &gt;= 22.</li>
+<li>Prefer the <strong>hackable (git) install</strong> so you can see logs and update fast.</li>
+<li>Start without channels/skills, then add them one by one.</li>
+<li>If you hit weird binary issues, it is usually an <strong>ARM compatibility</strong> problem.</li>
+</ul>
+<p>Docs: <a href="/platforms/linux">Linux</a>, <a href="/install">Install</a>.</p>
+<h3>It is stuck on wake up my friend onboarding will not hatch What now</h3>
+<p>That screen depends on the Gateway being reachable and authenticated. The TUI also sends
+&quot;Wake up, my friend!&quot; automatically on first hatch. If you see that line with <strong>no reply</strong>
+and tokens stay at 0, the agent never ran.</p>
+<ol>
+<li>Restart the Gateway:</li>
+</ol>
+<pre><code class="language-bash">agdi gateway restart
+</code></pre>
+<ol start="2">
+<li>Check status + auth:</li>
+</ol>
+<pre><code class="language-bash">agdi status
+agdi models status
+agdi logs --follow
+</code></pre>
+<ol start="3">
+<li>If it still hangs, run:</li>
+</ol>
+<pre><code class="language-bash">agdi doctor
+</code></pre>
+<p>If the Gateway is remote, ensure the tunnel/Tailscale connection is up and that the UI
+is pointed at the right Gateway. See <a href="/gateway/remote">Remote access</a>.</p>
+<h3>Can I migrate my setup to a new machine Mac mini without redoing onboarding</h3>
+<p>Yes. Copy the <strong>state directory</strong> and <strong>workspace</strong>, then run Doctor once. This
+keeps your bot &quot;exactly the same&quot; (memory, session history, auth, and channel
+state) as long as you copy <strong>both</strong> locations:</p>
+<ol>
+<li>Install AGDI on the new machine.</li>
+<li>Copy <code>$AGDI_STATE_DIR</code> (default: <code>~/.agdi</code>) from the old machine.</li>
+<li>Copy your workspace (default: <code>~/.agdi/workspace</code>).</li>
+<li>Run <code>agdi doctor</code> and restart the Gateway service.</li>
+</ol>
+<p>That preserves config, auth profiles, WhatsApp creds, sessions, and memory. If you&#39;re in
+remote mode, remember the gateway host owns the session store and workspace.</p>
+<p><strong>Important:</strong> if you only commit/push your workspace to GitHub, you&#39;re backing
+up <strong>memory + bootstrap files</strong>, but <strong>not</strong> session history or auth. Those live
+under <code>~/.agdi/</code> (for example <code>~/.agdi/agents/&lt;agentId&gt;/sessions/</code>).</p>
+<p>Related: <a href="/install/migrating">Migrating</a>, <a href="/help/faq#where-does-agdi-store-its-data">Where things live on disk</a>,
+<a href="/concepts/agent-workspace">Agent workspace</a>, <a href="/gateway/doctor">Doctor</a>,
+<a href="/gateway/remote">Remote mode</a>.</p>
+<h3>Where do I see what is new in the latest version</h3>
+<p>Check the GitHub changelog:
+<a href="https://github.com/agdi/agdi/blob/main/CHANGELOG.md">https://github.com/agdi/agdi/blob/main/CHANGELOG.md</a></p>
+<p>Newest entries are at the top. If the top section is marked <strong>Unreleased</strong>, the next dated
+section is the latest shipped version. Entries are grouped by <strong>Highlights</strong>, <strong>Changes</strong>, and
+<strong>Fixes</strong> (plus docs/other sections when needed).</p>
+<h3>I cant access docs.agdi.ai SSL error What now</h3>
+<p>Some Comcast/Xfinity connections incorrectly block <code>docs.agdi.ai</code> via Xfinity
+Advanced Security. Disable it or allowlist <code>docs.agdi.ai</code>, then retry. More
+detail: <a href="/help/troubleshooting#docsagdiai-shows-an-ssl-error-comcastxfinity">Troubleshooting</a>.
+Please help us unblock it by reporting here: <a href="https://spa.xfinity.com/check_url_status">https://spa.xfinity.com/check_url_status</a>.</p>
+<p>If you still can&#39;t reach the site, the docs are mirrored on GitHub:
+<a href="https://github.com/agdi/agdi/tree/main/docs">https://github.com/agdi/agdi/tree/main/docs</a></p>
+<h3>What&#39;s the difference between stable and beta</h3>
+<p><strong>Stable</strong> and <strong>beta</strong> are <strong>npm dist-tags</strong>, not separate code lines:</p>
+<ul>
+<li><code>latest</code> = stable</li>
+<li><code>beta</code> = early build for testing</li>
+</ul>
+<p>We ship builds to <strong>beta</strong>, test them, and once a build is solid we <strong>promote
+that same version to <code>latest</code></strong>. That&#39;s why beta and stable can point at the
+<strong>same version</strong>.</p>
+<p>See what changed:
+<a href="https://github.com/agdi/agdi/blob/main/CHANGELOG.md">https://github.com/agdi/agdi/blob/main/CHANGELOG.md</a></p>
+<h3>How do I install the beta version and whats the difference between beta and dev</h3>
+<p><strong>Beta</strong> is the npm dist-tag <code>beta</code> (may match <code>latest</code>).
+<strong>Dev</strong> is the moving head of <code>main</code> (git); when published, it uses the npm dist-tag <code>dev</code>.</p>
+<p>One-liners (macOS/Linux):</p>
+<pre><code class="language-bash">curl -fsSL --proto &#39;=https&#39; --tlsv1.2 https://agdi.ai/install.sh | bash -s -- --beta
+</code></pre>
+<pre><code class="language-bash">curl -fsSL --proto &#39;=https&#39; --tlsv1.2 https://agdi.ai/install.sh | bash -s -- --install-method git
+</code></pre>
+<p>Windows installer (PowerShell):
+<a href="https://agdi.ai/install.ps1">https://agdi.ai/install.ps1</a></p>
+<p>More detail: <a href="/install/development-channels">Development channels</a> and <a href="/install/installer">Installer flags</a>.</p>
+<h3>How long does install and onboarding usually take</h3>
+<p>Rough guide:</p>
+<ul>
+<li><strong>Install:</strong> 2-5 minutes</li>
+<li><strong>Onboarding:</strong> 5-15 minutes depending on how many channels/models you configure</li>
+</ul>
+<p>If it hangs, use <a href="/help/faq#installer-stuck-how-do-i-get-more-feedback">Installer stuck</a>
+and the fast debug loop in <a href="/help/faq#im-stuck--whats-the-fastest-way-to-get-unstuck">Im stuck</a>.</p>
+<h3>How do I try the latest bits</h3>
+<p>Two options:</p>
+<ol>
+<li><strong>Dev channel (git checkout):</strong></li>
+</ol>
+<pre><code class="language-bash">agdi update --channel dev
+</code></pre>
+<p>This switches to the <code>main</code> branch and updates from source.</p>
+<ol start="2">
+<li><strong>Hackable install (from the installer site):</strong></li>
+</ol>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --install-method git
+</code></pre>
+<p>That gives you a local repo you can edit, then update via git.</p>
+<p>If you prefer a clean clone manually, use:</p>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+pnpm install
+pnpm build
+</code></pre>
+<p>Docs: <a href="/cli/update">Update</a>, <a href="/install/development-channels">Development channels</a>,
+<a href="/install">Install</a>.</p>
+<h3>Installer stuck How do I get more feedback</h3>
+<p>Re-run the installer with <strong>verbose output</strong>:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --verbose
+</code></pre>
+<p>Beta install with verbose:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --beta --verbose
+</code></pre>
+<p>For a hackable (git) install:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --install-method git --verbose
+</code></pre>
+<p>Windows (PowerShell) equivalent:</p>
+<pre><code class="language-powershell"># install.ps1 has no dedicated -Verbose flag yet.
+Set-PSDebug -Trace 1
+&amp; ([scriptblock]::Create((iwr -useb https://agdi.ai/install.ps1))) -NoOnboard
+Set-PSDebug -Trace 0
+</code></pre>
+<p>More options: <a href="/install/installer">Installer flags</a>.</p>
+<h3>Windows install says git not found or agdi not recognized</h3>
+<p>Two common Windows issues:</p>
+<p><strong>1) npm error spawn git / git not found</strong></p>
+<ul>
+<li>Install <strong>Git for Windows</strong> and make sure <code>git</code> is on your PATH.</li>
+<li>Close and reopen PowerShell, then re-run the installer.</li>
+</ul>
+<p><strong>2) agdi is not recognized after install</strong></p>
+<ul>
+<li><p>Your npm global bin folder is not on PATH.</p>
+</li>
+<li><p>Check the path:</p>
+<pre><code class="language-powershell">npm config get prefix
+</code></pre>
+</li>
+<li><p>Ensure <code>&lt;prefix&gt;\\bin</code> is on PATH (on most systems it is <code>%AppData%\\npm</code>).</p>
+</li>
+<li><p>Close and reopen PowerShell after updating PATH.</p>
+</li>
+</ul>
+<p>If you want the smoothest Windows setup, use <strong>WSL2</strong> instead of native Windows.
+Docs: <a href="/platforms/windows">Windows</a>.</p>
+<h3>The docs didnt answer my question how do I get a better answer</h3>
+<p>Use the <strong>hackable (git) install</strong> so you have the full source and docs locally, then ask
+your bot (or Claude/Codex) <em>from that folder</em> so it can read the repo and answer precisely.</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --install-method git
+</code></pre>
+<p>More detail: <a href="/install">Install</a> and <a href="/install/installer">Installer flags</a>.</p>
+<h3>How do I install AGDI on Linux</h3>
+<p>Short answer: follow the Linux guide, then run the onboarding wizard.</p>
+<ul>
+<li>Linux quick path + service install: <a href="/platforms/linux">Linux</a>.</li>
+<li>Full walkthrough: <a href="/start/getting-started">Getting Started</a>.</li>
+<li>Installer + updates: <a href="/install/updating">Install &amp; updates</a>.</li>
+</ul>
+<h3>How do I install AGDI on a VPS</h3>
+<p>Any Linux VPS works. Install on the server, then use SSH/Tailscale to reach the Gateway.</p>
+<p>Guides: <a href="/install/exe-dev">exe.dev</a>, <a href="/install/hetzner">Hetzner</a>, <a href="/install/fly">Fly.io</a>.
+Remote access: <a href="/gateway/remote">Gateway remote</a>.</p>
+<h3>Where are the cloudVPS install guides</h3>
+<p>We keep a <strong>hosting hub</strong> with the common providers. Pick one and follow the guide:</p>
+<ul>
+<li><a href="/vps">VPS hosting</a> (all providers in one place)</li>
+<li><a href="/install/fly">Fly.io</a></li>
+<li><a href="/install/hetzner">Hetzner</a></li>
+<li><a href="/install/exe-dev">exe.dev</a></li>
+</ul>
+<p>How it works in the cloud: the <strong>Gateway runs on the server</strong>, and you access it
+from your laptop/phone via the Control UI (or Tailscale/SSH). Your state + workspace
+live on the server, so treat the host as the source of truth and back it up.</p>
+<p>You can pair <strong>nodes</strong> (Mac/iOS/Android/headless) to that cloud Gateway to access
+local screen/camera/canvas or run commands on your laptop while keeping the
+Gateway in the cloud.</p>
+<p>Hub: <a href="/platforms">Platforms</a>. Remote access: <a href="/gateway/remote">Gateway remote</a>.
+Nodes: <a href="/nodes">Nodes</a>, <a href="/cli/nodes">Nodes CLI</a>.</p>
+<h3>Can I ask AGDI to update itself</h3>
+<p>Short answer: <strong>possible, not recommended</strong>. The update flow can restart the
+Gateway (which drops the active session), may need a clean git checkout, and
+can prompt for confirmation. Safer: run updates from a shell as the operator.</p>
+<p>Use the CLI:</p>
+<pre><code class="language-bash">agdi update
+agdi update status
+agdi update --channel stable|beta|dev
+agdi update --tag &lt;dist-tag|version&gt;
+agdi update --no-restart
+</code></pre>
+<p>If you must automate from an agent:</p>
+<pre><code class="language-bash">agdi update --yes --no-restart
+agdi gateway restart
+</code></pre>
+<p>Docs: <a href="/cli/update">Update</a>, <a href="/install/updating">Updating</a>.</p>
+<h3>What does the onboarding wizard actually do</h3>
+<p><code>agdi onboard</code> is the recommended setup path. In <strong>local mode</strong> it walks you through:</p>
+<ul>
+<li><strong>Model/auth setup</strong> (Anthropic <strong>setup-token</strong> recommended for Claude subscriptions, OpenAI Codex OAuth supported, API keys optional, LM Studio local models supported)</li>
+<li><strong>Workspace</strong> location + bootstrap files</li>
+<li><strong>Gateway settings</strong> (bind/port/auth/tailscale)</li>
+<li><strong>Providers</strong> (WhatsApp, Telegram, Discord, Mattermost (plugin), Signal, iMessage)</li>
+<li><strong>Daemon install</strong> (LaunchAgent on macOS; systemd user unit on Linux/WSL2)</li>
+<li><strong>Health checks</strong> and <strong>skills</strong> selection</li>
+</ul>
+<p>It also warns if your configured model is unknown or missing auth.</p>
+<h3>Do I need a Claude or OpenAI subscription to run this</h3>
+<p>No. You can run AGDI with <strong>API keys</strong> (Anthropic/OpenAI/others) or with
+<strong>local-only models</strong> so your data stays on your device. Subscriptions (Claude
+Pro/Max or OpenAI Codex) are optional ways to authenticate those providers.</p>
+<p>Docs: <a href="/providers/anthropic">Anthropic</a>, <a href="/providers/openai">OpenAI</a>,
+<a href="/gateway/local-models">Local models</a>, <a href="/concepts/models">Models</a>.</p>
+<h3>Can I use Claude Max subscription without an API key</h3>
+<p>Yes. You can authenticate with a <strong>setup-token</strong>
+instead of an API key. This is the subscription path.</p>
+<p>Claude Pro/Max subscriptions <strong>do not include an API key</strong>, so this is the
+correct approach for subscription accounts. Important: you must verify with
+Anthropic that this usage is allowed under their subscription policy and terms.
+If you want the most explicit, supported path, use an Anthropic API key.</p>
+<h3>How does Anthropic setuptoken auth work</h3>
+<p><code>claude setup-token</code> generates a <strong>token string</strong> via the Claude Code CLI (it is not available in the web console). You can run it on <strong>any machine</strong>. Choose <strong>Anthropic token (paste setup-token)</strong> in the wizard or paste it with <code>agdi models auth paste-token --provider anthropic</code>. The token is stored as an auth profile for the <strong>anthropic</strong> provider and used like an API key (no auto-refresh). More detail: <a href="/concepts/oauth">OAuth</a>.</p>
+<h3>Where do I find an Anthropic setuptoken</h3>
+<p>It is <strong>not</strong> in the Anthropic Console. The setup-token is generated by the <strong>Claude Code CLI</strong> on <strong>any machine</strong>:</p>
+<pre><code class="language-bash">claude setup-token
+</code></pre>
+<p>Copy the token it prints, then choose <strong>Anthropic token (paste setup-token)</strong> in the wizard. If you want to run it on the gateway host, use <code>agdi models auth setup-token --provider anthropic</code>. If you ran <code>claude setup-token</code> elsewhere, paste it on the gateway host with <code>agdi models auth paste-token --provider anthropic</code>. See <a href="/providers/anthropic">Anthropic</a>.</p>
+<h3>Do you support Claude subscription auth (Claude Pro or Max)</h3>
+<p>Yes - via <strong>setup-token</strong>. AGDI no longer reuses Claude Code CLI OAuth tokens; use a setup-token or an Anthropic API key. Generate the token anywhere and paste it on the gateway host. See <a href="/providers/anthropic">Anthropic</a> and <a href="/concepts/oauth">OAuth</a>.</p>
+<p>Note: Claude subscription access is governed by Anthropic&#39;s terms. For production or multi-user workloads, API keys are usually the safer choice.</p>
+<h3>Why am I seeing HTTP 429 ratelimiterror from Anthropic</h3>
+<p>That means your <strong>Anthropic quota/rate limit</strong> is exhausted for the current window. If you
+use a <strong>Claude subscription</strong> (setup-token or Claude Code OAuth), wait for the window to
+reset or upgrade your plan. If you use an <strong>Anthropic API key</strong>, check the Anthropic Console
+for usage/billing and raise limits as needed.</p>
+<p>Tip: set a <strong>fallback model</strong> so AGDI can keep replying while a provider is rate-limited.
+See <a href="/cli/models">Models</a> and <a href="/concepts/oauth">OAuth</a>.</p>
+<h3>Is AWS Bedrock supported</h3>
+<p>Yes - via pi-ai&#39;s <strong>Amazon Bedrock (Converse)</strong> provider with <strong>manual config</strong>. You must supply AWS credentials/region on the gateway host and add a Bedrock provider entry in your models config. See <a href="/providers/bedrock">Amazon Bedrock</a> and <a href="/providers/models">Model providers</a>. If you prefer a managed key flow, an OpenAI-compatible proxy in front of Bedrock is still a valid option.</p>
+<h3>How does Codex auth work</h3>
+<p>AGDI supports <strong>OpenAI Code (Codex)</strong> via OAuth (ChatGPT sign-in). The wizard can run the OAuth flow and will set the default model to <code>openai-codex/gpt-5.3-codex</code> when appropriate. See <a href="/concepts/model-providers">Model providers</a> and <a href="/start/wizard">Wizard</a>.</p>
+<h3>Do you support OpenAI subscription auth Codex OAuth</h3>
+<p>Yes. AGDI fully supports <strong>OpenAI Code (Codex) subscription OAuth</strong>. The onboarding wizard
+can run the OAuth flow for you.</p>
+<p>See <a href="/concepts/oauth">OAuth</a>, <a href="/concepts/model-providers">Model providers</a>, and <a href="/start/wizard">Wizard</a>.</p>
+<h3>How do I set up Gemini CLI OAuth</h3>
+<p>Gemini CLI uses a <strong>plugin auth flow</strong>, not a client id or secret in <code>agdi.json</code>.</p>
+<p>Steps:</p>
+<ol>
+<li>Enable the plugin: <code>agdi plugins enable google-gemini-cli-auth</code></li>
+<li>Login: <code>agdi models auth login --provider google-gemini-cli --set-default</code></li>
+</ol>
+<p>This stores OAuth tokens in auth profiles on the gateway host. Details: <a href="/concepts/model-providers">Model providers</a>.</p>
+<h3>Is a local model OK for casual chats</h3>
+<p>Usually no. AGDI needs large context + strong safety; small cards truncate and leak. If you must, run the <strong>largest</strong> MiniMax M2.1 build you can locally (LM Studio) and see <a href="/gateway/local-models">/gateway/local-models</a>. Smaller/quantized models increase prompt-injection risk - see <a href="/gateway/security">Security</a>.</p>
+<h3>How do I keep hosted model traffic in a specific region</h3>
+<p>Pick region-pinned endpoints. OpenRouter exposes US-hosted options for MiniMax, Kimi, and GLM; choose the US-hosted variant to keep data in-region. You can still list Anthropic/OpenAI alongside these by using <code>models.mode: &quot;merge&quot;</code> so fallbacks stay available while respecting the regioned provider you select.</p>
+<h3>Do I have to buy a Mac Mini to install this</h3>
+<p>No. AGDI runs on macOS or Linux (Windows via WSL2). A Mac mini is optional - some people
+buy one as an always-on host, but a small VPS, home server, or Raspberry Pi-class box works too.</p>
+<p>You only need a Mac <strong>for macOS-only tools</strong>. For iMessage, use <a href="/channels/bluebubbles">BlueBubbles</a> (recommended) - the BlueBubbles server runs on any Mac, and the Gateway can run on Linux or elsewhere. If you want other macOS-only tools, run the Gateway on a Mac or pair a macOS node.</p>
+<p>Docs: <a href="/channels/bluebubbles">BlueBubbles</a>, <a href="/nodes">Nodes</a>, <a href="/platforms/mac/remote">Mac remote mode</a>.</p>
+<h3>Do I need a Mac mini for iMessage support</h3>
+<p>You need <strong>some macOS device</strong> signed into Messages. It does <strong>not</strong> have to be a Mac mini -
+any Mac works. <strong>Use <a href="/channels/bluebubbles">BlueBubbles</a></strong> (recommended) for iMessage - the BlueBubbles server runs on macOS, while the Gateway can run on Linux or elsewhere.</p>
+<p>Common setups:</p>
+<ul>
+<li>Run the Gateway on Linux/VPS, and run the BlueBubbles server on any Mac signed into Messages.</li>
+<li>Run everything on the Mac if you want the simplest single‑machine setup.</li>
+</ul>
+<p>Docs: <a href="/channels/bluebubbles">BlueBubbles</a>, <a href="/nodes">Nodes</a>,
+<a href="/platforms/mac/remote">Mac remote mode</a>.</p>
+<h3>If I buy a Mac mini to run AGDI can I connect it to my MacBook Pro</h3>
+<p>Yes. The <strong>Mac mini can run the Gateway</strong>, and your MacBook Pro can connect as a
+<strong>node</strong> (companion device). Nodes don&#39;t run the Gateway - they provide extra
+capabilities like screen/camera/canvas and <code>system.run</code> on that device.</p>
+<p>Common pattern:</p>
+<ul>
+<li>Gateway on the Mac mini (always-on).</li>
+<li>MacBook Pro runs the macOS app or a node host and pairs to the Gateway.</li>
+<li>Use <code>agdi nodes status</code> / <code>agdi nodes list</code> to see it.</li>
+</ul>
+<p>Docs: <a href="/nodes">Nodes</a>, <a href="/cli/nodes">Nodes CLI</a>.</p>
+<h3>Can I use Bun</h3>
+<p>Bun is <strong>not recommended</strong>. We see runtime bugs, especially with WhatsApp and Telegram.
+Use <strong>Node</strong> for stable gateways.</p>
+<p>If you still want to experiment with Bun, do it on a non-production gateway
+without WhatsApp/Telegram.</p>
+<h3>Telegram what goes in allowFrom</h3>
+<p><code>channels.telegram.allowFrom</code> is <strong>the human sender&#39;s Telegram user ID</strong> (numeric). It is not the bot username.</p>
+<p>The onboarding wizard accepts <code>@username</code> input and resolves it to a numeric ID, but AGDI authorization uses numeric IDs only.</p>
+<p>Safer (no third-party bot):</p>
+<ul>
+<li>DM your bot, then run <code>agdi logs --follow</code> and read <code>from.id</code>.</li>
+</ul>
+<p>Official Bot API:</p>
+<ul>
+<li>DM your bot, then call <code>https://api.telegram.org/bot&lt;bot_token&gt;/getUpdates</code> and read <code>message.from.id</code>.</li>
+</ul>
+<p>Third-party (less private):</p>
+<ul>
+<li>DM <code>@userinfobot</code> or <code>@getidsbot</code>.</li>
+</ul>
+<p>See <a href="/channels/telegram#access-control-dms--groups">/channels/telegram</a>.</p>
+<h3>Can multiple people use one WhatsApp number with different AGDI instances</h3>
+<p>Yes, via <strong>multi-agent routing</strong>. Bind each sender&#39;s WhatsApp <strong>DM</strong> (peer <code>kind: &quot;direct&quot;</code>, sender E.164 like <code>+15551234567</code>) to a different <code>agentId</code>, so each person gets their own workspace and session store. Replies still come from the <strong>same WhatsApp account</strong>, and DM access control (<code>channels.whatsapp.dmPolicy</code> / <code>channels.whatsapp.allowFrom</code>) is global per WhatsApp account. See <a href="/concepts/multi-agent">Multi-Agent Routing</a> and <a href="/channels/whatsapp">WhatsApp</a>.</p>
+<h3>Can I run a fast chat agent and an Opus for coding agent</h3>
+<p>Yes. Use multi-agent routing: give each agent its own default model, then bind inbound routes (provider account or specific peers) to each agent. Example config lives in <a href="/concepts/multi-agent">Multi-Agent Routing</a>. See also <a href="/concepts/models">Models</a> and <a href="/gateway/configuration">Configuration</a>.</p>
+<h3>Does Homebrew work on Linux</h3>
+<p>Yes. Homebrew supports Linux (Linuxbrew). Quick setup:</p>
+<pre><code class="language-bash">/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;
+echo &#39;eval &quot;$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)&quot;&#39; &gt;&gt; ~/.profile
+eval &quot;$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)&quot;
+brew install &lt;formula&gt;
+</code></pre>
+<p>If you run AGDI via systemd, ensure the service PATH includes <code>/home/linuxbrew/.linuxbrew/bin</code> (or your brew prefix) so <code>brew</code>-installed tools resolve in non-login shells.
+Recent builds also prepend common user bin dirs on Linux systemd services (for example <code>~/.local/bin</code>, <code>~/.npm-global/bin</code>, <code>~/.local/share/pnpm</code>, <code>~/.bun/bin</code>) and honor <code>PNPM_HOME</code>, <code>NPM_CONFIG_PREFIX</code>, <code>BUN_INSTALL</code>, <code>VOLTA_HOME</code>, <code>ASDF_DATA_DIR</code>, <code>NVM_DIR</code>, and <code>FNM_DIR</code> when set.</p>
+<h3>What&#39;s the difference between the hackable git install and npm install</h3>
+<ul>
+<li><strong>Hackable (git) install:</strong> full source checkout, editable, best for contributors.
+You run builds locally and can patch code/docs.</li>
+<li><strong>npm install:</strong> global CLI install, no repo, best for &quot;just run it.&quot;
+Updates come from npm dist-tags.</li>
+</ul>
+<p>Docs: <a href="/start/getting-started">Getting started</a>, <a href="/install/updating">Updating</a>.</p>
+<h3>Can I switch between npm and git installs later</h3>
+<p>Yes. Install the other flavor, then run Doctor so the gateway service points at the new entrypoint.
+This <strong>does not delete your data</strong> - it only changes the AGDI code install. Your state
+(<code>~/.agdi</code>) and workspace (<code>~/.agdi/workspace</code>) stay untouched.</p>
+<p>From npm → git:</p>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+pnpm install
+pnpm build
+agdi doctor
+agdi gateway restart
+</code></pre>
+<p>From git → npm:</p>
+<pre><code class="language-bash">npm install -g agdi@latest
+agdi doctor
+agdi gateway restart
+</code></pre>
+<p>Doctor detects a gateway service entrypoint mismatch and offers to rewrite the service config to match the current install (use <code>--repair</code> in automation).</p>
+<p>Backup tips: see <a href="/help/faq#whats-the-recommended-backup-strategy">Backup strategy</a>.</p>
+<h3>Should I run the Gateway on my laptop or a VPS</h3>
+<p>Short answer: <strong>if you want 24/7 reliability, use a VPS</strong>. If you want the
+lowest friction and you&#39;re okay with sleep/restarts, run it locally.</p>
+<p><strong>Laptop (local Gateway)</strong></p>
+<ul>
+<li><strong>Pros:</strong> no server cost, direct access to local files, live browser window.</li>
+<li><strong>Cons:</strong> sleep/network drops = disconnects, OS updates/reboots interrupt, must stay awake.</li>
+</ul>
+<p><strong>VPS / cloud</strong></p>
+<ul>
+<li><strong>Pros:</strong> always-on, stable network, no laptop sleep issues, easier to keep running.</li>
+<li><strong>Cons:</strong> often run headless (use screenshots), remote file access only, you must SSH for updates.</li>
+</ul>
+<p><strong>AGDI-specific note:</strong> WhatsApp/Telegram/Slack/Mattermost (plugin)/Discord all work fine from a VPS. The only real trade-off is <strong>headless browser</strong> vs a visible window. See <a href="/tools/browser">Browser</a>.</p>
+<p><strong>Recommended default:</strong> VPS if you had gateway disconnects before. Local is great when you&#39;re actively using the Mac and want local file access or UI automation with a visible browser.</p>
+<h3>How important is it to run AGDI on a dedicated machine</h3>
+<p>Not required, but <strong>recommended for reliability and isolation</strong>.</p>
+<ul>
+<li><strong>Dedicated host (VPS/Mac mini/Pi):</strong> always-on, fewer sleep/reboot interruptions, cleaner permissions, easier to keep running.</li>
+<li><strong>Shared laptop/desktop:</strong> totally fine for testing and active use, but expect pauses when the machine sleeps or updates.</li>
+</ul>
+<p>If you want the best of both worlds, keep the Gateway on a dedicated host and pair your laptop as a <strong>node</strong> for local screen/camera/exec tools. See <a href="/nodes">Nodes</a>.
+For security guidance, read <a href="/gateway/security">Security</a>.</p>
+<h3>What are the minimum VPS requirements and recommended OS</h3>
+<p>AGDI is lightweight. For a basic Gateway + one chat channel:</p>
+<ul>
+<li><strong>Absolute minimum:</strong> 1 vCPU, 1GB RAM, ~500MB disk.</li>
+<li><strong>Recommended:</strong> 1-2 vCPU, 2GB RAM or more for headroom (logs, media, multiple channels). Node tools and browser automation can be resource hungry.</li>
+</ul>
+<p>OS: use <strong>Ubuntu LTS</strong> (or any modern Debian/Ubuntu). The Linux install path is best tested there.</p>
+<p>Docs: <a href="/platforms/linux">Linux</a>, <a href="/vps">VPS hosting</a>.</p>
+<h3>Can I run AGDI in a VM and what are the requirements</h3>
+<p>Yes. Treat a VM the same as a VPS: it needs to be always on, reachable, and have enough
+RAM for the Gateway and any channels you enable.</p>
+<p>Baseline guidance:</p>
+<ul>
+<li><strong>Absolute minimum:</strong> 1 vCPU, 1GB RAM.</li>
+<li><strong>Recommended:</strong> 2GB RAM or more if you run multiple channels, browser automation, or media tools.</li>
+<li><strong>OS:</strong> Ubuntu LTS or another modern Debian/Ubuntu.</li>
+</ul>
+<p>If you are on Windows, <strong>WSL2 is the easiest VM style setup</strong> and has the best tooling
+compatibility. See <a href="/platforms/windows">Windows</a>, <a href="/vps">VPS hosting</a>.
+If you are running macOS in a VM, see <a href="/install/macos-vm">macOS VM</a>.</p>
+<h2>What is AGDI?</h2>
+<h3>What is AGDI in one paragraph</h3>
+<p>AGDI is a personal AI assistant you run on your own devices. It replies on the messaging surfaces you already use (WhatsApp, Telegram, Slack, Mattermost (plugin), Discord, Google Chat, Signal, iMessage, WebChat) and can also do voice + a live Canvas on supported platforms. The <strong>Gateway</strong> is the always-on control plane; the assistant is the product.</p>
+<h3>What&#39;s the value proposition</h3>
+<p>AGDI is not &quot;just a Claude wrapper.&quot; It&#39;s a <strong>local-first control plane</strong> that lets you run a
+capable assistant on <strong>your own hardware</strong>, reachable from the chat apps you already use, with
+stateful sessions, memory, and tools - without handing control of your workflows to a hosted
+SaaS.</p>
+<p>Highlights:</p>
+<ul>
+<li><strong>Your devices, your data:</strong> run the Gateway wherever you want (Mac, Linux, VPS) and keep the
+workspace + session history local.</li>
+<li><strong>Real channels, not a web sandbox:</strong> WhatsApp/Telegram/Slack/Discord/Signal/iMessage/etc,
+plus mobile voice and Canvas on supported platforms.</li>
+<li><strong>Model-agnostic:</strong> use Anthropic, OpenAI, MiniMax, OpenRouter, etc., with per-agent routing
+and failover.</li>
+<li><strong>Local-only option:</strong> run local models so <strong>all data can stay on your device</strong> if you want.</li>
+<li><strong>Multi-agent routing:</strong> separate agents per channel, account, or task, each with its own
+workspace and defaults.</li>
+<li><strong>Open source and hackable:</strong> inspect, extend, and self-host without vendor lock-in.</li>
+</ul>
+<p>Docs: <a href="/gateway">Gateway</a>, <a href="/channels">Channels</a>, <a href="/concepts/multi-agent">Multi-agent</a>,
+<a href="/concepts/memory">Memory</a>.</p>
+<h3>I just set it up what should I do first</h3>
+<p>Good first projects:</p>
+<ul>
+<li>Build a website (WordPress, Shopify, or a simple static site).</li>
+<li>Prototype a mobile app (outline, screens, API plan).</li>
+<li>Organize files and folders (cleanup, naming, tagging).</li>
+<li>Connect Gmail and automate summaries or follow ups.</li>
+</ul>
+<p>It can handle large tasks, but it works best when you split them into phases and
+use sub agents for parallel work.</p>
+<h3>What are the top five everyday use cases for AGDI</h3>
+<p>Everyday wins usually look like:</p>
+<ul>
+<li><strong>Personal briefings:</strong> summaries of inbox, calendar, and news you care about.</li>
+<li><strong>Research and drafting:</strong> quick research, summaries, and first drafts for emails or docs.</li>
+<li><strong>Reminders and follow ups:</strong> cron or heartbeat driven nudges and checklists.</li>
+<li><strong>Browser automation:</strong> filling forms, collecting data, and repeating web tasks.</li>
+<li><strong>Cross device coordination:</strong> send a task from your phone, let the Gateway run it on a server, and get the result back in chat.</li>
+</ul>
+<h3>Can AGDI help with lead gen outreach ads and blogs for a SaaS</h3>
+<p>Yes for <strong>research, qualification, and drafting</strong>. It can scan sites, build shortlists,
+summarize prospects, and write outreach or ad copy drafts.</p>
+<p>For <strong>outreach or ad runs</strong>, keep a human in the loop. Avoid spam, follow local laws and
+platform policies, and review anything before it is sent. The safest pattern is to let
+AGDI draft and you approve.</p>
+<p>Docs: <a href="/gateway/security">Security</a>.</p>
+<h3>What are the advantages vs Claude Code for web development</h3>
+<p>AGDI is a <strong>personal assistant</strong> and coordination layer, not an IDE replacement. Use
+Claude Code or Codex for the fastest direct coding loop inside a repo. Use AGDI when you
+want durable memory, cross-device access, and tool orchestration.</p>
+<p>Advantages:</p>
+<ul>
+<li><strong>Persistent memory + workspace</strong> across sessions</li>
+<li><strong>Multi-platform access</strong> (WhatsApp, Telegram, TUI, WebChat)</li>
+<li><strong>Tool orchestration</strong> (browser, files, scheduling, hooks)</li>
+<li><strong>Always-on Gateway</strong> (run on a VPS, interact from anywhere)</li>
+<li><strong>Nodes</strong> for local browser/screen/camera/exec</li>
+</ul>
+<p>Showcase: <a href="https://agdi.ai/showcase">https://agdi.ai/showcase</a></p>
+<h2>Skills and automation</h2>
+<h3>How do I customize skills without keeping the repo dirty</h3>
+<p>Use managed overrides instead of editing the repo copy. Put your changes in <code>~/.agdi/skills/&lt;name&gt;/SKILL.md</code> (or add a folder via <code>skills.load.extraDirs</code> in <code>~/.agdi/agdi.json</code>). Precedence is <code>&lt;workspace&gt;/skills</code> &gt; <code>~/.agdi/skills</code> &gt; bundled, so managed overrides win without touching git. Only upstream-worthy edits should live in the repo and go out as PRs.</p>
+<h3>Can I load skills from a custom folder</h3>
+<p>Yes. Add extra directories via <code>skills.load.extraDirs</code> in <code>~/.agdi/agdi.json</code> (lowest precedence). Default precedence remains: <code>&lt;workspace&gt;/skills</code> → <code>~/.agdi/skills</code> → bundled → <code>skills.load.extraDirs</code>. <code>clawhub</code> installs into <code>./skills</code> by default, which AGDI treats as <code>&lt;workspace&gt;/skills</code>.</p>
+<h3>How can I use different models for different tasks</h3>
+<p>Today the supported patterns are:</p>
+<ul>
+<li><strong>Cron jobs</strong>: isolated jobs can set a <code>model</code> override per job.</li>
+<li><strong>Sub-agents</strong>: route tasks to separate agents with different default models.</li>
+<li><strong>On-demand switch</strong>: use <code>/model</code> to switch the current session model at any time.</li>
+</ul>
+<p>See <a href="/automation/cron-jobs">Cron jobs</a>, <a href="/concepts/multi-agent">Multi-Agent Routing</a>, and <a href="/tools/slash-commands">Slash commands</a>.</p>
+<h3>The bot freezes while doing heavy work How do I offload that</h3>
+<p>Use <strong>sub-agents</strong> for long or parallel tasks. Sub-agents run in their own session,
+return a summary, and keep your main chat responsive.</p>
+<p>Ask your bot to &quot;spawn a sub-agent for this task&quot; or use <code>/subagents</code>.
+Use <code>/status</code> in chat to see what the Gateway is doing right now (and whether it is busy).</p>
+<p>Token tip: long tasks and sub-agents both consume tokens. If cost is a concern, set a
+cheaper model for sub-agents via <code>agents.defaults.subagents.model</code>.</p>
+<p>Docs: <a href="/tools/subagents">Sub-agents</a>.</p>
+<h3>Cron or reminders do not fire What should I check</h3>
+<p>Cron runs inside the Gateway process. If the Gateway is not running continuously,
+scheduled jobs will not run.</p>
+<p>Checklist:</p>
+<ul>
+<li>Confirm cron is enabled (<code>cron.enabled</code>) and <code>AGDI_SKIP_CRON</code> is not set.</li>
+<li>Check the Gateway is running 24/7 (no sleep/restarts).</li>
+<li>Verify timezone settings for the job (<code>--tz</code> vs host timezone).</li>
+</ul>
+<p>Debug:</p>
+<pre><code class="language-bash">agdi cron run &lt;jobId&gt; --force
+agdi cron runs --id &lt;jobId&gt; --limit 50
+</code></pre>
+<p>Docs: <a href="/automation/cron-jobs">Cron jobs</a>, <a href="/automation/cron-vs-heartbeat">Cron vs Heartbeat</a>.</p>
+<h3>How do I install skills on Linux</h3>
+<p>Use <strong>ClawHub</strong> (CLI) or drop skills into your workspace. The macOS Skills UI isn&#39;t available on Linux.
+Browse skills at <a href="https://clawhub.com">https://clawhub.com</a>.</p>
+<p>Install the ClawHub CLI (pick one package manager):</p>
+<pre><code class="language-bash">npm i -g clawhub
+</code></pre>
+<pre><code class="language-bash">pnpm add -g clawhub
+</code></pre>
+<h3>Can AGDI run tasks on a schedule or continuously in the background</h3>
+<p>Yes. Use the Gateway scheduler:</p>
+<ul>
+<li><strong>Cron jobs</strong> for scheduled or recurring tasks (persist across restarts).</li>
+<li><strong>Heartbeat</strong> for &quot;main session&quot; periodic checks.</li>
+<li><strong>Isolated jobs</strong> for autonomous agents that post summaries or deliver to chats.</li>
+</ul>
+<p>Docs: <a href="/automation/cron-jobs">Cron jobs</a>, <a href="/automation/cron-vs-heartbeat">Cron vs Heartbeat</a>,
+<a href="/gateway/heartbeat">Heartbeat</a>.</p>
+<h3>Can I run Apple macOS-only skills from Linux?</h3>
+<p>Not directly. macOS skills are gated by <code>metadata.agdi.os</code> plus required binaries, and skills only appear in the system prompt when they are eligible on the <strong>Gateway host</strong>. On Linux, <code>darwin</code>-only skills (like <code>apple-notes</code>, <code>apple-reminders</code>, <code>things-mac</code>) will not load unless you override the gating.</p>
+<p>You have three supported patterns:</p>
+<p><strong>Option A - run the Gateway on a Mac (simplest).</strong>
+Run the Gateway where the macOS binaries exist, then connect from Linux in <a href="#how-do-i-run-agdi-in-remote-mode-client-connects-to-a-gateway-elsewhere">remote mode</a> or over Tailscale. The skills load normally because the Gateway host is macOS.</p>
+<p><strong>Option B - use a macOS node (no SSH).</strong>
+Run the Gateway on Linux, pair a macOS node (menubar app), and set <strong>Node Run Commands</strong> to &quot;Always Ask&quot; or &quot;Always Allow&quot; on the Mac. AGDI can treat macOS-only skills as eligible when the required binaries exist on the node. The agent runs those skills via the <code>nodes</code> tool. If you choose &quot;Always Ask&quot;, approving &quot;Always Allow&quot; in the prompt adds that command to the allowlist.</p>
+<p><strong>Option C - proxy macOS binaries over SSH (advanced).</strong>
+Keep the Gateway on Linux, but make the required CLI binaries resolve to SSH wrappers that run on a Mac. Then override the skill to allow Linux so it stays eligible.</p>
+<ol>
+<li><p>Create an SSH wrapper for the binary (example: <code>memo</code> for Apple Notes):</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+set -euo pipefail
+exec ssh -T user@mac-host /opt/homebrew/bin/memo &quot;$@&quot;
+</code></pre>
+</li>
+<li><p>Put the wrapper on <code>PATH</code> on the Linux host (for example <code>~/bin/memo</code>).</p>
+</li>
+<li><p>Override the skill metadata (workspace or <code>~/.agdi/skills</code>) to allow Linux:</p>
+<pre><code class="language-markdown">---
+name: apple-notes
+description: Manage Apple Notes via the memo CLI on macOS.
+metadata: { &quot;agdi&quot;: { &quot;os&quot;: [&quot;darwin&quot;, &quot;linux&quot;], &quot;requires&quot;: { &quot;bins&quot;: [&quot;memo&quot;] } } }
+---
+</code></pre>
+</li>
+<li><p>Start a new session so the skills snapshot refreshes.</p>
+</li>
+</ol>
+<h3>Do you have a Notion or HeyGen integration</h3>
+<p>Not built-in today.</p>
+<p>Options:</p>
+<ul>
+<li><strong>Custom skill / plugin:</strong> best for reliable API access (Notion/HeyGen both have APIs).</li>
+<li><strong>Browser automation:</strong> works without code but is slower and more fragile.</li>
+</ul>
+<p>If you want to keep context per client (agency workflows), a simple pattern is:</p>
+<ul>
+<li>One Notion page per client (context + preferences + active work).</li>
+<li>Ask the agent to fetch that page at the start of a session.</li>
+</ul>
+<p>If you want a native integration, open a feature request or build a skill
+targeting those APIs.</p>
+<p>Install skills:</p>
+<pre><code class="language-bash">clawhub install &lt;skill-slug&gt;
+clawhub update --all
+</code></pre>
+<p>ClawHub installs into <code>./skills</code> under your current directory (or falls back to your configured AGDI workspace); AGDI treats that as <code>&lt;workspace&gt;/skills</code> on the next session. For shared skills across agents, place them in <code>~/.agdi/skills/&lt;name&gt;/SKILL.md</code>. Some skills expect binaries installed via Homebrew; on Linux that means Linuxbrew (see the Homebrew Linux FAQ entry above). See <a href="/tools/skills">Skills</a> and <a href="/tools/clawhub">ClawHub</a>.</p>
+<h3>How do I install the Chrome extension for browser takeover</h3>
+<p>Use the built-in installer, then load the unpacked extension in Chrome:</p>
+<pre><code class="language-bash">agdi browser extension install
+agdi browser extension path
+</code></pre>
+<p>Then Chrome → <code>chrome://extensions</code> → enable &quot;Developer mode&quot; → &quot;Load unpacked&quot; → pick that folder.</p>
+<p>Full guide (including remote Gateway + security notes): <a href="/tools/chrome-extension">Chrome extension</a></p>
+<p>If the Gateway runs on the same machine as Chrome (default setup), you usually <strong>do not</strong> need anything extra.
+If the Gateway runs elsewhere, run a node host on the browser machine so the Gateway can proxy browser actions.
+You still need to click the extension button on the tab you want to control (it doesn&#39;t auto-attach).</p>
+<h2>Sandboxing and memory</h2>
+<h3>Is there a dedicated sandboxing doc</h3>
+<p>Yes. See <a href="/gateway/sandboxing">Sandboxing</a>. For Docker-specific setup (full gateway in Docker or sandbox images), see <a href="/install/docker">Docker</a>.</p>
+<h3>Docker feels limited How do I enable full features</h3>
+<p>The default image is security-first and runs as the <code>node</code> user, so it does not
+include system packages, Homebrew, or bundled browsers. For a fuller setup:</p>
+<ul>
+<li>Persist <code>/home/node</code> with <code>AGDI_HOME_VOLUME</code> so caches survive.</li>
+<li>Bake system deps into the image with <code>AGDI_DOCKER_APT_PACKAGES</code>.</li>
+<li>Install Playwright browsers via the bundled CLI:
+<code>node /app/node_modules/playwright-core/cli.js install chromium</code></li>
+<li>Set <code>PLAYWRIGHT_BROWSERS_PATH</code> and ensure the path is persisted.</li>
+</ul>
+<p>Docs: <a href="/install/docker">Docker</a>, <a href="/tools/browser">Browser</a>.</p>
+<p><strong>Can I keep DMs personal but make groups public sandboxed with one agent</strong></p>
+<p>Yes - if your private traffic is <strong>DMs</strong> and your public traffic is <strong>groups</strong>.</p>
+<p>Use <code>agents.defaults.sandbox.mode: &quot;non-main&quot;</code> so group/channel sessions (non-main keys) run in Docker, while the main DM session stays on-host. Then restrict what tools are available in sandboxed sessions via <code>tools.sandbox.tools</code>.</p>
+<p>Setup walkthrough + example config: <a href="/channels/groups#pattern-personal-dms-public-groups-single-agent">Groups: personal DMs + public groups</a></p>
+<p>Key config reference: <a href="/gateway/configuration#agentsdefaultssandbox">Gateway configuration</a></p>
+<h3>How do I bind a host folder into the sandbox</h3>
+<p>Set <code>agents.defaults.sandbox.docker.binds</code> to <code>[&quot;host:path:mode&quot;]</code> (e.g., <code>&quot;/home/user/src:/src:ro&quot;</code>). Global + per-agent binds merge; per-agent binds are ignored when <code>scope: &quot;shared&quot;</code>. Use <code>:ro</code> for anything sensitive and remember binds bypass the sandbox filesystem walls. See <a href="/gateway/sandboxing#custom-bind-mounts">Sandboxing</a> and <a href="/gateway/sandbox-vs-tool-policy-vs-elevated#bind-mounts-security-quick-check">Sandbox vs Tool Policy vs Elevated</a> for examples and safety notes.</p>
+<h3>How does memory work</h3>
+<p>AGDI memory is just Markdown files in the agent workspace:</p>
+<ul>
+<li>Daily notes in <code>memory/YYYY-MM-DD.md</code></li>
+<li>Curated long-term notes in <code>MEMORY.md</code> (main/private sessions only)</li>
+</ul>
+<p>AGDI also runs a <strong>silent pre-compaction memory flush</strong> to remind the model
+to write durable notes before auto-compaction. This only runs when the workspace
+is writable (read-only sandboxes skip it). See <a href="/concepts/memory">Memory</a>.</p>
+<h3>Memory keeps forgetting things How do I make it stick</h3>
+<p>Ask the bot to <strong>write the fact to memory</strong>. Long-term notes belong in <code>MEMORY.md</code>,
+short-term context goes into <code>memory/YYYY-MM-DD.md</code>.</p>
+<p>This is still an area we are improving. It helps to remind the model to store memories;
+it will know what to do. If it keeps forgetting, verify the Gateway is using the same
+workspace on every run.</p>
+<p>Docs: <a href="/concepts/memory">Memory</a>, <a href="/concepts/agent-workspace">Agent workspace</a>.</p>
+<h3>Does semantic memory search require an OpenAI API key</h3>
+<p>Only if you use <strong>OpenAI embeddings</strong>. Codex OAuth covers chat/completions and
+does <strong>not</strong> grant embeddings access, so <strong>signing in with Codex (OAuth or the
+Codex CLI login)</strong> does not help for semantic memory search. OpenAI embeddings
+still need a real API key (<code>OPENAI_API_KEY</code> or <code>models.providers.openai.apiKey</code>).</p>
+<p>If you don&#39;t set a provider explicitly, AGDI auto-selects a provider when it
+can resolve an API key (auth profiles, <code>models.providers.*.apiKey</code>, or env vars).
+It prefers OpenAI if an OpenAI key resolves, otherwise Gemini if a Gemini key
+resolves. If neither key is available, memory search stays disabled until you
+configure it. If you have a local model path configured and present, AGDI
+prefers <code>local</code>.</p>
+<p>If you&#39;d rather stay local, set <code>memorySearch.provider = &quot;local&quot;</code> (and optionally
+<code>memorySearch.fallback = &quot;none&quot;</code>). If you want Gemini embeddings, set
+<code>memorySearch.provider = &quot;gemini&quot;</code> and provide <code>GEMINI_API_KEY</code> (or
+<code>memorySearch.remote.apiKey</code>). We support <strong>OpenAI, Gemini, or local</strong> embedding
+models - see <a href="/concepts/memory">Memory</a> for the setup details.</p>
+<h3>Does memory persist forever What are the limits</h3>
+<p>Memory files live on disk and persist until you delete them. The limit is your
+storage, not the model. The <strong>session context</strong> is still limited by the model
+context window, so long conversations can compact or truncate. That is why
+memory search exists - it pulls only the relevant parts back into context.</p>
+<p>Docs: <a href="/concepts/memory">Memory</a>, <a href="/concepts/context">Context</a>.</p>
+<h2>Where things live on disk</h2>
+<h3>Is all data used with AGDI saved locally</h3>
+<p>No - <strong>AGDI&#39;s state is local</strong>, but <strong>external services still see what you send them</strong>.</p>
+<ul>
+<li><strong>Local by default:</strong> sessions, memory files, config, and workspace live on the Gateway host
+(<code>~/.agdi</code> + your workspace directory).</li>
+<li><strong>Remote by necessity:</strong> messages you send to model providers (Anthropic/OpenAI/etc.) go to
+their APIs, and chat platforms (WhatsApp/Telegram/Slack/etc.) store message data on their
+servers.</li>
+<li><strong>You control the footprint:</strong> using local models keeps prompts on your machine, but channel
+traffic still goes through the channel&#39;s servers.</li>
+</ul>
+<p>Related: <a href="/concepts/agent-workspace">Agent workspace</a>, <a href="/concepts/memory">Memory</a>.</p>
+<h3>Where does AGDI store its data</h3>
+<p>Everything lives under <code>$AGDI_STATE_DIR</code> (default: <code>~/.agdi</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$AGDI_STATE_DIR/agdi.json</code></td>
+<td>Main config (JSON5)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/credentials/oauth.json</code></td>
+<td>Legacy OAuth import (copied into auth profiles on first use)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/agents/&lt;agentId&gt;/agent/auth-profiles.json</code></td>
+<td>Auth profiles (OAuth + API keys)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/agents/&lt;agentId&gt;/agent/auth.json</code></td>
+<td>Runtime auth cache (managed automatically)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/credentials/</code></td>
+<td>Provider state (e.g. <code>whatsapp/&lt;accountId&gt;/creds.json</code>)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/agents/</code></td>
+<td>Per-agent state (agentDir + sessions)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/agents/&lt;agentId&gt;/sessions/</code></td>
+<td>Conversation history &amp; state (per agent)</td>
+</tr>
+<tr>
+<td><code>$AGDI_STATE_DIR/agents/&lt;agentId&gt;/sessions/sessions.json</code></td>
+<td>Session metadata (per agent)</td>
+</tr>
+</tbody></table>
+<p>Legacy single-agent path: <code>~/.agdi/agent/*</code> (migrated by <code>agdi doctor</code>).</p>
+<p>Your <strong>workspace</strong> (AGENTS.md, memory files, skills, etc.) is separate and configured via <code>agents.defaults.workspace</code> (default: <code>~/.agdi/workspace</code>).</p>
+<h3>Where should AGENTSmd SOULmd USERmd MEMORYmd live</h3>
+<p>These files live in the <strong>agent workspace</strong>, not <code>~/.agdi</code>.</p>
+<ul>
+<li><strong>Workspace (per agent)</strong>: <code>AGENTS.md</code>, <code>SOUL.md</code>, <code>IDENTITY.md</code>, <code>USER.md</code>,
+<code>MEMORY.md</code> (or <code>memory.md</code>), <code>memory/YYYY-MM-DD.md</code>, optional <code>HEARTBEAT.md</code>.</li>
+<li><strong>State dir (<code>~/.agdi</code>)</strong>: config, credentials, auth profiles, sessions, logs,
+and shared skills (<code>~/.agdi/skills</code>).</li>
+</ul>
+<p>Default workspace is <code>~/.agdi/workspace</code>, configurable via:</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { workspace: &quot;~/.agdi/workspace&quot; } },
+}
+</code></pre>
+<p>If the bot &quot;forgets&quot; after a restart, confirm the Gateway is using the same
+workspace on every launch (and remember: remote mode uses the <strong>gateway host&#39;s</strong>
+workspace, not your local laptop).</p>
+<p>Tip: if you want a durable behavior or preference, ask the bot to <strong>write it into
+AGENTS.md or MEMORY.md</strong> rather than relying on chat history.</p>
+<p>See <a href="/concepts/agent-workspace">Agent workspace</a> and <a href="/concepts/memory">Memory</a>.</p>
+<h3>What&#39;s the recommended backup strategy</h3>
+<p>Put your <strong>agent workspace</strong> in a <strong>private</strong> git repo and back it up somewhere
+private (for example GitHub private). This captures memory + AGENTS/SOUL/USER
+files, and lets you restore the assistant&#39;s &quot;mind&quot; later.</p>
+<p>Do <strong>not</strong> commit anything under <code>~/.agdi</code> (credentials, sessions, tokens).
+If you need a full restore, back up both the workspace and the state directory
+separately (see the migration question above).</p>
+<p>Docs: <a href="/concepts/agent-workspace">Agent workspace</a>.</p>
+<h3>How do I completely uninstall AGDI</h3>
+<p>See the dedicated guide: <a href="/install/uninstall">Uninstall</a>.</p>
+<h3>Can agents work outside the workspace</h3>
+<p>Yes. The workspace is the <strong>default cwd</strong> and memory anchor, not a hard sandbox.
+Relative paths resolve inside the workspace, but absolute paths can access other
+host locations unless sandboxing is enabled. If you need isolation, use
+<a href="/gateway/sandboxing"><code>agents.defaults.sandbox</code></a> or per-agent sandbox settings. If you
+want a repo to be the default working directory, point that agent&#39;s
+<code>workspace</code> to the repo root. The AGDI repo is just source code; keep the
+workspace separate unless you intentionally want the agent to work inside it.</p>
+<p>Example (repo as default cwd):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      workspace: &quot;~/Projects/my-repo&quot;,
+    },
+  },
+}
+</code></pre>
+<h3>Im in remote mode where is the session store</h3>
+<p>Session state is owned by the <strong>gateway host</strong>. If you&#39;re in remote mode, the session store you care about is on the remote machine, not your local laptop. See <a href="/concepts/session">Session management</a>.</p>
+<h2>Config basics</h2>
+<h3>What format is the config Where is it</h3>
+<p>AGDI reads an optional <strong>JSON5</strong> config from <code>$AGDI_CONFIG_PATH</code> (default: <code>~/.agdi/agdi.json</code>):</p>
+<pre><code>$AGDI_CONFIG_PATH
+</code></pre>
+<p>If the file is missing, it uses safe-ish defaults (including a default workspace of <code>~/.agdi/workspace</code>).</p>
+<h3>I set gatewaybind lan or tailnet and now nothing listens the UI says unauthorized</h3>
+<p>Non-loopback binds <strong>require auth</strong>. Configure <code>gateway.auth.mode</code> + <code>gateway.auth.token</code> (or use <code>AGDI_GATEWAY_TOKEN</code>).</p>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;lan&quot;,
+    auth: {
+      mode: &quot;token&quot;,
+      token: &quot;replace-me&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>gateway.remote.token</code> is for <strong>remote CLI calls</strong> only; it does not enable local gateway auth.</li>
+<li>The Control UI authenticates via <code>connect.params.auth.token</code> (stored in app/UI settings). Avoid putting tokens in URLs.</li>
+</ul>
+<h3>Why do I need a token on localhost now</h3>
+<p>The wizard generates a gateway token by default (even on loopback) so <strong>local WS clients must authenticate</strong>. This blocks other local processes from calling the Gateway. Paste the token into the Control UI settings (or your client config) to connect.</p>
+<p>If you <strong>really</strong> want open loopback, remove <code>gateway.auth</code> from your config. Doctor can generate a token for you any time: <code>agdi doctor --generate-gateway-token</code>.</p>
+<h3>Do I have to restart after changing config</h3>
+<p>The Gateway watches the config and supports hot-reload:</p>
+<ul>
+<li><code>gateway.reload.mode: &quot;hybrid&quot;</code> (default): hot-apply safe changes, restart for critical ones</li>
+<li><code>hot</code>, <code>restart</code>, <code>off</code> are also supported</li>
+</ul>
+<h3>How do I enable web search and web fetch</h3>
+<p><code>web_fetch</code> works without an API key. <code>web_search</code> requires a Brave Search API
+key. <strong>Recommended:</strong> run <code>agdi configure --section web</code> to store it in
+<code>tools.web.search.apiKey</code>. Environment alternative: set <code>BRAVE_API_KEY</code> for the
+Gateway process.</p>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        enabled: true,
+        apiKey: &quot;BRAVE_API_KEY_HERE&quot;,
+        maxResults: 5,
+      },
+      fetch: {
+        enabled: true,
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If you use allowlists, add <code>web_search</code>/<code>web_fetch</code> or <code>group:web</code>.</li>
+<li><code>web_fetch</code> is enabled by default (unless explicitly disabled).</li>
+<li>Daemons read env vars from <code>~/.agdi/.env</code> (or the service environment).</li>
+</ul>
+<p>Docs: <a href="/tools/web">Web tools</a>.</p>
+<h3>How do I run a central Gateway with specialized workers across devices</h3>
+<p>The common pattern is <strong>one Gateway</strong> (e.g. Raspberry Pi) plus <strong>nodes</strong> and <strong>agents</strong>:</p>
+<ul>
+<li><strong>Gateway (central):</strong> owns channels (Signal/WhatsApp), routing, and sessions.</li>
+<li><strong>Nodes (devices):</strong> Macs/iOS/Android connect as peripherals and expose local tools (<code>system.run</code>, <code>canvas</code>, <code>camera</code>).</li>
+<li><strong>Agents (workers):</strong> separate brains/workspaces for special roles (e.g. &quot;Hetzner ops&quot;, &quot;Personal data&quot;).</li>
+<li><strong>Sub-agents:</strong> spawn background work from a main agent when you want parallelism.</li>
+<li><strong>TUI:</strong> connect to the Gateway and switch agents/sessions.</li>
+</ul>
+<p>Docs: <a href="/nodes">Nodes</a>, <a href="/gateway/remote">Remote access</a>, <a href="/concepts/multi-agent">Multi-Agent Routing</a>, <a href="/tools/subagents">Sub-agents</a>, <a href="/web/tui">TUI</a>.</p>
+<h3>Can the AGDI browser run headless</h3>
+<p>Yes. It&#39;s a config option:</p>
+<pre><code class="language-json5">{
+  browser: { headless: true },
+  agents: {
+    defaults: {
+      sandbox: { browser: { headless: true } },
+    },
+  },
+}
+</code></pre>
+<p>Default is <code>false</code> (headful). Headless is more likely to trigger anti-bot checks on some sites. See <a href="/tools/browser">Browser</a>.</p>
+<p>Headless uses the <strong>same Chromium engine</strong> and works for most automation (forms, clicks, scraping, logins). The main differences:</p>
+<ul>
+<li>No visible browser window (use screenshots if you need visuals).</li>
+<li>Some sites are stricter about automation in headless mode (CAPTCHAs, anti-bot).
+For example, X/Twitter often blocks headless sessions.</li>
+</ul>
+<h3>How do I use Brave for browser control</h3>
+<p>Set <code>browser.executablePath</code> to your Brave binary (or any Chromium-based browser) and restart the Gateway.
+See the full config examples in <a href="/tools/browser#use-brave-or-another-chromium-based-browser">Browser</a>.</p>
+<h2>Remote gateways and nodes</h2>
+<h3>How do commands propagate between Telegram the gateway and nodes</h3>
+<p>Telegram messages are handled by the <strong>gateway</strong>. The gateway runs the agent and
+only then calls nodes over the <strong>Gateway WebSocket</strong> when a node tool is needed:</p>
+<p>Telegram → Gateway → Agent → <code>node.*</code> → Node → Gateway → Telegram</p>
+<p>Nodes don&#39;t see inbound provider traffic; they only receive node RPC calls.</p>
+<h3>How can my agent access my computer if the Gateway is hosted remotely</h3>
+<p>Short answer: <strong>pair your computer as a node</strong>. The Gateway runs elsewhere, but it can
+call <code>node.*</code> tools (screen, camera, system) on your local machine over the Gateway WebSocket.</p>
+<p>Typical setup:</p>
+<ol>
+<li><p>Run the Gateway on the always-on host (VPS/home server).</p>
+</li>
+<li><p>Put the Gateway host + your computer on the same tailnet.</p>
+</li>
+<li><p>Ensure the Gateway WS is reachable (tailnet bind or SSH tunnel).</p>
+</li>
+<li><p>Open the macOS app locally and connect in <strong>Remote over SSH</strong> mode (or direct tailnet)
+so it can register as a node.</p>
+</li>
+<li><p>Approve the node on the Gateway:</p>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+</code></pre>
+</li>
+</ol>
+<p>No separate TCP bridge is required; nodes connect over the Gateway WebSocket.</p>
+<p>Security reminder: pairing a macOS node allows <code>system.run</code> on that machine. Only
+pair devices you trust, and review <a href="/gateway/security">Security</a>.</p>
+<p>Docs: <a href="/nodes">Nodes</a>, <a href="/gateway/protocol">Gateway protocol</a>, <a href="/platforms/mac/remote">macOS remote mode</a>, <a href="/gateway/security">Security</a>.</p>
+<h3>Tailscale is connected but I get no replies What now</h3>
+<p>Check the basics:</p>
+<ul>
+<li>Gateway is running: <code>agdi gateway status</code></li>
+<li>Gateway health: <code>agdi status</code></li>
+<li>Channel health: <code>agdi channels status</code></li>
+</ul>
+<p>Then verify auth and routing:</p>
+<ul>
+<li>If you use Tailscale Serve, make sure <code>gateway.auth.allowTailscale</code> is set correctly.</li>
+<li>If you connect via SSH tunnel, confirm the local tunnel is up and points at the right port.</li>
+<li>Confirm your allowlists (DM or group) include your account.</li>
+</ul>
+<p>Docs: <a href="/gateway/tailscale">Tailscale</a>, <a href="/gateway/remote">Remote access</a>, <a href="/channels">Channels</a>.</p>
+<h3>Can two AGDI instances talk to each other local VPS</h3>
+<p>Yes. There is no built-in &quot;bot-to-bot&quot; bridge, but you can wire it up in a few
+reliable ways:</p>
+<p><strong>Simplest:</strong> use a normal chat channel both bots can access (Telegram/Slack/WhatsApp).
+Have Bot A send a message to Bot B, then let Bot B reply as usual.</p>
+<p><strong>CLI bridge (generic):</strong> run a script that calls the other Gateway with
+<code>agdi agent --message ... --deliver</code>, targeting a chat where the other bot
+listens. If one bot is on a remote VPS, point your CLI at that remote Gateway
+via SSH/Tailscale (see <a href="/gateway/remote">Remote access</a>).</p>
+<p>Example pattern (run from a machine that can reach the target Gateway):</p>
+<pre><code class="language-bash">agdi agent --message &quot;Hello from local bot&quot; --deliver --channel telegram --reply-to &lt;chat-id&gt;
+</code></pre>
+<p>Tip: add a guardrail so the two bots do not loop endlessly (mention-only, channel
+allowlists, or a &quot;do not reply to bot messages&quot; rule).</p>
+<p>Docs: <a href="/gateway/remote">Remote access</a>, <a href="/cli/agent">Agent CLI</a>, <a href="/tools/agent-send">Agent send</a>.</p>
+<h3>Do I need separate VPSes for multiple agents</h3>
+<p>No. One Gateway can host multiple agents, each with its own workspace, model defaults,
+and routing. That is the normal setup and it is much cheaper and simpler than running
+one VPS per agent.</p>
+<p>Use separate VPSes only when you need hard isolation (security boundaries) or very
+different configs that you do not want to share. Otherwise, keep one Gateway and
+use multiple agents or sub-agents.</p>
+<h3>Is there a benefit to using a node on my personal laptop instead of SSH from a VPS</h3>
+<p>Yes - nodes are the first-class way to reach your laptop from a remote Gateway, and they
+unlock more than shell access. The Gateway runs on macOS/Linux (Windows via WSL2) and is
+lightweight (a small VPS or Raspberry Pi-class box is fine; 4 GB RAM is plenty), so a common
+setup is an always-on host plus your laptop as a node.</p>
+<ul>
+<li><strong>No inbound SSH required.</strong> Nodes connect out to the Gateway WebSocket and use device pairing.</li>
+<li><strong>Safer execution controls.</strong> <code>system.run</code> is gated by node allowlists/approvals on that laptop.</li>
+<li><strong>More device tools.</strong> Nodes expose <code>canvas</code>, <code>camera</code>, and <code>screen</code> in addition to <code>system.run</code>.</li>
+<li><strong>Local browser automation.</strong> Keep the Gateway on a VPS, but run Chrome locally and relay control
+with the Chrome extension + a node host on the laptop.</li>
+</ul>
+<p>SSH is fine for ad-hoc shell access, but nodes are simpler for ongoing agent workflows and
+device automation.</p>
+<p>Docs: <a href="/nodes">Nodes</a>, <a href="/cli/nodes">Nodes CLI</a>, <a href="/tools/chrome-extension">Chrome extension</a>.</p>
+<h3>Should I install on a second laptop or just add a node</h3>
+<p>If you only need <strong>local tools</strong> (screen/camera/exec) on the second laptop, add it as a
+<strong>node</strong>. That keeps a single Gateway and avoids duplicated config. Local node tools are
+currently macOS-only, but we plan to extend them to other OSes.</p>
+<p>Install a second Gateway only when you need <strong>hard isolation</strong> or two fully separate bots.</p>
+<p>Docs: <a href="/nodes">Nodes</a>, <a href="/cli/nodes">Nodes CLI</a>, <a href="/gateway/multiple-gateways">Multiple gateways</a>.</p>
+<h3>Do nodes run a gateway service</h3>
+<p>No. Only <strong>one gateway</strong> should run per host unless you intentionally run isolated profiles (see <a href="/gateway/multiple-gateways">Multiple gateways</a>). Nodes are peripherals that connect
+to the gateway (iOS/Android nodes, or macOS &quot;node mode&quot; in the menubar app). For headless node
+hosts and CLI control, see <a href="/cli/node">Node host CLI</a>.</p>
+<p>A full restart is required for <code>gateway</code>, <code>discovery</code>, and <code>canvasHost</code> changes.</p>
+<h3>Is there an API RPC way to apply config</h3>
+<p>Yes. <code>config.apply</code> validates + writes the full config and restarts the Gateway as part of the operation.</p>
+<h3>configapply wiped my config How do I recover and avoid this</h3>
+<p><code>config.apply</code> replaces the <strong>entire config</strong>. If you send a partial object, everything
+else is removed.</p>
+<p>Recover:</p>
+<ul>
+<li>Restore from backup (git or a copied <code>~/.agdi/agdi.json</code>).</li>
+<li>If you have no backup, re-run <code>agdi doctor</code> and reconfigure channels/models.</li>
+<li>If this was unexpected, file a bug and include your last known config or any backup.</li>
+<li>A local coding agent can often reconstruct a working config from logs or history.</li>
+</ul>
+<p>Avoid it:</p>
+<ul>
+<li>Use <code>agdi config set</code> for small changes.</li>
+<li>Use <code>agdi configure</code> for interactive edits.</li>
+</ul>
+<p>Docs: <a href="/cli/config">Config</a>, <a href="/cli/configure">Configure</a>, <a href="/gateway/doctor">Doctor</a>.</p>
+<h3>What&#39;s a minimal sane config for a first install</h3>
+<pre><code class="language-json5">{
+  agents: { defaults: { workspace: &quot;~/.agdi/workspace&quot; } },
+  channels: { whatsapp: { allowFrom: [&quot;+15555550123&quot;] } },
+}
+</code></pre>
+<p>This sets your workspace and restricts who can trigger the bot.</p>
+<h3>How do I set up Tailscale on a VPS and connect from my Mac</h3>
+<p>Minimal steps:</p>
+<ol>
+<li><p><strong>Install + login on the VPS</strong></p>
+<pre><code class="language-bash">curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+</code></pre>
+</li>
+<li><p><strong>Install + login on your Mac</strong></p>
+<ul>
+<li>Use the Tailscale app and sign in to the same tailnet.</li>
+</ul>
+</li>
+<li><p><strong>Enable MagicDNS (recommended)</strong></p>
+<ul>
+<li>In the Tailscale admin console, enable MagicDNS so the VPS has a stable name.</li>
+</ul>
+</li>
+<li><p><strong>Use the tailnet hostname</strong></p>
+<ul>
+<li>SSH: <code>ssh user@your-vps.tailnet-xxxx.ts.net</code></li>
+<li>Gateway WS: <code>ws://your-vps.tailnet-xxxx.ts.net:18789</code></li>
+</ul>
+</li>
+</ol>
+<p>If you want the Control UI without SSH, use Tailscale Serve on the VPS:</p>
+<pre><code class="language-bash">agdi gateway --tailscale serve
+</code></pre>
+<p>This keeps the gateway bound to loopback and exposes HTTPS via Tailscale. See <a href="/gateway/tailscale">Tailscale</a>.</p>
+<h3>How do I connect a Mac node to a remote Gateway Tailscale Serve</h3>
+<p>Serve exposes the <strong>Gateway Control UI + WS</strong>. Nodes connect over the same Gateway WS endpoint.</p>
+<p>Recommended setup:</p>
+<ol>
+<li><p><strong>Make sure the VPS + Mac are on the same tailnet</strong>.</p>
+</li>
+<li><p><strong>Use the macOS app in Remote mode</strong> (SSH target can be the tailnet hostname).
+The app will tunnel the Gateway port and connect as a node.</p>
+</li>
+<li><p><strong>Approve the node</strong> on the gateway:</p>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+</code></pre>
+</li>
+</ol>
+<p>Docs: <a href="/gateway/protocol">Gateway protocol</a>, <a href="/gateway/discovery">Discovery</a>, <a href="/platforms/mac/remote">macOS remote mode</a>.</p>
+<h2>Env vars and .env loading</h2>
+<h3>How does AGDI load environment variables</h3>
+<p>AGDI reads env vars from the parent process (shell, launchd/systemd, CI, etc.) and additionally loads:</p>
+<ul>
+<li><code>.env</code> from the current working directory</li>
+<li>a global fallback <code>.env</code> from <code>~/.agdi/.env</code> (aka <code>$AGDI_STATE_DIR/.env</code>)</li>
+</ul>
+<p>Neither <code>.env</code> file overrides existing env vars.</p>
+<p>You can also define inline env vars in config (applied only if missing from the process env):</p>
+<pre><code class="language-json5">{
+  env: {
+    OPENROUTER_API_KEY: &quot;sk-or-...&quot;,
+    vars: { GROQ_API_KEY: &quot;gsk-...&quot; },
+  },
+}
+</code></pre>
+<p>See <a href="/help/environment">/environment</a> for full precedence and sources.</p>
+<h3>I started the Gateway via the service and my env vars disappeared What now</h3>
+<p>Two common fixes:</p>
+<ol>
+<li>Put the missing keys in <code>~/.agdi/.env</code> so they&#39;re picked up even when the service doesn&#39;t inherit your shell env.</li>
+<li>Enable shell import (opt-in convenience):</li>
+</ol>
+<pre><code class="language-json5">{
+  env: {
+    shellEnv: {
+      enabled: true,
+      timeoutMs: 15000,
+    },
+  },
+}
+</code></pre>
+<p>This runs your login shell and imports only missing expected keys (never overrides). Env var equivalents:
+<code>AGDI_LOAD_SHELL_ENV=1</code>, <code>AGDI_SHELL_ENV_TIMEOUT_MS=15000</code>.</p>
+<h3>I set COPILOTGITHUBTOKEN but models status shows Shell env off Why</h3>
+<p><code>agdi models status</code> reports whether <strong>shell env import</strong> is enabled. &quot;Shell env: off&quot;
+does <strong>not</strong> mean your env vars are missing - it just means AGDI won&#39;t load
+your login shell automatically.</p>
+<p>If the Gateway runs as a service (launchd/systemd), it won&#39;t inherit your shell
+environment. Fix by doing one of these:</p>
+<ol>
+<li><p>Put the token in <code>~/.agdi/.env</code>:</p>
+<pre><code>COPILOT_GITHUB_TOKEN=...
+</code></pre>
+</li>
+<li><p>Or enable shell import (<code>env.shellEnv.enabled: true</code>).</p>
+</li>
+<li><p>Or add it to your config <code>env</code> block (applies only if missing).</p>
+</li>
+</ol>
+<p>Then restart the gateway and recheck:</p>
+<pre><code class="language-bash">agdi models status
+</code></pre>
+<p>Copilot tokens are read from <code>COPILOT_GITHUB_TOKEN</code> (also <code>GH_TOKEN</code> / <code>GITHUB_TOKEN</code>).
+See <a href="/concepts/model-providers">/concepts/model-providers</a> and <a href="/help/environment">/environment</a>.</p>
+<h2>Sessions and multiple chats</h2>
+<h3>How do I start a fresh conversation</h3>
+<p>Send <code>/new</code> or <code>/reset</code> as a standalone message. See <a href="/concepts/session">Session management</a>.</p>
+<h3>Do sessions reset automatically if I never send new</h3>
+<p>Yes. Sessions expire after <code>session.idleMinutes</code> (default <strong>60</strong>). The <strong>next</strong>
+message starts a fresh session id for that chat key. This does not delete
+transcripts - it just starts a new session.</p>
+<pre><code class="language-json5">{
+  session: {
+    idleMinutes: 240,
+  },
+}
+</code></pre>
+<h3>Is there a way to make a team of AGDI instances one CEO and many agents</h3>
+<p>Yes, via <strong>multi-agent routing</strong> and <strong>sub-agents</strong>. You can create one coordinator
+agent and several worker agents with their own workspaces and models.</p>
+<p>That said, this is best seen as a <strong>fun experiment</strong>. It is token heavy and often
+less efficient than using one bot with separate sessions. The typical model we
+envision is one bot you talk to, with different sessions for parallel work. That
+bot can also spawn sub-agents when needed.</p>
+<p>Docs: <a href="/concepts/multi-agent">Multi-agent routing</a>, <a href="/tools/subagents">Sub-agents</a>, <a href="/cli/agents">Agents CLI</a>.</p>
+<h3>Why did context get truncated midtask How do I prevent it</h3>
+<p>Session context is limited by the model window. Long chats, large tool outputs, or many
+files can trigger compaction or truncation.</p>
+<p>What helps:</p>
+<ul>
+<li>Ask the bot to summarize the current state and write it to a file.</li>
+<li>Use <code>/compact</code> before long tasks, and <code>/new</code> when switching topics.</li>
+<li>Keep important context in the workspace and ask the bot to read it back.</li>
+<li>Use sub-agents for long or parallel work so the main chat stays smaller.</li>
+<li>Pick a model with a larger context window if this happens often.</li>
+</ul>
+<h3>How do I completely reset AGDI but keep it installed</h3>
+<p>Use the reset command:</p>
+<pre><code class="language-bash">agdi reset
+</code></pre>
+<p>Non-interactive full reset:</p>
+<pre><code class="language-bash">agdi reset --scope full --yes --non-interactive
+</code></pre>
+<p>Then re-run onboarding:</p>
+<pre><code class="language-bash">agdi onboard --install-daemon
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The onboarding wizard also offers <strong>Reset</strong> if it sees an existing config. See <a href="/start/wizard">Wizard</a>.</li>
+<li>If you used profiles (<code>--profile</code> / <code>AGDI_PROFILE</code>), reset each state dir (defaults are <code>~/.agdi-&lt;profile&gt;</code>).</li>
+<li>Dev reset: <code>agdi gateway --dev --reset</code> (dev-only; wipes dev config + credentials + sessions + workspace).</li>
+</ul>
+<h3>Im getting context too large errors how do I reset or compact</h3>
+<p>Use one of these:</p>
+<ul>
+<li><p><strong>Compact</strong> (keeps the conversation but summarizes older turns):</p>
+<pre><code>/compact
+</code></pre>
+<p>or <code>/compact &lt;instructions&gt;</code> to guide the summary.</p>
+</li>
+<li><p><strong>Reset</strong> (fresh session ID for the same chat key):</p>
+<pre><code>/new
+/reset
+</code></pre>
+</li>
+</ul>
+<p>If it keeps happening:</p>
+<ul>
+<li>Enable or tune <strong>session pruning</strong> (<code>agents.defaults.contextPruning</code>) to trim old tool output.</li>
+<li>Use a model with a larger context window.</li>
+</ul>
+<p>Docs: <a href="/concepts/compaction">Compaction</a>, <a href="/concepts/session-pruning">Session pruning</a>, <a href="/concepts/session">Session management</a>.</p>
+<h3>Why am I seeing LLM request rejected messagesNcontentXtooluseinput Field required</h3>
+<p>This is a provider validation error: the model emitted a <code>tool_use</code> block without the required
+<code>input</code>. It usually means the session history is stale or corrupted (often after long threads
+or a tool/schema change).</p>
+<p>Fix: start a fresh session with <code>/new</code> (standalone message).</p>
+<h3>Why am I getting heartbeat messages every 30 minutes</h3>
+<p>Heartbeats run every <strong>30m</strong> by default. Tune or disable them:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;2h&quot;, // or &quot;0m&quot; to disable
+      },
+    },
+  },
+}
+</code></pre>
+<p>If <code>HEARTBEAT.md</code> exists but is effectively empty (only blank lines and markdown
+headers like <code># Heading</code>), AGDI skips the heartbeat run to save API calls.
+If the file is missing, the heartbeat still runs and the model decides what to do.</p>
+<p>Per-agent overrides use <code>agents.list[].heartbeat</code>. Docs: <a href="/gateway/heartbeat">Heartbeat</a>.</p>
+<h3>Do I need to add a bot account to a WhatsApp group</h3>
+<p>No. AGDI runs on <strong>your own account</strong>, so if you&#39;re in the group, AGDI can see it.
+By default, group replies are blocked until you allow senders (<code>groupPolicy: &quot;allowlist&quot;</code>).</p>
+<p>If you want only <strong>you</strong> to be able to trigger group replies:</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;+15551234567&quot;],
+    },
+  },
+}
+</code></pre>
+<h3>How do I get the JID of a WhatsApp group</h3>
+<p>Option 1 (fastest): tail logs and send a test message in the group:</p>
+<pre><code class="language-bash">agdi logs --follow --json
+</code></pre>
+<p>Look for <code>chatId</code> (or <code>from</code>) ending in <code>@g.us</code>, like:
+<code>1234567890-1234567890@g.us</code>.</p>
+<p>Option 2 (if already configured/allowlisted): list groups from config:</p>
+<pre><code class="language-bash">agdi directory groups list --channel whatsapp
+</code></pre>
+<p>Docs: <a href="/channels/whatsapp">WhatsApp</a>, <a href="/cli/directory">Directory</a>, <a href="/cli/logs">Logs</a>.</p>
+<h3>Why doesnt AGDI reply in a group</h3>
+<p>Two common causes:</p>
+<ul>
+<li>Mention gating is on (default). You must @mention the bot (or match <code>mentionPatterns</code>).</li>
+<li>You configured <code>channels.whatsapp.groups</code> without <code>&quot;*&quot;</code> and the group isn&#39;t allowlisted.</li>
+</ul>
+<p>See <a href="/channels/groups">Groups</a> and <a href="/channels/group-messages">Group messages</a>.</p>
+<h3>Do groupsthreads share context with DMs</h3>
+<p>Direct chats collapse to the main session by default. Groups/channels have their own session keys, and Telegram topics / Discord threads are separate sessions. See <a href="/channels/groups">Groups</a> and <a href="/channels/group-messages">Group messages</a>.</p>
+<h3>How many workspaces and agents can I create</h3>
+<p>No hard limits. Dozens (even hundreds) are fine, but watch for:</p>
+<ul>
+<li><strong>Disk growth:</strong> sessions + transcripts live under <code>~/.agdi/agents/&lt;agentId&gt;/sessions/</code>.</li>
+<li><strong>Token cost:</strong> more agents means more concurrent model usage.</li>
+<li><strong>Ops overhead:</strong> per-agent auth profiles, workspaces, and channel routing.</li>
+</ul>
+<p>Tips:</p>
+<ul>
+<li>Keep one <strong>active</strong> workspace per agent (<code>agents.defaults.workspace</code>).</li>
+<li>Prune old sessions (delete JSONL or store entries) if disk grows.</li>
+<li>Use <code>agdi doctor</code> to spot stray workspaces and profile mismatches.</li>
+</ul>
+<h3>Can I run multiple bots or chats at the same time Slack and how should I set that up</h3>
+<p>Yes. Use <strong>Multi-Agent Routing</strong> to run multiple isolated agents and route inbound messages by
+channel/account/peer. Slack is supported as a channel and can be bound to specific agents.</p>
+<p>Browser access is powerful but not &quot;do anything a human can&quot; - anti-bot, CAPTCHAs, and MFA can
+still block automation. For the most reliable browser control, use the Chrome extension relay
+on the machine that runs the browser (and keep the Gateway anywhere).</p>
+<p>Best-practice setup:</p>
+<ul>
+<li>Always-on Gateway host (VPS/Mac mini).</li>
+<li>One agent per role (bindings).</li>
+<li>Slack channel(s) bound to those agents.</li>
+<li>Local browser via extension relay (or a node) when needed.</li>
+</ul>
+<p>Docs: <a href="/concepts/multi-agent">Multi-Agent Routing</a>, <a href="/channels/slack">Slack</a>,
+<a href="/tools/browser">Browser</a>, <a href="/tools/chrome-extension">Chrome extension</a>, <a href="/nodes">Nodes</a>.</p>
+<h2>Models: defaults, selection, aliases, switching</h2>
+<h3>What is the default model</h3>
+<p>AGDI&#39;s default model is whatever you set as:</p>
+<pre><code>agents.defaults.model.primary
+</code></pre>
+<p>Models are referenced as <code>provider/model</code> (example: <code>anthropic/claude-opus-4-6</code>). If you omit the provider, AGDI currently assumes <code>anthropic</code> as a temporary deprecation fallback - but you should still <strong>explicitly</strong> set <code>provider/model</code>.</p>
+<h3>What model do you recommend</h3>
+<p><strong>Recommended default:</strong> <code>anthropic/claude-opus-4-6</code>.
+<strong>Good alternative:</strong> <code>anthropic/claude-sonnet-4-5</code>.
+<strong>Reliable (less character):</strong> <code>openai/gpt-5.2</code> - nearly as good as Opus, just less personality.
+<strong>Budget:</strong> <code>zai/glm-4.7</code>.</p>
+<p>MiniMax M2.1 has its own docs: <a href="/providers/minimax">MiniMax</a> and
+<a href="/gateway/local-models">Local models</a>.</p>
+<p>Rule of thumb: use the <strong>best model you can afford</strong> for high-stakes work, and a cheaper
+model for routine chat or summaries. You can route models per agent and use sub-agents to
+parallelize long tasks (each sub-agent consumes tokens). See <a href="/concepts/models">Models</a> and
+<a href="/tools/subagents">Sub-agents</a>.</p>
+<p>Strong warning: weaker/over-quantized models are more vulnerable to prompt
+injection and unsafe behavior. See <a href="/gateway/security">Security</a>.</p>
+<p>More context: <a href="/concepts/models">Models</a>.</p>
+<h3>Can I use selfhosted models llamacpp vLLM Ollama</h3>
+<p>Yes. If your local server exposes an OpenAI-compatible API, you can point a
+custom provider at it. Ollama is supported directly and is the easiest path.</p>
+<p>Security note: smaller or heavily quantized models are more vulnerable to prompt
+injection. We strongly recommend <strong>large models</strong> for any bot that can use tools.
+If you still want small models, enable sandboxing and strict tool allowlists.</p>
+<p>Docs: <a href="/providers/ollama">Ollama</a>, <a href="/gateway/local-models">Local models</a>,
+<a href="/concepts/model-providers">Model providers</a>, <a href="/gateway/security">Security</a>,
+<a href="/gateway/sandboxing">Sandboxing</a>.</p>
+<h3>How do I switch models without wiping my config</h3>
+<p>Use <strong>model commands</strong> or edit only the <strong>model</strong> fields. Avoid full config replaces.</p>
+<p>Safe options:</p>
+<ul>
+<li><code>/model</code> in chat (quick, per-session)</li>
+<li><code>agdi models set ...</code> (updates just model config)</li>
+<li><code>agdi configure --section model</code> (interactive)</li>
+<li>edit <code>agents.defaults.model</code> in <code>~/.agdi/agdi.json</code></li>
+</ul>
+<p>Avoid <code>config.apply</code> with a partial object unless you intend to replace the whole config.
+If you did overwrite config, restore from backup or re-run <code>agdi doctor</code> to repair.</p>
+<p>Docs: <a href="/concepts/models">Models</a>, <a href="/cli/configure">Configure</a>, <a href="/cli/config">Config</a>, <a href="/gateway/doctor">Doctor</a>.</p>
+<h3>What do AGDI, Flawd, and Krill use for models</h3>
+<ul>
+<li><strong>AGDI + Flawd:</strong> Anthropic Opus (<code>anthropic/claude-opus-4-6</code>) - see <a href="/providers/anthropic">Anthropic</a>.</li>
+<li><strong>Krill:</strong> MiniMax M2.1 (<code>minimax/MiniMax-M2.1</code>) - see <a href="/providers/minimax">MiniMax</a>.</li>
+</ul>
+<h3>How do I switch models on the fly without restarting</h3>
+<p>Use the <code>/model</code> command as a standalone message:</p>
+<pre><code>/model sonnet
+/model haiku
+/model opus
+/model gpt
+/model gpt-mini
+/model gemini
+/model gemini-flash
+</code></pre>
+<p>You can list available models with <code>/model</code>, <code>/model list</code>, or <code>/model status</code>.</p>
+<p><code>/model</code> (and <code>/model list</code>) shows a compact, numbered picker. Select by number:</p>
+<pre><code>/model 3
+</code></pre>
+<p>You can also force a specific auth profile for the provider (per session):</p>
+<pre><code>/model opus@anthropic:default
+/model opus@anthropic:work
+</code></pre>
+<p>Tip: <code>/model status</code> shows which agent is active, which <code>auth-profiles.json</code> file is being used, and which auth profile will be tried next.
+It also shows the configured provider endpoint (<code>baseUrl</code>) and API mode (<code>api</code>) when available.</p>
+<p><strong>How do I unpin a profile I set with profile</strong></p>
+<p>Re-run <code>/model</code> <strong>without</strong> the <code>@profile</code> suffix:</p>
+<pre><code>/model anthropic/claude-opus-4-6
+</code></pre>
+<p>If you want to return to the default, pick it from <code>/model</code> (or send <code>/model &lt;default provider/model&gt;</code>).
+Use <code>/model status</code> to confirm which auth profile is active.</p>
+<h3>Can I use GPT 5.2 for daily tasks and Codex 5.3 for coding</h3>
+<p>Yes. Set one as default and switch as needed:</p>
+<ul>
+<li><strong>Quick switch (per session):</strong> <code>/model gpt-5.2</code> for daily tasks, <code>/model gpt-5.3-codex</code> for coding.</li>
+<li><strong>Default + switch:</strong> set <code>agents.defaults.model.primary</code> to <code>openai/gpt-5.2</code>, then switch to <code>openai-codex/gpt-5.3-codex</code> when coding (or the other way around).</li>
+<li><strong>Sub-agents:</strong> route coding tasks to sub-agents with a different default model.</li>
+</ul>
+<p>See <a href="/concepts/models">Models</a> and <a href="/tools/slash-commands">Slash commands</a>.</p>
+<h3>Why do I see Model is not allowed and then no reply</h3>
+<p>If <code>agents.defaults.models</code> is set, it becomes the <strong>allowlist</strong> for <code>/model</code> and any
+session overrides. Choosing a model that isn&#39;t in that list returns:</p>
+<pre><code>Model &quot;provider/model&quot; is not allowed. Use /model to list available models.
+</code></pre>
+<p>That error is returned <strong>instead of</strong> a normal reply. Fix: add the model to
+<code>agents.defaults.models</code>, remove the allowlist, or pick a model from <code>/model list</code>.</p>
+<h3>Why do I see Unknown model minimaxMiniMaxM21</h3>
+<p>This means the <strong>provider isn&#39;t configured</strong> (no MiniMax provider config or auth
+profile was found), so the model can&#39;t be resolved. A fix for this detection is
+in <strong>2026.1.12</strong> (unreleased at the time of writing).</p>
+<p>Fix checklist:</p>
+<ol>
+<li><p>Upgrade to <strong>2026.1.12</strong> (or run from source <code>main</code>), then restart the gateway.</p>
+</li>
+<li><p>Make sure MiniMax is configured (wizard or JSON), or that a MiniMax API key
+exists in env/auth profiles so the provider can be injected.</p>
+</li>
+<li><p>Use the exact model id (case-sensitive): <code>minimax/MiniMax-M2.1</code> or
+<code>minimax/MiniMax-M2.1-lightning</code>.</p>
+</li>
+<li><p>Run:</p>
+<pre><code class="language-bash">agdi models list
+</code></pre>
+<p>and pick from the list (or <code>/model list</code> in chat).</p>
+</li>
+</ol>
+<p>See <a href="/providers/minimax">MiniMax</a> and <a href="/concepts/models">Models</a>.</p>
+<h3>Can I use MiniMax as my default and OpenAI for complex tasks</h3>
+<p>Yes. Use <strong>MiniMax as the default</strong> and switch models <strong>per session</strong> when needed.
+Fallbacks are for <strong>errors</strong>, not &quot;hard tasks,&quot; so use <code>/model</code> or a separate agent.</p>
+<p><strong>Option A: switch per session</strong></p>
+<pre><code class="language-json5">{
+  env: { MINIMAX_API_KEY: &quot;sk-...&quot;, OPENAI_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      model: { primary: &quot;minimax/MiniMax-M2.1&quot; },
+      models: {
+        &quot;minimax/MiniMax-M2.1&quot;: { alias: &quot;minimax&quot; },
+        &quot;openai/gpt-5.2&quot;: { alias: &quot;gpt&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Then:</p>
+<pre><code>/model gpt
+</code></pre>
+<p><strong>Option B: separate agents</strong></p>
+<ul>
+<li>Agent A default: MiniMax</li>
+<li>Agent B default: OpenAI</li>
+<li>Route by agent or use <code>/agent</code> to switch</li>
+</ul>
+<p>Docs: <a href="/concepts/models">Models</a>, <a href="/concepts/multi-agent">Multi-Agent Routing</a>, <a href="/providers/minimax">MiniMax</a>, <a href="/providers/openai">OpenAI</a>.</p>
+<h3>Are opus sonnet gpt builtin shortcuts</h3>
+<p>Yes. AGDI ships a few default shorthands (only applied when the model exists in <code>agents.defaults.models</code>):</p>
+<ul>
+<li><code>opus</code> → <code>anthropic/claude-opus-4-6</code></li>
+<li><code>sonnet</code> → <code>anthropic/claude-sonnet-4-5</code></li>
+<li><code>gpt</code> → <code>openai/gpt-5.2</code></li>
+<li><code>gpt-mini</code> → <code>openai/gpt-5-mini</code></li>
+<li><code>gemini</code> → <code>google/gemini-3-pro-preview</code></li>
+<li><code>gemini-flash</code> → <code>google/gemini-3-flash-preview</code></li>
+</ul>
+<p>If you set your own alias with the same name, your value wins.</p>
+<h3>How do I defineoverride model shortcuts aliases</h3>
+<p>Aliases come from <code>agents.defaults.models.&lt;modelId&gt;.alias</code>. Example:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;anthropic/claude-opus-4-6&quot; },
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;opus&quot; },
+        &quot;anthropic/claude-sonnet-4-5&quot;: { alias: &quot;sonnet&quot; },
+        &quot;anthropic/claude-haiku-4-5&quot;: { alias: &quot;haiku&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Then <code>/model sonnet</code> (or <code>/&lt;alias&gt;</code> when supported) resolves to that model ID.</p>
+<h3>How do I add models from other providers like OpenRouter or ZAI</h3>
+<p>OpenRouter (pay-per-token; many models):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;openrouter/anthropic/claude-sonnet-4-5&quot; },
+      models: { &quot;openrouter/anthropic/claude-sonnet-4-5&quot;: {} },
+    },
+  },
+  env: { OPENROUTER_API_KEY: &quot;sk-or-...&quot; },
+}
+</code></pre>
+<p>Z.AI (GLM models):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;zai/glm-4.7&quot; },
+      models: { &quot;zai/glm-4.7&quot;: {} },
+    },
+  },
+  env: { ZAI_API_KEY: &quot;...&quot; },
+}
+</code></pre>
+<p>If you reference a provider/model but the required provider key is missing, you&#39;ll get a runtime auth error (e.g. <code>No API key found for provider &quot;zai&quot;</code>).</p>
+<p><strong>No API key found for provider after adding a new agent</strong></p>
+<p>This usually means the <strong>new agent</strong> has an empty auth store. Auth is per-agent and
+stored in:</p>
+<pre><code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json
+</code></pre>
+<p>Fix options:</p>
+<ul>
+<li>Run <code>agdi agents add &lt;id&gt;</code> and configure auth during the wizard.</li>
+<li>Or copy <code>auth-profiles.json</code> from the main agent&#39;s <code>agentDir</code> into the new agent&#39;s <code>agentDir</code>.</li>
+</ul>
+<p>Do <strong>not</strong> reuse <code>agentDir</code> across agents; it causes auth/session collisions.</p>
+<h2>Model failover and &quot;All models failed&quot;</h2>
+<h3>How does failover work</h3>
+<p>Failover happens in two stages:</p>
+<ol>
+<li><strong>Auth profile rotation</strong> within the same provider.</li>
+<li><strong>Model fallback</strong> to the next model in <code>agents.defaults.model.fallbacks</code>.</li>
+</ol>
+<p>Cooldowns apply to failing profiles (exponential backoff), so AGDI can keep responding even when a provider is rate-limited or temporarily failing.</p>
+<h3>What does this error mean</h3>
+<pre><code>No credentials found for profile &quot;anthropic:default&quot;
+</code></pre>
+<p>It means the system attempted to use the auth profile ID <code>anthropic:default</code>, but could not find credentials for it in the expected auth store.</p>
+<h3>Fix checklist for No credentials found for profile anthropicdefault</h3>
+<ul>
+<li><strong>Confirm where auth profiles live</strong> (new vs legacy paths)<ul>
+<li>Current: <code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json</code></li>
+<li>Legacy: <code>~/.agdi/agent/*</code> (migrated by <code>agdi doctor</code>)</li>
+</ul>
+</li>
+<li><strong>Confirm your env var is loaded by the Gateway</strong><ul>
+<li>If you set <code>ANTHROPIC_API_KEY</code> in your shell but run the Gateway via systemd/launchd, it may not inherit it. Put it in <code>~/.agdi/.env</code> or enable <code>env.shellEnv</code>.</li>
+</ul>
+</li>
+<li><strong>Make sure you&#39;re editing the correct agent</strong><ul>
+<li>Multi-agent setups mean there can be multiple <code>auth-profiles.json</code> files.</li>
+</ul>
+</li>
+<li><strong>Sanity-check model/auth status</strong><ul>
+<li>Use <code>agdi models status</code> to see configured models and whether providers are authenticated.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Fix checklist for No credentials found for profile anthropic</strong></p>
+<p>This means the run is pinned to an Anthropic auth profile, but the Gateway
+can&#39;t find it in its auth store.</p>
+<ul>
+<li><p><strong>Use a setup-token</strong></p>
+<ul>
+<li>Run <code>claude setup-token</code>, then paste it with <code>agdi models auth setup-token --provider anthropic</code>.</li>
+<li>If the token was created on another machine, use <code>agdi models auth paste-token --provider anthropic</code>.</li>
+</ul>
+</li>
+<li><p><strong>If you want to use an API key instead</strong></p>
+<ul>
+<li><p>Put <code>ANTHROPIC_API_KEY</code> in <code>~/.agdi/.env</code> on the <strong>gateway host</strong>.</p>
+</li>
+<li><p>Clear any pinned order that forces a missing profile:</p>
+<pre><code class="language-bash">agdi models auth order clear --provider anthropic
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p><strong>Confirm you&#39;re running commands on the gateway host</strong></p>
+<ul>
+<li>In remote mode, auth profiles live on the gateway machine, not your laptop.</li>
+</ul>
+</li>
+</ul>
+<h3>Why did it also try Google Gemini and fail</h3>
+<p>If your model config includes Google Gemini as a fallback (or you switched to a Gemini shorthand), AGDI will try it during model fallback. If you haven&#39;t configured Google credentials, you&#39;ll see <code>No API key found for provider &quot;google&quot;</code>.</p>
+<p>Fix: either provide Google auth, or remove/avoid Google models in <code>agents.defaults.model.fallbacks</code> / aliases so fallback doesn&#39;t route there.</p>
+<p><strong>LLM request rejected message thinking signature required google antigravity</strong></p>
+<p>Cause: the session history contains <strong>thinking blocks without signatures</strong> (often from
+an aborted/partial stream). Google Antigravity requires signatures for thinking blocks.</p>
+<p>Fix: AGDI now strips unsigned thinking blocks for Google Antigravity Claude. If it still appears, start a <strong>new session</strong> or set <code>/thinking off</code> for that agent.</p>
+<h2>Auth profiles: what they are and how to manage them</h2>
+<p>Related: <a href="/concepts/oauth">/concepts/oauth</a> (OAuth flows, token storage, multi-account patterns)</p>
+<h3>What is an auth profile</h3>
+<p>An auth profile is a named credential record (OAuth or API key) tied to a provider. Profiles live in:</p>
+<pre><code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json
+</code></pre>
+<h3>What are typical profile IDs</h3>
+<p>AGDI uses provider-prefixed IDs like:</p>
+<ul>
+<li><code>anthropic:default</code> (common when no email identity exists)</li>
+<li><code>anthropic:&lt;email&gt;</code> for OAuth identities</li>
+<li>custom IDs you choose (e.g. <code>anthropic:work</code>)</li>
+</ul>
+<h3>Can I control which auth profile is tried first</h3>
+<p>Yes. Config supports optional metadata for profiles and an ordering per provider (<code>auth.order.&lt;provider&gt;</code>). This does <strong>not</strong> store secrets; it maps IDs to provider/mode and sets rotation order.</p>
+<p>AGDI may temporarily skip a profile if it&#39;s in a short <strong>cooldown</strong> (rate limits/timeouts/auth failures) or a longer <strong>disabled</strong> state (billing/insufficient credits). To inspect this, run <code>agdi models status --json</code> and check <code>auth.unusableProfiles</code>. Tuning: <code>auth.cooldowns.billingBackoffHours*</code>.</p>
+<p>You can also set a <strong>per-agent</strong> order override (stored in that agent&#39;s <code>auth-profiles.json</code>) via the CLI:</p>
+<pre><code class="language-bash"># Defaults to the configured default agent (omit --agent)
+agdi models auth order get --provider anthropic
+
+# Lock rotation to a single profile (only try this one)
+agdi models auth order set --provider anthropic anthropic:default
+
+# Or set an explicit order (fallback within provider)
+agdi models auth order set --provider anthropic anthropic:work anthropic:default
+
+# Clear override (fall back to config auth.order / round-robin)
+agdi models auth order clear --provider anthropic
+</code></pre>
+<p>To target a specific agent:</p>
+<pre><code class="language-bash">agdi models auth order set --provider anthropic --agent main anthropic:default
+</code></pre>
+<h3>OAuth vs API key whats the difference</h3>
+<p>AGDI supports both:</p>
+<ul>
+<li><strong>OAuth</strong> often leverages subscription access (where applicable).</li>
+<li><strong>API keys</strong> use pay-per-token billing.</li>
+</ul>
+<p>The wizard explicitly supports Anthropic setup-token and OpenAI Codex OAuth and can store API keys for you.</p>
+<h2>Gateway: ports, &quot;already running&quot;, and remote mode</h2>
+<h3>What port does the Gateway use</h3>
+<p><code>gateway.port</code> controls the single multiplexed port for WebSocket + HTTP (Control UI, hooks, etc.).</p>
+<p>Precedence:</p>
+<pre><code>--port &gt; AGDI_GATEWAY_PORT &gt; gateway.port &gt; default 18789
+</code></pre>
+<h3>Why does agdi gateway status say Runtime running but RPC probe failed</h3>
+<p>Because &quot;running&quot; is the <strong>supervisor&#39;s</strong> view (launchd/systemd/schtasks). The RPC probe is the CLI actually connecting to the gateway WebSocket and calling <code>status</code>.</p>
+<p>Use <code>agdi gateway status</code> and trust these lines:</p>
+<ul>
+<li><code>Probe target:</code> (the URL the probe actually used)</li>
+<li><code>Listening:</code> (what&#39;s actually bound on the port)</li>
+<li><code>Last gateway error:</code> (common root cause when the process is alive but the port isn&#39;t listening)</li>
+</ul>
+<h3>Why does agdi gateway status show Config cli and Config service different</h3>
+<p>You&#39;re editing one config file while the service is running another (often a <code>--profile</code> / <code>AGDI_STATE_DIR</code> mismatch).</p>
+<p>Fix:</p>
+<pre><code class="language-bash">agdi gateway install --force
+</code></pre>
+<p>Run that from the same <code>--profile</code> / environment you want the service to use.</p>
+<h3>What does another gateway instance is already listening mean</h3>
+<p>AGDI enforces a runtime lock by binding the WebSocket listener immediately on startup (default <code>ws://127.0.0.1:18789</code>). If the bind fails with <code>EADDRINUSE</code>, it throws <code>GatewayLockError</code> indicating another instance is already listening.</p>
+<p>Fix: stop the other instance, free the port, or run with <code>agdi gateway --port &lt;port&gt;</code>.</p>
+<h3>How do I run AGDI in remote mode client connects to a Gateway elsewhere</h3>
+<p>Set <code>gateway.mode: &quot;remote&quot;</code> and point to a remote WebSocket URL, optionally with a token/password:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    mode: &quot;remote&quot;,
+    remote: {
+      url: &quot;ws://gateway.tailnet:18789&quot;,
+      token: &quot;your-token&quot;,
+      password: &quot;your-password&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>agdi gateway</code> only starts when <code>gateway.mode</code> is <code>local</code> (or you pass the override flag).</li>
+<li>The macOS app watches the config file and switches modes live when these values change.</li>
+</ul>
+<h3>The Control UI says unauthorized or keeps reconnecting What now</h3>
+<p>Your gateway is running with auth enabled (<code>gateway.auth.*</code>), but the UI is not sending the matching token/password.</p>
+<p>Facts (from code):</p>
+<ul>
+<li>The Control UI stores the token in browser localStorage key <code>agdi.control.settings.v1</code>.</li>
+</ul>
+<p>Fix:</p>
+<ul>
+<li>Fastest: <code>agdi dashboard</code> (prints + copies the dashboard URL, tries to open; shows SSH hint if headless).</li>
+<li>If you don&#39;t have a token yet: <code>agdi doctor --generate-gateway-token</code>.</li>
+<li>If remote, tunnel first: <code>ssh -N -L 18789:127.0.0.1:18789 user@host</code> then open <code>http://127.0.0.1:18789/</code>.</li>
+<li>Set <code>gateway.auth.token</code> (or <code>AGDI_GATEWAY_TOKEN</code>) on the gateway host.</li>
+<li>In the Control UI settings, paste the same token.</li>
+<li>Still stuck? Run <code>agdi status --all</code> and follow <a href="/gateway/troubleshooting">Troubleshooting</a>. See <a href="/web/dashboard">Dashboard</a> for auth details.</li>
+</ul>
+<h3>I set gatewaybind tailnet but it cant bind nothing listens</h3>
+<p><code>tailnet</code> bind picks a Tailscale IP from your network interfaces (100.64.0.0/10). If the machine isn&#39;t on Tailscale (or the interface is down), there&#39;s nothing to bind to.</p>
+<p>Fix:</p>
+<ul>
+<li>Start Tailscale on that host (so it has a 100.x address), or</li>
+<li>Switch to <code>gateway.bind: &quot;loopback&quot;</code> / <code>&quot;lan&quot;</code>.</li>
+</ul>
+<p>Note: <code>tailnet</code> is explicit. <code>auto</code> prefers loopback; use <code>gateway.bind: &quot;tailnet&quot;</code> when you want a tailnet-only bind.</p>
+<h3>Can I run multiple Gateways on the same host</h3>
+<p>Usually no - one Gateway can run multiple messaging channels and agents. Use multiple Gateways only when you need redundancy (ex: rescue bot) or hard isolation.</p>
+<p>Yes, but you must isolate:</p>
+<ul>
+<li><code>AGDI_CONFIG_PATH</code> (per-instance config)</li>
+<li><code>AGDI_STATE_DIR</code> (per-instance state)</li>
+<li><code>agents.defaults.workspace</code> (workspace isolation)</li>
+<li><code>gateway.port</code> (unique ports)</li>
+</ul>
+<p>Quick setup (recommended):</p>
+<ul>
+<li>Use <code>agdi --profile &lt;name&gt; …</code> per instance (auto-creates <code>~/.agdi-&lt;name&gt;</code>).</li>
+<li>Set a unique <code>gateway.port</code> in each profile config (or pass <code>--port</code> for manual runs).</li>
+<li>Install a per-profile service: <code>agdi --profile &lt;name&gt; gateway install</code>.</li>
+</ul>
+<p>Profiles also suffix service names (<code>bot.molt.&lt;profile&gt;</code>; legacy <code>com.agdi.*</code>, <code>agdi-gateway-&lt;profile&gt;.service</code>, <code>AGDI Gateway (&lt;profile&gt;)</code>).
+Full guide: <a href="/gateway/multiple-gateways">Multiple gateways</a>.</p>
+<h3>What does invalid handshake code 1008 mean</h3>
+<p>The Gateway is a <strong>WebSocket server</strong>, and it expects the very first message to
+be a <code>connect</code> frame. If it receives anything else, it closes the connection
+with <strong>code 1008</strong> (policy violation).</p>
+<p>Common causes:</p>
+<ul>
+<li>You opened the <strong>HTTP</strong> URL in a browser (<code>http://...</code>) instead of a WS client.</li>
+<li>You used the wrong port or path.</li>
+<li>A proxy or tunnel stripped auth headers or sent a non-Gateway request.</li>
+</ul>
+<p>Quick fixes:</p>
+<ol>
+<li>Use the WS URL: <code>ws://&lt;host&gt;:18789</code> (or <code>wss://...</code> if HTTPS).</li>
+<li>Don&#39;t open the WS port in a normal browser tab.</li>
+<li>If auth is on, include the token/password in the <code>connect</code> frame.</li>
+</ol>
+<p>If you&#39;re using the CLI or TUI, the URL should look like:</p>
+<pre><code>agdi tui --url ws://&lt;host&gt;:18789 --token &lt;token&gt;
+</code></pre>
+<p>Protocol details: <a href="/gateway/protocol">Gateway protocol</a>.</p>
+<h2>Logging and debugging</h2>
+<h3>Where are logs</h3>
+<p>File logs (structured):</p>
+<pre><code>/tmp/agdi/agdi-YYYY-MM-DD.log
+</code></pre>
+<p>You can set a stable path via <code>logging.file</code>. File log level is controlled by <code>logging.level</code>. Console verbosity is controlled by <code>--verbose</code> and <code>logging.consoleLevel</code>.</p>
+<p>Fastest log tail:</p>
+<pre><code class="language-bash">agdi logs --follow
+</code></pre>
+<p>Service/supervisor logs (when the gateway runs via launchd/systemd):</p>
+<ul>
+<li>macOS: <code>$AGDI_STATE_DIR/logs/gateway.log</code> and <code>gateway.err.log</code> (default: <code>~/.agdi/logs/...</code>; profiles use <code>~/.agdi-&lt;profile&gt;/logs/...</code>)</li>
+<li>Linux: <code>journalctl --user -u agdi-gateway[-&lt;profile&gt;].service -n 200 --no-pager</code></li>
+<li>Windows: <code>schtasks /Query /TN &quot;AGDI Gateway (&lt;profile&gt;)&quot; /V /FO LIST</code></li>
+</ul>
+<p>See <a href="/gateway/troubleshooting#log-locations">Troubleshooting</a> for more.</p>
+<h3>How do I startstoprestart the Gateway service</h3>
+<p>Use the gateway helpers:</p>
+<pre><code class="language-bash">agdi gateway status
+agdi gateway restart
+</code></pre>
+<p>If you run the gateway manually, <code>agdi gateway --force</code> can reclaim the port. See <a href="/gateway">Gateway</a>.</p>
+<h3>I closed my terminal on Windows how do I restart AGDI</h3>
+<p>There are <strong>two Windows install modes</strong>:</p>
+<p><strong>1) WSL2 (recommended):</strong> the Gateway runs inside Linux.</p>
+<p>Open PowerShell, enter WSL, then restart:</p>
+<pre><code class="language-powershell">wsl
+agdi gateway status
+agdi gateway restart
+</code></pre>
+<p>If you never installed the service, start it in the foreground:</p>
+<pre><code class="language-bash">agdi gateway run
+</code></pre>
+<p><strong>2) Native Windows (not recommended):</strong> the Gateway runs directly in Windows.</p>
+<p>Open PowerShell and run:</p>
+<pre><code class="language-powershell">agdi gateway status
+agdi gateway restart
+</code></pre>
+<p>If you run it manually (no service), use:</p>
+<pre><code class="language-powershell">agdi gateway run
+</code></pre>
+<p>Docs: <a href="/platforms/windows">Windows (WSL2)</a>, <a href="/gateway">Gateway service runbook</a>.</p>
+<h3>The Gateway is up but replies never arrive What should I check</h3>
+<p>Start with a quick health sweep:</p>
+<pre><code class="language-bash">agdi status
+agdi models status
+agdi channels status
+agdi logs --follow
+</code></pre>
+<p>Common causes:</p>
+<ul>
+<li>Model auth not loaded on the <strong>gateway host</strong> (check <code>models status</code>).</li>
+<li>Channel pairing/allowlist blocking replies (check channel config + logs).</li>
+<li>WebChat/Dashboard is open without the right token.</li>
+</ul>
+<p>If you are remote, confirm the tunnel/Tailscale connection is up and that the
+Gateway WebSocket is reachable.</p>
+<p>Docs: <a href="/channels">Channels</a>, <a href="/gateway/troubleshooting">Troubleshooting</a>, <a href="/gateway/remote">Remote access</a>.</p>
+<h3>Disconnected from gateway no reason what now</h3>
+<p>This usually means the UI lost the WebSocket connection. Check:</p>
+<ol>
+<li>Is the Gateway running? <code>agdi gateway status</code></li>
+<li>Is the Gateway healthy? <code>agdi status</code></li>
+<li>Does the UI have the right token? <code>agdi dashboard</code></li>
+<li>If remote, is the tunnel/Tailscale link up?</li>
+</ol>
+<p>Then tail logs:</p>
+<pre><code class="language-bash">agdi logs --follow
+</code></pre>
+<p>Docs: <a href="/web/dashboard">Dashboard</a>, <a href="/gateway/remote">Remote access</a>, <a href="/gateway/troubleshooting">Troubleshooting</a>.</p>
+<h3>Telegram setMyCommands fails with network errors What should I check</h3>
+<p>Start with logs and channel status:</p>
+<pre><code class="language-bash">agdi channels status
+agdi channels logs --channel telegram
+</code></pre>
+<p>If you are on a VPS or behind a proxy, confirm outbound HTTPS is allowed and DNS works.
+If the Gateway is remote, make sure you are looking at logs on the Gateway host.</p>
+<p>Docs: <a href="/channels/telegram">Telegram</a>, <a href="/channels/troubleshooting">Channel troubleshooting</a>.</p>
+<h3>TUI shows no output What should I check</h3>
+<p>First confirm the Gateway is reachable and the agent can run:</p>
+<pre><code class="language-bash">agdi status
+agdi models status
+agdi logs --follow
+</code></pre>
+<p>In the TUI, use <code>/status</code> to see the current state. If you expect replies in a chat
+channel, make sure delivery is enabled (<code>/deliver on</code>).</p>
+<p>Docs: <a href="/web/tui">TUI</a>, <a href="/tools/slash-commands">Slash commands</a>.</p>
+<h3>How do I completely stop then start the Gateway</h3>
+<p>If you installed the service:</p>
+<pre><code class="language-bash">agdi gateway stop
+agdi gateway start
+</code></pre>
+<p>This stops/starts the <strong>supervised service</strong> (launchd on macOS, systemd on Linux).
+Use this when the Gateway runs in the background as a daemon.</p>
+<p>If you&#39;re running in the foreground, stop with Ctrl-C, then:</p>
+<pre><code class="language-bash">agdi gateway run
+</code></pre>
+<p>Docs: <a href="/gateway">Gateway service runbook</a>.</p>
+<h3>ELI5 agdi gateway restart vs agdi gateway</h3>
+<ul>
+<li><code>agdi gateway restart</code>: restarts the <strong>background service</strong> (launchd/systemd).</li>
+<li><code>agdi gateway</code>: runs the gateway <strong>in the foreground</strong> for this terminal session.</li>
+</ul>
+<p>If you installed the service, use the gateway commands. Use <code>agdi gateway</code> when
+you want a one-off, foreground run.</p>
+<h3>What&#39;s the fastest way to get more details when something fails</h3>
+<p>Start the Gateway with <code>--verbose</code> to get more console detail. Then inspect the log file for channel auth, model routing, and RPC errors.</p>
+<h2>Media and attachments</h2>
+<h3>My skill generated an imagePDF but nothing was sent</h3>
+<p>Outbound attachments from the agent must include a <code>MEDIA:&lt;path-or-url&gt;</code> line (on its own line). See <a href="/start/agdi">AGDI assistant setup</a> and <a href="/tools/agent-send">Agent send</a>.</p>
+<p>CLI sending:</p>
+<pre><code class="language-bash">agdi message send --target +15555550123 --message &quot;Here you go&quot; --media /path/to/file.png
+</code></pre>
+<p>Also check:</p>
+<ul>
+<li>The target channel supports outbound media and isn&#39;t blocked by allowlists.</li>
+<li>The file is within the provider&#39;s size limits (images are resized to max 2048px).</li>
+</ul>
+<p>See <a href="/nodes/images">Images</a>.</p>
+<h2>Security and access control</h2>
+<h3>Is it safe to expose AGDI to inbound DMs</h3>
+<p>Treat inbound DMs as untrusted input. Defaults are designed to reduce risk:</p>
+<ul>
+<li>Default behavior on DM-capable channels is <strong>pairing</strong>:<ul>
+<li>Unknown senders receive a pairing code; the bot does not process their message.</li>
+<li>Approve with: <code>agdi pairing approve &lt;channel&gt; &lt;code&gt;</code></li>
+<li>Pending requests are capped at <strong>3 per channel</strong>; check <code>agdi pairing list &lt;channel&gt;</code> if a code didn&#39;t arrive.</li>
+</ul>
+</li>
+<li>Opening DMs publicly requires explicit opt-in (<code>dmPolicy: &quot;open&quot;</code> and allowlist <code>&quot;*&quot;</code>).</li>
+</ul>
+<p>Run <code>agdi doctor</code> to surface risky DM policies.</p>
+<h3>Is prompt injection only a concern for public bots</h3>
+<p>No. Prompt injection is about <strong>untrusted content</strong>, not just who can DM the bot.
+If your assistant reads external content (web search/fetch, browser pages, emails,
+docs, attachments, pasted logs), that content can include instructions that try
+to hijack the model. This can happen even if <strong>you are the only sender</strong>.</p>
+<p>The biggest risk is when tools are enabled: the model can be tricked into
+exfiltrating context or calling tools on your behalf. Reduce the blast radius by:</p>
+<ul>
+<li>using a read-only or tool-disabled &quot;reader&quot; agent to summarize untrusted content</li>
+<li>keeping <code>web_search</code> / <code>web_fetch</code> / <code>browser</code> off for tool-enabled agents</li>
+<li>sandboxing and strict tool allowlists</li>
+</ul>
+<p>Details: <a href="/gateway/security">Security</a>.</p>
+<h3>Should my bot have its own email GitHub account or phone number</h3>
+<p>Yes, for most setups. Isolating the bot with separate accounts and phone numbers
+reduces the blast radius if something goes wrong. This also makes it easier to rotate
+credentials or revoke access without impacting your personal accounts.</p>
+<p>Start small. Give access only to the tools and accounts you actually need, and expand
+later if required.</p>
+<p>Docs: <a href="/gateway/security">Security</a>, <a href="/channels/pairing">Pairing</a>.</p>
+<h3>Can I give it autonomy over my text messages and is that safe</h3>
+<p>We do <strong>not</strong> recommend full autonomy over your personal messages. The safest pattern is:</p>
+<ul>
+<li>Keep DMs in <strong>pairing mode</strong> or a tight allowlist.</li>
+<li>Use a <strong>separate number or account</strong> if you want it to message on your behalf.</li>
+<li>Let it draft, then <strong>approve before sending</strong>.</li>
+</ul>
+<p>If you want to experiment, do it on a dedicated account and keep it isolated. See
+<a href="/gateway/security">Security</a>.</p>
+<h3>Can I use cheaper models for personal assistant tasks</h3>
+<p>Yes, <strong>if</strong> the agent is chat-only and the input is trusted. Smaller tiers are
+more susceptible to instruction hijacking, so avoid them for tool-enabled agents
+or when reading untrusted content. If you must use a smaller model, lock down
+tools and run inside a sandbox. See <a href="/gateway/security">Security</a>.</p>
+<h3>I ran start in Telegram but didnt get a pairing code</h3>
+<p>Pairing codes are sent <strong>only</strong> when an unknown sender messages the bot and
+<code>dmPolicy: &quot;pairing&quot;</code> is enabled. <code>/start</code> by itself doesn&#39;t generate a code.</p>
+<p>Check pending requests:</p>
+<pre><code class="language-bash">agdi pairing list telegram
+</code></pre>
+<p>If you want immediate access, allowlist your sender id or set <code>dmPolicy: &quot;open&quot;</code>
+for that account.</p>
+<h3>WhatsApp will it message my contacts How does pairing work</h3>
+<p>No. Default WhatsApp DM policy is <strong>pairing</strong>. Unknown senders only get a pairing code and their message is <strong>not processed</strong>. AGDI only replies to chats it receives or to explicit sends you trigger.</p>
+<p>Approve pairing with:</p>
+<pre><code class="language-bash">agdi pairing approve whatsapp &lt;code&gt;
+</code></pre>
+<p>List pending requests:</p>
+<pre><code class="language-bash">agdi pairing list whatsapp
+</code></pre>
+<p>Wizard phone number prompt: it&#39;s used to set your <strong>allowlist/owner</strong> so your own DMs are permitted. It&#39;s not used for auto-sending. If you run on your personal WhatsApp number, use that number and enable <code>channels.whatsapp.selfChatMode</code>.</p>
+<h2>Chat commands, aborting tasks, and &quot;it won&#39;t stop&quot;</h2>
+<h3>How do I stop internal system messages from showing in chat</h3>
+<p>Most internal or tool messages only appear when <strong>verbose</strong> or <strong>reasoning</strong> is enabled
+for that session.</p>
+<p>Fix in the chat where you see it:</p>
+<pre><code>/verbose off
+/reasoning off
+</code></pre>
+<p>If it is still noisy, check the session settings in the Control UI and set verbose
+to <strong>inherit</strong>. Also confirm you are not using a bot profile with <code>verboseDefault</code> set
+to <code>on</code> in config.</p>
+<p>Docs: <a href="/tools/thinking">Thinking and verbose</a>, <a href="/gateway/security#reasoning--verbose-output-in-groups">Security</a>.</p>
+<h3>How do I stopcancel a running task</h3>
+<p>Send any of these <strong>as a standalone message</strong> (no slash):</p>
+<pre><code>stop
+abort
+esc
+wait
+exit
+interrupt
+</code></pre>
+<p>These are abort triggers (not slash commands).</p>
+<p>For background processes (from the exec tool), you can ask the agent to run:</p>
+<pre><code>process action:kill sessionId:XXX
+</code></pre>
+<p>Slash commands overview: see <a href="/tools/slash-commands">Slash commands</a>.</p>
+<p>Most commands must be sent as a <strong>standalone</strong> message that starts with <code>/</code>, but a few shortcuts (like <code>/status</code>) also work inline for allowlisted senders.</p>
+<h3>How do I send a Discord message from Telegram Crosscontext messaging denied</h3>
+<p>AGDI blocks <strong>cross-provider</strong> messaging by default. If a tool call is bound
+to Telegram, it won&#39;t send to Discord unless you explicitly allow it.</p>
+<p>Enable cross-provider messaging for the agent:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      tools: {
+        message: {
+          crossContext: {
+            allowAcrossProviders: true,
+            marker: { enabled: true, prefix: &quot;[from {channel}] &quot; },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Restart the gateway after editing config. If you only want this for a single
+agent, set it under <code>agents.list[].tools.message</code> instead.</p>
+<h3>Why does it feel like the bot ignores rapidfire messages</h3>
+<p>Queue mode controls how new messages interact with an in-flight run. Use <code>/queue</code> to change modes:</p>
+<ul>
+<li><code>steer</code> - new messages redirect the current task</li>
+<li><code>followup</code> - run messages one at a time</li>
+<li><code>collect</code> - batch messages and reply once (default)</li>
+<li><code>steer-backlog</code> - steer now, then process backlog</li>
+<li><code>interrupt</code> - abort current run and start fresh</li>
+</ul>
+<p>You can add options like <code>debounce:2s cap:25 drop:summarize</code> for followup modes.</p>
+<h2>Answer the exact question from the screenshot/chat log</h2>
+<p><strong>Q: &quot;What&#39;s the default model for Anthropic with an API key?&quot;</strong></p>
+<p><strong>A:</strong> In AGDI, credentials and model selection are separate. Setting <code>ANTHROPIC_API_KEY</code> (or storing an Anthropic API key in auth profiles) enables authentication, but the actual default model is whatever you configure in <code>agents.defaults.model.primary</code> (for example, <code>anthropic/claude-sonnet-4-5</code> or <code>anthropic/claude-opus-4-6</code>). If you see <code>No credentials found for profile &quot;anthropic:default&quot;</code>, it means the Gateway couldn&#39;t find Anthropic credentials in the expected <code>auth-profiles.json</code> for the agent that&#39;s running.</p>
+<hr>
+<p>Still stuck? Ask in <a href="https://discord.com/invite/clawd">Discord</a> or open a <a href="https://github.com/agdi/agdi/discussions">GitHub discussion</a>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

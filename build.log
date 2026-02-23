@@ -1,0 +1,107 @@
+npm warn Unknown project config "allow-build-scripts". This will stop working in the next major version of npm.
+
+> agdi@2026.2.16 build
+> pnpm canvas:a2ui:bundle && tsdown && pnpm build:plugin-sdk:dts && node --import tsx scripts/write-plugin-sdk-entry-dts.ts && node --import tsx scripts/canvas-a2ui-copy.ts && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/write-build-info.ts && node --import tsx scripts/write-cli-compat.ts
+
+
+> agdi@2026.2.16 canvas:a2ui:bundle /home/ubuntu/Documents/GitHub/openclaw
+> bash scripts/bundle-a2ui.sh
+
+A2UI sources missing and no prebuilt bundle found at: /home/ubuntu/Documents/GitHub/openclaw/src/canvas-host/a2ui/a2ui.bundle.js - Skipping for now.
+[34mℹ[39m tsdown [2mv0.20.3[22m powered by rolldown [2mv1.0.0-rc.3[22m
+[34mℹ[39m config file: [4m/home/ubuntu/Documents/GitHub/openclaw/tsdown.config.ts[24m 
+[34mℹ[39m entry: [34msrc/entry.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/cli/daemon-cli.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/index.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/infra/warning-filter.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/plugin-sdk/index.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/extensionAPI.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/plugin-sdk/account-id.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m entry: [34msrc/hooks/llm-slug-generator.ts, src/hooks/bundled/boot-md/handler.ts, src/hooks/bundled/bootstrap-extra-files/handler.ts, src/hooks/bundled/command-logger/handler.ts, src/hooks/bundled/session-memory/handler.ts[39m
+[34mℹ[39m target: [34mnode22.12.0[39m
+[34mℹ[39m tsconfig: [34mtsconfig.json[39m
+[34mℹ[39m Build start
+[34mℹ[39m Cleaning 3 files
+[34mℹ[39m [2mdist/[22m[1mwarning-filter.js[22m  [2m1.73 kB[22m [2m│ gzip: 0.64 kB[22m
+[34mℹ[39m 1 files, total: 1.73 kB
+[32m✔[39m Build complete in [32m523ms[39m
+[34mℹ[39m [2mdist/plugin-sdk/[22m[1maccount-id.js[22m  [2m0.63 kB[22m [2m│ gzip: 0.35 kB[22m
+[34mℹ[39m 1 files, total: 0.63 kB
+[32m✔[39m Build complete in [32m1115ms[39m
+
+[41m ERROR [49m Error: Build failed with 3 errors:
+
+[31m[UNRESOLVED_IMPORT] Error:[0m Could not resolve './types.agdi.js' in src/config/types.ts
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/config/types.ts:10:15 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m10 │[0m [38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m*[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mm[0m[38;5;249m [0m"./types.agdi.js"[38;5;249m;[0m
+ [38;5;240m   │[0m               ────────┬────────  
+ [38;5;240m   │[0m                       ╰────────── Module not found.
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: 'src/config/types.ts' is imported by the following path:
+ [38;5;240m   │[0m         - src/config/types.ts
+ [38;5;240m   │[0m         - src/config/config.ts
+ [38;5;240m   │[0m         - src/cli/daemon-cli/status.gather.ts
+ [38;5;240m   │[0m         - src/cli/daemon-cli/status.ts
+ [38;5;240m   │[0m         - src/cli/daemon-cli/runners.ts
+ [38;5;240m   │[0m         - src/cli/daemon-cli.ts
+[38;5;246m────╯[0m
+
+[31m[UNRESOLVED_IMPORT] Error:[0m Could not resolve '../infra/tmp-agdi-dir.js' in src/logging/logger.ts
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/logging/logger.ts:7:44 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m7 │[0m [38;5;249mi[0m[38;5;249mm[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249ms[0m[38;5;249mo[0m[38;5;249ml[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mP[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mf[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mA[0m[38;5;249mG[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mT[0m[38;5;249mm[0m[38;5;249mp[0m[38;5;249mD[0m[38;5;249mi[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249m}[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mm[0m[38;5;249m [0m"../infra/tmp-agdi-dir.js"[38;5;249m;[0m
+ [38;5;240m  │[0m                                            ─────────────┬────────────  
+ [38;5;240m  │[0m                                                         ╰────────────── Module not found.
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: 'src/logging/logger.ts' is imported by the following path:
+ [38;5;240m  │[0m         - src/logging/logger.ts
+ [38;5;240m  │[0m         - src/logging.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/status.print.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/status.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/runners.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli.ts
+[38;5;246m───╯[0m
+
+[31m[UNRESOLVED_IMPORT] Error:[0m Could not resolve '../infra/agdi-root.js' in src/agents/workspace-templates.ts
+   [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/agents/workspace-templates.ts:3:40 [38;5;246m][0m
+   [38;5;246m│[0m
+ [38;5;246m3 │[0m [38;5;249mi[0m[38;5;249mm[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249m [0m[38;5;249mr[0m[38;5;249me[0m[38;5;249ms[0m[38;5;249mo[0m[38;5;249ml[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249mA[0m[38;5;249mG[0m[38;5;249mD[0m[38;5;249mI[0m[38;5;249mP[0m[38;5;249ma[0m[38;5;249mc[0m[38;5;249mk[0m[38;5;249ma[0m[38;5;249mg[0m[38;5;249me[0m[38;5;249mR[0m[38;5;249mo[0m[38;5;249mo[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m}[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mm[0m[38;5;249m [0m"../infra/agdi-root.js"[38;5;249m;[0m
+ [38;5;240m  │[0m                                        ───────────┬───────────  
+ [38;5;240m  │[0m                                                   ╰───────────── Module not found.
+ [38;5;240m  │[0m 
+ [38;5;240m  │[0m [38;5;115mHelp[0m: 'src/agents/workspace-templates.ts' is imported by the following path:
+ [38;5;240m  │[0m         - src/agents/workspace-templates.ts
+ [38;5;240m  │[0m         - src/agents/workspace.ts
+ [38;5;240m  │[0m         - src/commands/onboard-helpers.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/status.print.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/status.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli/runners.ts
+ [38;5;240m  │[0m         - src/cli/daemon-cli.ts
+[38;5;246m───╯[0m
+
+    at aggregateBindingErrorsIntoJsError (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/rolldown@1.0.0-rc.3/node_modules/rolldown/dist/shared/bindingify-input-options-CorDub0q.mjs:628:18)
+    at unwrapBindingResult (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/rolldown@1.0.0-rc.3/node_modules/rolldown/dist/shared/bindingify-input-options-CorDub0q.mjs:598:128)
+    at #build (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/rolldown@1.0.0-rc.3/node_modules/rolldown/dist/shared/rolldown-build-CGNuOAoF.mjs:3345:34)
+    at async build (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/rolldown@1.0.0-rc.3/node_modules/rolldown/dist/index.mjs:47:22)
+    at async Promise.all (index 0)
+    at async buildSingle (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/tsdown@0.20.3_@typescript+native-preview@7.0.0-dev.20260215.1_typescript@5.9.3/node_modules/tsdown/dist/build-C5RQkVSf.mjs:852:19)
+    at async Promise.all (index 2)
+    at async buildWithConfigs (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/tsdown@0.20.3_@typescript+native-preview@7.0.0-dev.20260215.1_typescript@5.9.3/node_modules/tsdown/dist/build-C5RQkVSf.mjs:813:18)
+    at async CAC.<anonymous> (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/tsdown@0.20.3_@typescript+native-preview@7.0.0-dev.20260215.1_typescript@5.9.3/node_modules/tsdown/dist/run.mjs:23:2)
+    at async runCLI (file:///home/ubuntu/Documents/GitHub/openclaw/node_modules/.pnpm/tsdown@0.20.3_@typescript+native-preview@7.0.0-dev.20260215.1_typescript@5.9.3/node_modules/tsdown/dist/run.mjs:47:3)
+

@@ -10,13 +10,13 @@ const runCommandWithTimeoutMock = vi.fn();
 const scanDirectoryWithSummaryMock = vi.fn();
 const fetchWithSsrFGuardMock = vi.fn();
 
-const originalOpenClawStateDir = process.env.OPENCLAW_STATE_DIR;
+const originalAGDIStateDir = process.env.AGDI_STATE_DIR;
 
 afterEach(() => {
-  if (originalOpenClawStateDir === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+  if (originalAGDIStateDir === undefined) {
+    delete process.env.AGDI_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = originalOpenClawStateDir;
+    process.env.AGDI_STATE_DIR = originalAGDIStateDir;
   }
 });
 
@@ -48,7 +48,7 @@ async function writeDownloadSkill(params: {
   const skillDir = path.join(params.workspaceDir, "skills", params.name);
   await fs.mkdir(skillDir, { recursive: true });
   const meta = {
-    openclaw: {
+    agdi: {
       install: [
         {
           id: params.installId,
@@ -89,7 +89,7 @@ async function fileExists(filePath: string): Promise<boolean> {
 
 function setTempStateDir(workspaceDir: string): string {
   const stateDir = path.join(workspaceDir, "state");
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  process.env.AGDI_STATE_DIR = stateDir;
   return stateDir;
 }
 
@@ -108,7 +108,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("rejects zip slip traversal", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "zip-slip", "target");
@@ -143,7 +143,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("rejects tar.gz traversal", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "tar-slip", "target");
@@ -186,7 +186,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("extracts zip with stripComponents safely", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "zip-good", "target");
@@ -219,7 +219,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("rejects targetDir outside the per-skill tools root", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(workspaceDir, "outside");
@@ -258,7 +258,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("allows relative targetDir inside the per-skill tools root", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const url = "https://example.invalid/good.zip";
@@ -298,7 +298,7 @@ describe("installSkill download extraction safety", () => {
   });
 
   it("rejects relative targetDir traversal", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       setTempStateDir(workspaceDir);
       const url = "https://example.invalid/good.zip";

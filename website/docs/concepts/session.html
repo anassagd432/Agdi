@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Management — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="active" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Session Management</h1>
+<p>AGDI treats <strong>one direct-chat session per agent</strong> as primary. Direct chats collapse to <code>agent:&lt;agentId&gt;:&lt;mainKey&gt;</code> (default <code>main</code>), while group/channel chats get their own keys. <code>session.mainKey</code> is honored.</p>
+<p>Use <code>session.dmScope</code> to control how <strong>direct messages</strong> are grouped:</p>
+<ul>
+<li><code>main</code> (default): all DMs share the main session for continuity.</li>
+<li><code>per-peer</code>: isolate by sender id across channels.</li>
+<li><code>per-channel-peer</code>: isolate by channel + sender (recommended for multi-user inboxes).</li>
+<li><code>per-account-channel-peer</code>: isolate by account + channel + sender (recommended for multi-account inboxes).
+Use <code>session.identityLinks</code> to map provider-prefixed peer ids to a canonical identity so the same person shares a DM session across channels when using <code>per-peer</code>, <code>per-channel-peer</code>, or <code>per-account-channel-peer</code>.</li>
+</ul>
+<h2>Secure DM mode (recommended for multi-user setups)</h2>
+<blockquote>
+<p><strong>Security Warning:</strong> If your agent can receive DMs from <strong>multiple people</strong>, you should strongly consider enabling secure DM mode. Without it, all users share the same conversation context, which can leak private information between users.</p>
+</blockquote>
+<p><strong>Example of the problem with default settings:</strong></p>
+<ul>
+<li>Alice (<code>&lt;SENDER_A&gt;</code>) messages your agent about a private topic (for example, a medical appointment)</li>
+<li>Bob (<code>&lt;SENDER_B&gt;</code>) messages your agent asking &quot;What were we talking about?&quot;</li>
+<li>Because both DMs share the same session, the model may answer Bob using Alice&#39;s prior context.</li>
+</ul>
+<p><strong>The fix:</strong> Set <code>dmScope</code> to isolate sessions per user:</p>
+<pre><code class="language-json5">// ~/.agdi/agdi.json
+{
+  session: {
+    // Secure DM mode: isolate DM context per channel + sender.
+    dmScope: &quot;per-channel-peer&quot;,
+  },
+}
+</code></pre>
+<p><strong>When to enable this:</strong></p>
+<ul>
+<li>You have pairing approvals for more than one sender</li>
+<li>You use a DM allowlist with multiple entries</li>
+<li>You set <code>dmPolicy: &quot;open&quot;</code></li>
+<li>Multiple phone numbers or accounts can message your agent</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Default is <code>dmScope: &quot;main&quot;</code> for continuity (all DMs share the main session). This is fine for single-user setups.</li>
+<li>For multi-account inboxes on the same channel, prefer <code>per-account-channel-peer</code>.</li>
+<li>If the same person contacts you on multiple channels, use <code>session.identityLinks</code> to collapse their DM sessions into one canonical identity.</li>
+<li>You can verify your DM settings with <code>agdi security audit</code> (see <a href="/docs/cli/security">security</a>).</li>
+</ul>
+<h2>Gateway is the source of truth</h2>
+<p>All session state is <strong>owned by the gateway</strong> (the “master” AGDI). UI clients (macOS app, WebChat, etc.) must query the gateway for session lists and token counts instead of reading local files.</p>
+<ul>
+<li>In <strong>remote mode</strong>, the session store you care about lives on the remote gateway host, not your Mac.</li>
+<li>Token counts shown in UIs come from the gateway’s store fields (<code>inputTokens</code>, <code>outputTokens</code>, <code>totalTokens</code>, <code>contextTokens</code>). Clients do not parse JSONL transcripts to “fix up” totals.</li>
+</ul>
+<h2>Where state lives</h2>
+<ul>
+<li>On the <strong>gateway host</strong>:<ul>
+<li>Store file: <code>~/.agdi/agents/&lt;agentId&gt;/sessions/sessions.json</code> (per agent).</li>
+</ul>
+</li>
+<li>Transcripts: <code>~/.agdi/agents/&lt;agentId&gt;/sessions/&lt;SessionId&gt;.jsonl</code> (Telegram topic sessions use <code>.../&lt;SessionId&gt;-topic-&lt;threadId&gt;.jsonl</code>).</li>
+<li>The store is a map <code>sessionKey -&gt; { sessionId, updatedAt, ... }</code>. Deleting entries is safe; they are recreated on demand.</li>
+<li>Group entries may include <code>displayName</code>, <code>channel</code>, <code>subject</code>, <code>room</code>, and <code>space</code> to label sessions in UIs.</li>
+<li>Session entries include <code>origin</code> metadata (label + routing hints) so UIs can explain where a session came from.</li>
+<li>AGDI does <strong>not</strong> read legacy Pi/Tau session folders.</li>
+</ul>
+<h2>Session pruning</h2>
+<p>AGDI trims <strong>old tool results</strong> from the in-memory context right before LLM calls by default.
+This does <strong>not</strong> rewrite JSONL history. See <a href="/docs/concepts/session-pruning">/concepts/session-pruning</a>.</p>
+<h2>Pre-compaction memory flush</h2>
+<p>When a session nears auto-compaction, AGDI can run a <strong>silent memory flush</strong>
+turn that reminds the model to write durable notes to disk. This only runs when
+the workspace is writable. See <a href="/docs/concepts/memory">Memory</a> and
+<a href="/docs/concepts/compaction">Compaction</a>.</p>
+<h2>Mapping transports → session keys</h2>
+<ul>
+<li>Direct chats follow <code>session.dmScope</code> (default <code>main</code>).<ul>
+<li><code>main</code>: <code>agent:&lt;agentId&gt;:&lt;mainKey&gt;</code> (continuity across devices/channels).<ul>
+<li>Multiple phone numbers and channels can map to the same agent main key; they act as transports into one conversation.</li>
+</ul>
+</li>
+<li><code>per-peer</code>: <code>agent:&lt;agentId&gt;:dm:&lt;peerId&gt;</code>.</li>
+<li><code>per-channel-peer</code>: <code>agent:&lt;agentId&gt;:&lt;channel&gt;:dm:&lt;peerId&gt;</code>.</li>
+<li><code>per-account-channel-peer</code>: <code>agent:&lt;agentId&gt;:&lt;channel&gt;:&lt;accountId&gt;:dm:&lt;peerId&gt;</code> (accountId defaults to <code>default</code>).</li>
+<li>If <code>session.identityLinks</code> matches a provider-prefixed peer id (for example <code>telegram:123</code>), the canonical key replaces <code>&lt;peerId&gt;</code> so the same person shares a session across channels.</li>
+</ul>
+</li>
+<li>Group chats isolate state: <code>agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</code> (rooms/channels use <code>agent:&lt;agentId&gt;:&lt;channel&gt;:channel:&lt;id&gt;</code>).<ul>
+<li>Telegram forum topics append <code>:topic:&lt;threadId&gt;</code> to the group id for isolation.</li>
+<li>Legacy <code>group:&lt;id&gt;</code> keys are still recognized for migration.</li>
+</ul>
+</li>
+<li>Inbound contexts may still use <code>group:&lt;id&gt;</code>; the channel is inferred from <code>Provider</code> and normalized to the canonical <code>agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</code> form.</li>
+<li>Other sources:<ul>
+<li>Cron jobs: <code>cron:&lt;job.id&gt;</code></li>
+<li>Webhooks: <code>hook:&lt;uuid&gt;</code> (unless explicitly set by the hook)</li>
+<li>Node runs: <code>node-&lt;nodeId&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h2>Lifecycle</h2>
+<ul>
+<li>Reset policy: sessions are reused until they expire, and expiry is evaluated on the next inbound message.</li>
+<li>Daily reset: defaults to <strong>4:00 AM local time on the gateway host</strong>. A session is stale once its last update is earlier than the most recent daily reset time.</li>
+<li>Idle reset (optional): <code>idleMinutes</code> adds a sliding idle window. When both daily and idle resets are configured, <strong>whichever expires first</strong> forces a new session.</li>
+<li>Legacy idle-only: if you set <code>session.idleMinutes</code> without any <code>session.reset</code>/<code>resetByType</code> config, AGDI stays in idle-only mode for backward compatibility.</li>
+<li>Per-type overrides (optional): <code>resetByType</code> lets you override the policy for <code>direct</code>, <code>group</code>, and <code>thread</code> sessions (thread = Slack/Discord threads, Telegram topics, Matrix threads when provided by the connector).</li>
+<li>Per-channel overrides (optional): <code>resetByChannel</code> overrides the reset policy for a channel (applies to all session types for that channel and takes precedence over <code>reset</code>/<code>resetByType</code>).</li>
+<li>Reset triggers: exact <code>/new</code> or <code>/reset</code> (plus any extras in <code>resetTriggers</code>) start a fresh session id and pass the remainder of the message through. <code>/new &lt;model&gt;</code> accepts a model alias, <code>provider/model</code>, or provider name (fuzzy match) to set the new session model. If <code>/new</code> or <code>/reset</code> is sent alone, AGDI runs a short “hello” greeting turn to confirm the reset.</li>
+<li>Manual reset: delete specific keys from the store or remove the JSONL transcript; the next message recreates them.</li>
+<li>Isolated cron jobs always mint a fresh <code>sessionId</code> per run (no idle reuse).</li>
+</ul>
+<h2>Send policy (optional)</h2>
+<p>Block delivery for specific session types without listing individual ids.</p>
+<pre><code class="language-json5">{
+  session: {
+    sendPolicy: {
+      rules: [
+        { action: &quot;deny&quot;, match: { channel: &quot;discord&quot;, chatType: &quot;group&quot; } },
+        { action: &quot;deny&quot;, match: { keyPrefix: &quot;cron:&quot; } },
+        // Match the raw session key (including the `agent:&lt;id&gt;:` prefix).
+        { action: &quot;deny&quot;, match: { rawKeyPrefix: &quot;agent:main:discord:&quot; } },
+      ],
+      default: &quot;allow&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Runtime override (owner only):</p>
+<ul>
+<li><code>/send on</code> → allow for this session</li>
+<li><code>/send off</code> → deny for this session</li>
+<li><code>/send inherit</code> → clear override and use config rules
+Send these as standalone messages so they register.</li>
+</ul>
+<h2>Configuration (optional rename example)</h2>
+<pre><code class="language-json5">// ~/.agdi/agdi.json
+{
+  session: {
+    scope: &quot;per-sender&quot;, // keep group keys separate
+    dmScope: &quot;main&quot;, // DM continuity (set per-channel-peer/per-account-channel-peer for shared inboxes)
+    identityLinks: {
+      alice: [&quot;telegram:123456789&quot;, &quot;discord:987654321012345678&quot;],
+    },
+    reset: {
+      // Defaults: mode=daily, atHour=4 (gateway host local time).
+      // If you also set idleMinutes, whichever expires first wins.
+      mode: &quot;daily&quot;,
+      atHour: 4,
+      idleMinutes: 120,
+    },
+    resetByType: {
+      thread: { mode: &quot;daily&quot;, atHour: 4 },
+      direct: { mode: &quot;idle&quot;, idleMinutes: 240 },
+      group: { mode: &quot;idle&quot;, idleMinutes: 120 },
+    },
+    resetByChannel: {
+      discord: { mode: &quot;idle&quot;, idleMinutes: 10080 },
+    },
+    resetTriggers: [&quot;/new&quot;, &quot;/reset&quot;],
+    store: &quot;~/.agdi/agents/{agentId}/sessions/sessions.json&quot;,
+    mainKey: &quot;main&quot;,
+  },
+}
+</code></pre>
+<h2>Inspecting</h2>
+<ul>
+<li><code>agdi status</code> — shows store path and recent sessions.</li>
+<li><code>agdi sessions --json</code> — dumps every entry (filter with <code>--active &lt;minutes&gt;</code>).</li>
+<li><code>agdi gateway call sessions.list --params &#39;{}&#39;</code> — fetch sessions from the running gateway (use <code>--url</code>/<code>--token</code> for remote gateway access).</li>
+<li>Send <code>/status</code> as a standalone message in chat to see whether the agent is reachable, how much of the session context is used, current thinking/verbose toggles, and when your WhatsApp web creds were last refreshed (helps spot relink needs).</li>
+<li>Send <code>/context list</code> or <code>/context detail</code> to see what’s in the system prompt and injected workspace files (and the biggest context contributors).</li>
+<li>Send <code>/stop</code> as a standalone message to abort the current run, clear queued followups for that session, and stop any sub-agent runs spawned from it (the reply includes the stopped count).</li>
+<li>Send <code>/compact</code> (optional instructions) as a standalone message to summarize older context and free up window space. See <a href="/docs/concepts/compaction">/concepts/compaction</a>.</li>
+<li>JSONL transcripts can be opened directly to review full turns.</li>
+</ul>
+<h2>Tips</h2>
+<ul>
+<li>Keep the primary key dedicated to 1:1 traffic; let groups keep their own keys.</li>
+<li>When automating cleanup, delete individual keys instead of the whole store to preserve context elsewhere.</li>
+</ul>
+<h2>Session origin metadata</h2>
+<p>Each session entry records where it came from (best-effort) in <code>origin</code>:</p>
+<ul>
+<li><code>label</code>: human label (resolved from conversation label + group subject/channel)</li>
+<li><code>provider</code>: normalized channel id (including extensions)</li>
+<li><code>from</code>/<code>to</code>: raw routing ids from the inbound envelope</li>
+<li><code>accountId</code>: provider account id (when multi-account)</li>
+<li><code>threadId</code>: thread/topic id when the channel supports it
+The origin fields are populated for direct messages, channels, and groups. If a
+connector only updates delivery routing (for example, to keep a DM main session
+fresh), it should still provide inbound context so the session keeps its
+explainer metadata. Extensions can do this by sending <code>ConversationLabel</code>,
+<code>GroupSubject</code>, <code>GroupChannel</code>, <code>GroupSpace</code>, and <code>SenderName</code> in the inbound
+context and calling <code>recordSessionMetaFromInbound</code> (or passing the same context
+to <code>updateLastRoute</code>).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

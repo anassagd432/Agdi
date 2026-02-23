@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>message — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="active" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1><code>agdi message</code></h1>
+<p>Single outbound command for sending messages and channel actions
+(Discord/Google Chat/Slack/Mattermost (plugin)/Telegram/WhatsApp/Signal/iMessage/MS Teams).</p>
+<h2>Usage</h2>
+<pre><code>agdi message &lt;subcommand&gt; [flags]
+</code></pre>
+<p>Channel selection:</p>
+<ul>
+<li><code>--channel</code> required if more than one channel is configured.</li>
+<li>If exactly one channel is configured, it becomes the default.</li>
+<li>Values: <code>whatsapp|telegram|discord|googlechat|slack|mattermost|signal|imessage|msteams</code> (Mattermost requires plugin)</li>
+</ul>
+<p>Target formats (<code>--target</code>):</p>
+<ul>
+<li>WhatsApp: E.164 or group JID</li>
+<li>Telegram: chat id or <code>@username</code></li>
+<li>Discord: <code>channel:&lt;id&gt;</code> or <code>user:&lt;id&gt;</code> (or <code>&lt;@id&gt;</code> mention; raw numeric ids are treated as channels)</li>
+<li>Google Chat: <code>spaces/&lt;spaceId&gt;</code> or <code>users/&lt;userId&gt;</code></li>
+<li>Slack: <code>channel:&lt;id&gt;</code> or <code>user:&lt;id&gt;</code> (raw channel id is accepted)</li>
+<li>Mattermost (plugin): <code>channel:&lt;id&gt;</code>, <code>user:&lt;id&gt;</code>, or <code>@username</code> (bare ids are treated as channels)</li>
+<li>Signal: <code>+E.164</code>, <code>group:&lt;id&gt;</code>, <code>signal:+E.164</code>, <code>signal:group:&lt;id&gt;</code>, or <code>username:&lt;name&gt;</code>/<code>u:&lt;name&gt;</code></li>
+<li>iMessage: handle, <code>chat_id:&lt;id&gt;</code>, <code>chat_guid:&lt;guid&gt;</code>, or <code>chat_identifier:&lt;id&gt;</code></li>
+<li>MS Teams: conversation id (<code>19:...@thread.tacv2</code>) or <code>conversation:&lt;id&gt;</code> or <code>user:&lt;aad-object-id&gt;</code></li>
+</ul>
+<p>Name lookup:</p>
+<ul>
+<li>For supported providers (Discord/Slack/etc), channel names like <code>Help</code> or <code>#help</code> are resolved via the directory cache.</li>
+<li>On cache miss, AGDI will attempt a live directory lookup when the provider supports it.</li>
+</ul>
+<h2>Common flags</h2>
+<ul>
+<li><code>--channel &lt;name&gt;</code></li>
+<li><code>--account &lt;id&gt;</code></li>
+<li><code>--target &lt;dest&gt;</code> (target channel or user for send/poll/read/etc)</li>
+<li><code>--targets &lt;name&gt;</code> (repeat; broadcast only)</li>
+<li><code>--json</code></li>
+<li><code>--dry-run</code></li>
+<li><code>--verbose</code></li>
+</ul>
+<h2>Actions</h2>
+<h3>Core</h3>
+<ul>
+<li><p><code>send</code></p>
+<ul>
+<li>Channels: WhatsApp/Telegram/Discord/Google Chat/Slack/Mattermost (plugin)/Signal/iMessage/MS Teams</li>
+<li>Required: <code>--target</code>, plus <code>--message</code> or <code>--media</code></li>
+<li>Optional: <code>--media</code>, <code>--reply-to</code>, <code>--thread-id</code>, <code>--gif-playback</code></li>
+<li>Telegram only: <code>--buttons</code> (requires <code>channels.telegram.capabilities.inlineButtons</code> to allow it)</li>
+<li>Telegram only: <code>--thread-id</code> (forum topic id)</li>
+<li>Slack only: <code>--thread-id</code> (thread timestamp; <code>--reply-to</code> uses the same field)</li>
+<li>WhatsApp only: <code>--gif-playback</code></li>
+</ul>
+</li>
+<li><p><code>poll</code></p>
+<ul>
+<li>Channels: WhatsApp/Telegram/Discord/Matrix/MS Teams</li>
+<li>Required: <code>--target</code>, <code>--poll-question</code>, <code>--poll-option</code> (repeat)</li>
+<li>Optional: <code>--poll-multi</code></li>
+<li>Discord only: <code>--poll-duration-hours</code>, <code>--silent</code>, <code>--message</code></li>
+<li>Telegram only: <code>--poll-duration-seconds</code> (5-600), <code>--silent</code>, <code>--poll-anonymous</code> / <code>--poll-public</code>, <code>--thread-id</code></li>
+</ul>
+</li>
+<li><p><code>react</code></p>
+<ul>
+<li>Channels: Discord/Google Chat/Slack/Telegram/WhatsApp/Signal</li>
+<li>Required: <code>--message-id</code>, <code>--target</code></li>
+<li>Optional: <code>--emoji</code>, <code>--remove</code>, <code>--participant</code>, <code>--from-me</code>, <code>--target-author</code>, <code>--target-author-uuid</code></li>
+<li>Note: <code>--remove</code> requires <code>--emoji</code> (omit <code>--emoji</code> to clear own reactions where supported; see /tools/reactions)</li>
+<li>WhatsApp only: <code>--participant</code>, <code>--from-me</code></li>
+<li>Signal group reactions: <code>--target-author</code> or <code>--target-author-uuid</code> required</li>
+</ul>
+</li>
+<li><p><code>reactions</code></p>
+<ul>
+<li>Channels: Discord/Google Chat/Slack</li>
+<li>Required: <code>--message-id</code>, <code>--target</code></li>
+<li>Optional: <code>--limit</code></li>
+</ul>
+</li>
+<li><p><code>read</code></p>
+<ul>
+<li>Channels: Discord/Slack</li>
+<li>Required: <code>--target</code></li>
+<li>Optional: <code>--limit</code>, <code>--before</code>, <code>--after</code></li>
+<li>Discord only: <code>--around</code></li>
+</ul>
+</li>
+<li><p><code>edit</code></p>
+<ul>
+<li>Channels: Discord/Slack</li>
+<li>Required: <code>--message-id</code>, <code>--message</code>, <code>--target</code></li>
+</ul>
+</li>
+<li><p><code>delete</code></p>
+<ul>
+<li>Channels: Discord/Slack/Telegram</li>
+<li>Required: <code>--message-id</code>, <code>--target</code></li>
+</ul>
+</li>
+<li><p><code>pin</code> / <code>unpin</code></p>
+<ul>
+<li>Channels: Discord/Slack</li>
+<li>Required: <code>--message-id</code>, <code>--target</code></li>
+</ul>
+</li>
+<li><p><code>pins</code> (list)</p>
+<ul>
+<li>Channels: Discord/Slack</li>
+<li>Required: <code>--target</code></li>
+</ul>
+</li>
+<li><p><code>permissions</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--target</code></li>
+</ul>
+</li>
+<li><p><code>search</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--guild-id</code>, <code>--query</code></li>
+<li>Optional: <code>--channel-id</code>, <code>--channel-ids</code> (repeat), <code>--author-id</code>, <code>--author-ids</code> (repeat), <code>--limit</code></li>
+</ul>
+</li>
+</ul>
+<h3>Threads</h3>
+<ul>
+<li><p><code>thread create</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--thread-name</code>, <code>--target</code> (channel id)</li>
+<li>Optional: <code>--message-id</code>, <code>--message</code>, <code>--auto-archive-min</code></li>
+</ul>
+</li>
+<li><p><code>thread list</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--guild-id</code></li>
+<li>Optional: <code>--channel-id</code>, <code>--include-archived</code>, <code>--before</code>, <code>--limit</code></li>
+</ul>
+</li>
+<li><p><code>thread reply</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--target</code> (thread id), <code>--message</code></li>
+<li>Optional: <code>--media</code>, <code>--reply-to</code></li>
+</ul>
+</li>
+</ul>
+<h3>Emojis</h3>
+<ul>
+<li><p><code>emoji list</code></p>
+<ul>
+<li>Discord: <code>--guild-id</code></li>
+<li>Slack: no extra flags</li>
+</ul>
+</li>
+<li><p><code>emoji upload</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--guild-id</code>, <code>--emoji-name</code>, <code>--media</code></li>
+<li>Optional: <code>--role-ids</code> (repeat)</li>
+</ul>
+</li>
+</ul>
+<h3>Stickers</h3>
+<ul>
+<li><p><code>sticker send</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--target</code>, <code>--sticker-id</code> (repeat)</li>
+<li>Optional: <code>--message</code></li>
+</ul>
+</li>
+<li><p><code>sticker upload</code></p>
+<ul>
+<li>Channels: Discord</li>
+<li>Required: <code>--guild-id</code>, <code>--sticker-name</code>, <code>--sticker-desc</code>, <code>--sticker-tags</code>, <code>--media</code></li>
+</ul>
+</li>
+</ul>
+<h3>Roles / Channels / Members / Voice</h3>
+<ul>
+<li><code>role info</code> (Discord): <code>--guild-id</code></li>
+<li><code>role add</code> / <code>role remove</code> (Discord): <code>--guild-id</code>, <code>--user-id</code>, <code>--role-id</code></li>
+<li><code>channel info</code> (Discord): <code>--target</code></li>
+<li><code>channel list</code> (Discord): <code>--guild-id</code></li>
+<li><code>member info</code> (Discord/Slack): <code>--user-id</code> (+ <code>--guild-id</code> for Discord)</li>
+<li><code>voice status</code> (Discord): <code>--guild-id</code>, <code>--user-id</code></li>
+</ul>
+<h3>Events</h3>
+<ul>
+<li><code>event list</code> (Discord): <code>--guild-id</code></li>
+<li><code>event create</code> (Discord): <code>--guild-id</code>, <code>--event-name</code>, <code>--start-time</code><ul>
+<li>Optional: <code>--end-time</code>, <code>--desc</code>, <code>--channel-id</code>, <code>--location</code>, <code>--event-type</code></li>
+</ul>
+</li>
+</ul>
+<h3>Moderation (Discord)</h3>
+<ul>
+<li><code>timeout</code>: <code>--guild-id</code>, <code>--user-id</code> (optional <code>--duration-min</code> or <code>--until</code>; omit both to clear timeout)</li>
+<li><code>kick</code>: <code>--guild-id</code>, <code>--user-id</code> (+ <code>--reason</code>)</li>
+<li><code>ban</code>: <code>--guild-id</code>, <code>--user-id</code> (+ <code>--delete-days</code>, <code>--reason</code>)<ul>
+<li><code>timeout</code> also supports <code>--reason</code></li>
+</ul>
+</li>
+</ul>
+<h3>Broadcast</h3>
+<ul>
+<li><code>broadcast</code><ul>
+<li>Channels: any configured channel; use <code>--channel all</code> to target all providers</li>
+<li>Required: <code>--targets</code> (repeat)</li>
+<li>Optional: <code>--message</code>, <code>--media</code>, <code>--dry-run</code></li>
+</ul>
+</li>
+</ul>
+<h2>Examples</h2>
+<p>Send a Discord reply:</p>
+<pre><code>agdi message send --channel discord \
+  --target channel:123 --message &quot;hi&quot; --reply-to 456
+</code></pre>
+<p>Create a Discord poll:</p>
+<pre><code>agdi message poll --channel discord \
+  --target channel:123 \
+  --poll-question &quot;Snack?&quot; \
+  --poll-option Pizza --poll-option Sushi \
+  --poll-multi --poll-duration-hours 48
+</code></pre>
+<p>Create a Telegram poll (auto-close in 2 minutes):</p>
+<pre><code>agdi message poll --channel telegram \
+  --target @mychat \
+  --poll-question &quot;Lunch?&quot; \
+  --poll-option Pizza --poll-option Sushi \
+  --poll-duration-seconds 120 --silent
+</code></pre>
+<p>Send a Teams proactive message:</p>
+<pre><code>agdi message send --channel msteams \
+  --target conversation:19:abc@thread.tacv2 --message &quot;hi&quot;
+</code></pre>
+<p>Create a Teams poll:</p>
+<pre><code>agdi message poll --channel msteams \
+  --target conversation:19:abc@thread.tacv2 \
+  --poll-question &quot;Lunch?&quot; \
+  --poll-option Pizza --poll-option Sushi
+</code></pre>
+<p>React in Slack:</p>
+<pre><code>agdi message react --channel slack \
+  --target C123 --message-id 456 --emoji &quot;✅&quot;
+</code></pre>
+<p>React in a Signal group:</p>
+<pre><code>agdi message react --channel signal \
+  --target signal:group:abc123 --message-id 1737630212345 \
+  --emoji &quot;✅&quot; --target-author-uuid 123e4567-e89b-12d3-a456-426614174000
+</code></pre>
+<p>Send Telegram inline buttons:</p>
+<pre><code>agdi message send --channel telegram --target @mychat --message &quot;Choose:&quot; \
+  --buttons &#39;[ [{&quot;text&quot;:&quot;Yes&quot;,&quot;callback_data&quot;:&quot;cmd:yes&quot;}], [{&quot;text&quot;:&quot;No&quot;,&quot;callback_data&quot;:&quot;cmd:no&quot;}] ]&#39;
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

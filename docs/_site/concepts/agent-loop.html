@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Loop — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="active" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Agent Loop (AGDI)</h1>
+<p>An agentic loop is the full “real” run of an agent: intake → context assembly → model inference →
+tool execution → streaming replies → persistence. It’s the authoritative path that turns a message
+into actions and a final reply, while keeping session state consistent.</p>
+<p>In AGDI, a loop is a single, serialized run per session that emits lifecycle and stream events
+as the model thinks, calls tools, and streams output. This doc explains how that authentic loop is
+wired end-to-end.</p>
+<h2>Entry points</h2>
+<ul>
+<li>Gateway RPC: <code>agent</code> and <code>agent.wait</code>.</li>
+<li>CLI: <code>agent</code> command.</li>
+</ul>
+<h2>How it works (high-level)</h2>
+<ol>
+<li><code>agent</code> RPC validates params, resolves session (sessionKey/sessionId), persists session metadata, returns <code>{ runId, acceptedAt }</code> immediately.</li>
+<li><code>agentCommand</code> runs the agent:<ul>
+<li>resolves model + thinking/verbose defaults</li>
+<li>loads skills snapshot</li>
+<li>calls <code>runEmbeddedPiAgent</code> (pi-agent-core runtime)</li>
+<li>emits <strong>lifecycle end/error</strong> if the embedded loop does not emit one</li>
+</ul>
+</li>
+<li><code>runEmbeddedPiAgent</code>:<ul>
+<li>serializes runs via per-session + global queues</li>
+<li>resolves model + auth profile and builds the pi session</li>
+<li>subscribes to pi events and streams assistant/tool deltas</li>
+<li>enforces timeout -&gt; aborts run if exceeded</li>
+<li>returns payloads + usage metadata</li>
+</ul>
+</li>
+<li><code>subscribeEmbeddedPiSession</code> bridges pi-agent-core events to AGDI <code>agent</code> stream:<ul>
+<li>tool events =&gt; <code>stream: &quot;tool&quot;</code></li>
+<li>assistant deltas =&gt; <code>stream: &quot;assistant&quot;</code></li>
+<li>lifecycle events =&gt; <code>stream: &quot;lifecycle&quot;</code> (<code>phase: &quot;start&quot; | &quot;end&quot; | &quot;error&quot;</code>)</li>
+</ul>
+</li>
+<li><code>agent.wait</code> uses <code>waitForAgentJob</code>:<ul>
+<li>waits for <strong>lifecycle end/error</strong> for <code>runId</code></li>
+<li>returns <code>{ status: ok|error|timeout, startedAt, endedAt, error? }</code></li>
+</ul>
+</li>
+</ol>
+<h2>Queueing + concurrency</h2>
+<ul>
+<li>Runs are serialized per session key (session lane) and optionally through a global lane.</li>
+<li>This prevents tool/session races and keeps session history consistent.</li>
+<li>Messaging channels can choose queue modes (collect/steer/followup) that feed this lane system.
+See <a href="/concepts/queue">Command Queue</a>.</li>
+</ul>
+<h2>Session + workspace preparation</h2>
+<ul>
+<li>Workspace is resolved and created; sandboxed runs may redirect to a sandbox workspace root.</li>
+<li>Skills are loaded (or reused from a snapshot) and injected into env and prompt.</li>
+<li>Bootstrap/context files are resolved and injected into the system prompt report.</li>
+<li>A session write lock is acquired; <code>SessionManager</code> is opened and prepared before streaming.</li>
+</ul>
+<h2>Prompt assembly + system prompt</h2>
+<ul>
+<li>System prompt is built from AGDI’s base prompt, skills prompt, bootstrap context, and per-run overrides.</li>
+<li>Model-specific limits and compaction reserve tokens are enforced.</li>
+<li>See <a href="/concepts/system-prompt">System prompt</a> for what the model sees.</li>
+</ul>
+<h2>Hook points (where you can intercept)</h2>
+<p>AGDI has two hook systems:</p>
+<ul>
+<li><strong>Internal hooks</strong> (Gateway hooks): event-driven scripts for commands and lifecycle events.</li>
+<li><strong>Plugin hooks</strong>: extension points inside the agent/tool lifecycle and gateway pipeline.</li>
+</ul>
+<h3>Internal hooks (Gateway hooks)</h3>
+<ul>
+<li><strong><code>agent:bootstrap</code></strong>: runs while building bootstrap files before the system prompt is finalized.
+Use this to add/remove bootstrap context files.</li>
+<li><strong>Command hooks</strong>: <code>/new</code>, <code>/reset</code>, <code>/stop</code>, and other command events (see Hooks doc).</li>
+</ul>
+<p>See <a href="/automation/hooks">Hooks</a> for setup and examples.</p>
+<h3>Plugin hooks (agent + gateway lifecycle)</h3>
+<p>These run inside the agent loop or gateway pipeline:</p>
+<ul>
+<li><strong><code>before_agent_start</code></strong>: inject context or override system prompt before the run starts.</li>
+<li><strong><code>agent_end</code></strong>: inspect the final message list and run metadata after completion.</li>
+<li><strong><code>before_compaction</code> / <code>after_compaction</code></strong>: observe or annotate compaction cycles.</li>
+<li><strong><code>before_tool_call</code> / <code>after_tool_call</code></strong>: intercept tool params/results.</li>
+<li><strong><code>tool_result_persist</code></strong>: synchronously transform tool results before they are written to the session transcript.</li>
+<li><strong><code>message_received</code> / <code>message_sending</code> / <code>message_sent</code></strong>: inbound + outbound message hooks.</li>
+<li><strong><code>session_start</code> / <code>session_end</code></strong>: session lifecycle boundaries.</li>
+<li><strong><code>gateway_start</code> / <code>gateway_stop</code></strong>: gateway lifecycle events.</li>
+</ul>
+<p>See <a href="/tools/plugin#plugin-hooks">Plugins</a> for the hook API and registration details.</p>
+<h2>Streaming + partial replies</h2>
+<ul>
+<li>Assistant deltas are streamed from pi-agent-core and emitted as <code>assistant</code> events.</li>
+<li>Block streaming can emit partial replies either on <code>text_end</code> or <code>message_end</code>.</li>
+<li>Reasoning streaming can be emitted as a separate stream or as block replies.</li>
+<li>See <a href="/concepts/streaming">Streaming</a> for chunking and block reply behavior.</li>
+</ul>
+<h2>Tool execution + messaging tools</h2>
+<ul>
+<li>Tool start/update/end events are emitted on the <code>tool</code> stream.</li>
+<li>Tool results are sanitized for size and image payloads before logging/emitting.</li>
+<li>Messaging tool sends are tracked to suppress duplicate assistant confirmations.</li>
+</ul>
+<h2>Reply shaping + suppression</h2>
+<ul>
+<li>Final payloads are assembled from:<ul>
+<li>assistant text (and optional reasoning)</li>
+<li>inline tool summaries (when verbose + allowed)</li>
+<li>assistant error text when the model errors</li>
+</ul>
+</li>
+<li><code>NO_REPLY</code> is treated as a silent token and filtered from outgoing payloads.</li>
+<li>Messaging tool duplicates are removed from the final payload list.</li>
+<li>If no renderable payloads remain and a tool errored, a fallback tool error reply is emitted
+(unless a messaging tool already sent a user-visible reply).</li>
+</ul>
+<h2>Compaction + retries</h2>
+<ul>
+<li>Auto-compaction emits <code>compaction</code> stream events and can trigger a retry.</li>
+<li>On retry, in-memory buffers and tool summaries are reset to avoid duplicate output.</li>
+<li>See <a href="/concepts/compaction">Compaction</a> for the compaction pipeline.</li>
+</ul>
+<h2>Event streams (today)</h2>
+<ul>
+<li><code>lifecycle</code>: emitted by <code>subscribeEmbeddedPiSession</code> (and as a fallback by <code>agentCommand</code>)</li>
+<li><code>assistant</code>: streamed deltas from pi-agent-core</li>
+<li><code>tool</code>: streamed tool events from pi-agent-core</li>
+</ul>
+<h2>Chat channel handling</h2>
+<ul>
+<li>Assistant deltas are buffered into chat <code>delta</code> messages.</li>
+<li>A chat <code>final</code> is emitted on <strong>lifecycle end/error</strong>.</li>
+</ul>
+<h2>Timeouts</h2>
+<ul>
+<li><code>agent.wait</code> default: 30s (just the wait). <code>timeoutMs</code> param overrides.</li>
+<li>Agent runtime: <code>agents.defaults.timeoutSeconds</code> default 600s; enforced in <code>runEmbeddedPiAgent</code> abort timer.</li>
+</ul>
+<h2>Where things can end early</h2>
+<ul>
+<li>Agent timeout (abort)</li>
+<li>AbortSignal (cancel)</li>
+<li>Gateway disconnect or RPC timeout</li>
+<li><code>agent.wait</code> timeout (wait-only, does not stop agent)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

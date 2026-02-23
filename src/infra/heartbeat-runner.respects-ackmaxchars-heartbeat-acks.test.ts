@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { AGDIConfig } from "../config/config.js";
 import { telegramPlugin } from "../../extensions/telegram/src/channel.js";
 import { setTelegramRuntime } from "../../extensions/telegram/src/runtime.js";
 import { whatsappPlugin } from "../../extensions/whatsapp/src/channel.js";
@@ -64,7 +64,7 @@ describe("resolveHeartbeatIntervalMs", () => {
       replySpy: ReturnType<typeof vi.spyOn>;
     }) => Promise<T>,
   ) {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hb-"));
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-hb-"));
     const storePath = path.join(tmpDir, "sessions.json");
     const replySpy = vi.spyOn(replyModule, "getReplyFromConfig");
     try {
@@ -82,7 +82,7 @@ describe("resolveHeartbeatIntervalMs", () => {
       replySpy: ReturnType<typeof vi.spyOn>;
     }) => Promise<T>,
   ) {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hb-"));
+    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-hb-"));
     const storePath = path.join(tmpDir, "sessions.json");
     const replySpy = vi.spyOn(replyModule, "getReplyFromConfig");
     const prevTelegramToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -102,7 +102,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("respects ackMaxChars for heartbeat acks", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -147,7 +147,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("sends HEARTBEAT_OK when visibility.showOk is true", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -192,7 +192,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("does not deliver HEARTBEAT_OK to telegram when showOk is false", async () => {
     await withTempTelegramHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -240,7 +240,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("skips heartbeat LLM calls when visibility disables all output", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -290,7 +290,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("skips delivery for markup-wrapped HEARTBEAT_OK", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -336,7 +336,7 @@ describe("resolveHeartbeatIntervalMs", () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
       const originalUpdatedAt = 1000;
       const bumpedUpdatedAt = 2000;
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -391,7 +391,7 @@ describe("resolveHeartbeatIntervalMs", () => {
 
   it("skips WhatsApp delivery when not linked or running", async () => {
     await withTempHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,
@@ -438,7 +438,7 @@ describe("resolveHeartbeatIntervalMs", () => {
     expectedAccountId: string | undefined;
   }): Promise<void> {
     await withTempTelegramHeartbeatSandbox(async ({ tmpDir, storePath, replySpy }) => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         agents: {
           defaults: {
             workspace: tmpDir,

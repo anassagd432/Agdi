@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Tools — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="active" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Web tools</h1>
+<p>AGDI ships two lightweight web tools:</p>
+<ul>
+<li><code>web_search</code> — Search the web via Brave Search API (default) or Perplexity Sonar (direct or via OpenRouter).</li>
+<li><code>web_fetch</code> — HTTP fetch + readable extraction (HTML → markdown/text).</li>
+</ul>
+<p>These are <strong>not</strong> browser automation. For JS-heavy sites or logins, use the
+<a href="/docs/tools/browser">Browser tool</a>.</p>
+<h2>How it works</h2>
+<ul>
+<li><code>web_search</code> calls your configured provider and returns results.<ul>
+<li><strong>Brave</strong> (default): returns structured results (title, URL, snippet).</li>
+<li><strong>Perplexity</strong>: returns AI-synthesized answers with citations from real-time web search.</li>
+</ul>
+</li>
+<li>Results are cached by query for 15 minutes (configurable).</li>
+<li><code>web_fetch</code> does a plain HTTP GET and extracts readable content
+(HTML → markdown/text). It does <strong>not</strong> execute JavaScript.</li>
+<li><code>web_fetch</code> is enabled by default (unless explicitly disabled).</li>
+</ul>
+<h2>Choosing a search provider</h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Pros</th>
+<th>Cons</th>
+<th>API Key</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Brave</strong> (default)</td>
+<td>Fast, structured results, free tier</td>
+<td>Traditional search results</td>
+<td><code>BRAVE_API_KEY</code></td>
+</tr>
+<tr>
+<td><strong>Perplexity</strong></td>
+<td>AI-synthesized answers, citations, real-time</td>
+<td>Requires Perplexity or OpenRouter access</td>
+<td><code>OPENROUTER_API_KEY</code> or <code>PERPLEXITY_API_KEY</code></td>
+</tr>
+</tbody></table>
+<p>See <a href="/docs/brave-search">Brave Search setup</a> and <a href="/docs/perplexity">Perplexity Sonar</a> for provider-specific details.</p>
+<p>Set the provider in config:</p>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        provider: &quot;brave&quot;, // or &quot;perplexity&quot;
+      },
+    },
+  },
+}
+</code></pre>
+<p>Example: switch to Perplexity Sonar (direct API):</p>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        provider: &quot;perplexity&quot;,
+        perplexity: {
+          apiKey: &quot;pplx-...&quot;,
+          baseUrl: &quot;https://api.perplexity.ai&quot;,
+          model: &quot;perplexity/sonar-pro&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Getting a Brave API key</h2>
+<ol>
+<li>Create a Brave Search API account at <a href="https://brave.com/search/api/">https://brave.com/search/api/</a></li>
+<li>In the dashboard, choose the <strong>Data for Search</strong> plan (not “Data for AI”) and generate an API key.</li>
+<li>Run <code>agdi configure --section web</code> to store the key in config (recommended), or set <code>BRAVE_API_KEY</code> in your environment.</li>
+</ol>
+<p>Brave provides a free tier plus paid plans; check the Brave API portal for the
+current limits and pricing.</p>
+<h3>Where to set the key (recommended)</h3>
+<p><strong>Recommended:</strong> run <code>agdi configure --section web</code>. It stores the key in
+<code>~/.agdi/agdi.json</code> under <code>tools.web.search.apiKey</code>.</p>
+<p><strong>Environment alternative:</strong> set <code>BRAVE_API_KEY</code> in the Gateway process
+environment. For a gateway install, put it in <code>~/.agdi/.env</code> (or your
+service environment). See <a href="/docs/help/faq#how-does-agdi-load-environment-variables">Env vars</a>.</p>
+<h2>Using Perplexity (direct or via OpenRouter)</h2>
+<p>Perplexity Sonar models have built-in web search capabilities and return AI-synthesized
+answers with citations. You can use them via OpenRouter (no credit card required - supports
+crypto/prepaid).</p>
+<h3>Getting an OpenRouter API key</h3>
+<ol>
+<li>Create an account at <a href="https://openrouter.ai/">https://openrouter.ai/</a></li>
+<li>Add credits (supports crypto, prepaid, or credit card)</li>
+<li>Generate an API key in your account settings</li>
+</ol>
+<h3>Setting up Perplexity search</h3>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        enabled: true,
+        provider: &quot;perplexity&quot;,
+        perplexity: {
+          // API key (optional if OPENROUTER_API_KEY or PERPLEXITY_API_KEY is set)
+          apiKey: &quot;sk-or-v1-...&quot;,
+          // Base URL (key-aware default if omitted)
+          baseUrl: &quot;https://openrouter.ai/api/v1&quot;,
+          // Model (defaults to perplexity/sonar-pro)
+          model: &quot;perplexity/sonar-pro&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p><strong>Environment alternative:</strong> set <code>OPENROUTER_API_KEY</code> or <code>PERPLEXITY_API_KEY</code> in the Gateway
+environment. For a gateway install, put it in <code>~/.agdi/.env</code>.</p>
+<p>If no base URL is set, AGDI chooses a default based on the API key source:</p>
+<ul>
+<li><code>PERPLEXITY_API_KEY</code> or <code>pplx-...</code> → <code>https://api.perplexity.ai</code></li>
+<li><code>OPENROUTER_API_KEY</code> or <code>sk-or-...</code> → <code>https://openrouter.ai/api/v1</code></li>
+<li>Unknown key formats → OpenRouter (safe fallback)</li>
+</ul>
+<h3>Available Perplexity models</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Description</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>perplexity/sonar</code></td>
+<td>Fast Q&amp;A with web search</td>
+<td>Quick lookups</td>
+</tr>
+<tr>
+<td><code>perplexity/sonar-pro</code> (default)</td>
+<td>Multi-step reasoning with web search</td>
+<td>Complex questions</td>
+</tr>
+<tr>
+<td><code>perplexity/sonar-reasoning-pro</code></td>
+<td>Chain-of-thought analysis</td>
+<td>Deep research</td>
+</tr>
+</tbody></table>
+<h2>web_search</h2>
+<p>Search the web using your configured provider.</p>
+<h3>Requirements</h3>
+<ul>
+<li><code>tools.web.search.enabled</code> must not be <code>false</code> (default: enabled)</li>
+<li>API key for your chosen provider:<ul>
+<li><strong>Brave</strong>: <code>BRAVE_API_KEY</code> or <code>tools.web.search.apiKey</code></li>
+<li><strong>Perplexity</strong>: <code>OPENROUTER_API_KEY</code>, <code>PERPLEXITY_API_KEY</code>, or <code>tools.web.search.perplexity.apiKey</code></li>
+</ul>
+</li>
+</ul>
+<h3>Config</h3>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        enabled: true,
+        apiKey: &quot;BRAVE_API_KEY_HERE&quot;, // optional if BRAVE_API_KEY is set
+        maxResults: 5,
+        timeoutSeconds: 30,
+        cacheTtlMinutes: 15,
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Tool parameters</h3>
+<ul>
+<li><code>query</code> (required)</li>
+<li><code>count</code> (1–10; default from config)</li>
+<li><code>country</code> (optional): 2-letter country code for region-specific results (e.g., &quot;DE&quot;, &quot;US&quot;, &quot;ALL&quot;). If omitted, Brave chooses its default region.</li>
+<li><code>search_lang</code> (optional): ISO language code for search results (e.g., &quot;de&quot;, &quot;en&quot;, &quot;fr&quot;)</li>
+<li><code>ui_lang</code> (optional): ISO language code for UI elements</li>
+<li><code>freshness</code> (optional): filter by discovery time<ul>
+<li>Brave: <code>pd</code>, <code>pw</code>, <code>pm</code>, <code>py</code>, or <code>YYYY-MM-DDtoYYYY-MM-DD</code></li>
+<li>Perplexity: <code>pd</code>, <code>pw</code>, <code>pm</code>, <code>py</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-javascript">// German-specific search
+await web_search({
+  query: &quot;TV online schauen&quot;,
+  count: 10,
+  country: &quot;DE&quot;,
+  search_lang: &quot;de&quot;,
+});
+
+// French search with French UI
+await web_search({
+  query: &quot;actualités&quot;,
+  country: &quot;FR&quot;,
+  search_lang: &quot;fr&quot;,
+  ui_lang: &quot;fr&quot;,
+});
+
+// Recent results (past week)
+await web_search({
+  query: &quot;TMBG interview&quot;,
+  freshness: &quot;pw&quot;,
+});
+</code></pre>
+<h2>web_fetch</h2>
+<p>Fetch a URL and extract readable content.</p>
+<h3>web_fetch requirements</h3>
+<ul>
+<li><code>tools.web.fetch.enabled</code> must not be <code>false</code> (default: enabled)</li>
+<li>Optional Firecrawl fallback: set <code>tools.web.fetch.firecrawl.apiKey</code> or <code>FIRECRAWL_API_KEY</code>.</li>
+</ul>
+<h3>web_fetch config</h3>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      fetch: {
+        enabled: true,
+        maxChars: 50000,
+        maxCharsCap: 50000,
+        maxResponseBytes: 2000000,
+        timeoutSeconds: 30,
+        cacheTtlMinutes: 15,
+        maxRedirects: 3,
+        userAgent: &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36&quot;,
+        readability: true,
+        firecrawl: {
+          enabled: true,
+          apiKey: &quot;FIRECRAWL_API_KEY_HERE&quot;, // optional if FIRECRAWL_API_KEY is set
+          baseUrl: &quot;https://api.firecrawl.dev&quot;,
+          onlyMainContent: true,
+          maxAgeMs: 86400000, // ms (1 day)
+          timeoutSeconds: 60,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>web_fetch tool parameters</h3>
+<ul>
+<li><code>url</code> (required, http/https only)</li>
+<li><code>extractMode</code> (<code>markdown</code> | <code>text</code>)</li>
+<li><code>maxChars</code> (truncate long pages)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>web_fetch</code> uses Readability (main-content extraction) first, then Firecrawl (if configured). If both fail, the tool returns an error.</li>
+<li>Firecrawl requests use bot-circumvention mode and cache results by default.</li>
+<li><code>web_fetch</code> sends a Chrome-like User-Agent and <code>Accept-Language</code> by default; override <code>userAgent</code> if needed.</li>
+<li><code>web_fetch</code> blocks private/internal hostnames and re-checks redirects (limit with <code>maxRedirects</code>).</li>
+<li><code>maxChars</code> is clamped to <code>tools.web.fetch.maxCharsCap</code>.</li>
+<li><code>web_fetch</code> caps the downloaded response body size to <code>tools.web.fetch.maxResponseBytes</code> before parsing; oversized responses are truncated and include a warning.</li>
+<li><code>web_fetch</code> is best-effort extraction; some sites will need the browser tool.</li>
+<li>See <a href="/docs/tools/firecrawl">Firecrawl</a> for key setup and service details.</li>
+<li>Responses are cached (default 15 minutes) to reduce repeated fetches.</li>
+<li>If you use tool profiles/allowlists, add <code>web_search</code>/<code>web_fetch</code> or <code>group:web</code>.</li>
+<li>If the Brave key is missing, <code>web_search</code> returns a short setup hint with a docs link.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

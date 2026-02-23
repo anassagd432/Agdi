@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Release Checklist — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="active" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Release Checklist (npm + macOS)</h1>
+<p>Use <code>pnpm</code> (Node 22+) from the repo root. Keep the working tree clean before tagging/publishing.</p>
+<h2>Operator trigger</h2>
+<p>When the operator says “release”, immediately do this preflight (no extra questions unless blocked):</p>
+<ul>
+<li>Read this doc and <code>docs/platforms/mac/release.md</code>.</li>
+<li>Load env from <code>~/.profile</code> and confirm <code>SPARKLE_PRIVATE_KEY_FILE</code> + App Store Connect vars are set (SPARKLE_PRIVATE_KEY_FILE should live in <code>~/.profile</code>).</li>
+<li>Use Sparkle keys from <code>~/Library/CloudStorage/Dropbox/Backup/Sparkle</code> if needed.</li>
+</ul>
+<ol>
+<li><strong>Version &amp; metadata</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> Bump <code>package.json</code> version (e.g., <code>2026.1.29</code>).</li>
+<li><input disabled="" type="checkbox"> Run <code>pnpm plugins:sync</code> to align extension package versions + changelogs.</li>
+<li><input disabled="" type="checkbox"> Update CLI/version strings: <a href="https://github.com/agdi/agdi/blob/main/src/cli/program.ts"><code>src/cli/program.ts</code></a> and the Baileys user agent in <a href="https://github.com/agdi/agdi/blob/main/src/provider-web.ts"><code>src/provider-web.ts</code></a>.</li>
+<li><input disabled="" type="checkbox"> Confirm package metadata (name, description, repository, keywords, license) and <code>bin</code> map points to <a href="https://github.com/agdi/agdi/blob/main/agdi.mjs"><code>agdi.mjs</code></a> for <code>agdi</code>.</li>
+<li><input disabled="" type="checkbox"> If dependencies changed, run <code>pnpm install</code> so <code>pnpm-lock.yaml</code> is current.</li>
+</ul>
+<ol start="2">
+<li><strong>Build &amp; artifacts</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> If A2UI inputs changed, run <code>pnpm canvas:a2ui:bundle</code> and commit any updated <a href="https://github.com/agdi/agdi/blob/main/src/canvas-host/a2ui/a2ui.bundle.js"><code>src/canvas-host/a2ui/a2ui.bundle.js</code></a>.</li>
+<li><input disabled="" type="checkbox"> <code>pnpm run build</code> (regenerates <code>dist/</code>).</li>
+<li><input disabled="" type="checkbox"> Verify npm package <code>files</code> includes all required <code>dist/*</code> folders (notably <code>dist/node-host/**</code> and <code>dist/acp/**</code> for headless node + ACP CLI).</li>
+<li><input disabled="" type="checkbox"> Confirm <code>dist/build-info.json</code> exists and includes the expected <code>commit</code> hash (CLI banner uses this for npm installs).</li>
+<li><input disabled="" type="checkbox"> Optional: <code>npm pack --pack-destination /tmp</code> after the build; inspect the tarball contents and keep it handy for the GitHub release (do <strong>not</strong> commit it).</li>
+</ul>
+<ol start="3">
+<li><strong>Changelog &amp; docs</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> Update <code>CHANGELOG.md</code> with user-facing highlights (create the file if missing); keep entries strictly descending by version.</li>
+<li><input disabled="" type="checkbox"> Ensure README examples/flags match current CLI behavior (notably new commands or options).</li>
+</ul>
+<ol start="4">
+<li><strong>Validation</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> <code>pnpm build</code></li>
+<li><input disabled="" type="checkbox"> <code>pnpm check</code></li>
+<li><input disabled="" type="checkbox"> <code>pnpm test</code> (or <code>pnpm test:coverage</code> if you need coverage output)</li>
+<li><input disabled="" type="checkbox"> <code>pnpm release:check</code> (verifies npm pack contents)</li>
+<li><input disabled="" type="checkbox"> <code>AGDI_INSTALL_SMOKE_SKIP_NONROOT=1 pnpm test:install:smoke</code> (Docker install smoke test, fast path; required before release)<ul>
+<li>If the immediate previous npm release is known broken, set <code>AGDI_INSTALL_SMOKE_PREVIOUS=&lt;last-good-version&gt;</code> or <code>AGDI_INSTALL_SMOKE_SKIP_PREVIOUS=1</code> for the preinstall step.</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> (Optional) Full installer smoke (adds non-root + CLI coverage): <code>pnpm test:install:smoke</code></li>
+<li><input disabled="" type="checkbox"> (Optional) Installer E2E (Docker, runs <code>curl -fsSL https://agdi.ai/install.sh | bash</code>, onboards, then runs real tool calls):<ul>
+<li><code>pnpm test:install:e2e:openai</code> (requires <code>OPENAI_API_KEY</code>)</li>
+<li><code>pnpm test:install:e2e:anthropic</code> (requires <code>ANTHROPIC_API_KEY</code>)</li>
+<li><code>pnpm test:install:e2e</code> (requires both keys; runs both providers)</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> (Optional) Spot-check the web gateway if your changes affect send/receive paths.</li>
+</ul>
+<ol start="5">
+<li><strong>macOS app (Sparkle)</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> Build + sign the macOS app, then zip it for distribution.</li>
+<li><input disabled="" type="checkbox"> Generate the Sparkle appcast (HTML notes via <a href="https://github.com/agdi/agdi/blob/main/scripts/make_appcast.sh"><code>scripts/make_appcast.sh</code></a>) and update <code>appcast.xml</code>.</li>
+<li><input disabled="" type="checkbox"> Keep the app zip (and optional dSYM zip) ready to attach to the GitHub release.</li>
+<li><input disabled="" type="checkbox"> Follow <a href="/platforms/mac/release">macOS release</a> for the exact commands and required env vars.<ul>
+<li><code>APP_BUILD</code> must be numeric + monotonic (no <code>-beta</code>) so Sparkle compares versions correctly.</li>
+<li>If notarizing, use the <code>agdi-notary</code> keychain profile created from App Store Connect API env vars (see <a href="/platforms/mac/release">macOS release</a>).</li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li><strong>Publish (npm)</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> Confirm git status is clean; commit and push as needed.</li>
+<li><input disabled="" type="checkbox"> <code>npm login</code> (verify 2FA) if needed.</li>
+<li><input disabled="" type="checkbox"> <code>npm publish --access public</code> (use <code>--tag beta</code> for pre-releases).</li>
+<li><input disabled="" type="checkbox"> Verify the registry: <code>npm view agdi version</code>, <code>npm view agdi dist-tags</code>, and <code>npx -y agdi@X.Y.Z --version</code> (or <code>--help</code>).</li>
+</ul>
+<h3>Troubleshooting (notes from 2.0.0-beta2 release)</h3>
+<ul>
+<li><strong>npm pack/publish hangs or produces huge tarball</strong>: the macOS app bundle in <code>dist/AGDI.app</code> (and release zips) get swept into the package. Fix by whitelisting publish contents via <code>package.json</code> <code>files</code> (include dist subdirs, docs, skills; exclude app bundles). Confirm with <code>npm pack --dry-run</code> that <code>dist/AGDI.app</code> is not listed.</li>
+<li><strong>npm auth web loop for dist-tags</strong>: use legacy auth to get an OTP prompt:<ul>
+<li><code>NPM_CONFIG_AUTH_TYPE=legacy npm dist-tag add agdi@X.Y.Z latest</code></li>
+</ul>
+</li>
+<li><strong><code>npx</code> verification fails with <code>ECOMPROMISED: Lock compromised</code></strong>: retry with a fresh cache:<ul>
+<li><code>NPM_CONFIG_CACHE=/tmp/npm-cache-$(date +%s) npx -y agdi@X.Y.Z --version</code></li>
+</ul>
+</li>
+<li><strong>Tag needs repointing after a late fix</strong>: force-update and push the tag, then ensure the GitHub release assets still match:<ul>
+<li><code>git tag -f vX.Y.Z &amp;&amp; git push -f origin vX.Y.Z</code></li>
+</ul>
+</li>
+</ul>
+<ol start="7">
+<li><strong>GitHub release + appcast</strong></li>
+</ol>
+<ul>
+<li><input disabled="" type="checkbox"> Tag and push: <code>git tag vX.Y.Z &amp;&amp; git push origin vX.Y.Z</code> (or <code>git push --tags</code>).</li>
+<li><input disabled="" type="checkbox"> Create/refresh the GitHub release for <code>vX.Y.Z</code> with <strong>title <code>agdi X.Y.Z</code></strong> (not just the tag); body should include the <strong>full</strong> changelog section for that version (Highlights + Changes + Fixes), inline (no bare links), and <strong>must not repeat the title inside the body</strong>.</li>
+<li><input disabled="" type="checkbox"> Attach artifacts: <code>npm pack</code> tarball (optional), <code>AGDI-X.Y.Z.zip</code>, and <code>AGDI-X.Y.Z.dSYM.zip</code> (if generated).</li>
+<li><input disabled="" type="checkbox"> Commit the updated <code>appcast.xml</code> and push it (Sparkle feeds from main).</li>
+<li><input disabled="" type="checkbox"> From a clean temp directory (no <code>package.json</code>), run <code>npx -y agdi@X.Y.Z send --help</code> to confirm install/CLI entrypoints work.</li>
+<li><input disabled="" type="checkbox"> Announce/share release notes.</li>
+</ul>
+<h2>Plugin publish scope (npm)</h2>
+<p>We only publish <strong>existing npm plugins</strong> under the <code>@agdi/*</code> scope. Bundled
+plugins that are not on npm stay <strong>disk-tree only</strong> (still shipped in
+<code>extensions/**</code>).</p>
+<p>Process to derive the list:</p>
+<ol>
+<li><code>npm search @agdi --json</code> and capture the package names.</li>
+<li>Compare with <code>extensions/*/package.json</code> names.</li>
+<li>Publish only the <strong>intersection</strong> (already on npm).</li>
+</ol>
+<p>Current npm plugin list (update as needed):</p>
+<ul>
+<li>@agdi/bluebubbles</li>
+<li>@agdi/diagnostics-otel</li>
+<li>@agdi/discord</li>
+<li>@agdi/feishu</li>
+<li>@agdi/lobster</li>
+<li>@agdi/matrix</li>
+<li>@agdi/msteams</li>
+<li>@agdi/nextcloud-talk</li>
+<li>@agdi/nostr</li>
+<li>@agdi/voice-call</li>
+<li>@agdi/zalo</li>
+<li>@agdi/zalouser</li>
+</ul>
+<p>Release notes must also call out <strong>new optional bundled plugins</strong> that are <strong>not
+on by default</strong> (example: <code>tlon</code>).</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

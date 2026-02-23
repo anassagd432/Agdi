@@ -1,4 +1,4 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "openclaw/plugin-sdk";
 import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
 import { tlonPlugin } from "./src/channel.js";
 import { setTlonRuntime } from "./src/runtime.js";
@@ -8,7 +8,7 @@ const plugin = {
   name: "Tlon",
   description: "Tlon/Urbit channel plugin",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: AGDIPluginApi) {
     setTlonRuntime(api.runtime);
     api.registerChannel({ plugin: tlonPlugin });
   },

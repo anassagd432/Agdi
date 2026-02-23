@@ -2,12 +2,12 @@
   "name": "@openclaw/slack",
   "version": "2026.2.16",
   "private": true,
-  "description": "OpenClaw Slack channel plugin",
+  "description": "AGDI Slack channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "agdi": "workspace:*"
   },
-  "openclaw": {
+  "agdi": {
     "extensions": [
       "./index.ts"
     ]

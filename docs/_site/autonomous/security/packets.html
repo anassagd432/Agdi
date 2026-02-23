@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Packet Sniffer — AGDI Docs</title>
+  <meta name="description" content="Live packet capture, PCAP analysis, credential extraction, and traffic statistics.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="active" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Packet Sniffer</h1>
+<h2>Live Capture</h2>
+<pre><code class="language-typescript">import { PacketSniffer } from &quot;agdi/autonomous&quot;;
+const sniffer = new PacketSniffer();
+
+// Start live capture
+await sniffer.startCapture({
+  iface: &quot;eth0&quot;,
+  filter: &quot;port 80 or port 443&quot;,
+  duration: 30,  // seconds
+  outputFile: &quot;/tmp/capture.pcap&quot;,
+});
+
+// Stop manually
+sniffer.stopCapture();
+</code></pre>
+<h2>Read &amp; Analyze PCAP Files</h2>
+<pre><code class="language-typescript">// Read packets
+const packets = await sniffer.readPcap(&quot;/tmp/capture.pcap&quot;, &quot;tcp&quot;, 100);
+for (const p of packets) {
+  console.log(`${p.src} → ${p.dst} [${p.protocol}] ${p.info}`);
+}
+
+// Traffic statistics
+const stats = await sniffer.analyzeTraffic(&quot;/tmp/capture.pcap&quot;);
+console.log(`Total packets: ${stats.totalPackets}`);
+console.log(&quot;Top sources:&quot;, stats.topSources);
+console.log(&quot;Protocols:&quot;, stats.protocols);
+</code></pre>
+<h2>Credential Extraction</h2>
+<pre><code class="language-typescript">// Extract HTTP Basic Auth and FTP credentials
+const creds = await sniffer.extractCredentials(&quot;/tmp/capture.pcap&quot;);
+// → [&quot;HTTP Basic: admin:password&quot;, &quot;FTP: USER admin&quot;, &quot;FTP: PASS secret&quot;]
+</code></pre>
+<h2>DNS Query Enumeration</h2>
+<pre><code class="language-typescript">const queries = await sniffer.dnsQueries(&quot;/tmp/capture.pcap&quot;);
+// → [&quot;google.com&quot;, &quot;api.github.com&quot;, &quot;cdn.example.com&quot;]
+</code></pre>
+<h2>Dependencies</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tcpdump</code></td>
+<td>Live packet capture</td>
+</tr>
+<tr>
+<td><code>tshark</code></td>
+<td>Advanced PCAP analysis</td>
+</tr>
+</tbody></table>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

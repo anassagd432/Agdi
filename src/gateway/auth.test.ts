@@ -18,13 +18,13 @@ function createLimiterSpy(): AuthRateLimiter & {
 }
 
 describe("gateway auth", () => {
-  it("resolves token/password from OPENCLAW gateway env vars", () => {
+  it("resolves token/password from AGDI gateway env vars", () => {
     expect(
       resolveGatewayAuth({
         authConfig: {},
         env: {
-          OPENCLAW_GATEWAY_TOKEN: "env-token",
-          OPENCLAW_GATEWAY_PASSWORD: "env-password",
+          AGDI_GATEWAY_TOKEN: "env-token",
+          AGDI_GATEWAY_PASSWORD: "env-password",
         } as NodeJS.ProcessEnv,
       }),
     ).toMatchObject({

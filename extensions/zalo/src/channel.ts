@@ -2,7 +2,7 @@ import type {
   ChannelAccountSnapshot,
   ChannelDock,
   ChannelPlugin,
-  OpenClawConfig,
+  AGDIConfig,
 } from "openclaw/plugin-sdk";
 import {
   applyAccountNameToChannelSection,
@@ -232,7 +232,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
                     : {}),
             },
           },
-        } as OpenClawConfig;
+        } as AGDIConfig;
       }
       return {
         ...next,
@@ -255,7 +255,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
             },
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     },
   },
   pairing: {

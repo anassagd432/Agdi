@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platforms — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="active" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Platforms</h1>
+<p>AGDI core is written in TypeScript. <strong>Node is the recommended runtime</strong>.
+Bun is not recommended for the Gateway (WhatsApp/Telegram bugs).</p>
+<p>Companion apps exist for macOS (menu bar app) and mobile nodes (iOS/Android). Windows and
+Linux companion apps are planned, but the Gateway is fully supported today.
+Native companion apps for Windows are also planned; the Gateway is recommended via WSL2.</p>
+<h2>Choose your OS</h2>
+<ul>
+<li>macOS: <a href="/docs/platforms/macos">macOS</a></li>
+<li>iOS: <a href="/docs/platforms/ios">iOS</a></li>
+<li>Android: <a href="/docs/platforms/android">Android</a></li>
+<li>Windows: <a href="/docs/platforms/windows">Windows</a></li>
+<li>Linux: <a href="/docs/platforms/linux">Linux</a></li>
+</ul>
+<h2>VPS &amp; hosting</h2>
+<ul>
+<li>VPS hub: <a href="/docs/vps">VPS hosting</a></li>
+<li>Fly.io: <a href="/docs/install/fly">Fly.io</a></li>
+<li>Hetzner (Docker): <a href="/docs/install/hetzner">Hetzner</a></li>
+<li>GCP (Compute Engine): <a href="/docs/install/gcp">GCP</a></li>
+<li>exe.dev (VM + HTTPS proxy): <a href="/docs/install/exe-dev">exe.dev</a></li>
+</ul>
+<h2>Common links</h2>
+<ul>
+<li>Install guide: <a href="/docs/start/getting-started">Getting Started</a></li>
+<li>Gateway runbook: <a href="/docs/gateway">Gateway</a></li>
+<li>Gateway configuration: <a href="/docs/gateway/configuration">Configuration</a></li>
+<li>Service status: <code>agdi gateway status</code></li>
+</ul>
+<h2>Gateway service install (CLI)</h2>
+<p>Use one of these (all supported):</p>
+<ul>
+<li>Wizard (recommended): <code>agdi onboard --install-daemon</code></li>
+<li>Direct: <code>agdi gateway install</code></li>
+<li>Configure flow: <code>agdi configure</code> → select <strong>Gateway service</strong></li>
+<li>Repair/migrate: <code>agdi doctor</code> (offers to install or fix the service)</li>
+</ul>
+<p>The service target depends on OS:</p>
+<ul>
+<li>macOS: LaunchAgent (<code>bot.molt.gateway</code> or <code>bot.molt.&lt;profile&gt;</code>; legacy <code>com.agdi.*</code>)</li>
+<li>Linux/WSL2: systemd user service (<code>agdi-gateway[-&lt;profile&gt;].service</code>)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

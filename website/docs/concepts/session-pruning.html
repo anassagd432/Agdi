@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Pruning — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="active" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Session Pruning</h1>
+<p>Session pruning trims <strong>old tool results</strong> from the in-memory context right before each LLM call. It does <strong>not</strong> rewrite the on-disk session history (<code>*.jsonl</code>).</p>
+<h2>When it runs</h2>
+<ul>
+<li>When <code>mode: &quot;cache-ttl&quot;</code> is enabled and the last Anthropic call for the session is older than <code>ttl</code>.</li>
+<li>Only affects the messages sent to the model for that request.</li>
+<li>Only active for Anthropic API calls (and OpenRouter Anthropic models).</li>
+<li>For best results, match <code>ttl</code> to your model <code>cacheControlTtl</code>.</li>
+<li>After a prune, the TTL window resets so subsequent requests keep cache until <code>ttl</code> expires again.</li>
+</ul>
+<h2>Smart defaults (Anthropic)</h2>
+<ul>
+<li><strong>OAuth or setup-token</strong> profiles: enable <code>cache-ttl</code> pruning and set heartbeat to <code>1h</code>.</li>
+<li><strong>API key</strong> profiles: enable <code>cache-ttl</code> pruning, set heartbeat to <code>30m</code>, and default <code>cacheControlTtl</code> to <code>1h</code> on Anthropic models.</li>
+<li>If you set any of these values explicitly, AGDI does <strong>not</strong> override them.</li>
+</ul>
+<h2>What this improves (cost + cache behavior)</h2>
+<ul>
+<li><strong>Why prune:</strong> Anthropic prompt caching only applies within the TTL. If a session goes idle past the TTL, the next request re-caches the full prompt unless you trim it first.</li>
+<li><strong>What gets cheaper:</strong> pruning reduces the <strong>cacheWrite</strong> size for that first request after the TTL expires.</li>
+<li><strong>Why the TTL reset matters:</strong> once pruning runs, the cache window resets, so follow‑up requests can reuse the freshly cached prompt instead of re-caching the full history again.</li>
+<li><strong>What it does not do:</strong> pruning doesn’t add tokens or “double” costs; it only changes what gets cached on that first post‑TTL request.</li>
+</ul>
+<h2>What can be pruned</h2>
+<ul>
+<li>Only <code>toolResult</code> messages.</li>
+<li>User + assistant messages are <strong>never</strong> modified.</li>
+<li>The last <code>keepLastAssistants</code> assistant messages are protected; tool results after that cutoff are not pruned.</li>
+<li>If there aren’t enough assistant messages to establish the cutoff, pruning is skipped.</li>
+<li>Tool results containing <strong>image blocks</strong> are skipped (never trimmed/cleared).</li>
+</ul>
+<h2>Context window estimation</h2>
+<p>Pruning uses an estimated context window (chars ≈ tokens × 4). The base window is resolved in this order:</p>
+<ol>
+<li><code>models.providers.*.models[].contextWindow</code> override.</li>
+<li>Model definition <code>contextWindow</code> (from the model registry).</li>
+<li>Default <code>200000</code> tokens.</li>
+</ol>
+<p>If <code>agents.defaults.contextTokens</code> is set, it is treated as a cap (min) on the resolved window.</p>
+<h2>Mode</h2>
+<h3>cache-ttl</h3>
+<ul>
+<li>Pruning only runs if the last Anthropic call is older than <code>ttl</code> (default <code>5m</code>).</li>
+<li>When it runs: same soft-trim + hard-clear behavior as before.</li>
+</ul>
+<h2>Soft vs hard pruning</h2>
+<ul>
+<li><strong>Soft-trim</strong>: only for oversized tool results.<ul>
+<li>Keeps head + tail, inserts <code>...</code>, and appends a note with the original size.</li>
+<li>Skips results with image blocks.</li>
+</ul>
+</li>
+<li><strong>Hard-clear</strong>: replaces the entire tool result with <code>hardClear.placeholder</code>.</li>
+</ul>
+<h2>Tool selection</h2>
+<ul>
+<li><code>tools.allow</code> / <code>tools.deny</code> support <code>*</code> wildcards.</li>
+<li>Deny wins.</li>
+<li>Matching is case-insensitive.</li>
+<li>Empty allow list =&gt; all tools allowed.</li>
+</ul>
+<h2>Interaction with other limits</h2>
+<ul>
+<li>Built-in tools already truncate their own output; session pruning is an extra layer that prevents long-running chats from accumulating too much tool output in the model context.</li>
+<li>Compaction is separate: compaction summarizes and persists, pruning is transient per request. See <a href="/docs/concepts/compaction">/concepts/compaction</a>.</li>
+</ul>
+<h2>Defaults (when enabled)</h2>
+<ul>
+<li><code>ttl</code>: <code>&quot;5m&quot;</code></li>
+<li><code>keepLastAssistants</code>: <code>3</code></li>
+<li><code>softTrimRatio</code>: <code>0.3</code></li>
+<li><code>hardClearRatio</code>: <code>0.5</code></li>
+<li><code>minPrunableToolChars</code>: <code>50000</code></li>
+<li><code>softTrim</code>: <code>{ maxChars: 4000, headChars: 1500, tailChars: 1500 }</code></li>
+<li><code>hardClear</code>: <code>{ enabled: true, placeholder: &quot;[Old tool result content cleared]&quot; }</code></li>
+</ul>
+<h2>Examples</h2>
+<p>Default (off):</p>
+<pre><code class="language-json5">{
+  agent: {
+    contextPruning: { mode: &quot;off&quot; },
+  },
+}
+</code></pre>
+<p>Enable TTL-aware pruning:</p>
+<pre><code class="language-json5">{
+  agent: {
+    contextPruning: { mode: &quot;cache-ttl&quot;, ttl: &quot;5m&quot; },
+  },
+}
+</code></pre>
+<p>Restrict pruning to specific tools:</p>
+<pre><code class="language-json5">{
+  agent: {
+    contextPruning: {
+      mode: &quot;cache-ttl&quot;,
+      tools: { allow: [&quot;exec&quot;, &quot;read&quot;], deny: [&quot;*image*&quot;] },
+    },
+  },
+}
+</code></pre>
+<p>See config reference: <a href="/docs/gateway/configuration">Gateway Configuration</a></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

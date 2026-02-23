@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple Gateways — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="active" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Multiple Gateways (same host)</h1>
+<p>Most setups should use one Gateway because a single Gateway can handle multiple messaging connections and agents. If you need stronger isolation or redundancy (e.g., a rescue bot), run separate Gateways with isolated profiles/ports.</p>
+<h2>Isolation checklist (required)</h2>
+<ul>
+<li><code>AGDI_CONFIG_PATH</code> — per-instance config file</li>
+<li><code>AGDI_STATE_DIR</code> — per-instance sessions, creds, caches</li>
+<li><code>agents.defaults.workspace</code> — per-instance workspace root</li>
+<li><code>gateway.port</code> (or <code>--port</code>) — unique per instance</li>
+<li>Derived ports (browser/canvas) must not overlap</li>
+</ul>
+<p>If these are shared, you will hit config races and port conflicts.</p>
+<h2>Recommended: profiles (<code>--profile</code>)</h2>
+<p>Profiles auto-scope <code>AGDI_STATE_DIR</code> + <code>AGDI_CONFIG_PATH</code> and suffix service names.</p>
+<pre><code class="language-bash"># main
+agdi --profile main setup
+agdi --profile main gateway --port 18789
+
+# rescue
+agdi --profile rescue setup
+agdi --profile rescue gateway --port 19001
+</code></pre>
+<p>Per-profile services:</p>
+<pre><code class="language-bash">agdi --profile main gateway install
+agdi --profile rescue gateway install
+</code></pre>
+<h2>Rescue-bot guide</h2>
+<p>Run a second Gateway on the same host with its own:</p>
+<ul>
+<li>profile/config</li>
+<li>state dir</li>
+<li>workspace</li>
+<li>base port (plus derived ports)</li>
+</ul>
+<p>This keeps the rescue bot isolated from the main bot so it can debug or apply config changes if the primary bot is down.</p>
+<p>Port spacing: leave at least 20 ports between base ports so the derived browser/canvas/CDP ports never collide.</p>
+<h3>How to install (rescue bot)</h3>
+<pre><code class="language-bash"># Main bot (existing or fresh, without --profile param)
+# Runs on port 18789 + Chrome CDC/Canvas/... Ports
+agdi onboard
+agdi gateway install
+
+# Rescue bot (isolated profile + ports)
+agdi --profile rescue onboard
+# Notes:
+# - workspace name will be postfixed with -rescue per default
+# - Port should be at least 18789 + 20 Ports,
+#   better choose completely different base port, like 19789,
+# - rest of the onboarding is the same as normal
+
+# To install the service (if not happened automatically during onboarding)
+agdi --profile rescue gateway install
+</code></pre>
+<h2>Port mapping (derived)</h2>
+<p>Base port = <code>gateway.port</code> (or <code>AGDI_GATEWAY_PORT</code> / <code>--port</code>).</p>
+<ul>
+<li>browser control service port = base + 2 (loopback only)</li>
+<li>canvas host is served on the Gateway HTTP server (same port as <code>gateway.port</code>)</li>
+<li>Browser profile CDP ports auto-allocate from <code>browser.controlPort + 9 .. + 108</code></li>
+</ul>
+<p>If you override any of these in config or env, you must keep them unique per instance.</p>
+<h2>Browser/CDP notes (common footgun)</h2>
+<ul>
+<li>Do <strong>not</strong> pin <code>browser.cdpUrl</code> to the same values on multiple instances.</li>
+<li>Each instance needs its own browser control port and CDP range (derived from its gateway port).</li>
+<li>If you need explicit CDP ports, set <code>browser.profiles.&lt;name&gt;.cdpPort</code> per instance.</li>
+<li>Remote Chrome: use <code>browser.profiles.&lt;name&gt;.cdpUrl</code> (per profile, per instance).</li>
+</ul>
+<h2>Manual env example</h2>
+<pre><code class="language-bash">AGDI_CONFIG_PATH=~/.agdi/main.json \
+AGDI_STATE_DIR=~/.agdi-main \
+agdi gateway --port 18789
+
+AGDI_CONFIG_PATH=~/.agdi/rescue.json \
+AGDI_STATE_DIR=~/.agdi-rescue \
+agdi gateway --port 19001
+</code></pre>
+<h2>Quick checks</h2>
+<pre><code class="language-bash">agdi --profile main status
+agdi --profile rescue status
+agdi --profile rescue browser status
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

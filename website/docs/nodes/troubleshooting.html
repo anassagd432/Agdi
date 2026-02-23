@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="active" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Node troubleshooting</h1>
+<p>Use this page when a node is visible in status but node tools fail.</p>
+<h2>Command ladder</h2>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Then run node specific checks:</p>
+<pre><code class="language-bash">agdi nodes status
+agdi nodes describe --node &lt;idOrNameOrIp&gt;
+agdi approvals get --node &lt;idOrNameOrIp&gt;
+</code></pre>
+<p>Healthy signals:</p>
+<ul>
+<li>Node is connected and paired for role <code>node</code>.</li>
+<li><code>nodes describe</code> includes the capability you are calling.</li>
+<li>Exec approvals show expected mode/allowlist.</li>
+</ul>
+<h2>Foreground requirements</h2>
+<p><code>canvas.*</code>, <code>camera.*</code>, and <code>screen.*</code> are foreground only on iOS/Android nodes.</p>
+<p>Quick check and fix:</p>
+<pre><code class="language-bash">agdi nodes describe --node &lt;idOrNameOrIp&gt;
+agdi nodes canvas snapshot --node &lt;idOrNameOrIp&gt;
+agdi logs --follow
+</code></pre>
+<p>If you see <code>NODE_BACKGROUND_UNAVAILABLE</code>, bring the node app to the foreground and retry.</p>
+<h2>Permissions matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>iOS</th>
+<th>Android</th>
+<th>macOS node app</th>
+<th>Typical failure code</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>camera.snap</code>, <code>camera.clip</code></td>
+<td>Camera (+ mic for clip audio)</td>
+<td>Camera (+ mic for clip audio)</td>
+<td>Camera (+ mic for clip audio)</td>
+<td><code>*_PERMISSION_REQUIRED</code></td>
+</tr>
+<tr>
+<td><code>screen.record</code></td>
+<td>Screen Recording (+ mic optional)</td>
+<td>Screen capture prompt (+ mic optional)</td>
+<td>Screen Recording</td>
+<td><code>*_PERMISSION_REQUIRED</code></td>
+</tr>
+<tr>
+<td><code>location.get</code></td>
+<td>While Using or Always (depends on mode)</td>
+<td>Foreground/Background location based on mode</td>
+<td>Location permission</td>
+<td><code>LOCATION_PERMISSION_REQUIRED</code></td>
+</tr>
+<tr>
+<td><code>system.run</code></td>
+<td>n/a (node host path)</td>
+<td>n/a (node host path)</td>
+<td>Exec approvals required</td>
+<td><code>SYSTEM_RUN_DENIED</code></td>
+</tr>
+</tbody></table>
+<h2>Pairing versus approvals</h2>
+<p>These are different gates:</p>
+<ol>
+<li><strong>Device pairing</strong>: can this node connect to the gateway?</li>
+<li><strong>Exec approvals</strong>: can this node run a specific shell command?</li>
+</ol>
+<p>Quick checks:</p>
+<pre><code class="language-bash">agdi devices list
+agdi nodes status
+agdi approvals get --node &lt;idOrNameOrIp&gt;
+agdi approvals allowlist add --node &lt;idOrNameOrIp&gt; &quot;/usr/bin/uname&quot;
+</code></pre>
+<p>If pairing is missing, approve the node device first.
+If pairing is fine but <code>system.run</code> fails, fix exec approvals/allowlist.</p>
+<h2>Common node error codes</h2>
+<ul>
+<li><code>NODE_BACKGROUND_UNAVAILABLE</code> → app is backgrounded; bring it foreground.</li>
+<li><code>CAMERA_DISABLED</code> → camera toggle disabled in node settings.</li>
+<li><code>*_PERMISSION_REQUIRED</code> → OS permission missing/denied.</li>
+<li><code>LOCATION_DISABLED</code> → location mode is off.</li>
+<li><code>LOCATION_PERMISSION_REQUIRED</code> → requested location mode not granted.</li>
+<li><code>LOCATION_BACKGROUND_UNAVAILABLE</code> → app is backgrounded but only While Using permission exists.</li>
+<li><code>SYSTEM_RUN_DENIED: approval required</code> → exec request needs explicit approval.</li>
+<li><code>SYSTEM_RUN_DENIED: allowlist miss</code> → command blocked by allowlist mode.</li>
+</ul>
+<h2>Fast recovery loop</h2>
+<pre><code class="language-bash">agdi nodes status
+agdi nodes describe --node &lt;idOrNameOrIp&gt;
+agdi approvals get --node &lt;idOrNameOrIp&gt;
+agdi logs --follow
+</code></pre>
+<p>If still stuck:</p>
+<ul>
+<li>Re-approve device pairing.</li>
+<li>Re-open node app (foreground).</li>
+<li>Re-grant OS permissions.</li>
+<li>Recreate/adjust exec approval policy.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/docs/nodes/index">/nodes/index</a></li>
+<li><a href="/docs/nodes/camera">/nodes/camera</a></li>
+<li><a href="/docs/nodes/location-command">/nodes/location-command</a></li>
+<li><a href="/docs/tools/exec-approvals">/tools/exec-approvals</a></li>
+<li><a href="/docs/gateway/pairing">/gateway/pairing</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

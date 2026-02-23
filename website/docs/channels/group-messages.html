@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Messages — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="active" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Group messages (WhatsApp web channel)</h1>
+<p>Goal: let Clawd sit in WhatsApp groups, wake up only when pinged, and keep that thread separate from the personal DM session.</p>
+<p>Note: <code>agents.list[].groupChat.mentionPatterns</code> is now used by Telegram/Discord/Slack/iMessage as well; this doc focuses on WhatsApp-specific behavior. For multi-agent setups, set <code>agents.list[].groupChat.mentionPatterns</code> per agent (or use <code>messages.groupChat.mentionPatterns</code> as a global fallback).</p>
+<h2>What’s implemented (2025-12-03)</h2>
+<ul>
+<li>Activation modes: <code>mention</code> (default) or <code>always</code>. <code>mention</code> requires a ping (real WhatsApp @-mentions via <code>mentionedJids</code>, regex patterns, or the bot’s E.164 anywhere in the text). <code>always</code> wakes the agent on every message but it should reply only when it can add meaningful value; otherwise it returns the silent token <code>NO_REPLY</code>. Defaults can be set in config (<code>channels.whatsapp.groups</code>) and overridden per group via <code>/activation</code>. When <code>channels.whatsapp.groups</code> is set, it also acts as a group allowlist (include <code>&quot;*&quot;</code> to allow all).</li>
+<li>Group policy: <code>channels.whatsapp.groupPolicy</code> controls whether group messages are accepted (<code>open|disabled|allowlist</code>). <code>allowlist</code> uses <code>channels.whatsapp.groupAllowFrom</code> (fallback: explicit <code>channels.whatsapp.allowFrom</code>). Default is <code>allowlist</code> (blocked until you add senders).</li>
+<li>Per-group sessions: session keys look like <code>agent:&lt;agentId&gt;:whatsapp:group:&lt;jid&gt;</code> so commands such as <code>/verbose on</code> or <code>/think high</code> (sent as standalone messages) are scoped to that group; personal DM state is untouched. Heartbeats are skipped for group threads.</li>
+<li>Context injection: <strong>pending-only</strong> group messages (default 50) that <em>did not</em> trigger a run are prefixed under <code>[Chat messages since your last reply - for context]</code>, with the triggering line under <code>[Current message - respond to this]</code>. Messages already in the session are not re-injected.</li>
+<li>Sender surfacing: every group batch now ends with <code>[from: Sender Name (+E164)]</code> so Pi knows who is speaking.</li>
+<li>Ephemeral/view-once: we unwrap those before extracting text/mentions, so pings inside them still trigger.</li>
+<li>Group system prompt: on the first turn of a group session (and whenever <code>/activation</code> changes the mode) we inject a short blurb into the system prompt like <code>You are replying inside the WhatsApp group &quot;&lt;subject&gt;&quot;. Group members: Alice (+44...), Bob (+43...), … Activation: trigger-only … Address the specific sender noted in the message context.</code> If metadata isn’t available we still tell the agent it’s a group chat.</li>
+</ul>
+<h2>Config example (WhatsApp)</h2>
+<p>Add a <code>groupChat</code> block to <code>~/.agdi/agdi.json</code> so display-name pings work even when WhatsApp strips the visual <code>@</code> in the text body:</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+      },
+    },
+  },
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        groupChat: {
+          historyLimit: 50,
+          mentionPatterns: [&quot;@?agdi&quot;, &quot;\\+?15555550123&quot;],
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The regexes are case-insensitive; they cover a display-name ping like <code>@agdi</code> and the raw number with or without <code>+</code>/spaces.</li>
+<li>WhatsApp still sends canonical mentions via <code>mentionedJids</code> when someone taps the contact, so the number fallback is rarely needed but is a useful safety net.</li>
+</ul>
+<h3>Activation command (owner-only)</h3>
+<p>Use the group chat command:</p>
+<ul>
+<li><code>/activation mention</code></li>
+<li><code>/activation always</code></li>
+</ul>
+<p>Only the owner number (from <code>channels.whatsapp.allowFrom</code>, or the bot’s own E.164 when unset) can change this. Send <code>/status</code> as a standalone message in the group to see the current activation mode.</p>
+<h2>How to use</h2>
+<ol>
+<li>Add your WhatsApp account (the one running AGDI) to the group.</li>
+<li>Say <code>@agdi …</code> (or include the number). Only allowlisted senders can trigger it unless you set <code>groupPolicy: &quot;open&quot;</code>.</li>
+<li>The agent prompt will include recent group context plus the trailing <code>[from: …]</code> marker so it can address the right person.</li>
+<li>Session-level directives (<code>/verbose on</code>, <code>/think high</code>, <code>/new</code> or <code>/reset</code>, <code>/compact</code>) apply only to that group’s session; send them as standalone messages so they register. Your personal DM session remains independent.</li>
+</ol>
+<h2>Testing / verification</h2>
+<ul>
+<li>Manual smoke:<ul>
+<li>Send an <code>@agdi</code> ping in the group and confirm a reply that references the sender name.</li>
+<li>Send a second ping and verify the history block is included then cleared on the next turn.</li>
+</ul>
+</li>
+<li>Check gateway logs (run with <code>--verbose</code>) to see <code>inbound web message</code> entries showing <code>from: &lt;groupJid&gt;</code> and the <code>[from: …]</code> suffix.</li>
+</ul>
+<h2>Known considerations</h2>
+<ul>
+<li>Heartbeats are intentionally skipped for groups to avoid noisy broadcasts.</li>
+<li>Echo suppression uses the combined batch string; if you send identical text twice without mentions, only the first will get a response.</li>
+<li>Session store entries will appear as <code>agent:&lt;agentId&gt;:whatsapp:group:&lt;jid&gt;</code> in the session store (<code>~/.agdi/agents/&lt;agentId&gt;/sessions/sessions.json</code> by default); a missing entry just means the group hasn’t triggered a run yet.</li>
+<li>Typing indicators in groups follow <code>agents.defaults.typingMode</code> (default: <code>message</code> when unmentioned).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

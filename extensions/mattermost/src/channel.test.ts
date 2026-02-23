@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "openclaw/plugin-sdk";
 import { createReplyPrefixOptions } from "openclaw/plugin-sdk";
 import { describe, expect, it } from "vitest";
 import { mattermostPlugin } from "./channel.js";
@@ -48,7 +48,7 @@ describe("mattermostPlugin", () => {
     });
 
     it("uses account responsePrefix overrides", () => {
-      const cfg: OpenClawConfig = {
+      const cfg: AGDIConfig = {
         channels: {
           mattermost: {
             responsePrefix: "[Channel]",

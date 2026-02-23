@@ -1,19 +1,19 @@
 import { describe, expect, it } from "vitest";
 import type { ConfigUiHints } from "./schema.js";
-import type { ConfigFileSnapshot } from "./types.openclaw.js";
+import type { ConfigFileSnapshot } from "./types.autonomous.js";
 import {
   REDACTED_SENTINEL,
   redactConfigSnapshot,
   restoreRedactedValues as restoreRedactedValues_orig,
 } from "./redact-snapshot.js";
 import { __test__ } from "./schema.hints.js";
-import { OpenClawSchema } from "./zod-schema.js";
+import { AGDISchema } from "./zod-schema.js";
 
 const { mapSensitivePaths } = __test__;
 
 function makeSnapshot(config: Record<string, unknown>, raw?: string): ConfigFileSnapshot {
   return {
-    path: "/home/user/.openclaw/config.json5",
+    path: "/home/user/.agdi/config.json5",
     exists: true,
     raw: raw ?? JSON.stringify(config),
     parsed: config,
@@ -183,9 +183,9 @@ describe("redactConfigSnapshot", () => {
     const snapshot = makeSnapshot({
       channels: {
         irc: {
-          passwordFile: "/etc/openclaw/irc-password.txt",
+          passwordFile: "/etc/agdi/irc-password.txt",
           nickserv: {
-            passwordFile: "/etc/openclaw/nickserv-password.txt",
+            passwordFile: "/etc/agdi/nickserv-password.txt",
             password: "super-secret-nickserv-password",
           },
         },
@@ -197,8 +197,8 @@ describe("redactConfigSnapshot", () => {
     const irc = channels.irc;
     const nickserv = irc.nickserv as Record<string, unknown>;
 
-    expect(irc.passwordFile).toBe("/etc/openclaw/irc-password.txt");
-    expect(nickserv.passwordFile).toBe("/etc/openclaw/nickserv-password.txt");
+    expect(irc.passwordFile).toBe("/etc/agdi/irc-password.txt");
+    expect(nickserv.passwordFile).toBe("/etc/agdi/nickserv-password.txt");
     expect(nickserv.password).toBe(REDACTED_SENTINEL);
   });
 
@@ -876,12 +876,12 @@ describe("restoreRedactedValues", () => {
 
 describe("realredactConfigSnapshot_real", () => {
   it("main schema redact works (samples)", () => {
-    const schema = OpenClawSchema.toJSONSchema({
+    const schema = AGDISchema.toJSONSchema({
       target: "draft-07",
       unrepresentable: "any",
     });
-    schema.title = "OpenClawConfig";
-    const hints = mapSensitivePaths(OpenClawSchema, "", {});
+    schema.title = "AGDIConfig";
+    const hints = mapSensitivePaths(AGDISchema, "", {});
 
     const snapshot = makeSnapshot({
       agents: {

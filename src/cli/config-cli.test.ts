@@ -1,19 +1,19 @@
 import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { ConfigFileSnapshot, OpenClawConfig } from "../config/types.js";
+import type { ConfigFileSnapshot, AGDIConfig } from "../config/types.js";
 
 /**
  * Test for issue #6070:
- * `openclaw config set/unset` must update snapshot.resolved (user config after $include/${ENV},
+ * `agdi config set/unset` must update snapshot.resolved (user config after $include/${ENV},
  * but before runtime defaults), so runtime defaults don't leak into the written config.
  */
 
 const mockReadConfigFileSnapshot = vi.fn<[], Promise<ConfigFileSnapshot>>();
-const mockWriteConfigFile = vi.fn<[OpenClawConfig], Promise<void>>(async () => {});
+const mockWriteConfigFile = vi.fn<[AGDIConfig], Promise<void>>(async () => {});
 
 vi.mock("../config/config.js", () => ({
   readConfigFileSnapshot: () => mockReadConfigFileSnapshot(),
-  writeConfigFile: (cfg: OpenClawConfig) => mockWriteConfigFile(cfg),
+  writeConfigFile: (cfg: AGDIConfig) => mockWriteConfigFile(cfg),
 }));
 
 const mockLog = vi.fn();
@@ -32,11 +32,11 @@ vi.mock("../runtime.js", () => ({
 }));
 
 function buildSnapshot(params: {
-  resolved: OpenClawConfig;
-  config: OpenClawConfig;
+  resolved: AGDIConfig;
+  config: AGDIConfig;
 }): ConfigFileSnapshot {
   return {
-    path: "/tmp/openclaw.json",
+    path: "/tmp/agdi.json",
     exists: true,
     raw: JSON.stringify(params.resolved),
     parsed: params.resolved,
@@ -60,7 +60,7 @@ describe("config cli", () => {
 
   describe("config set - issue #6070", () => {
     it("preserves existing config keys when setting a new value", async () => {
-      const resolved: OpenClawConfig = {
+      const resolved: AGDIConfig = {
         agents: {
           list: [{ id: "main" }, { id: "oracle", workspace: "~/oracle-workspace" }],
         },
@@ -68,7 +68,7 @@ describe("config cli", () => {
         tools: { allow: ["group:fs"] },
         logging: { level: "debug" },
       };
-      const runtimeMerged: OpenClawConfig = {
+      const runtimeMerged: AGDIConfig = {
         ...resolved,
         agents: {
           ...resolved.agents,
@@ -99,10 +99,10 @@ describe("config cli", () => {
     });
 
     it("does not inject runtime defaults into the written config", async () => {
-      const resolved: OpenClawConfig = {
+      const resolved: AGDIConfig = {
         gateway: { port: 18789 },
       };
-      const runtimeMerged: OpenClawConfig = {
+      const runtimeMerged: AGDIConfig = {
         ...resolved,
         agents: {
           defaults: {
@@ -139,7 +139,7 @@ describe("config cli", () => {
 
   describe("config unset - issue #6070", () => {
     it("preserves existing config keys when unsetting a value", async () => {
-      const resolved: OpenClawConfig = {
+      const resolved: AGDIConfig = {
         agents: { list: [{ id: "main" }] },
         gateway: { port: 18789 },
         tools: {
@@ -148,7 +148,7 @@ describe("config cli", () => {
         },
         logging: { level: "debug" },
       };
-      const runtimeMerged: OpenClawConfig = {
+      const runtimeMerged: AGDIConfig = {
         ...resolved,
         agents: {
           ...resolved.agents,

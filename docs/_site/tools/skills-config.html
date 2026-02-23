@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills Config — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="active" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Skills Config</h1>
+<p>All skills-related configuration lives under <code>skills</code> in <code>~/.agdi/agdi.json</code>.</p>
+<pre><code class="language-json5">{
+  skills: {
+    allowBundled: [&quot;gemini&quot;, &quot;peekaboo&quot;],
+    load: {
+      extraDirs: [&quot;~/Projects/agent-scripts/skills&quot;, &quot;~/Projects/oss/some-skill-pack/skills&quot;],
+      watch: true,
+      watchDebounceMs: 250,
+    },
+    install: {
+      preferBrew: true,
+      nodeManager: &quot;npm&quot;, // npm | pnpm | yarn | bun (Gateway runtime still Node; bun not recommended)
+    },
+    entries: {
+      &quot;nano-banana-pro&quot;: {
+        enabled: true,
+        apiKey: &quot;GEMINI_KEY_HERE&quot;,
+        env: {
+          GEMINI_API_KEY: &quot;GEMINI_KEY_HERE&quot;,
+        },
+      },
+      peekaboo: { enabled: true },
+      sag: { enabled: false },
+    },
+  },
+}
+</code></pre>
+<h2>Fields</h2>
+<ul>
+<li><code>allowBundled</code>: optional allowlist for <strong>bundled</strong> skills only. When set, only
+bundled skills in the list are eligible (managed/workspace skills unaffected).</li>
+<li><code>load.extraDirs</code>: additional skill directories to scan (lowest precedence).</li>
+<li><code>load.watch</code>: watch skill folders and refresh the skills snapshot (default: true).</li>
+<li><code>load.watchDebounceMs</code>: debounce for skill watcher events in milliseconds (default: 250).</li>
+<li><code>install.preferBrew</code>: prefer brew installers when available (default: true).</li>
+<li><code>install.nodeManager</code>: node installer preference (<code>npm</code> | <code>pnpm</code> | <code>yarn</code> | <code>bun</code>, default: npm).
+This only affects <strong>skill installs</strong>; the Gateway runtime should still be Node
+(Bun not recommended for WhatsApp/Telegram).</li>
+<li><code>entries.&lt;skillKey&gt;</code>: per-skill overrides.</li>
+</ul>
+<p>Per-skill fields:</p>
+<ul>
+<li><code>enabled</code>: set <code>false</code> to disable a skill even if it’s bundled/installed.</li>
+<li><code>env</code>: environment variables injected for the agent run (only if not already set).</li>
+<li><code>apiKey</code>: optional convenience for skills that declare a primary env var.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Keys under <code>entries</code> map to the skill name by default. If a skill defines
+<code>metadata.agdi.skillKey</code>, use that key instead.</li>
+<li>Changes to skills are picked up on the next agent turn when the watcher is enabled.</li>
+</ul>
+<h3>Sandboxed skills + env vars</h3>
+<p>When a session is <strong>sandboxed</strong>, skill processes run inside Docker. The sandbox
+does <strong>not</strong> inherit the host <code>process.env</code>.</p>
+<p>Use one of:</p>
+<ul>
+<li><code>agents.defaults.sandbox.docker.env</code> (or per-agent <code>agents.list[].sandbox.docker.env</code>)</li>
+<li>bake the env into your custom sandbox image</li>
+</ul>
+<p>Global <code>env</code> and <code>skills.entries.&lt;skill&gt;.env/apiKey</code> apply to <strong>host</strong> runs only.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

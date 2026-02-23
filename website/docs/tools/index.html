@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="active" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Tools (AGDI)</h1>
+<p>AGDI exposes <strong>first-class agent tools</strong> for browser, canvas, nodes, and cron.
+These replace the old <code>agdi-*</code> skills: the tools are typed, no shelling,
+and the agent should rely on them directly.</p>
+<h2>Disabling tools</h2>
+<p>You can globally allow/deny tools via <code>tools.allow</code> / <code>tools.deny</code> in <code>agdi.json</code>
+(deny wins). This prevents disallowed tools from being sent to model providers.</p>
+<pre><code class="language-json5">{
+  tools: { deny: [&quot;browser&quot;] },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Matching is case-insensitive.</li>
+<li><code>*</code> wildcards are supported (<code>&quot;*&quot;</code> means all tools).</li>
+<li>If <code>tools.allow</code> only references unknown or unloaded plugin tool names, AGDI logs a warning and ignores the allowlist so core tools stay available.</li>
+</ul>
+<h2>Tool profiles (base allowlist)</h2>
+<p><code>tools.profile</code> sets a <strong>base tool allowlist</strong> before <code>tools.allow</code>/<code>tools.deny</code>.
+Per-agent override: <code>agents.list[].tools.profile</code>.</p>
+<p>Profiles:</p>
+<ul>
+<li><code>minimal</code>: <code>session_status</code> only</li>
+<li><code>coding</code>: <code>group:fs</code>, <code>group:runtime</code>, <code>group:sessions</code>, <code>group:memory</code>, <code>image</code></li>
+<li><code>messaging</code>: <code>group:messaging</code>, <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>session_status</code></li>
+<li><code>full</code>: no restriction (same as unset)</li>
+</ul>
+<p>Example (messaging-only by default, allow Slack + Discord tools too):</p>
+<pre><code class="language-json5">{
+  tools: {
+    profile: &quot;messaging&quot;,
+    allow: [&quot;slack&quot;, &quot;discord&quot;],
+  },
+}
+</code></pre>
+<p>Example (coding profile, but deny exec/process everywhere):</p>
+<pre><code class="language-json5">{
+  tools: {
+    profile: &quot;coding&quot;,
+    deny: [&quot;group:runtime&quot;],
+  },
+}
+</code></pre>
+<p>Example (global coding profile, messaging-only support agent):</p>
+<pre><code class="language-json5">{
+  tools: { profile: &quot;coding&quot; },
+  agents: {
+    list: [
+      {
+        id: &quot;support&quot;,
+        tools: { profile: &quot;messaging&quot;, allow: [&quot;slack&quot;] },
+      },
+    ],
+  },
+}
+</code></pre>
+<h2>Provider-specific tool policy</h2>
+<p>Use <code>tools.byProvider</code> to <strong>further restrict</strong> tools for specific providers
+(or a single <code>provider/model</code>) without changing your global defaults.
+Per-agent override: <code>agents.list[].tools.byProvider</code>.</p>
+<p>This is applied <strong>after</strong> the base tool profile and <strong>before</strong> allow/deny lists,
+so it can only narrow the tool set.
+Provider keys accept either <code>provider</code> (e.g. <code>google-antigravity</code>) or
+<code>provider/model</code> (e.g. <code>openai/gpt-5.2</code>).</p>
+<p>Example (keep global coding profile, but minimal tools for Google Antigravity):</p>
+<pre><code class="language-json5">{
+  tools: {
+    profile: &quot;coding&quot;,
+    byProvider: {
+      &quot;google-antigravity&quot;: { profile: &quot;minimal&quot; },
+    },
+  },
+}
+</code></pre>
+<p>Example (provider/model-specific allowlist for a flaky endpoint):</p>
+<pre><code class="language-json5">{
+  tools: {
+    allow: [&quot;group:fs&quot;, &quot;group:runtime&quot;, &quot;sessions_list&quot;],
+    byProvider: {
+      &quot;openai/gpt-5.2&quot;: { allow: [&quot;group:fs&quot;, &quot;sessions_list&quot;] },
+    },
+  },
+}
+</code></pre>
+<p>Example (agent-specific override for a single provider):</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;support&quot;,
+        tools: {
+          byProvider: {
+            &quot;google-antigravity&quot;: { allow: [&quot;message&quot;, &quot;sessions_list&quot;] },
+          },
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<h2>Tool groups (shorthands)</h2>
+<p>Tool policies (global, agent, sandbox) support <code>group:*</code> entries that expand to multiple tools.
+Use these in <code>tools.allow</code> / <code>tools.deny</code>.</p>
+<p>Available groups:</p>
+<ul>
+<li><code>group:runtime</code>: <code>exec</code>, <code>bash</code>, <code>process</code></li>
+<li><code>group:fs</code>: <code>read</code>, <code>write</code>, <code>edit</code>, <code>apply_patch</code></li>
+<li><code>group:sessions</code>: <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>sessions_spawn</code>, <code>session_status</code></li>
+<li><code>group:memory</code>: <code>memory_search</code>, <code>memory_get</code></li>
+<li><code>group:web</code>: <code>web_search</code>, <code>web_fetch</code></li>
+<li><code>group:ui</code>: <code>browser</code>, <code>canvas</code></li>
+<li><code>group:automation</code>: <code>cron</code>, <code>gateway</code></li>
+<li><code>group:messaging</code>: <code>message</code></li>
+<li><code>group:nodes</code>: <code>nodes</code></li>
+<li><code>group:agdi</code>: all built-in AGDI tools (excludes provider plugins)</li>
+</ul>
+<p>Example (allow only file tools + browser):</p>
+<pre><code class="language-json5">{
+  tools: {
+    allow: [&quot;group:fs&quot;, &quot;browser&quot;],
+  },
+}
+</code></pre>
+<h2>Plugins + tools</h2>
+<p>Plugins can register <strong>additional tools</strong> (and CLI commands) beyond the core set.
+See <a href="/docs/tools/plugin">Plugins</a> for install + config, and <a href="/docs/tools/skills">Skills</a> for how
+tool usage guidance is injected into prompts. Some plugins ship their own skills
+alongside tools (for example, the voice-call plugin).</p>
+<p>Optional plugin tools:</p>
+<ul>
+<li><a href="/docs/tools/lobster">Lobster</a>: typed workflow runtime with resumable approvals (requires the Lobster CLI on the gateway host).</li>
+<li><a href="/docs/tools/llm-task">LLM Task</a>: JSON-only LLM step for structured workflow output (optional schema validation).</li>
+</ul>
+<h2>Tool inventory</h2>
+<h3><code>apply_patch</code></h3>
+<p>Apply structured patches across one or more files. Use for multi-hunk edits.
+Experimental: enable via <code>tools.exec.applyPatch.enabled</code> (OpenAI models only).
+<code>tools.exec.applyPatch.workspaceOnly</code> defaults to <code>true</code> (workspace-contained). Set it to <code>false</code> only if you intentionally want <code>apply_patch</code> to write/delete outside the workspace directory.</p>
+<h3><code>exec</code></h3>
+<p>Run shell commands in the workspace.</p>
+<p>Core parameters:</p>
+<ul>
+<li><code>command</code> (required)</li>
+<li><code>yieldMs</code> (auto-background after timeout, default 10000)</li>
+<li><code>background</code> (immediate background)</li>
+<li><code>timeout</code> (seconds; kills the process if exceeded, default 1800)</li>
+<li><code>elevated</code> (bool; run on host if elevated mode is enabled/allowed; only changes behavior when the agent is sandboxed)</li>
+<li><code>host</code> (<code>sandbox | gateway | node</code>)</li>
+<li><code>security</code> (<code>deny | allowlist | full</code>)</li>
+<li><code>ask</code> (<code>off | on-miss | always</code>)</li>
+<li><code>node</code> (node id/name for <code>host=node</code>)</li>
+<li>Need a real TTY? Set <code>pty: true</code>.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Returns <code>status: &quot;running&quot;</code> with a <code>sessionId</code> when backgrounded.</li>
+<li>Use <code>process</code> to poll/log/write/kill/clear background sessions.</li>
+<li>If <code>process</code> is disallowed, <code>exec</code> runs synchronously and ignores <code>yieldMs</code>/<code>background</code>.</li>
+<li><code>elevated</code> is gated by <code>tools.elevated</code> plus any <code>agents.list[].tools.elevated</code> override (both must allow) and is an alias for <code>host=gateway</code> + <code>security=full</code>.</li>
+<li><code>elevated</code> only changes behavior when the agent is sandboxed (otherwise it’s a no-op).</li>
+<li><code>host=node</code> can target a macOS companion app or a headless node host (<code>agdi node run</code>).</li>
+<li>gateway/node approvals and allowlists: <a href="/docs/tools/exec-approvals">Exec approvals</a>.</li>
+</ul>
+<h3><code>process</code></h3>
+<p>Manage background exec sessions.</p>
+<p>Core actions:</p>
+<ul>
+<li><code>list</code>, <code>poll</code>, <code>log</code>, <code>write</code>, <code>kill</code>, <code>clear</code>, <code>remove</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>poll</code> returns new output and exit status when complete.</li>
+<li><code>log</code> supports line-based <code>offset</code>/<code>limit</code> (omit <code>offset</code> to grab the last N lines).</li>
+<li><code>process</code> is scoped per agent; sessions from other agents are not visible.</li>
+</ul>
+<h3><code>web_search</code></h3>
+<p>Search the web using Brave Search API.</p>
+<p>Core parameters:</p>
+<ul>
+<li><code>query</code> (required)</li>
+<li><code>count</code> (1–10; default from <code>tools.web.search.maxResults</code>)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Requires a Brave API key (recommended: <code>agdi configure --section web</code>, or set <code>BRAVE_API_KEY</code>).</li>
+<li>Enable via <code>tools.web.search.enabled</code>.</li>
+<li>Responses are cached (default 15 min).</li>
+<li>See <a href="/docs/tools/web">Web tools</a> for setup.</li>
+</ul>
+<h3><code>web_fetch</code></h3>
+<p>Fetch and extract readable content from a URL (HTML → markdown/text).</p>
+<p>Core parameters:</p>
+<ul>
+<li><code>url</code> (required)</li>
+<li><code>extractMode</code> (<code>markdown</code> | <code>text</code>)</li>
+<li><code>maxChars</code> (truncate long pages)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Enable via <code>tools.web.fetch.enabled</code>.</li>
+<li><code>maxChars</code> is clamped by <code>tools.web.fetch.maxCharsCap</code> (default 50000).</li>
+<li>Responses are cached (default 15 min).</li>
+<li>For JS-heavy sites, prefer the browser tool.</li>
+<li>See <a href="/docs/tools/web">Web tools</a> for setup.</li>
+<li>See <a href="/docs/tools/firecrawl">Firecrawl</a> for the optional anti-bot fallback.</li>
+</ul>
+<h3><code>browser</code></h3>
+<p>Control the dedicated AGDI-managed browser.</p>
+<p>Core actions:</p>
+<ul>
+<li><code>status</code>, <code>start</code>, <code>stop</code>, <code>tabs</code>, <code>open</code>, <code>focus</code>, <code>close</code></li>
+<li><code>snapshot</code> (aria/ai)</li>
+<li><code>screenshot</code> (returns image block + <code>MEDIA:&lt;path&gt;</code>)</li>
+<li><code>act</code> (UI actions: click/type/press/hover/drag/select/fill/resize/wait/evaluate)</li>
+<li><code>navigate</code>, <code>console</code>, <code>pdf</code>, <code>upload</code>, <code>dialog</code></li>
+</ul>
+<p>Profile management:</p>
+<ul>
+<li><code>profiles</code> — list all browser profiles with status</li>
+<li><code>create-profile</code> — create new profile with auto-allocated port (or <code>cdpUrl</code>)</li>
+<li><code>delete-profile</code> — stop browser, delete user data, remove from config (local only)</li>
+<li><code>reset-profile</code> — kill orphan process on profile&#39;s port (local only)</li>
+</ul>
+<p>Common parameters:</p>
+<ul>
+<li><code>profile</code> (optional; defaults to <code>browser.defaultProfile</code>)</li>
+<li><code>target</code> (<code>sandbox</code> | <code>host</code> | <code>node</code>)</li>
+<li><code>node</code> (optional; picks a specific node id/name)
+Notes:</li>
+<li>Requires <code>browser.enabled=true</code> (default is <code>true</code>; set <code>false</code> to disable).</li>
+<li>All actions accept optional <code>profile</code> parameter for multi-instance support.</li>
+<li>When <code>profile</code> is omitted, uses <code>browser.defaultProfile</code> (defaults to &quot;chrome&quot;).</li>
+<li>Profile names: lowercase alphanumeric + hyphens only (max 64 chars).</li>
+<li>Port range: 18800-18899 (~100 profiles max).</li>
+<li>Remote profiles are attach-only (no start/stop/reset).</li>
+<li>If a browser-capable node is connected, the tool may auto-route to it (unless you pin <code>target</code>).</li>
+<li><code>snapshot</code> defaults to <code>ai</code> when Playwright is installed; use <code>aria</code> for the accessibility tree.</li>
+<li><code>snapshot</code> also supports role-snapshot options (<code>interactive</code>, <code>compact</code>, <code>depth</code>, <code>selector</code>) which return refs like <code>e12</code>.</li>
+<li><code>act</code> requires <code>ref</code> from <code>snapshot</code> (numeric <code>12</code> from AI snapshots, or <code>e12</code> from role snapshots); use <code>evaluate</code> for rare CSS selector needs.</li>
+<li>Avoid <code>act</code> → <code>wait</code> by default; use it only in exceptional cases (no reliable UI state to wait on).</li>
+<li><code>upload</code> can optionally pass a <code>ref</code> to auto-click after arming.</li>
+<li><code>upload</code> also supports <code>inputRef</code> (aria ref) or <code>element</code> (CSS selector) to set <code>&lt;input type=&quot;file&quot;&gt;</code> directly.</li>
+</ul>
+<h3><code>canvas</code></h3>
+<p>Drive the node Canvas (present, eval, snapshot, A2UI).</p>
+<p>Core actions:</p>
+<ul>
+<li><code>present</code>, <code>hide</code>, <code>navigate</code>, <code>eval</code></li>
+<li><code>snapshot</code> (returns image block + <code>MEDIA:&lt;path&gt;</code>)</li>
+<li><code>a2ui_push</code>, <code>a2ui_reset</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Uses gateway <code>node.invoke</code> under the hood.</li>
+<li>If no <code>node</code> is provided, the tool picks a default (single connected node or local mac node).</li>
+<li>A2UI is v0.8 only (no <code>createSurface</code>); the CLI rejects v0.9 JSONL with line errors.</li>
+<li>Quick smoke: <code>agdi nodes canvas a2ui push --node &lt;id&gt; --text &quot;Hello from A2UI&quot;</code>.</li>
+</ul>
+<h3><code>nodes</code></h3>
+<p>Discover and target paired nodes; send notifications; capture camera/screen.</p>
+<p>Core actions:</p>
+<ul>
+<li><code>status</code>, <code>describe</code></li>
+<li><code>pending</code>, <code>approve</code>, <code>reject</code> (pairing)</li>
+<li><code>notify</code> (macOS <code>system.notify</code>)</li>
+<li><code>run</code> (macOS <code>system.run</code>)</li>
+<li><code>camera_snap</code>, <code>camera_clip</code>, <code>screen_record</code></li>
+<li><code>location_get</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Camera/screen commands require the node app to be foregrounded.</li>
+<li>Images return image blocks + <code>MEDIA:&lt;path&gt;</code>.</li>
+<li>Videos return <code>FILE:&lt;path&gt;</code> (mp4).</li>
+<li>Location returns a JSON payload (lat/lon/accuracy/timestamp).</li>
+<li><code>run</code> params: <code>command</code> argv array; optional <code>cwd</code>, <code>env</code> (<code>KEY=VAL</code>), <code>commandTimeoutMs</code>, <code>invokeTimeoutMs</code>, <code>needsScreenRecording</code>.</li>
+</ul>
+<p>Example (<code>run</code>):</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;run&quot;,
+  &quot;node&quot;: &quot;office-mac&quot;,
+  &quot;command&quot;: [&quot;echo&quot;, &quot;Hello&quot;],
+  &quot;env&quot;: [&quot;FOO=bar&quot;],
+  &quot;commandTimeoutMs&quot;: 12000,
+  &quot;invokeTimeoutMs&quot;: 45000,
+  &quot;needsScreenRecording&quot;: false
+}
+</code></pre>
+<h3><code>image</code></h3>
+<p>Analyze an image with the configured image model.</p>
+<p>Core parameters:</p>
+<ul>
+<li><code>image</code> (required path or URL)</li>
+<li><code>prompt</code> (optional; defaults to &quot;Describe the image.&quot;)</li>
+<li><code>model</code> (optional override)</li>
+<li><code>maxBytesMb</code> (optional size cap)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Only available when <code>agents.defaults.imageModel</code> is configured (primary or fallbacks), or when an implicit image model can be inferred from your default model + configured auth (best-effort pairing).</li>
+<li>Uses the image model directly (independent of the main chat model).</li>
+</ul>
+<h3><code>message</code></h3>
+<p>Send messages and channel actions across Discord/Google Chat/Slack/Telegram/WhatsApp/Signal/iMessage/MS Teams.</p>
+<p>Core actions:</p>
+<ul>
+<li><code>send</code> (text + optional media; MS Teams also supports <code>card</code> for Adaptive Cards)</li>
+<li><code>poll</code> (WhatsApp/Discord/MS Teams polls)</li>
+<li><code>react</code> / <code>reactions</code> / <code>read</code> / <code>edit</code> / <code>delete</code></li>
+<li><code>pin</code> / <code>unpin</code> / <code>list-pins</code></li>
+<li><code>permissions</code></li>
+<li><code>thread-create</code> / <code>thread-list</code> / <code>thread-reply</code></li>
+<li><code>search</code></li>
+<li><code>sticker</code></li>
+<li><code>member-info</code> / <code>role-info</code></li>
+<li><code>emoji-list</code> / <code>emoji-upload</code> / <code>sticker-upload</code></li>
+<li><code>role-add</code> / <code>role-remove</code></li>
+<li><code>channel-info</code> / <code>channel-list</code></li>
+<li><code>voice-status</code></li>
+<li><code>event-list</code> / <code>event-create</code></li>
+<li><code>timeout</code> / <code>kick</code> / <code>ban</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>send</code> routes WhatsApp via the Gateway; other channels go direct.</li>
+<li><code>poll</code> uses the Gateway for WhatsApp and MS Teams; Discord polls go direct.</li>
+<li>When a message tool call is bound to an active chat session, sends are constrained to that session’s target to avoid cross-context leaks.</li>
+</ul>
+<h3><code>cron</code></h3>
+<p>Manage Gateway cron jobs and wakeups.</p>
+<p>Core actions:</p>
+<ul>
+<li><code>status</code>, <code>list</code></li>
+<li><code>add</code>, <code>update</code>, <code>remove</code>, <code>run</code>, <code>runs</code></li>
+<li><code>wake</code> (enqueue system event + optional immediate heartbeat)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>add</code> expects a full cron job object (same schema as <code>cron.add</code> RPC).</li>
+<li><code>update</code> uses <code>{ jobId, patch }</code> (<code>id</code> accepted for compatibility).</li>
+</ul>
+<h3><code>gateway</code></h3>
+<p>Restart or apply updates to the running Gateway process (in-place).</p>
+<p>Core actions:</p>
+<ul>
+<li><code>restart</code> (authorizes + sends <code>SIGUSR1</code> for in-process restart; <code>agdi gateway</code> restart in-place)</li>
+<li><code>config.get</code> / <code>config.schema</code></li>
+<li><code>config.apply</code> (validate + write config + restart + wake)</li>
+<li><code>config.patch</code> (merge partial update + restart + wake)</li>
+<li><code>update.run</code> (run update + restart + wake)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Use <code>delayMs</code> (defaults to 2000) to avoid interrupting an in-flight reply.</li>
+<li><code>restart</code> is disabled by default; enable with <code>commands.restart: true</code>.</li>
+</ul>
+<h3><code>sessions_list</code> / <code>sessions_history</code> / <code>sessions_send</code> / <code>sessions_spawn</code> / <code>session_status</code></h3>
+<p>List sessions, inspect transcript history, or send to another session.</p>
+<p>Core parameters:</p>
+<ul>
+<li><code>sessions_list</code>: <code>kinds?</code>, <code>limit?</code>, <code>activeMinutes?</code>, <code>messageLimit?</code> (0 = none)</li>
+<li><code>sessions_history</code>: <code>sessionKey</code> (or <code>sessionId</code>), <code>limit?</code>, <code>includeTools?</code></li>
+<li><code>sessions_send</code>: <code>sessionKey</code> (or <code>sessionId</code>), <code>message</code>, <code>timeoutSeconds?</code> (0 = fire-and-forget)</li>
+<li><code>sessions_spawn</code>: <code>task</code>, <code>label?</code>, <code>agentId?</code>, <code>model?</code>, <code>runTimeoutSeconds?</code>, <code>cleanup?</code></li>
+<li><code>session_status</code>: <code>sessionKey?</code> (default current; accepts <code>sessionId</code>), <code>model?</code> (<code>default</code> clears override)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>main</code> is the canonical direct-chat key; global/unknown are hidden.</li>
+<li><code>messageLimit &gt; 0</code> fetches last N messages per session (tool messages filtered).</li>
+<li>Session targeting is controlled by <code>tools.sessions.visibility</code> (default <code>tree</code>: current session + spawned subagent sessions). If you run a shared agent for multiple users, consider setting <code>tools.sessions.visibility: &quot;self&quot;</code> to prevent cross-session browsing.</li>
+<li><code>sessions_send</code> waits for final completion when <code>timeoutSeconds &gt; 0</code>.</li>
+<li>Delivery/announce happens after completion and is best-effort; <code>status: &quot;ok&quot;</code> confirms the agent run finished, not that the announce was delivered.</li>
+<li><code>sessions_spawn</code> starts a sub-agent run and posts an announce reply back to the requester chat.</li>
+<li><code>sessions_spawn</code> is non-blocking and returns <code>status: &quot;accepted&quot;</code> immediately.</li>
+<li><code>sessions_send</code> runs a reply‑back ping‑pong (reply <code>REPLY_SKIP</code> to stop; max turns via <code>session.agentToAgent.maxPingPongTurns</code>, 0–5).</li>
+<li>After the ping‑pong, the target agent runs an <strong>announce step</strong>; reply <code>ANNOUNCE_SKIP</code> to suppress the announcement.</li>
+<li>Sandbox clamp: when the current session is sandboxed and <code>agents.defaults.sandbox.sessionToolsVisibility: &quot;spawned&quot;</code>, AGDI clamps <code>tools.sessions.visibility</code> to <code>tree</code>.</li>
+</ul>
+<h3><code>agents_list</code></h3>
+<p>List agent ids that the current session may target with <code>sessions_spawn</code>.</p>
+<p>Notes:</p>
+<ul>
+<li>Result is restricted to per-agent allowlists (<code>agents.list[].subagents.allowAgents</code>).</li>
+<li>When <code>[&quot;*&quot;]</code> is configured, the tool includes all configured agents and marks <code>allowAny: true</code>.</li>
+</ul>
+<h2>Parameters (common)</h2>
+<p>Gateway-backed tools (<code>canvas</code>, <code>nodes</code>, <code>cron</code>):</p>
+<ul>
+<li><code>gatewayUrl</code> (default <code>ws://127.0.0.1:18789</code>)</li>
+<li><code>gatewayToken</code> (if auth enabled)</li>
+<li><code>timeoutMs</code></li>
+</ul>
+<p>Note: when <code>gatewayUrl</code> is set, include <code>gatewayToken</code> explicitly. Tools do not inherit config
+or environment credentials for overrides, and missing explicit credentials is an error.</p>
+<p>Browser tool:</p>
+<ul>
+<li><code>profile</code> (optional; defaults to <code>browser.defaultProfile</code>)</li>
+<li><code>target</code> (<code>sandbox</code> | <code>host</code> | <code>node</code>)</li>
+<li><code>node</code> (optional; pin a specific node id/name)</li>
+</ul>
+<h2>Recommended agent flows</h2>
+<p>Browser automation:</p>
+<ol>
+<li><code>browser</code> → <code>status</code> / <code>start</code></li>
+<li><code>snapshot</code> (ai or aria)</li>
+<li><code>act</code> (click/type/press)</li>
+<li><code>screenshot</code> if you need visual confirmation</li>
+</ol>
+<p>Canvas render:</p>
+<ol>
+<li><code>canvas</code> → <code>present</code></li>
+<li><code>a2ui_push</code> (optional)</li>
+<li><code>snapshot</code></li>
+</ol>
+<p>Node targeting:</p>
+<ol>
+<li><code>nodes</code> → <code>status</code></li>
+<li><code>describe</code> on the chosen node</li>
+<li><code>notify</code> / <code>run</code> / <code>camera_snap</code> / <code>screen_record</code></li>
+</ol>
+<h2>Safety</h2>
+<ul>
+<li>Avoid direct <code>system.run</code>; use <code>nodes</code> → <code>run</code> only with explicit user consent.</li>
+<li>Respect user consent for camera/screen capture.</li>
+<li>Use <code>status/describe</code> to ensure permissions before invoking media commands.</li>
+</ul>
+<h2>How tools are presented to the agent</h2>
+<p>Tools are exposed in two parallel channels:</p>
+<ol>
+<li><strong>System prompt text</strong>: a human-readable list + guidance.</li>
+<li><strong>Tool schema</strong>: the structured function definitions sent to the model API.</li>
+</ol>
+<p>That means the agent sees both “what tools exist” and “how to call them.” If a tool
+doesn’t appear in the system prompt or the schema, the model cannot call it.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Models — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="active" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Local models</h1>
+<p>Local is doable, but AGDI expects large context + strong defenses against prompt injection. Small cards truncate context and leak safety. Aim high: <strong>≥2 maxed-out Mac Studios or equivalent GPU rig (~$30k+)</strong>. A single <strong>24 GB</strong> GPU works only for lighter prompts with higher latency. Use the <strong>largest / full-size model variant you can run</strong>; aggressively quantized or “small” checkpoints raise prompt-injection risk (see <a href="/gateway/security">Security</a>).</p>
+<h2>Recommended: LM Studio + MiniMax M2.1 (Responses API, full-size)</h2>
+<p>Best current local stack. Load MiniMax M2.1 in LM Studio, enable the local server (default <code>http://127.0.0.1:1234</code>), and use Responses API to keep reasoning separate from final text.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;lmstudio/minimax-m2.1-gs32&quot; },
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;Opus&quot; },
+        &quot;lmstudio/minimax-m2.1-gs32&quot;: { alias: &quot;Minimax&quot; },
+      },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      lmstudio: {
+        baseUrl: &quot;http://127.0.0.1:1234/v1&quot;,
+        apiKey: &quot;lmstudio&quot;,
+        api: &quot;openai-responses&quot;,
+        models: [
+          {
+            id: &quot;minimax-m2.1-gs32&quot;,
+            name: &quot;MiniMax M2.1 GS32&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 196608,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p><strong>Setup checklist</strong></p>
+<ul>
+<li>Install LM Studio: <a href="https://lmstudio.ai">https://lmstudio.ai</a></li>
+<li>In LM Studio, download the <strong>largest MiniMax M2.1 build available</strong> (avoid “small”/heavily quantized variants), start the server, confirm <code>http://127.0.0.1:1234/v1/models</code> lists it.</li>
+<li>Keep the model loaded; cold-load adds startup latency.</li>
+<li>Adjust <code>contextWindow</code>/<code>maxTokens</code> if your LM Studio build differs.</li>
+<li>For WhatsApp, stick to Responses API so only final text is sent.</li>
+</ul>
+<p>Keep hosted models configured even when running local; use <code>models.mode: &quot;merge&quot;</code> so fallbacks stay available.</p>
+<h3>Hybrid config: hosted primary, local fallback</h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: {
+        primary: &quot;anthropic/claude-sonnet-4-5&quot;,
+        fallbacks: [&quot;lmstudio/minimax-m2.1-gs32&quot;, &quot;anthropic/claude-opus-4-6&quot;],
+      },
+      models: {
+        &quot;anthropic/claude-sonnet-4-5&quot;: { alias: &quot;Sonnet&quot; },
+        &quot;lmstudio/minimax-m2.1-gs32&quot;: { alias: &quot;MiniMax Local&quot; },
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;Opus&quot; },
+      },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      lmstudio: {
+        baseUrl: &quot;http://127.0.0.1:1234/v1&quot;,
+        apiKey: &quot;lmstudio&quot;,
+        api: &quot;openai-responses&quot;,
+        models: [
+          {
+            id: &quot;minimax-m2.1-gs32&quot;,
+            name: &quot;MiniMax M2.1 GS32&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 196608,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Local-first with hosted safety net</h3>
+<p>Swap the primary and fallback order; keep the same providers block and <code>models.mode: &quot;merge&quot;</code> so you can fall back to Sonnet or Opus when the local box is down.</p>
+<h3>Regional hosting / data routing</h3>
+<ul>
+<li>Hosted MiniMax/Kimi/GLM variants also exist on OpenRouter with region-pinned endpoints (e.g., US-hosted). Pick the regional variant there to keep traffic in your chosen jurisdiction while still using <code>models.mode: &quot;merge&quot;</code> for Anthropic/OpenAI fallbacks.</li>
+<li>Local-only remains the strongest privacy path; hosted regional routing is the middle ground when you need provider features but want control over data flow.</li>
+</ul>
+<h2>Other OpenAI-compatible local proxies</h2>
+<p>vLLM, LiteLLM, OAI-proxy, or custom gateways work if they expose an OpenAI-style <code>/v1</code> endpoint. Replace the provider block above with your endpoint and model ID:</p>
+<pre><code class="language-json5">{
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      local: {
+        baseUrl: &quot;http://127.0.0.1:8000/v1&quot;,
+        apiKey: &quot;sk-local&quot;,
+        api: &quot;openai-responses&quot;,
+        models: [
+          {
+            id: &quot;my-local-model&quot;,
+            name: &quot;Local Model&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 120000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Keep <code>models.mode: &quot;merge&quot;</code> so hosted models stay available as fallbacks.</p>
+<h2>Troubleshooting</h2>
+<ul>
+<li>Gateway can reach the proxy? <code>curl http://127.0.0.1:1234/v1/models</code>.</li>
+<li>LM Studio model unloaded? Reload; cold start is a common “hanging” cause.</li>
+<li>Context errors? Lower <code>contextWindow</code> or raise your server limit.</li>
+<li>Safety: local models skip provider-side filters; keep agents narrow and compaction on to limit prompt injection blast radius.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

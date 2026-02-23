@@ -1,4 +1,4 @@
-import type { OpenClawConfig, PluginRuntime } from "openclaw/plugin-sdk";
+import type { AGDIConfig, PluginRuntime } from "openclaw/plugin-sdk";
 import { describe, expect, it, vi } from "vitest";
 import { linePlugin } from "./channel.js";
 import { setLineRuntime } from "./runtime.js";
@@ -34,7 +34,7 @@ function createRuntime(): { runtime: PluginRuntime; mocks: LineRuntimeMocks } {
   const chunkMarkdownText = vi.fn((text: string) => [text]);
   const resolveTextChunkLimit = vi.fn(() => 123);
   const resolveLineAccount = vi.fn(
-    ({ cfg, accountId }: { cfg: OpenClawConfig; accountId?: string }) => {
+    ({ cfg, accountId }: { cfg: AGDIConfig; accountId?: string }) => {
       const resolved = accountId ?? "default";
       const lineConfig = (cfg.channels?.line ?? {}) as {
         accounts?: Record<string, Record<string, unknown>>;
@@ -91,7 +91,7 @@ describe("linePlugin outbound.sendPayload", () => {
   it("sends flex message without dropping text", async () => {
     const { runtime, mocks } = createRuntime();
     setLineRuntime(runtime);
-    const cfg = { channels: { line: {} } } as OpenClawConfig;
+    const cfg = { channels: { line: {} } } as AGDIConfig;
 
     const payload = {
       text: "Now playing:",
@@ -122,7 +122,7 @@ describe("linePlugin outbound.sendPayload", () => {
   it("sends template message without dropping text", async () => {
     const { runtime, mocks } = createRuntime();
     setLineRuntime(runtime);
-    const cfg = { channels: { line: {} } } as OpenClawConfig;
+    const cfg = { channels: { line: {} } } as AGDIConfig;
 
     const payload = {
       text: "Choose one:",
@@ -158,7 +158,7 @@ describe("linePlugin outbound.sendPayload", () => {
   it("attaches quick replies when no text chunks are present", async () => {
     const { runtime, mocks } = createRuntime();
     setLineRuntime(runtime);
-    const cfg = { channels: { line: {} } } as OpenClawConfig;
+    const cfg = { channels: { line: {} } } as AGDIConfig;
 
     const payload = {
       channelData: {
@@ -198,7 +198,7 @@ describe("linePlugin outbound.sendPayload", () => {
   it("sends media before quick-reply text so buttons stay visible", async () => {
     const { runtime, mocks } = createRuntime();
     setLineRuntime(runtime);
-    const cfg = { channels: { line: {} } } as OpenClawConfig;
+    const cfg = { channels: { line: {} } } as AGDIConfig;
 
     const payload = {
       text: "Hello",
@@ -236,7 +236,7 @@ describe("linePlugin outbound.sendPayload", () => {
   it("uses configured text chunk limit for payloads", async () => {
     const { runtime, mocks } = createRuntime();
     setLineRuntime(runtime);
-    const cfg = { channels: { line: { textChunkLimit: 123 } } } as OpenClawConfig;
+    const cfg = { channels: { line: { textChunkLimit: 123 } } } as AGDIConfig;
 
     const payload = {
       text: "Hello world",
@@ -293,7 +293,7 @@ describe("linePlugin groups.resolveRequireMention", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
 
     const requireMention = linePlugin.groups.resolveRequireMention({
       cfg,

@@ -192,26 +192,26 @@ describe("diagnostics-otel service", () => {
       attempt: 2,
     });
 
-    expect(telemetryState.counters.get("openclaw.webhook.received")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("agdi.webhook.received")?.add).toHaveBeenCalled();
     expect(
-      telemetryState.histograms.get("openclaw.webhook.duration_ms")?.record,
+      telemetryState.histograms.get("agdi.webhook.duration_ms")?.record,
     ).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.message.queued")?.add).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.message.processed")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("agdi.message.queued")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("agdi.message.processed")?.add).toHaveBeenCalled();
     expect(
-      telemetryState.histograms.get("openclaw.message.duration_ms")?.record,
+      telemetryState.histograms.get("agdi.message.duration_ms")?.record,
     ).toHaveBeenCalled();
-    expect(telemetryState.histograms.get("openclaw.queue.wait_ms")?.record).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.session.stuck")?.add).toHaveBeenCalled();
+    expect(telemetryState.histograms.get("agdi.queue.wait_ms")?.record).toHaveBeenCalled();
+    expect(telemetryState.counters.get("agdi.session.stuck")?.add).toHaveBeenCalled();
     expect(
-      telemetryState.histograms.get("openclaw.session.stuck_age_ms")?.record,
+      telemetryState.histograms.get("agdi.session.stuck_age_ms")?.record,
     ).toHaveBeenCalled();
-    expect(telemetryState.counters.get("openclaw.run.attempt")?.add).toHaveBeenCalled();
+    expect(telemetryState.counters.get("agdi.run.attempt")?.add).toHaveBeenCalled();
 
     const spanNames = telemetryState.tracer.startSpan.mock.calls.map((call) => call[0]);
-    expect(spanNames).toContain("openclaw.webhook.processed");
-    expect(spanNames).toContain("openclaw.message.processed");
-    expect(spanNames).toContain("openclaw.session.stuck");
+    expect(spanNames).toContain("agdi.webhook.processed");
+    expect(spanNames).toContain("agdi.message.processed");
+    expect(spanNames).toContain("agdi.session.stuck");
 
     expect(registerLogTransportMock).toHaveBeenCalledTimes(1);
     expect(registeredTransports).toHaveLength(1);

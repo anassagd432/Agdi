@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zalo — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="active" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Zalo (Bot API)</h1>
+<p>Status: experimental. Direct messages only; groups coming soon per Zalo docs.</p>
+<h2>Plugin required</h2>
+<p>Zalo ships as a plugin and is not bundled with the core install.</p>
+<ul>
+<li>Install via CLI: <code>agdi plugins install @agdi/zalo</code></li>
+<li>Or select <strong>Zalo</strong> during onboarding and confirm the install prompt</li>
+<li>Details: <a href="/docs/tools/plugin">Plugins</a></li>
+</ul>
+<h2>Quick setup (beginner)</h2>
+<ol>
+<li>Install the Zalo plugin:<ul>
+<li>From a source checkout: <code>agdi plugins install ./extensions/zalo</code></li>
+<li>From npm (if published): <code>agdi plugins install @agdi/zalo</code></li>
+<li>Or pick <strong>Zalo</strong> in onboarding and confirm the install prompt</li>
+</ul>
+</li>
+<li>Set the token:<ul>
+<li>Env: <code>ZALO_BOT_TOKEN=...</code></li>
+<li>Or config: <code>channels.zalo.botToken: &quot;...&quot;</code>.</li>
+</ul>
+</li>
+<li>Restart the gateway (or finish onboarding).</li>
+<li>DM access is pairing by default; approve the pairing code on first contact.</li>
+</ol>
+<p>Minimal config:</p>
+<pre><code class="language-json5">{
+  channels: {
+    zalo: {
+      enabled: true,
+      botToken: &quot;12345689:abc-xyz&quot;,
+      dmPolicy: &quot;pairing&quot;,
+    },
+  },
+}
+</code></pre>
+<h2>What it is</h2>
+<p>Zalo is a Vietnam-focused messaging app; its Bot API lets the Gateway run a bot for 1:1 conversations.
+It is a good fit for support or notifications where you want deterministic routing back to Zalo.</p>
+<ul>
+<li>A Zalo Bot API channel owned by the Gateway.</li>
+<li>Deterministic routing: replies go back to Zalo; the model never chooses channels.</li>
+<li>DMs share the agent&#39;s main session.</li>
+<li>Groups are not yet supported (Zalo docs state &quot;coming soon&quot;).</li>
+</ul>
+<h2>Setup (fast path)</h2>
+<h3>1) Create a bot token (Zalo Bot Platform)</h3>
+<ol>
+<li>Go to <a href="https://bot.zaloplatforms.com">https://bot.zaloplatforms.com</a> and sign in.</li>
+<li>Create a new bot and configure its settings.</li>
+<li>Copy the bot token (format: <code>12345689:abc-xyz</code>).</li>
+</ol>
+<h3>2) Configure the token (env or config)</h3>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    zalo: {
+      enabled: true,
+      botToken: &quot;12345689:abc-xyz&quot;,
+      dmPolicy: &quot;pairing&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Env option: <code>ZALO_BOT_TOKEN=...</code> (works for the default account only).</p>
+<p>Multi-account support: use <code>channels.zalo.accounts</code> with per-account tokens and optional <code>name</code>.</p>
+<ol start="3">
+<li>Restart the gateway. Zalo starts when a token is resolved (env or config).</li>
+<li>DM access defaults to pairing. Approve the code when the bot is first contacted.</li>
+</ol>
+<h2>How it works (behavior)</h2>
+<ul>
+<li>Inbound messages are normalized into the shared channel envelope with media placeholders.</li>
+<li>Replies always route back to the same Zalo chat.</li>
+<li>Long-polling by default; webhook mode available with <code>channels.zalo.webhookUrl</code>.</li>
+</ul>
+<h2>Limits</h2>
+<ul>
+<li>Outbound text is chunked to 2000 characters (Zalo API limit).</li>
+<li>Media downloads/uploads are capped by <code>channels.zalo.mediaMaxMb</code> (default 5).</li>
+<li>Streaming is blocked by default due to the 2000 char limit making streaming less useful.</li>
+</ul>
+<h2>Access control (DMs)</h2>
+<h3>DM access</h3>
+<ul>
+<li>Default: <code>channels.zalo.dmPolicy = &quot;pairing&quot;</code>. Unknown senders receive a pairing code; messages are ignored until approved (codes expire after 1 hour).</li>
+<li>Approve via:<ul>
+<li><code>agdi pairing list zalo</code></li>
+<li><code>agdi pairing approve zalo &lt;CODE&gt;</code></li>
+</ul>
+</li>
+<li>Pairing is the default token exchange. Details: <a href="/docs/channels/pairing">Pairing</a></li>
+<li><code>channels.zalo.allowFrom</code> accepts numeric user IDs (no username lookup available).</li>
+</ul>
+<h2>Long-polling vs webhook</h2>
+<ul>
+<li>Default: long-polling (no public URL required).</li>
+<li>Webhook mode: set <code>channels.zalo.webhookUrl</code> and <code>channels.zalo.webhookSecret</code>.<ul>
+<li>The webhook secret must be 8-256 characters.</li>
+<li>Webhook URL must use HTTPS.</li>
+<li>Zalo sends events with <code>X-Bot-Api-Secret-Token</code> header for verification.</li>
+<li>Gateway HTTP handles webhook requests at <code>channels.zalo.webhookPath</code> (defaults to the webhook URL path).</li>
+</ul>
+</li>
+</ul>
+<p><strong>Note:</strong> getUpdates (polling) and webhook are mutually exclusive per Zalo API docs.</p>
+<h2>Supported message types</h2>
+<ul>
+<li><strong>Text messages</strong>: Full support with 2000 character chunking.</li>
+<li><strong>Image messages</strong>: Download and process inbound images; send images via <code>sendPhoto</code>.</li>
+<li><strong>Stickers</strong>: Logged but not fully processed (no agent response).</li>
+<li><strong>Unsupported types</strong>: Logged (e.g., messages from protected users).</li>
+</ul>
+<h2>Capabilities</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Direct messages</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Groups</td>
+<td>❌ Coming soon (per Zalo docs)</td>
+</tr>
+<tr>
+<td>Media (images)</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Reactions</td>
+<td>❌ Not supported</td>
+</tr>
+<tr>
+<td>Threads</td>
+<td>❌ Not supported</td>
+</tr>
+<tr>
+<td>Polls</td>
+<td>❌ Not supported</td>
+</tr>
+<tr>
+<td>Native commands</td>
+<td>❌ Not supported</td>
+</tr>
+<tr>
+<td>Streaming</td>
+<td>⚠️ Blocked (2000 char limit)</td>
+</tr>
+</tbody></table>
+<h2>Delivery targets (CLI/cron)</h2>
+<ul>
+<li>Use a chat id as the target.</li>
+<li>Example: <code>agdi message send --channel zalo --target 123456789 --message &quot;hi&quot;</code>.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p><strong>Bot doesn&#39;t respond:</strong></p>
+<ul>
+<li>Check that the token is valid: <code>agdi channels status --probe</code></li>
+<li>Verify the sender is approved (pairing or allowFrom)</li>
+<li>Check gateway logs: <code>agdi logs --follow</code></li>
+</ul>
+<p><strong>Webhook not receiving events:</strong></p>
+<ul>
+<li>Ensure webhook URL uses HTTPS</li>
+<li>Verify secret token is 8-256 characters</li>
+<li>Confirm the gateway HTTP endpoint is reachable on the configured path</li>
+<li>Check that getUpdates polling is not running (they&#39;re mutually exclusive)</li>
+</ul>
+<h2>Configuration reference (Zalo)</h2>
+<p>Full configuration: <a href="/docs/gateway/configuration">Configuration</a></p>
+<p>Provider options:</p>
+<ul>
+<li><code>channels.zalo.enabled</code>: enable/disable channel startup.</li>
+<li><code>channels.zalo.botToken</code>: bot token from Zalo Bot Platform.</li>
+<li><code>channels.zalo.tokenFile</code>: read token from file path.</li>
+<li><code>channels.zalo.dmPolicy</code>: <code>pairing | allowlist | open | disabled</code> (default: pairing).</li>
+<li><code>channels.zalo.allowFrom</code>: DM allowlist (user IDs). <code>open</code> requires <code>&quot;*&quot;</code>. The wizard will ask for numeric IDs.</li>
+<li><code>channels.zalo.mediaMaxMb</code>: inbound/outbound media cap (MB, default 5).</li>
+<li><code>channels.zalo.webhookUrl</code>: enable webhook mode (HTTPS required).</li>
+<li><code>channels.zalo.webhookSecret</code>: webhook secret (8-256 chars).</li>
+<li><code>channels.zalo.webhookPath</code>: webhook path on the gateway HTTP server.</li>
+<li><code>channels.zalo.proxy</code>: proxy URL for API requests.</li>
+</ul>
+<p>Multi-account options:</p>
+<ul>
+<li><code>channels.zalo.accounts.&lt;id&gt;.botToken</code>: per-account token.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.tokenFile</code>: per-account token file.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.name</code>: display name.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.enabled</code>: enable/disable account.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.dmPolicy</code>: per-account DM policy.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.allowFrom</code>: per-account allowlist.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.webhookUrl</code>: per-account webhook URL.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.webhookSecret</code>: per-account webhook secret.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.webhookPath</code>: per-account webhook path.</li>
+<li><code>channels.zalo.accounts.&lt;id&gt;.proxy</code>: per-account proxy URL.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

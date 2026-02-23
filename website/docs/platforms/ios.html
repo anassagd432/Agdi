@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS App — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="active" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>iOS App (Node)</h1>
+<p>Availability: internal preview. The iOS app is not publicly distributed yet.</p>
+<h2>What it does</h2>
+<ul>
+<li>Connects to a Gateway over WebSocket (LAN or tailnet).</li>
+<li>Exposes node capabilities: Canvas, Screen snapshot, Camera capture, Location, Talk mode, Voice wake.</li>
+<li>Receives <code>node.invoke</code> commands and reports node status events.</li>
+</ul>
+<h2>Requirements</h2>
+<ul>
+<li>Gateway running on another device (macOS, Linux, or Windows via WSL2).</li>
+<li>Network path:<ul>
+<li>Same LAN via Bonjour, <strong>or</strong></li>
+<li>Tailnet via unicast DNS-SD (example domain: <code>agdi.internal.</code>), <strong>or</strong></li>
+<li>Manual host/port (fallback).</li>
+</ul>
+</li>
+</ul>
+<h2>Quick start (pair + connect)</h2>
+<ol>
+<li>Start the Gateway:</li>
+</ol>
+<pre><code class="language-bash">agdi gateway --port 18789
+</code></pre>
+<ol start="2">
+<li><p>In the iOS app, open Settings and pick a discovered gateway (or enable Manual Host and enter host/port).</p>
+</li>
+<li><p>Approve the pairing request on the gateway host:</p>
+</li>
+</ol>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+</code></pre>
+<ol start="4">
+<li>Verify connection:</li>
+</ol>
+<pre><code class="language-bash">agdi nodes status
+agdi gateway call node.list --params &quot;{}&quot;
+</code></pre>
+<h2>Discovery paths</h2>
+<h3>Bonjour (LAN)</h3>
+<p>The Gateway advertises <code>_agdi-gw._tcp</code> on <code>local.</code>. The iOS app lists these automatically.</p>
+<h3>Tailnet (cross-network)</h3>
+<p>If mDNS is blocked, use a unicast DNS-SD zone (choose a domain; example: <code>agdi.internal.</code>) and Tailscale split DNS.
+See <a href="/docs/gateway/bonjour">Bonjour</a> for the CoreDNS example.</p>
+<h3>Manual host/port</h3>
+<p>In Settings, enable <strong>Manual Host</strong> and enter the gateway host + port (default <code>18789</code>).</p>
+<h2>Canvas + A2UI</h2>
+<p>The iOS node renders a WKWebView canvas. Use <code>node.invoke</code> to drive it:</p>
+<pre><code class="language-bash">agdi nodes invoke --node &quot;iOS Node&quot; --command canvas.navigate --params &#39;{&quot;url&quot;:&quot;http://&lt;gateway-host&gt;:18789/__agdi__/canvas/&quot;}&#39;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The Gateway canvas host serves <code>/__agdi__/canvas/</code> and <code>/__agdi__/a2ui/</code>.</li>
+<li>It is served from the Gateway HTTP server (same port as <code>gateway.port</code>, default <code>18789</code>).</li>
+<li>The iOS node auto-navigates to A2UI on connect when a canvas host URL is advertised.</li>
+<li>Return to the built-in scaffold with <code>canvas.navigate</code> and <code>{&quot;url&quot;:&quot;&quot;}</code>.</li>
+</ul>
+<h3>Canvas eval / snapshot</h3>
+<pre><code class="language-bash">agdi nodes invoke --node &quot;iOS Node&quot; --command canvas.eval --params &#39;{&quot;javaScript&quot;:&quot;(() =&gt; { const {ctx} = window.__agdi; ctx.clearRect(0,0,innerWidth,innerHeight); ctx.lineWidth=6; ctx.strokeStyle=\&quot;#ff2d55\&quot;; ctx.beginPath(); ctx.moveTo(40,40); ctx.lineTo(innerWidth-40, innerHeight-40); ctx.stroke(); return \&quot;ok\&quot;; })()&quot;}&#39;
+</code></pre>
+<pre><code class="language-bash">agdi nodes invoke --node &quot;iOS Node&quot; --command canvas.snapshot --params &#39;{&quot;maxWidth&quot;:900,&quot;format&quot;:&quot;jpeg&quot;}&#39;
+</code></pre>
+<h2>Voice wake + talk mode</h2>
+<ul>
+<li>Voice wake and talk mode are available in Settings.</li>
+<li>iOS may suspend background audio; treat voice features as best-effort when the app is not active.</li>
+</ul>
+<h2>Common errors</h2>
+<ul>
+<li><code>NODE_BACKGROUND_UNAVAILABLE</code>: bring the iOS app to the foreground (canvas/camera/screen commands require it).</li>
+<li><code>A2UI_HOST_NOT_CONFIGURED</code>: the Gateway did not advertise a canvas host URL; check <code>canvasHost</code> in <a href="/docs/gateway/configuration">Gateway configuration</a>.</li>
+<li>Pairing prompt never appears: run <code>agdi nodes pending</code> and approve manually.</li>
+<li>Reconnect fails after reinstall: the Keychain pairing token was cleared; re-pair the node.</li>
+</ul>
+<h2>Related docs</h2>
+<ul>
+<li><a href="/docs/gateway/pairing">Pairing</a></li>
+<li><a href="/docs/gateway/discovery">Discovery</a></li>
+<li><a href="/docs/gateway/bonjour">Bonjour</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

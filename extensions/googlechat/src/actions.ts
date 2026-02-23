@@ -1,7 +1,7 @@
 import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
-  OpenClawConfig,
+  AGDIConfig,
 } from "openclaw/plugin-sdk";
 import {
   createActionGate,
@@ -23,13 +23,13 @@ import { resolveGoogleChatOutboundSpace } from "./targets.js";
 
 const providerId = "googlechat";
 
-function listEnabledAccounts(cfg: OpenClawConfig) {
+function listEnabledAccounts(cfg: AGDIConfig) {
   return listEnabledGoogleChatAccounts(cfg).filter(
     (account) => account.enabled && account.credentialSource !== "none",
   );
 }
 
-function isReactionsEnabled(accounts: ReturnType<typeof listEnabledAccounts>, cfg: OpenClawConfig) {
+function isReactionsEnabled(accounts: ReturnType<typeof listEnabledAccounts>, cfg: AGDIConfig) {
   for (const account of accounts) {
     const gate = createActionGate(
       (account.config.actions ??

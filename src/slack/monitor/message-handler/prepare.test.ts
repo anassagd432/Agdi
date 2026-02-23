@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../../config/config.js";
+import type { AGDIConfig } from "../../../config/config.js";
 import type { RuntimeEnv } from "../../../runtime.js";
 import type { ResolvedSlackAccount } from "../../accounts.js";
 import type { SlackMessageEvent } from "../../types.js";
@@ -28,7 +28,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
   }
 
   beforeAll(() => {
-    fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-slack-thread-"));
+    fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-slack-thread-"));
   });
 
   afterAll(() => {
@@ -42,7 +42,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
     const slackCtx = createSlackMonitorContext({
       cfg: {
         channels: { slack: { enabled: true } },
-      } as OpenClawConfig,
+      } as AGDIConfig,
       accountId: "default",
       botToken: "token",
       app: { client: {} } as App,
@@ -68,7 +68,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
       threadInheritParent: false,
       slashCommand: {
         enabled: false,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },
@@ -99,7 +99,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
     });
   }
 
-  function createThreadSlackCtx(params: { cfg: OpenClawConfig; replies: unknown }) {
+  function createThreadSlackCtx(params: { cfg: AGDIConfig; replies: unknown }) {
     return createSlackMonitorContext({
       cfg: params.cfg,
       accountId: "default",
@@ -127,7 +127,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
       threadInheritParent: false,
       slashCommand: {
         enabled: false,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },
@@ -175,7 +175,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
             enabled: true,
           },
         },
-      } as OpenClawConfig,
+      } as AGDIConfig,
       accountId: "default",
       botToken: "token",
       app: { client: {} } as App,
@@ -204,7 +204,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
       threadInheritParent: false,
       slashCommand: {
         enabled: false,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },
@@ -259,7 +259,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
     const slackCtx = createSlackMonitorContext({
       cfg: {
         channels: { slack: { enabled: true, replyToMode: "all" } },
-      } as OpenClawConfig,
+      } as AGDIConfig,
       accountId: "default",
       botToken: "token",
       app: { client: {} } as App,
@@ -285,7 +285,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
       threadInheritParent: false,
       slashCommand: {
         enabled: false,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },
@@ -344,7 +344,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
       cfg: {
         session: { store: storePath },
         channels: { slack: { enabled: true, replyToMode: "all", groupPolicy: "open" } },
-      } as OpenClawConfig,
+      } as AGDIConfig,
       replies,
     });
     slackCtx.resolveUserName = async (id: string) => ({
@@ -383,7 +383,7 @@ describe("slack prepareSlackMessage inbound contract", () => {
     const cfg = {
       session: { store: storePath },
       channels: { slack: { enabled: true, replyToMode: "all", groupPolicy: "open" } },
-    } as OpenClawConfig;
+    } as AGDIConfig;
     const route = resolveAgentRoute({
       cfg,
       channel: "slack",
@@ -490,7 +490,7 @@ describe("prepareSlackMessage sender prefix", () => {
   it("prefixes channel bodies with sender label", async () => {
     const ctx = {
       cfg: {
-        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
+        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/agdi" } },
         channels: { slack: {} },
       },
       accountId: "default",
@@ -523,7 +523,7 @@ describe("prepareSlackMessage sender prefix", () => {
       replyToMode: "off",
       threadHistoryScope: "channel",
       threadInheritParent: false,
-      slashCommand: { command: "/openclaw", enabled: true },
+      slashCommand: { command: "/agdi", enabled: true },
       textLimit: 2000,
       ackReactionScope: "off",
       mediaMaxBytes: 1000,
@@ -564,7 +564,7 @@ describe("prepareSlackMessage sender prefix", () => {
   it("detects /new as control command when prefixed with Slack mention", async () => {
     const ctx = {
       cfg: {
-        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
+        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/agdi" } },
         channels: { slack: { dm: { enabled: true, policy: "open", allowFrom: ["*"] } } },
       },
       accountId: "default",
@@ -599,7 +599,7 @@ describe("prepareSlackMessage sender prefix", () => {
       threadInheritParent: false,
       slashCommand: {
         enabled: false,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },

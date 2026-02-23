@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Capture — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="active" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Camera capture (agent)</h1>
+<p>AGDI supports <strong>camera capture</strong> for agent workflows:</p>
+<ul>
+<li><strong>iOS node</strong> (paired via Gateway): capture a <strong>photo</strong> (<code>jpg</code>) or <strong>short video clip</strong> (<code>mp4</code>, with optional audio) via <code>node.invoke</code>.</li>
+<li><strong>Android node</strong> (paired via Gateway): capture a <strong>photo</strong> (<code>jpg</code>) or <strong>short video clip</strong> (<code>mp4</code>, with optional audio) via <code>node.invoke</code>.</li>
+<li><strong>macOS app</strong> (node via Gateway): capture a <strong>photo</strong> (<code>jpg</code>) or <strong>short video clip</strong> (<code>mp4</code>, with optional audio) via <code>node.invoke</code>.</li>
+</ul>
+<p>All camera access is gated behind <strong>user-controlled settings</strong>.</p>
+<h2>iOS node</h2>
+<h3>User setting (default on)</h3>
+<ul>
+<li>iOS Settings tab → <strong>Camera</strong> → <strong>Allow Camera</strong> (<code>camera.enabled</code>)<ul>
+<li>Default: <strong>on</strong> (missing key is treated as enabled).</li>
+<li>When off: <code>camera.*</code> commands return <code>CAMERA_DISABLED</code>.</li>
+</ul>
+</li>
+</ul>
+<h3>Commands (via Gateway <code>node.invoke</code>)</h3>
+<ul>
+<li><p><code>camera.list</code></p>
+<ul>
+<li>Response payload:<ul>
+<li><code>devices</code>: array of <code>{ id, name, position, deviceType }</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>camera.snap</code></p>
+<ul>
+<li>Params:<ul>
+<li><code>facing</code>: <code>front|back</code> (default: <code>front</code>)</li>
+<li><code>maxWidth</code>: number (optional; default <code>1600</code> on the iOS node)</li>
+<li><code>quality</code>: <code>0..1</code> (optional; default <code>0.9</code>)</li>
+<li><code>format</code>: currently <code>jpg</code></li>
+<li><code>delayMs</code>: number (optional; default <code>0</code>)</li>
+<li><code>deviceId</code>: string (optional; from <code>camera.list</code>)</li>
+</ul>
+</li>
+<li>Response payload:<ul>
+<li><code>format: &quot;jpg&quot;</code></li>
+<li><code>base64: &quot;&lt;...&gt;&quot;</code></li>
+<li><code>width</code>, <code>height</code></li>
+</ul>
+</li>
+<li>Payload guard: photos are recompressed to keep the base64 payload under 5 MB.</li>
+</ul>
+</li>
+<li><p><code>camera.clip</code></p>
+<ul>
+<li>Params:<ul>
+<li><code>facing</code>: <code>front|back</code> (default: <code>front</code>)</li>
+<li><code>durationMs</code>: number (default <code>3000</code>, clamped to a max of <code>60000</code>)</li>
+<li><code>includeAudio</code>: boolean (default <code>true</code>)</li>
+<li><code>format</code>: currently <code>mp4</code></li>
+<li><code>deviceId</code>: string (optional; from <code>camera.list</code>)</li>
+</ul>
+</li>
+<li>Response payload:<ul>
+<li><code>format: &quot;mp4&quot;</code></li>
+<li><code>base64: &quot;&lt;...&gt;&quot;</code></li>
+<li><code>durationMs</code></li>
+<li><code>hasAudio</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Foreground requirement</h3>
+<p>Like <code>canvas.*</code>, the iOS node only allows <code>camera.*</code> commands in the <strong>foreground</strong>. Background invocations return <code>NODE_BACKGROUND_UNAVAILABLE</code>.</p>
+<h3>CLI helper (temp files + MEDIA)</h3>
+<p>The easiest way to get attachments is via the CLI helper, which writes decoded media to a temp file and prints <code>MEDIA:&lt;path&gt;</code>.</p>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi nodes camera snap --node &lt;id&gt;               # default: both front + back (2 MEDIA lines)
+agdi nodes camera snap --node &lt;id&gt; --facing front
+agdi nodes camera clip --node &lt;id&gt; --duration 3000
+agdi nodes camera clip --node &lt;id&gt; --no-audio
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>nodes camera snap</code> defaults to <strong>both</strong> facings to give the agent both views.</li>
+<li>Output files are temporary (in the OS temp directory) unless you build your own wrapper.</li>
+</ul>
+<h2>Android node</h2>
+<h3>Android user setting (default on)</h3>
+<ul>
+<li>Android Settings sheet → <strong>Camera</strong> → <strong>Allow Camera</strong> (<code>camera.enabled</code>)<ul>
+<li>Default: <strong>on</strong> (missing key is treated as enabled).</li>
+<li>When off: <code>camera.*</code> commands return <code>CAMERA_DISABLED</code>.</li>
+</ul>
+</li>
+</ul>
+<h3>Permissions</h3>
+<ul>
+<li>Android requires runtime permissions:<ul>
+<li><code>CAMERA</code> for both <code>camera.snap</code> and <code>camera.clip</code>.</li>
+<li><code>RECORD_AUDIO</code> for <code>camera.clip</code> when <code>includeAudio=true</code>.</li>
+</ul>
+</li>
+</ul>
+<p>If permissions are missing, the app will prompt when possible; if denied, <code>camera.*</code> requests fail with a
+<code>*_PERMISSION_REQUIRED</code> error.</p>
+<h3>Android foreground requirement</h3>
+<p>Like <code>canvas.*</code>, the Android node only allows <code>camera.*</code> commands in the <strong>foreground</strong>. Background invocations return <code>NODE_BACKGROUND_UNAVAILABLE</code>.</p>
+<h3>Payload guard</h3>
+<p>Photos are recompressed to keep the base64 payload under 5 MB.</p>
+<h2>macOS app</h2>
+<h3>User setting (default off)</h3>
+<p>The macOS companion app exposes a checkbox:</p>
+<ul>
+<li><strong>Settings → General → Allow Camera</strong> (<code>agdi.cameraEnabled</code>)<ul>
+<li>Default: <strong>off</strong></li>
+<li>When off: camera requests return “Camera disabled by user”.</li>
+</ul>
+</li>
+</ul>
+<h3>CLI helper (node invoke)</h3>
+<p>Use the main <code>agdi</code> CLI to invoke camera commands on the macOS node.</p>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi nodes camera list --node &lt;id&gt;            # list camera ids
+agdi nodes camera snap --node &lt;id&gt;            # prints MEDIA:&lt;path&gt;
+agdi nodes camera snap --node &lt;id&gt; --max-width 1280
+agdi nodes camera snap --node &lt;id&gt; --delay-ms 2000
+agdi nodes camera snap --node &lt;id&gt; --device-id &lt;id&gt;
+agdi nodes camera clip --node &lt;id&gt; --duration 10s          # prints MEDIA:&lt;path&gt;
+agdi nodes camera clip --node &lt;id&gt; --duration-ms 3000      # prints MEDIA:&lt;path&gt; (legacy flag)
+agdi nodes camera clip --node &lt;id&gt; --device-id &lt;id&gt;
+agdi nodes camera clip --node &lt;id&gt; --no-audio
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>agdi nodes camera snap</code> defaults to <code>maxWidth=1600</code> unless overridden.</li>
+<li>On macOS, <code>camera.snap</code> waits <code>delayMs</code> (default 2000ms) after warm-up/exposure settle before capturing.</li>
+<li>Photo payloads are recompressed to keep base64 under 5 MB.</li>
+</ul>
+<h2>Safety + practical limits</h2>
+<ul>
+<li>Camera and microphone access trigger the usual OS permission prompts (and require usage strings in Info.plist).</li>
+<li>Video clips are capped (currently <code>&lt;= 60s</code>) to avoid oversized node payloads (base64 overhead + message limits).</li>
+</ul>
+<h2>macOS screen video (OS-level)</h2>
+<p>For <em>screen</em> video (not camera), use the macOS companion:</p>
+<pre><code class="language-bash">agdi nodes screen record --node &lt;id&gt; --duration 10s --fps 15   # prints MEDIA:&lt;path&gt;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Requires macOS <strong>Screen Recording</strong> permission (TCC).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

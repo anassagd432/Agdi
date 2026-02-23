@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hetzner — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab active" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/docs/install/index.html">Install</a></li><li><a class="" href="/docs/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/docs/install/docker.html">Docker</a></li><li><a class="" href="/docs/install/podman.html">Podman</a></li><li><a class="" href="/docs/install/nix.html">Nix</a></li><li><a class="" href="/docs/install/ansible.html">Ansible</a></li><li><a class="" href="/docs/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/docs/install/updating.html">Updating</a></li><li><a class="" href="/docs/install/migrating.html">Migration Guide</a></li><li><a class="" href="/docs/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/docs/install/fly.html">Fly.io</a></li><li><a class="active" href="/docs/install/hetzner.html">Hetzner</a></li><li><a class="" href="/docs/install/gcp.html">GCP</a></li><li><a class="" href="/docs/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/docs/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/docs/install/railway.html">railway</a></li><li><a class="" href="/docs/install/render.html">render</a></li><li><a class="" href="/docs/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/docs/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI on Hetzner (Docker, Production VPS Guide)</h1>
+<h2>Goal</h2>
+<p>Run a persistent AGDI Gateway on a Hetzner VPS using Docker, with durable state, baked-in binaries, and safe restart behavior.</p>
+<p>If you want “AGDI 24/7 for ~$5”, this is the simplest reliable setup.
+Hetzner pricing changes; pick the smallest Debian/Ubuntu VPS and scale up if you hit OOMs.</p>
+<h2>What are we doing (simple terms)?</h2>
+<ul>
+<li>Rent a small Linux server (Hetzner VPS)</li>
+<li>Install Docker (isolated app runtime)</li>
+<li>Start the AGDI Gateway in Docker</li>
+<li>Persist <code>~/.agdi</code> + <code>~/.agdi/workspace</code> on the host (survives restarts/rebuilds)</li>
+<li>Access the Control UI from your laptop via an SSH tunnel</li>
+</ul>
+<p>The Gateway can be accessed via:</p>
+<ul>
+<li>SSH port forwarding from your laptop</li>
+<li>Direct port exposure if you manage firewalling and tokens yourself</li>
+</ul>
+<p>This guide assumes Ubuntu or Debian on Hetzner.<br>If you are on another Linux VPS, map packages accordingly.
+For the generic Docker flow, see <a href="/docs/install/docker">Docker</a>.</p>
+<hr>
+<h2>Quick path (experienced operators)</h2>
+<ol>
+<li>Provision Hetzner VPS</li>
+<li>Install Docker</li>
+<li>Clone AGDI repository</li>
+<li>Create persistent host directories</li>
+<li>Configure <code>.env</code> and <code>docker-compose.yml</code></li>
+<li>Bake required binaries into the image</li>
+<li><code>docker compose up -d</code></li>
+<li>Verify persistence and Gateway access</li>
+</ol>
+<hr>
+<h2>What you need</h2>
+<ul>
+<li>Hetzner VPS with root access</li>
+<li>SSH access from your laptop</li>
+<li>Basic comfort with SSH + copy/paste</li>
+<li>~20 minutes</li>
+<li>Docker and Docker Compose</li>
+<li>Model auth credentials</li>
+<li>Optional provider credentials<ul>
+<li>WhatsApp QR</li>
+<li>Telegram bot token</li>
+<li>Gmail OAuth</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>1) Provision the VPS</h2>
+<p>Create an Ubuntu or Debian VPS in Hetzner.</p>
+<p>Connect as root:</p>
+<pre><code class="language-bash">ssh root@YOUR_VPS_IP
+</code></pre>
+<p>This guide assumes the VPS is stateful.
+Do not treat it as disposable infrastructure.</p>
+<hr>
+<h2>2) Install Docker (on the VPS)</h2>
+<pre><code class="language-bash">apt-get update
+apt-get install -y git curl ca-certificates
+curl -fsSL https://get.docker.com | sh
+</code></pre>
+<p>Verify:</p>
+<pre><code class="language-bash">docker --version
+docker compose version
+</code></pre>
+<hr>
+<h2>3) Clone the AGDI repository</h2>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+</code></pre>
+<p>This guide assumes you will build a custom image to guarantee binary persistence.</p>
+<hr>
+<h2>4) Create persistent host directories</h2>
+<p>Docker containers are ephemeral.
+All long-lived state must live on the host.</p>
+<pre><code class="language-bash">mkdir -p /root/.agdi/workspace
+
+# Set ownership to the container user (uid 1000):
+chown -R 1000:1000 /root/.agdi
+</code></pre>
+<hr>
+<h2>5) Configure environment variables</h2>
+<p>Create <code>.env</code> in the repository root.</p>
+<pre><code class="language-bash">AGDI_IMAGE=agdi:latest
+AGDI_GATEWAY_TOKEN=change-me-now
+AGDI_GATEWAY_BIND=lan
+AGDI_GATEWAY_PORT=18789
+
+AGDI_CONFIG_DIR=/root/.agdi
+AGDI_WORKSPACE_DIR=/root/.agdi/workspace
+
+GOG_KEYRING_PASSWORD=change-me-now
+XDG_CONFIG_HOME=/home/node/.agdi
+</code></pre>
+<p>Generate strong secrets:</p>
+<pre><code class="language-bash">openssl rand -hex 32
+</code></pre>
+<p><strong>Do not commit this file.</strong></p>
+<hr>
+<h2>6) Docker Compose configuration</h2>
+<p>Create or update <code>docker-compose.yml</code>.</p>
+<pre><code class="language-yaml">services:
+  agdi-gateway:
+    image: ${AGDI_IMAGE}
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HOME=/home/node
+      - NODE_ENV=production
+      - TERM=xterm-256color
+      - AGDI_GATEWAY_BIND=${AGDI_GATEWAY_BIND}
+      - AGDI_GATEWAY_PORT=${AGDI_GATEWAY_PORT}
+      - AGDI_GATEWAY_TOKEN=${AGDI_GATEWAY_TOKEN}
+      - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
+      - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
+      - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - ${AGDI_CONFIG_DIR}:/home/node/.agdi
+      - ${AGDI_WORKSPACE_DIR}:/home/node/.agdi/workspace
+    ports:
+      # Recommended: keep the Gateway loopback-only on the VPS; access via SSH tunnel.
+      # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
+      - &quot;127.0.0.1:${AGDI_GATEWAY_PORT}:18789&quot;
+    command:
+      [
+        &quot;node&quot;,
+        &quot;dist/index.js&quot;,
+        &quot;gateway&quot;,
+        &quot;--bind&quot;,
+        &quot;${AGDI_GATEWAY_BIND}&quot;,
+        &quot;--port&quot;,
+        &quot;${AGDI_GATEWAY_PORT}&quot;,
+        &quot;--allow-unconfigured&quot;,
+      ]
+</code></pre>
+<p><code>--allow-unconfigured</code> is only for bootstrap convenience, it is not a replacement for a proper gateway configuration. Still set auth (<code>gateway.auth.token</code> or password) and use safe bind settings for your deployment.</p>
+<hr>
+<h2>7) Bake required binaries into the image (critical)</h2>
+<p>Installing binaries inside a running container is a trap.
+Anything installed at runtime will be lost on restart.</p>
+<p>All external binaries required by skills must be installed at image build time.</p>
+<p>The examples below show three common binaries only:</p>
+<ul>
+<li><code>gog</code> for Gmail access</li>
+<li><code>goplaces</code> for Google Places</li>
+<li><code>wacli</code> for WhatsApp</li>
+</ul>
+<p>These are examples, not a complete list.
+You may install as many binaries as needed using the same pattern.</p>
+<p>If you add new skills later that depend on additional binaries, you must:</p>
+<ol>
+<li>Update the Dockerfile</li>
+<li>Rebuild the image</li>
+<li>Restart the containers</li>
+</ol>
+<p><strong>Example Dockerfile</strong></p>
+<pre><code class="language-dockerfile">FROM node:22-bookworm
+
+RUN apt-get update &amp;&amp; apt-get install -y socat &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Example binary 1: Gmail CLI
+RUN curl -L https://github.com/steipete/gog/releases/latest/download/gog_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/gog
+
+# Example binary 2: Google Places CLI
+RUN curl -L https://github.com/steipete/goplaces/releases/latest/download/goplaces_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/goplaces
+
+# Example binary 3: WhatsApp CLI
+RUN curl -L https://github.com/steipete/wacli/releases/latest/download/wacli_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/wacli
+
+# Add more binaries below using the same pattern
+
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY ui/package.json ./ui/package.json
+COPY scripts ./scripts
+
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm build
+RUN pnpm ui:install
+RUN pnpm ui:build
+
+ENV NODE_ENV=production
+
+CMD [&quot;node&quot;,&quot;dist/index.js&quot;]
+</code></pre>
+<hr>
+<h2>8) Build and launch</h2>
+<pre><code class="language-bash">docker compose build
+docker compose up -d agdi-gateway
+</code></pre>
+<p>Verify binaries:</p>
+<pre><code class="language-bash">docker compose exec agdi-gateway which gog
+docker compose exec agdi-gateway which goplaces
+docker compose exec agdi-gateway which wacli
+</code></pre>
+<p>Expected output:</p>
+<pre><code>/usr/local/bin/gog
+/usr/local/bin/goplaces
+/usr/local/bin/wacli
+</code></pre>
+<hr>
+<h2>9) Verify Gateway</h2>
+<pre><code class="language-bash">docker compose logs -f agdi-gateway
+</code></pre>
+<p>Success:</p>
+<pre><code>[gateway] listening on ws://0.0.0.0:18789
+</code></pre>
+<p>From your laptop:</p>
+<pre><code class="language-bash">ssh -N -L 18789:127.0.0.1:18789 root@YOUR_VPS_IP
+</code></pre>
+<p>Open:</p>
+<p><code>http://127.0.0.1:18789/</code></p>
+<p>Paste your gateway token.</p>
+<hr>
+<h2>What persists where (source of truth)</h2>
+<p>AGDI runs in Docker, but Docker is not the source of truth.
+All long-lived state must survive restarts, rebuilds, and reboots.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Location</th>
+<th>Persistence mechanism</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gateway config</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>Includes <code>agdi.json</code>, tokens</td>
+</tr>
+<tr>
+<td>Model auth profiles</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>OAuth tokens, API keys</td>
+</tr>
+<tr>
+<td>Skill configs</td>
+<td><code>/home/node/.agdi/skills/</code></td>
+<td>Host volume mount</td>
+<td>Skill-level state</td>
+</tr>
+<tr>
+<td>Agent workspace</td>
+<td><code>/home/node/.agdi/workspace/</code></td>
+<td>Host volume mount</td>
+<td>Code and agent artifacts</td>
+</tr>
+<tr>
+<td>WhatsApp session</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>Preserves QR login</td>
+</tr>
+<tr>
+<td>Gmail keyring</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume + password</td>
+<td>Requires <code>GOG_KEYRING_PASSWORD</code></td>
+</tr>
+<tr>
+<td>External binaries</td>
+<td><code>/usr/local/bin/</code></td>
+<td>Docker image</td>
+<td>Must be baked at build time</td>
+</tr>
+<tr>
+<td>Node runtime</td>
+<td>Container filesystem</td>
+<td>Docker image</td>
+<td>Rebuilt every image build</td>
+</tr>
+<tr>
+<td>OS packages</td>
+<td>Container filesystem</td>
+<td>Docker image</td>
+<td>Do not install at runtime</td>
+</tr>
+<tr>
+<td>Docker container</td>
+<td>Ephemeral</td>
+<td>Restartable</td>
+<td>Safe to destroy</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Infrastructure as Code (Terraform)</h2>
+<p>For teams preferring infrastructure-as-code workflows, a community-maintained Terraform setup provides:</p>
+<ul>
+<li>Modular Terraform configuration with remote state management</li>
+<li>Automated provisioning via cloud-init</li>
+<li>Deployment scripts (bootstrap, deploy, backup/restore)</li>
+<li>Security hardening (firewall, UFW, SSH-only access)</li>
+<li>SSH tunnel configuration for gateway access</li>
+</ul>
+<p><strong>Repositories:</strong></p>
+<ul>
+<li>Infrastructure: <a href="https://github.com/andreesg/agdi-terraform-hetzner">agdi-terraform-hetzner</a></li>
+<li>Docker config: <a href="https://github.com/andreesg/agdi-docker-config">agdi-docker-config</a></li>
+</ul>
+<p>This approach complements the Docker setup above with reproducible deployments, version-controlled infrastructure, and automated disaster recovery.</p>
+<blockquote>
+<p><strong>Note:</strong> Community-maintained. For issues or contributions, see the repository links above.</p>
+</blockquote>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

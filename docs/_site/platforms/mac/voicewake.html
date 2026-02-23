@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Wake — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="active" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Voice Wake &amp; Push-to-Talk</h1>
+<h2>Modes</h2>
+<ul>
+<li><strong>Wake-word mode</strong> (default): always-on Speech recognizer waits for trigger tokens (<code>swabbleTriggerWords</code>). On match it starts capture, shows the overlay with partial text, and auto-sends after silence.</li>
+<li><strong>Push-to-talk (Right Option hold)</strong>: hold the right Option key to capture immediately—no trigger needed. The overlay appears while held; releasing finalizes and forwards after a short delay so you can tweak text.</li>
+</ul>
+<h2>Runtime behavior (wake-word)</h2>
+<ul>
+<li>Speech recognizer lives in <code>VoiceWakeRuntime</code>.</li>
+<li>Trigger only fires when there’s a <strong>meaningful pause</strong> between the wake word and the next word (~0.55s gap). The overlay/chime can start on the pause even before the command begins.</li>
+<li>Silence windows: 2.0s when speech is flowing, 5.0s if only the trigger was heard.</li>
+<li>Hard stop: 120s to prevent runaway sessions.</li>
+<li>Debounce between sessions: 350ms.</li>
+<li>Overlay is driven via <code>VoiceWakeOverlayController</code> with committed/volatile coloring.</li>
+<li>After send, recognizer restarts cleanly to listen for the next trigger.</li>
+</ul>
+<h2>Lifecycle invariants</h2>
+<ul>
+<li>If Voice Wake is enabled and permissions are granted, the wake-word recognizer should be listening (except during an explicit push-to-talk capture).</li>
+<li>Overlay visibility (including manual dismiss via the X button) must never prevent the recognizer from resuming.</li>
+</ul>
+<h2>Sticky overlay failure mode (previous)</h2>
+<p>Previously, if the overlay got stuck visible and you manually closed it, Voice Wake could appear “dead” because the runtime’s restart attempt could be blocked by overlay visibility and no subsequent restart was scheduled.</p>
+<p>Hardening:</p>
+<ul>
+<li>Wake runtime restart is no longer blocked by overlay visibility.</li>
+<li>Overlay dismiss completion triggers a <code>VoiceWakeRuntime.refresh(...)</code> via <code>VoiceSessionCoordinator</code>, so manual X-dismiss always resumes listening.</li>
+</ul>
+<h2>Push-to-talk specifics</h2>
+<ul>
+<li>Hotkey detection uses a global <code>.flagsChanged</code> monitor for <strong>right Option</strong> (<code>keyCode 61</code> + <code>.option</code>). We only observe events (no swallowing).</li>
+<li>Capture pipeline lives in <code>VoicePushToTalk</code>: starts Speech immediately, streams partials to the overlay, and calls <code>VoiceWakeForwarder</code> on release.</li>
+<li>When push-to-talk starts we pause the wake-word runtime to avoid dueling audio taps; it restarts automatically after release.</li>
+<li>Permissions: requires Microphone + Speech; seeing events needs Accessibility/Input Monitoring approval.</li>
+<li>External keyboards: some may not expose right Option as expected—offer a fallback shortcut if users report misses.</li>
+</ul>
+<h2>User-facing settings</h2>
+<ul>
+<li><strong>Voice Wake</strong> toggle: enables wake-word runtime.</li>
+<li><strong>Hold Cmd+Fn to talk</strong>: enables the push-to-talk monitor. Disabled on macOS &lt; 26.</li>
+<li>Language &amp; mic pickers, live level meter, trigger-word table, tester (local-only; does not forward).</li>
+<li>Mic picker preserves the last selection if a device disconnects, shows a disconnected hint, and temporarily falls back to the system default until it returns.</li>
+<li><strong>Sounds</strong>: chimes on trigger detect and on send; defaults to the macOS “Glass” system sound. You can pick any <code>NSSound</code>-loadable file (e.g. MP3/WAV/AIFF) for each event or choose <strong>No Sound</strong>.</li>
+</ul>
+<h2>Forwarding behavior</h2>
+<ul>
+<li>When Voice Wake is enabled, transcripts are forwarded to the active gateway/agent (the same local vs remote mode used by the rest of the mac app).</li>
+<li>Replies are delivered to the <strong>last-used main provider</strong> (WhatsApp/Telegram/Discord/WebChat). If delivery fails, the error is logged and the run is still visible via WebChat/session logs.</li>
+</ul>
+<h2>Forwarding payload</h2>
+<ul>
+<li><code>VoiceWakeForwarder.prefixedTranscript(_:)</code> prepends the machine hint before sending. Shared between wake-word and push-to-talk paths.</li>
+</ul>
+<h2>Quick verification</h2>
+<ul>
+<li>Toggle push-to-talk on, hold Cmd+Fn, speak, release: overlay should show partials then send.</li>
+<li>While holding, menu-bar ears should stay enlarged (uses <code>triggerVoiceEars(ttl:nil)</code>); they drop after release.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

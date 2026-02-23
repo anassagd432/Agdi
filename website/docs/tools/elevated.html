@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elevated Mode — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="active" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Elevated Mode (/elevated directives)</h1>
+<h2>What it does</h2>
+<ul>
+<li><code>/elevated on</code> runs on the gateway host and keeps exec approvals (same as <code>/elevated ask</code>).</li>
+<li><code>/elevated full</code> runs on the gateway host <strong>and</strong> auto-approves exec (skips exec approvals).</li>
+<li><code>/elevated ask</code> runs on the gateway host but keeps exec approvals (same as <code>/elevated on</code>).</li>
+<li><code>on</code>/<code>ask</code> do <strong>not</strong> force <code>exec.security=full</code>; configured security/ask policy still applies.</li>
+<li>Only changes behavior when the agent is <strong>sandboxed</strong> (otherwise exec already runs on the host).</li>
+<li>Directive forms: <code>/elevated on|off|ask|full</code>, <code>/elev on|off|ask|full</code>.</li>
+<li>Only <code>on|off|ask|full</code> are accepted; anything else returns a hint and does not change state.</li>
+</ul>
+<h2>What it controls (and what it doesn’t)</h2>
+<ul>
+<li><strong>Availability gates</strong>: <code>tools.elevated</code> is the global baseline. <code>agents.list[].tools.elevated</code> can further restrict elevated per agent (both must allow).</li>
+<li><strong>Per-session state</strong>: <code>/elevated on|off|ask|full</code> sets the elevated level for the current session key.</li>
+<li><strong>Inline directive</strong>: <code>/elevated on|ask|full</code> inside a message applies to that message only.</li>
+<li><strong>Groups</strong>: In group chats, elevated directives are only honored when the agent is mentioned. Command-only messages that bypass mention requirements are treated as mentioned.</li>
+<li><strong>Host execution</strong>: elevated forces <code>exec</code> onto the gateway host; <code>full</code> also sets <code>security=full</code>.</li>
+<li><strong>Approvals</strong>: <code>full</code> skips exec approvals; <code>on</code>/<code>ask</code> honor them when allowlist/ask rules require.</li>
+<li><strong>Unsandboxed agents</strong>: no-op for location; only affects gating, logging, and status.</li>
+<li><strong>Tool policy still applies</strong>: if <code>exec</code> is denied by tool policy, elevated cannot be used.</li>
+<li><strong>Separate from <code>/exec</code></strong>: <code>/exec</code> adjusts per-session defaults for authorized senders and does not require elevated.</li>
+</ul>
+<h2>Resolution order</h2>
+<ol>
+<li>Inline directive on the message (applies only to that message).</li>
+<li>Session override (set by sending a directive-only message).</li>
+<li>Global default (<code>agents.defaults.elevatedDefault</code> in config).</li>
+</ol>
+<h2>Setting a session default</h2>
+<ul>
+<li>Send a message that is <strong>only</strong> the directive (whitespace allowed), e.g. <code>/elevated full</code>.</li>
+<li>Confirmation reply is sent (<code>Elevated mode set to full...</code> / <code>Elevated mode disabled.</code>).</li>
+<li>If elevated access is disabled or the sender is not on the approved allowlist, the directive replies with an actionable error and does not change session state.</li>
+<li>Send <code>/elevated</code> (or <code>/elevated:</code>) with no argument to see the current elevated level.</li>
+</ul>
+<h2>Availability + allowlists</h2>
+<ul>
+<li>Feature gate: <code>tools.elevated.enabled</code> (default can be off via config even if the code supports it).</li>
+<li>Sender allowlist: <code>tools.elevated.allowFrom</code> with per-provider allowlists (e.g. <code>discord</code>, <code>whatsapp</code>).</li>
+<li>Per-agent gate: <code>agents.list[].tools.elevated.enabled</code> (optional; can only further restrict).</li>
+<li>Per-agent allowlist: <code>agents.list[].tools.elevated.allowFrom</code> (optional; when set, the sender must match <strong>both</strong> global + per-agent allowlists).</li>
+<li>Discord fallback: if <code>tools.elevated.allowFrom.discord</code> is omitted, the <code>channels.discord.allowFrom</code> list is used as a fallback (legacy: <code>channels.discord.dm.allowFrom</code>). Set <code>tools.elevated.allowFrom.discord</code> (even <code>[]</code>) to override. Per-agent allowlists do <strong>not</strong> use the fallback.</li>
+<li>All gates must pass; otherwise elevated is treated as unavailable.</li>
+</ul>
+<h2>Logging + status</h2>
+<ul>
+<li>Elevated exec calls are logged at info level.</li>
+<li>Session status includes elevated mode (e.g. <code>elevated=ask</code>, <code>elevated=full</code>).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

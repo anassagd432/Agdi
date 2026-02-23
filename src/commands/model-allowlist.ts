@@ -1,12 +1,12 @@
-import type { OpenClawConfig } from "../config/config.js";
+import type { AGDIConfig } from "../config/config.js";
 import { DEFAULT_PROVIDER } from "../agents/defaults.js";
 import { resolveAllowlistModelKey } from "../agents/model-selection.js";
 
 export function ensureModelAllowlistEntry(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   modelRef: string;
   defaultProvider?: string;
-}): OpenClawConfig {
+}): AGDIConfig {
   const rawModelRef = params.modelRef.trim();
   if (!rawModelRef) {
     return params.cfg;

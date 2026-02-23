@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonjour Discovery — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="active" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Bonjour / mDNS discovery</h1>
+<p>AGDI uses Bonjour (mDNS / DNS‑SD) as a <strong>LAN‑only convenience</strong> to discover
+an active Gateway (WebSocket endpoint). It is best‑effort and does <strong>not</strong> replace SSH or
+Tailnet-based connectivity.</p>
+<h2>Wide‑area Bonjour (Unicast DNS‑SD) over Tailscale</h2>
+<p>If the node and gateway are on different networks, multicast mDNS won’t cross the
+boundary. You can keep the same discovery UX by switching to <strong>unicast DNS‑SD</strong>
+(&quot;Wide‑Area Bonjour&quot;) over Tailscale.</p>
+<p>High‑level steps:</p>
+<ol>
+<li>Run a DNS server on the gateway host (reachable over Tailnet).</li>
+<li>Publish DNS‑SD records for <code>_agdi-gw._tcp</code> under a dedicated zone
+(example: <code>agdi.internal.</code>).</li>
+<li>Configure Tailscale <strong>split DNS</strong> so your chosen domain resolves via that
+DNS server for clients (including iOS).</li>
+</ol>
+<p>AGDI supports any discovery domain; <code>agdi.internal.</code> is just an example.
+iOS/Android nodes browse both <code>local.</code> and your configured wide‑area domain.</p>
+<h3>Gateway config (recommended)</h3>
+<pre><code class="language-json5">{
+  gateway: { bind: &quot;tailnet&quot; }, // tailnet-only (recommended)
+  discovery: { wideArea: { enabled: true } }, // enables wide-area DNS-SD publishing
+}
+</code></pre>
+<h3>One‑time DNS server setup (gateway host)</h3>
+<pre><code class="language-bash">agdi dns setup --apply
+</code></pre>
+<p>This installs CoreDNS and configures it to:</p>
+<ul>
+<li>listen on port 53 only on the gateway’s Tailscale interfaces</li>
+<li>serve your chosen domain (example: <code>agdi.internal.</code>) from <code>~/.agdi/dns/&lt;domain&gt;.db</code></li>
+</ul>
+<p>Validate from a tailnet‑connected machine:</p>
+<pre><code class="language-bash">dns-sd -B _agdi-gw._tcp agdi.internal.
+dig @&lt;TAILNET_IPV4&gt; -p 53 _agdi-gw._tcp.agdi.internal PTR +short
+</code></pre>
+<h3>Tailscale DNS settings</h3>
+<p>In the Tailscale admin console:</p>
+<ul>
+<li>Add a nameserver pointing at the gateway’s tailnet IP (UDP/TCP 53).</li>
+<li>Add split DNS so your discovery domain uses that nameserver.</li>
+</ul>
+<p>Once clients accept tailnet DNS, iOS nodes can browse
+<code>_agdi-gw._tcp</code> in your discovery domain without multicast.</p>
+<h3>Gateway listener security (recommended)</h3>
+<p>The Gateway WS port (default <code>18789</code>) binds to loopback by default. For LAN/tailnet
+access, bind explicitly and keep auth enabled.</p>
+<p>For tailnet‑only setups:</p>
+<ul>
+<li>Set <code>gateway.bind: &quot;tailnet&quot;</code> in <code>~/.agdi/agdi.json</code>.</li>
+<li>Restart the Gateway (or restart the macOS menubar app).</li>
+</ul>
+<h2>What advertises</h2>
+<p>Only the Gateway advertises <code>_agdi-gw._tcp</code>.</p>
+<h2>Service types</h2>
+<ul>
+<li><code>_agdi-gw._tcp</code> — gateway transport beacon (used by macOS/iOS/Android nodes).</li>
+</ul>
+<h2>TXT keys (non‑secret hints)</h2>
+<p>The Gateway advertises small non‑secret hints to make UI flows convenient:</p>
+<ul>
+<li><code>role=gateway</code></li>
+<li><code>displayName=&lt;friendly name&gt;</code></li>
+<li><code>lanHost=&lt;hostname&gt;.local</code></li>
+<li><code>gatewayPort=&lt;port&gt;</code> (Gateway WS + HTTP)</li>
+<li><code>gatewayTls=1</code> (only when TLS is enabled)</li>
+<li><code>gatewayTlsSha256=&lt;sha256&gt;</code> (only when TLS is enabled and fingerprint is available)</li>
+<li><code>canvasPort=&lt;port&gt;</code> (only when the canvas host is enabled; currently the same as <code>gatewayPort</code>)</li>
+<li><code>sshPort=&lt;port&gt;</code> (defaults to 22 when not overridden)</li>
+<li><code>transport=gateway</code></li>
+<li><code>cliPath=&lt;path&gt;</code> (optional; absolute path to a runnable <code>agdi</code> entrypoint)</li>
+<li><code>tailnetDns=&lt;magicdns&gt;</code> (optional hint when Tailnet is available)</li>
+</ul>
+<p>Security notes:</p>
+<ul>
+<li>Bonjour/mDNS TXT records are <strong>unauthenticated</strong>. Clients must not treat TXT as authoritative routing.</li>
+<li>Clients should route using the resolved service endpoint (SRV + A/AAAA). Treat <code>lanHost</code>, <code>tailnetDns</code>, <code>gatewayPort</code>, and <code>gatewayTlsSha256</code> as hints only.</li>
+<li>TLS pinning must never allow an advertised <code>gatewayTlsSha256</code> to override a previously stored pin.</li>
+<li>iOS/Android nodes should treat discovery-based direct connects as <strong>TLS-only</strong> and require explicit user confirmation before trusting a first-time fingerprint.</li>
+</ul>
+<h2>Debugging on macOS</h2>
+<p>Useful built‑in tools:</p>
+<ul>
+<li><p>Browse instances:</p>
+<pre><code class="language-bash">dns-sd -B _agdi-gw._tcp local.
+</code></pre>
+</li>
+<li><p>Resolve one instance (replace <code>&lt;instance&gt;</code>):</p>
+<pre><code class="language-bash">dns-sd -L &quot;&lt;instance&gt;&quot; _agdi-gw._tcp local.
+</code></pre>
+</li>
+</ul>
+<p>If browsing works but resolving fails, you’re usually hitting a LAN policy or
+mDNS resolver issue.</p>
+<h2>Debugging in Gateway logs</h2>
+<p>The Gateway writes a rolling log file (printed on startup as
+<code>gateway log file: ...</code>). Look for <code>bonjour:</code> lines, especially:</p>
+<ul>
+<li><code>bonjour: advertise failed ...</code></li>
+<li><code>bonjour: ... name conflict resolved</code> / <code>hostname conflict resolved</code></li>
+<li><code>bonjour: watchdog detected non-announced service ...</code></li>
+</ul>
+<h2>Debugging on iOS node</h2>
+<p>The iOS node uses <code>NWBrowser</code> to discover <code>_agdi-gw._tcp</code>.</p>
+<p>To capture logs:</p>
+<ul>
+<li>Settings → Gateway → Advanced → <strong>Discovery Debug Logs</strong></li>
+<li>Settings → Gateway → Advanced → <strong>Discovery Logs</strong> → reproduce → <strong>Copy</strong></li>
+</ul>
+<p>The log includes browser state transitions and result‑set changes.</p>
+<h2>Common failure modes</h2>
+<ul>
+<li><strong>Bonjour doesn’t cross networks</strong>: use Tailnet or SSH.</li>
+<li><strong>Multicast blocked</strong>: some Wi‑Fi networks disable mDNS.</li>
+<li><strong>Sleep / interface churn</strong>: macOS may temporarily drop mDNS results; retry.</li>
+<li><strong>Browse works but resolve fails</strong>: keep machine names simple (avoid emojis or
+punctuation), then restart the Gateway. The service instance name derives from
+the host name, so overly complex names can confuse some resolvers.</li>
+</ul>
+<h2>Escaped instance names (<code>\032</code>)</h2>
+<p>Bonjour/DNS‑SD often escapes bytes in service instance names as decimal <code>\DDD</code>
+sequences (e.g. spaces become <code>\032</code>).</p>
+<ul>
+<li>This is normal at the protocol level.</li>
+<li>UIs should decode for display (iOS uses <code>BonjourEscapes.decode</code>).</li>
+</ul>
+<h2>Disabling / configuration</h2>
+<ul>
+<li><code>AGDI_DISABLE_BONJOUR=1</code> disables advertising (legacy: <code>AGDI_DISABLE_BONJOUR</code>).</li>
+<li><code>gateway.bind</code> in <code>~/.agdi/agdi.json</code> controls the Gateway bind mode.</li>
+<li><code>AGDI_SSH_PORT</code> overrides the SSH port advertised in TXT (legacy: <code>AGDI_SSH_PORT</code>).</li>
+<li><code>AGDI_TAILNET_DNS</code> publishes a MagicDNS hint in TXT (legacy: <code>AGDI_TAILNET_DNS</code>).</li>
+<li><code>AGDI_CLI_PATH</code> overrides the advertised CLI path (legacy: <code>AGDI_CLI_PATH</code>).</li>
+</ul>
+<h2>Related docs</h2>
+<ul>
+<li>Discovery policy and transport selection: <a href="/gateway/discovery">Discovery</a></li>
+<li>Node pairing + approvals: <a href="/gateway/pairing">Gateway pairing</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

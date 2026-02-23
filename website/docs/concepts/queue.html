@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Queue — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="active" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Command Queue (2026-01-16)</h1>
+<p>We serialize inbound auto-reply runs (all channels) through a tiny in-process queue to prevent multiple agent runs from colliding, while still allowing safe parallelism across sessions.</p>
+<h2>Why</h2>
+<ul>
+<li>Auto-reply runs can be expensive (LLM calls) and can collide when multiple inbound messages arrive close together.</li>
+<li>Serializing avoids competing for shared resources (session files, logs, CLI stdin) and reduces the chance of upstream rate limits.</li>
+</ul>
+<h2>How it works</h2>
+<ul>
+<li>A lane-aware FIFO queue drains each lane with a configurable concurrency cap (default 1 for unconfigured lanes; main defaults to 4, subagent to 8).</li>
+<li><code>runEmbeddedPiAgent</code> enqueues by <strong>session key</strong> (lane <code>session:&lt;key&gt;</code>) to guarantee only one active run per session.</li>
+<li>Each session run is then queued into a <strong>global lane</strong> (<code>main</code> by default) so overall parallelism is capped by <code>agents.defaults.maxConcurrent</code>.</li>
+<li>When verbose logging is enabled, queued runs emit a short notice if they waited more than ~2s before starting.</li>
+<li>Typing indicators still fire immediately on enqueue (when supported by the channel) so user experience is unchanged while we wait our turn.</li>
+</ul>
+<h2>Queue modes (per channel)</h2>
+<p>Inbound messages can steer the current run, wait for a followup turn, or do both:</p>
+<ul>
+<li><code>steer</code>: inject immediately into the current run (cancels pending tool calls after the next tool boundary). If not streaming, falls back to followup.</li>
+<li><code>followup</code>: enqueue for the next agent turn after the current run ends.</li>
+<li><code>collect</code>: coalesce all queued messages into a <strong>single</strong> followup turn (default). If messages target different channels/threads, they drain individually to preserve routing.</li>
+<li><code>steer-backlog</code> (aka <code>steer+backlog</code>): steer now <strong>and</strong> preserve the message for a followup turn.</li>
+<li><code>interrupt</code> (legacy): abort the active run for that session, then run the newest message.</li>
+<li><code>queue</code> (legacy alias): same as <code>steer</code>.</li>
+</ul>
+<p>Steer-backlog means you can get a followup response after the steered run, so
+streaming surfaces can look like duplicates. Prefer <code>collect</code>/<code>steer</code> if you want
+one response per inbound message.
+Send <code>/queue collect</code> as a standalone command (per-session) or set <code>messages.queue.byChannel.discord: &quot;collect&quot;</code>.</p>
+<p>Defaults (when unset in config):</p>
+<ul>
+<li>All surfaces → <code>collect</code></li>
+</ul>
+<p>Configure globally or per channel via <code>messages.queue</code>:</p>
+<pre><code class="language-json5">{
+  messages: {
+    queue: {
+      mode: &quot;collect&quot;,
+      debounceMs: 1000,
+      cap: 20,
+      drop: &quot;summarize&quot;,
+      byChannel: { discord: &quot;collect&quot; },
+    },
+  },
+}
+</code></pre>
+<h2>Queue options</h2>
+<p>Options apply to <code>followup</code>, <code>collect</code>, and <code>steer-backlog</code> (and to <code>steer</code> when it falls back to followup):</p>
+<ul>
+<li><code>debounceMs</code>: wait for quiet before starting a followup turn (prevents “continue, continue”).</li>
+<li><code>cap</code>: max queued messages per session.</li>
+<li><code>drop</code>: overflow policy (<code>old</code>, <code>new</code>, <code>summarize</code>).</li>
+</ul>
+<p>Summarize keeps a short bullet list of dropped messages and injects it as a synthetic followup prompt.
+Defaults: <code>debounceMs: 1000</code>, <code>cap: 20</code>, <code>drop: summarize</code>.</p>
+<h2>Per-session overrides</h2>
+<ul>
+<li>Send <code>/queue &lt;mode&gt;</code> as a standalone command to store the mode for the current session.</li>
+<li>Options can be combined: <code>/queue collect debounce:2s cap:25 drop:summarize</code></li>
+<li><code>/queue default</code> or <code>/queue reset</code> clears the session override.</li>
+</ul>
+<h2>Scope and guarantees</h2>
+<ul>
+<li>Applies to auto-reply agent runs across all inbound channels that use the gateway reply pipeline (WhatsApp web, Telegram, Slack, Discord, Signal, iMessage, webchat, etc.).</li>
+<li>Default lane (<code>main</code>) is process-wide for inbound + main heartbeats; set <code>agents.defaults.maxConcurrent</code> to allow multiple sessions in parallel.</li>
+<li>Additional lanes may exist (e.g. <code>cron</code>, <code>subagent</code>) so background jobs can run in parallel without blocking inbound replies.</li>
+<li>Per-session lanes guarantee that only one agent run touches a given session at a time.</li>
+<li>No external dependencies or background worker threads; pure TypeScript + promises.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If commands seem stuck, enable verbose logs and look for “queued for …ms” lines to confirm the queue is draining.</li>
+<li>If you need queue depth, enable verbose logs and watch for queue timing lines.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

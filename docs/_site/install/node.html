@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node.js — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="active" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Node.js</h1>
+<p>AGDI requires <strong>Node 22 or newer</strong>. The <a href="/install#install-methods">installer script</a> will detect and install Node automatically — this page is for when you want to set up Node yourself and make sure everything is wired up correctly (versions, PATH, global installs).</p>
+<h2>Check your version</h2>
+<pre><code class="language-bash">node -v
+</code></pre>
+<p>If this prints <code>v22.x.x</code> or higher, you&#39;re good. If Node isn&#39;t installed or the version is too old, pick an install method below.</p>
+<h2>Install Node</h2>
+<pre><code>**Homebrew** (recommended):
+
+```bash
+brew install node
+```
+
+Or download the macOS installer from [nodejs.org](https://nodejs.org/).
+
+
+
+**Ubuntu / Debian:**
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+**Fedora / RHEL:**
+
+```bash
+sudo dnf install nodejs
+```
+
+Or use a version manager (see below).
+
+
+
+**winget** (recommended):
+
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
+
+**Chocolatey:**
+
+```powershell
+choco install nodejs-lts
+```
+
+Or download the Windows installer from [nodejs.org](https://nodejs.org/).
+</code></pre>
+<p>  Version managers let you switch between Node versions easily. Popular options:</p>
+<ul>
+<li><a href="https://github.com/Schniz/fnm"><strong>fnm</strong></a> — fast, cross-platform</li>
+<li><a href="https://github.com/nvm-sh/nvm"><strong>nvm</strong></a> — widely used on macOS/Linux</li>
+<li><a href="https://mise.jdx.dev/"><strong>mise</strong></a> — polyglot (Node, Python, Ruby, etc.)</li>
+</ul>
+<p>Example with fnm:</p>
+<pre><code class="language-bash">fnm install 22
+fnm use 22
+</code></pre>
+<p>  Make sure your version manager is initialized in your shell startup file (<code>~/.zshrc</code> or <code>~/.bashrc</code>). If it isn&#39;t, <code>agdi</code> may not be found in new terminal sessions because the PATH won&#39;t include Node&#39;s bin directory.</p>
+<h2>Troubleshooting</h2>
+<h3><code>agdi: command not found</code></h3>
+<p>This almost always means npm&#39;s global bin directory isn&#39;t on your PATH.</p>
+<pre><code>```bash
+npm prefix -g
+```
+
+
+```bash
+echo &quot;$PATH&quot;
+```
+
+Look for `&lt;npm-prefix&gt;/bin` (macOS/Linux) or `&lt;npm-prefix&gt;` (Windows) in the output.
+
+
+
+
+  
+    Add to `~/.zshrc` or `~/.bashrc`:
+
+    ```bash
+    export PATH=&quot;$(npm prefix -g)/bin:$PATH&quot;
+    ```
+
+    Then open a new terminal (or run `rehash` in zsh / `hash -r` in bash).
+  
+  
+    Add the output of `npm prefix -g` to your system PATH via Settings → System → Environment Variables.
+  
+</code></pre>
+<h3>Permission errors on <code>npm install -g</code> (Linux)</h3>
+<p>If you see <code>EACCES</code> errors, switch npm&#39;s global prefix to a user-writable directory:</p>
+<pre><code class="language-bash">mkdir -p &quot;$HOME/.npm-global&quot;
+npm config set prefix &quot;$HOME/.npm-global&quot;
+export PATH=&quot;$HOME/.npm-global/bin:$PATH&quot;
+</code></pre>
+<p>Add the <code>export PATH=...</code> line to your <code>~/.bashrc</code> or <code>~/.zshrc</code> to make it permanent.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

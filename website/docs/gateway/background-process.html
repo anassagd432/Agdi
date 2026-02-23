@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Background Exec and Process Tool — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="active" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Background Exec + Process Tool</h1>
+<p>AGDI runs shell commands through the <code>exec</code> tool and keeps long‑running tasks in memory. The <code>process</code> tool manages those background sessions.</p>
+<h2>exec tool</h2>
+<p>Key parameters:</p>
+<ul>
+<li><code>command</code> (required)</li>
+<li><code>yieldMs</code> (default 10000): auto‑background after this delay</li>
+<li><code>background</code> (bool): background immediately</li>
+<li><code>timeout</code> (seconds, default 1800): kill the process after this timeout</li>
+<li><code>elevated</code> (bool): run on host if elevated mode is enabled/allowed</li>
+<li>Need a real TTY? Set <code>pty: true</code>.</li>
+<li><code>workdir</code>, <code>env</code></li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li>Foreground runs return output directly.</li>
+<li>When backgrounded (explicit or timeout), the tool returns <code>status: &quot;running&quot;</code> + <code>sessionId</code> and a short tail.</li>
+<li>Output is kept in memory until the session is polled or cleared.</li>
+<li>If the <code>process</code> tool is disallowed, <code>exec</code> runs synchronously and ignores <code>yieldMs</code>/<code>background</code>.</li>
+</ul>
+<h2>Child process bridging</h2>
+<p>When spawning long-running child processes outside the exec/process tools (for example, CLI respawns or gateway helpers), attach the child-process bridge helper so termination signals are forwarded and listeners are detached on exit/error. This avoids orphaned processes on systemd and keeps shutdown behavior consistent across platforms.</p>
+<p>Environment overrides:</p>
+<ul>
+<li><code>PI_BASH_YIELD_MS</code>: default yield (ms)</li>
+<li><code>PI_BASH_MAX_OUTPUT_CHARS</code>: in‑memory output cap (chars)</li>
+<li><code>AGDI_BASH_PENDING_MAX_OUTPUT_CHARS</code>: pending stdout/stderr cap per stream (chars)</li>
+<li><code>PI_BASH_JOB_TTL_MS</code>: TTL for finished sessions (ms, bounded to 1m–3h)</li>
+</ul>
+<p>Config (preferred):</p>
+<ul>
+<li><code>tools.exec.backgroundMs</code> (default 10000)</li>
+<li><code>tools.exec.timeoutSec</code> (default 1800)</li>
+<li><code>tools.exec.cleanupMs</code> (default 1800000)</li>
+<li><code>tools.exec.notifyOnExit</code> (default true): enqueue a system event + request heartbeat when a backgrounded exec exits.</li>
+<li><code>tools.exec.notifyOnExitEmptySuccess</code> (default false): when true, also enqueue completion events for successful backgrounded runs that produced no output.</li>
+</ul>
+<h2>process tool</h2>
+<p>Actions:</p>
+<ul>
+<li><code>list</code>: running + finished sessions</li>
+<li><code>poll</code>: drain new output for a session (also reports exit status)</li>
+<li><code>log</code>: read the aggregated output (supports <code>offset</code> + <code>limit</code>)</li>
+<li><code>write</code>: send stdin (<code>data</code>, optional <code>eof</code>)</li>
+<li><code>kill</code>: terminate a background session</li>
+<li><code>clear</code>: remove a finished session from memory</li>
+<li><code>remove</code>: kill if running, otherwise clear if finished</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Only backgrounded sessions are listed/persisted in memory.</li>
+<li>Sessions are lost on process restart (no disk persistence).</li>
+<li>Session logs are only saved to chat history if you run <code>process poll/log</code> and the tool result is recorded.</li>
+<li><code>process</code> is scoped per agent; it only sees sessions started by that agent.</li>
+<li><code>process list</code> includes a derived <code>name</code> (command verb + target) for quick scans.</li>
+<li><code>process log</code> uses line-based <code>offset</code>/<code>limit</code>.</li>
+<li>When both <code>offset</code> and <code>limit</code> are omitted, it returns the last 200 lines and includes a paging hint.</li>
+<li>When <code>offset</code> is provided and <code>limit</code> is omitted, it returns from <code>offset</code> to the end (not capped to 200).</li>
+</ul>
+<h2>Examples</h2>
+<p>Run a long task and poll later:</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;exec&quot;, &quot;command&quot;: &quot;sleep 5 &amp;&amp; echo done&quot;, &quot;yieldMs&quot;: 1000 }
+</code></pre>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;process&quot;, &quot;action&quot;: &quot;poll&quot;, &quot;sessionId&quot;: &quot;&lt;id&gt;&quot; }
+</code></pre>
+<p>Start immediately in background:</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;exec&quot;, &quot;command&quot;: &quot;npm run build&quot;, &quot;background&quot;: true }
+</code></pre>
+<p>Send stdin:</p>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;process&quot;, &quot;action&quot;: &quot;write&quot;, &quot;sessionId&quot;: &quot;&lt;id&gt;&quot;, &quot;data&quot;: &quot;y\n&quot; }
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

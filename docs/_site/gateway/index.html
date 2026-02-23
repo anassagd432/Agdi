@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Runbook — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="active" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway runbook</h1>
+<p>Use this page for day-1 startup and day-2 operations of the Gateway service.</p>
+<CardGroup cols={2}>
+  <Card title="Deep troubleshooting" icon="siren" href="/gateway/troubleshooting">
+    Symptom-first diagnostics with exact command ladders and log signatures.
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/gateway/configuration">
+    Task-oriented setup guide + full configuration reference.
+  </Card>
+</CardGroup>
+
+<h2>5-minute local startup</h2>
+<pre><code class="language-bash">agdi gateway --port 18789
+# debug/trace mirrored to stdio
+agdi gateway --port 18789 --verbose
+# force-kill listener on selected port, then start
+agdi gateway --force
+</code></pre>
+<pre><code class="language-bash">agdi gateway status
+agdi status
+agdi logs --follow
+</code></pre>
+<p>Healthy baseline: <code>Runtime: running</code> and <code>RPC probe: ok</code>.</p>
+<pre><code class="language-bash">agdi channels status --probe
+</code></pre>
+<p>Gateway config reload watches the active config file path (resolved from profile/state defaults, or <code>AGDI_CONFIG_PATH</code> when set).
+Default mode is <code>gateway.reload.mode=&quot;hybrid&quot;</code>.</p>
+<h2>Runtime model</h2>
+<ul>
+<li>One always-on process for routing, control plane, and channel connections.</li>
+<li>Single multiplexed port for:<ul>
+<li>WebSocket control/RPC</li>
+<li>HTTP APIs (OpenAI-compatible, Responses, tools invoke)</li>
+<li>Control UI and hooks</li>
+</ul>
+</li>
+<li>Default bind mode: <code>loopback</code>.</li>
+<li>Auth is required by default (<code>gateway.auth.token</code> / <code>gateway.auth.password</code>, or <code>AGDI_GATEWAY_TOKEN</code> / <code>AGDI_GATEWAY_PASSWORD</code>).</li>
+</ul>
+<h3>Port and bind precedence</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Resolution order</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gateway port</td>
+<td><code>--port</code> → <code>AGDI_GATEWAY_PORT</code> → <code>gateway.port</code> → <code>18789</code></td>
+</tr>
+<tr>
+<td>Bind mode</td>
+<td>CLI/override → <code>gateway.bind</code> → <code>loopback</code></td>
+</tr>
+</tbody></table>
+<h3>Hot reload modes</h3>
+<table>
+<thead>
+<tr>
+<th><code>gateway.reload.mode</code></th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>off</code></td>
+<td>No config reload</td>
+</tr>
+<tr>
+<td><code>hot</code></td>
+<td>Apply only hot-safe changes</td>
+</tr>
+<tr>
+<td><code>restart</code></td>
+<td>Restart on reload-required changes</td>
+</tr>
+<tr>
+<td><code>hybrid</code> (default)</td>
+<td>Hot-apply when safe, restart when required</td>
+</tr>
+</tbody></table>
+<h2>Operator command set</h2>
+<pre><code class="language-bash">agdi gateway status
+agdi gateway status --deep
+agdi gateway status --json
+agdi gateway install
+agdi gateway restart
+agdi gateway stop
+agdi logs --follow
+agdi doctor
+</code></pre>
+<h2>Remote access</h2>
+<p>Preferred: Tailscale/VPN.
+Fallback: SSH tunnel.</p>
+<pre><code class="language-bash">ssh -N -L 18789:127.0.0.1:18789 user@host
+</code></pre>
+<p>Then connect clients to <code>ws://127.0.0.1:18789</code> locally.</p>
+<p>If gateway auth is configured, clients still must send auth (<code>token</code>/<code>password</code>) even over SSH tunnels.</p>
+<p>See: <a href="/gateway/remote">Remote Gateway</a>, <a href="/gateway/authentication">Authentication</a>, <a href="/gateway/tailscale">Tailscale</a>.</p>
+<h2>Supervision and service lifecycle</h2>
+<p>Use supervised runs for production-like reliability.</p>
+<pre><code class="language-bash">agdi gateway install
+agdi gateway status
+agdi gateway restart
+agdi gateway stop
+</code></pre>
+<p>LaunchAgent labels are <code>ai.agdi.gateway</code> (default) or <code>ai.agdi.&lt;profile&gt;</code> (named profile). <code>agdi doctor</code> audits and repairs service config drift.</p>
+<pre><code class="language-bash">agdi gateway install
+systemctl --user enable --now agdi-gateway[-&lt;profile&gt;].service
+agdi gateway status
+</code></pre>
+<p>For persistence after logout, enable lingering:</p>
+<pre><code class="language-bash">sudo loginctl enable-linger &lt;user&gt;
+</code></pre>
+<p>Use a system unit for multi-user/always-on hosts.</p>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl enable --now agdi-gateway[-&lt;profile&gt;].service
+</code></pre>
+<h2>Multiple gateways on one host</h2>
+<p>Most setups should run <strong>one</strong> Gateway.
+Use multiple only for strict isolation/redundancy (for example a rescue profile).</p>
+<p>Checklist per instance:</p>
+<ul>
+<li>Unique <code>gateway.port</code></li>
+<li>Unique <code>AGDI_CONFIG_PATH</code></li>
+<li>Unique <code>AGDI_STATE_DIR</code></li>
+<li>Unique <code>agents.defaults.workspace</code></li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-bash">AGDI_CONFIG_PATH=~/.agdi/a.json AGDI_STATE_DIR=~/.agdi-a agdi gateway --port 19001
+AGDI_CONFIG_PATH=~/.agdi/b.json AGDI_STATE_DIR=~/.agdi-b agdi gateway --port 19002
+</code></pre>
+<p>See: <a href="/gateway/multiple-gateways">Multiple gateways</a>.</p>
+<h3>Dev profile quick path</h3>
+<pre><code class="language-bash">agdi --dev setup
+agdi --dev gateway --allow-unconfigured
+agdi --dev status
+</code></pre>
+<p>Defaults include isolated state/config and base gateway port <code>19001</code>.</p>
+<h2>Protocol quick reference (operator view)</h2>
+<ul>
+<li>First client frame must be <code>connect</code>.</li>
+<li>Gateway returns <code>hello-ok</code> snapshot (<code>presence</code>, <code>health</code>, <code>stateVersion</code>, <code>uptimeMs</code>, limits/policy).</li>
+<li>Requests: <code>req(method, params)</code> → <code>res(ok/payload|error)</code>.</li>
+<li>Common events: <code>connect.challenge</code>, <code>agent</code>, <code>chat</code>, <code>presence</code>, <code>tick</code>, <code>health</code>, <code>heartbeat</code>, <code>shutdown</code>.</li>
+</ul>
+<p>Agent runs are two-stage:</p>
+<ol>
+<li>Immediate accepted ack (<code>status:&quot;accepted&quot;</code>)</li>
+<li>Final completion response (<code>status:&quot;ok&quot;|&quot;error&quot;</code>), with streamed <code>agent</code> events in between.</li>
+</ol>
+<p>See full protocol docs: <a href="/gateway/protocol">Gateway Protocol</a>.</p>
+<h2>Operational checks</h2>
+<h3>Liveness</h3>
+<ul>
+<li>Open WS and send <code>connect</code>.</li>
+<li>Expect <code>hello-ok</code> response with snapshot.</li>
+</ul>
+<h3>Readiness</h3>
+<pre><code class="language-bash">agdi gateway status
+agdi channels status --probe
+agdi health
+</code></pre>
+<h3>Gap recovery</h3>
+<p>Events are not replayed. On sequence gaps, refresh state (<code>health</code>, <code>system-presence</code>) before continuing.</p>
+<h2>Common failure signatures</h2>
+<table>
+<thead>
+<tr>
+<th>Signature</th>
+<th>Likely issue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>refusing to bind gateway ... without auth</code></td>
+<td>Non-loopback bind without token/password</td>
+</tr>
+<tr>
+<td><code>another gateway instance is already listening</code> / <code>EADDRINUSE</code></td>
+<td>Port conflict</td>
+</tr>
+<tr>
+<td><code>Gateway start blocked: set gateway.mode=local</code></td>
+<td>Config set to remote mode</td>
+</tr>
+<tr>
+<td><code>unauthorized</code> during connect</td>
+<td>Auth mismatch between client and gateway</td>
+</tr>
+</tbody></table>
+<p>For full diagnosis ladders, use <a href="/gateway/troubleshooting">Gateway Troubleshooting</a>.</p>
+<h2>Safety guarantees</h2>
+<ul>
+<li>Gateway protocol clients fail fast when Gateway is unavailable (no implicit direct-channel fallback).</li>
+<li>Invalid/non-connect first frames are rejected and closed.</li>
+<li>Graceful shutdown emits <code>shutdown</code> event before socket close.</li>
+</ul>
+<hr>
+<p>Related:</p>
+<ul>
+<li><a href="/gateway/troubleshooting">Troubleshooting</a></li>
+<li><a href="/gateway/background-process">Background Process</a></li>
+<li><a href="/gateway/configuration">Configuration</a></li>
+<li><a href="/gateway/health">Health</a></li>
+<li><a href="/gateway/doctor">Doctor</a></li>
+<li><a href="/gateway/authentication">Authentication</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

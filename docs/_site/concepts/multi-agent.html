@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent Routing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="active" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Multi-Agent Routing</h1>
+<p>Goal: multiple <em>isolated</em> agents (separate workspace + <code>agentDir</code> + sessions), plus multiple channel accounts (e.g. two WhatsApps) in one running Gateway. Inbound is routed to an agent via bindings.</p>
+<h2>What is “one agent”?</h2>
+<p>An <strong>agent</strong> is a fully scoped brain with its own:</p>
+<ul>
+<li><strong>Workspace</strong> (files, AGENTS.md/SOUL.md/USER.md, local notes, persona rules).</li>
+<li><strong>State directory</strong> (<code>agentDir</code>) for auth profiles, model registry, and per-agent config.</li>
+<li><strong>Session store</strong> (chat history + routing state) under <code>~/.agdi/agents/&lt;agentId&gt;/sessions</code>.</li>
+</ul>
+<p>Auth profiles are <strong>per-agent</strong>. Each agent reads from its own:</p>
+<pre><code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json
+</code></pre>
+<p>Main agent credentials are <strong>not</strong> shared automatically. Never reuse <code>agentDir</code>
+across agents (it causes auth/session collisions). If you want to share creds,
+copy <code>auth-profiles.json</code> into the other agent&#39;s <code>agentDir</code>.</p>
+<p>Skills are per-agent via each workspace’s <code>skills/</code> folder, with shared skills
+available from <code>~/.agdi/skills</code>. See <a href="/tools/skills#per-agent-vs-shared-skills">Skills: per-agent vs shared</a>.</p>
+<p>The Gateway can host <strong>one agent</strong> (default) or <strong>many agents</strong> side-by-side.</p>
+<p><strong>Workspace note:</strong> each agent’s workspace is the <strong>default cwd</strong>, not a hard
+sandbox. Relative paths resolve inside the workspace, but absolute paths can
+reach other host locations unless sandboxing is enabled. See
+<a href="/gateway/sandboxing">Sandboxing</a>.</p>
+<h2>Paths (quick map)</h2>
+<ul>
+<li>Config: <code>~/.agdi/agdi.json</code> (or <code>AGDI_CONFIG_PATH</code>)</li>
+<li>State dir: <code>~/.agdi</code> (or <code>AGDI_STATE_DIR</code>)</li>
+<li>Workspace: <code>~/.agdi/workspace</code> (or <code>~/.agdi/workspace-&lt;agentId&gt;</code>)</li>
+<li>Agent dir: <code>~/.agdi/agents/&lt;agentId&gt;/agent</code> (or <code>agents.list[].agentDir</code>)</li>
+<li>Sessions: <code>~/.agdi/agents/&lt;agentId&gt;/sessions</code></li>
+</ul>
+<h3>Single-agent mode (default)</h3>
+<p>If you do nothing, AGDI runs a single agent:</p>
+<ul>
+<li><code>agentId</code> defaults to <strong><code>main</code></strong>.</li>
+<li>Sessions are keyed as <code>agent:main:&lt;mainKey&gt;</code>.</li>
+<li>Workspace defaults to <code>~/.agdi/workspace</code> (or <code>~/.agdi/workspace-&lt;profile&gt;</code> when <code>AGDI_PROFILE</code> is set).</li>
+<li>State defaults to <code>~/.agdi/agents/main/agent</code>.</li>
+</ul>
+<h2>Agent helper</h2>
+<p>Use the agent wizard to add a new isolated agent:</p>
+<pre><code class="language-bash">agdi agents add work
+</code></pre>
+<p>Then add <code>bindings</code> (or let the wizard do it) to route inbound messages.</p>
+<p>Verify with:</p>
+<pre><code class="language-bash">agdi agents list --bindings
+</code></pre>
+<h2>Multiple agents = multiple people, multiple personalities</h2>
+<p>With <strong>multiple agents</strong>, each <code>agentId</code> becomes a <strong>fully isolated persona</strong>:</p>
+<ul>
+<li><strong>Different phone numbers/accounts</strong> (per channel <code>accountId</code>).</li>
+<li><strong>Different personalities</strong> (per-agent workspace files like <code>AGENTS.md</code> and <code>SOUL.md</code>).</li>
+<li><strong>Separate auth + sessions</strong> (no cross-talk unless explicitly enabled).</li>
+</ul>
+<p>This lets <strong>multiple people</strong> share one Gateway server while keeping their AI “brains” and data isolated.</p>
+<h2>One WhatsApp number, multiple people (DM split)</h2>
+<p>You can route <strong>different WhatsApp DMs</strong> to different agents while staying on <strong>one WhatsApp account</strong>. Match on sender E.164 (like <code>+15551234567</code>) with <code>peer.kind: &quot;direct&quot;</code>. Replies still come from the same WhatsApp number (no per‑agent sender identity).</p>
+<p>Important detail: direct chats collapse to the agent’s <strong>main session key</strong>, so true isolation requires <strong>one agent per person</strong>.</p>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      { id: &quot;alex&quot;, workspace: &quot;~/.agdi/workspace-alex&quot; },
+      { id: &quot;mia&quot;, workspace: &quot;~/.agdi/workspace-mia&quot; },
+    ],
+  },
+  bindings: [
+    {
+      agentId: &quot;alex&quot;,
+      match: { channel: &quot;whatsapp&quot;, peer: { kind: &quot;direct&quot;, id: &quot;+15551230001&quot; } },
+    },
+    {
+      agentId: &quot;mia&quot;,
+      match: { channel: &quot;whatsapp&quot;, peer: { kind: &quot;direct&quot;, id: &quot;+15551230002&quot; } },
+    },
+  ],
+  channels: {
+    whatsapp: {
+      dmPolicy: &quot;allowlist&quot;,
+      allowFrom: [&quot;+15551230001&quot;, &quot;+15551230002&quot;],
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>DM access control is <strong>global per WhatsApp account</strong> (pairing/allowlist), not per agent.</li>
+<li>For shared groups, bind the group to one agent or use <a href="/channels/broadcast-groups">Broadcast groups</a>.</li>
+</ul>
+<h2>Routing rules (how messages pick an agent)</h2>
+<p>Bindings are <strong>deterministic</strong> and <strong>most-specific wins</strong>:</p>
+<ol>
+<li><code>peer</code> match (exact DM/group/channel id)</li>
+<li><code>parentPeer</code> match (thread inheritance)</li>
+<li><code>guildId + roles</code> (Discord role routing)</li>
+<li><code>guildId</code> (Discord)</li>
+<li><code>teamId</code> (Slack)</li>
+<li><code>accountId</code> match for a channel</li>
+<li>channel-level match (<code>accountId: &quot;*&quot;</code>)</li>
+<li>fallback to default agent (<code>agents.list[].default</code>, else first list entry, default: <code>main</code>)</li>
+</ol>
+<p>If a binding sets multiple match fields (for example <code>peer</code> + <code>guildId</code>), all specified fields are required (<code>AND</code> semantics).</p>
+<h2>Multiple accounts / phone numbers</h2>
+<p>Channels that support <strong>multiple accounts</strong> (e.g. WhatsApp) use <code>accountId</code> to identify
+each login. Each <code>accountId</code> can be routed to a different agent, so one server can host
+multiple phone numbers without mixing sessions.</p>
+<h2>Concepts</h2>
+<ul>
+<li><code>agentId</code>: one “brain” (workspace, per-agent auth, per-agent session store).</li>
+<li><code>accountId</code>: one channel account instance (e.g. WhatsApp account <code>&quot;personal&quot;</code> vs <code>&quot;biz&quot;</code>).</li>
+<li><code>binding</code>: routes inbound messages to an <code>agentId</code> by <code>(channel, accountId, peer)</code> and optionally guild/team ids.</li>
+<li>Direct chats collapse to <code>agent:&lt;agentId&gt;:&lt;mainKey&gt;</code> (per-agent “main”; <code>session.mainKey</code>).</li>
+</ul>
+<h2>Example: two WhatsApps → two agents</h2>
+<p><code>~/.agdi/agdi.json</code> (JSON5):</p>
+<pre><code class="language-js">{
+  agents: {
+    list: [
+      {
+        id: &quot;home&quot;,
+        default: true,
+        name: &quot;Home&quot;,
+        workspace: &quot;~/.agdi/workspace-home&quot;,
+        agentDir: &quot;~/.agdi/agents/home/agent&quot;,
+      },
+      {
+        id: &quot;work&quot;,
+        name: &quot;Work&quot;,
+        workspace: &quot;~/.agdi/workspace-work&quot;,
+        agentDir: &quot;~/.agdi/agents/work/agent&quot;,
+      },
+    ],
+  },
+
+  // Deterministic routing: first match wins (most-specific first).
+  bindings: [
+    { agentId: &quot;home&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;personal&quot; } },
+    { agentId: &quot;work&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;biz&quot; } },
+
+    // Optional per-peer override (example: send a specific group to work agent).
+    {
+      agentId: &quot;work&quot;,
+      match: {
+        channel: &quot;whatsapp&quot;,
+        accountId: &quot;personal&quot;,
+        peer: { kind: &quot;group&quot;, id: &quot;1203630...@g.us&quot; },
+      },
+    },
+  ],
+
+  // Off by default: agent-to-agent messaging must be explicitly enabled + allowlisted.
+  tools: {
+    agentToAgent: {
+      enabled: false,
+      allow: [&quot;home&quot;, &quot;work&quot;],
+    },
+  },
+
+  channels: {
+    whatsapp: {
+      accounts: {
+        personal: {
+          // Optional override. Default: ~/.agdi/credentials/whatsapp/personal
+          // authDir: &quot;~/.agdi/credentials/whatsapp/personal&quot;,
+        },
+        biz: {
+          // Optional override. Default: ~/.agdi/credentials/whatsapp/biz
+          // authDir: &quot;~/.agdi/credentials/whatsapp/biz&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Example: WhatsApp daily chat + Telegram deep work</h2>
+<p>Split by channel: route WhatsApp to a fast everyday agent and Telegram to an Opus agent.</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;chat&quot;,
+        name: &quot;Everyday&quot;,
+        workspace: &quot;~/.agdi/workspace-chat&quot;,
+        model: &quot;anthropic/claude-sonnet-4-5&quot;,
+      },
+      {
+        id: &quot;opus&quot;,
+        name: &quot;Deep Work&quot;,
+        workspace: &quot;~/.agdi/workspace-opus&quot;,
+        model: &quot;anthropic/claude-opus-4-6&quot;,
+      },
+    ],
+  },
+  bindings: [
+    { agentId: &quot;chat&quot;, match: { channel: &quot;whatsapp&quot; } },
+    { agentId: &quot;opus&quot;, match: { channel: &quot;telegram&quot; } },
+  ],
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If you have multiple accounts for a channel, add <code>accountId</code> to the binding (for example <code>{ channel: &quot;whatsapp&quot;, accountId: &quot;personal&quot; }</code>).</li>
+<li>To route a single DM/group to Opus while keeping the rest on chat, add a <code>match.peer</code> binding for that peer; peer matches always win over channel-wide rules.</li>
+</ul>
+<h2>Example: same channel, one peer to Opus</h2>
+<p>Keep WhatsApp on the fast agent, but route one DM to Opus:</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;chat&quot;,
+        name: &quot;Everyday&quot;,
+        workspace: &quot;~/.agdi/workspace-chat&quot;,
+        model: &quot;anthropic/claude-sonnet-4-5&quot;,
+      },
+      {
+        id: &quot;opus&quot;,
+        name: &quot;Deep Work&quot;,
+        workspace: &quot;~/.agdi/workspace-opus&quot;,
+        model: &quot;anthropic/claude-opus-4-6&quot;,
+      },
+    ],
+  },
+  bindings: [
+    {
+      agentId: &quot;opus&quot;,
+      match: { channel: &quot;whatsapp&quot;, peer: { kind: &quot;direct&quot;, id: &quot;+15551234567&quot; } },
+    },
+    { agentId: &quot;chat&quot;, match: { channel: &quot;whatsapp&quot; } },
+  ],
+}
+</code></pre>
+<p>Peer bindings always win, so keep them above the channel-wide rule.</p>
+<h2>Family agent bound to a WhatsApp group</h2>
+<p>Bind a dedicated family agent to a single WhatsApp group, with mention gating
+and a tighter tool policy:</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;family&quot;,
+        name: &quot;Family&quot;,
+        workspace: &quot;~/.agdi/workspace-family&quot;,
+        identity: { name: &quot;Family Bot&quot; },
+        groupChat: {
+          mentionPatterns: [&quot;@family&quot;, &quot;@familybot&quot;, &quot;@Family Bot&quot;],
+        },
+        sandbox: {
+          mode: &quot;all&quot;,
+          scope: &quot;agent&quot;,
+        },
+        tools: {
+          allow: [
+            &quot;exec&quot;,
+            &quot;read&quot;,
+            &quot;sessions_list&quot;,
+            &quot;sessions_history&quot;,
+            &quot;sessions_send&quot;,
+            &quot;sessions_spawn&quot;,
+            &quot;session_status&quot;,
+          ],
+          deny: [&quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;browser&quot;, &quot;canvas&quot;, &quot;nodes&quot;, &quot;cron&quot;],
+        },
+      },
+    ],
+  },
+  bindings: [
+    {
+      agentId: &quot;family&quot;,
+      match: {
+        channel: &quot;whatsapp&quot;,
+        peer: { kind: &quot;group&quot;, id: &quot;120363999999999999@g.us&quot; },
+      },
+    },
+  ],
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Tool allow/deny lists are <strong>tools</strong>, not skills. If a skill needs to run a
+binary, ensure <code>exec</code> is allowed and the binary exists in the sandbox.</li>
+<li>For stricter gating, set <code>agents.list[].groupChat.mentionPatterns</code> and keep
+group allowlists enabled for the channel.</li>
+</ul>
+<h2>Per-Agent Sandbox and Tool Configuration</h2>
+<p>Starting with v2026.1.6, each agent can have its own sandbox and tool restrictions:</p>
+<pre><code class="language-js">{
+  agents: {
+    list: [
+      {
+        id: &quot;personal&quot;,
+        workspace: &quot;~/.agdi/workspace-personal&quot;,
+        sandbox: {
+          mode: &quot;off&quot;,  // No sandbox for personal agent
+        },
+        // No tool restrictions - all tools available
+      },
+      {
+        id: &quot;family&quot;,
+        workspace: &quot;~/.agdi/workspace-family&quot;,
+        sandbox: {
+          mode: &quot;all&quot;,     // Always sandboxed
+          scope: &quot;agent&quot;,  // One container per agent
+          docker: {
+            // Optional one-time setup after container creation
+            setupCommand: &quot;apt-get update &amp;&amp; apt-get install -y git curl&quot;,
+          },
+        },
+        tools: {
+          allow: [&quot;read&quot;],                    // Only read tool
+          deny: [&quot;exec&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;],    // Deny others
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Note: <code>setupCommand</code> lives under <code>sandbox.docker</code> and runs once on container creation.
+Per-agent <code>sandbox.docker.*</code> overrides are ignored when the resolved scope is <code>&quot;shared&quot;</code>.</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li><strong>Security isolation</strong>: Restrict tools for untrusted agents</li>
+<li><strong>Resource control</strong>: Sandbox specific agents while keeping others on host</li>
+<li><strong>Flexible policies</strong>: Different permissions per agent</li>
+</ul>
+<p>Note: <code>tools.elevated</code> is <strong>global</strong> and sender-based; it is not configurable per agent.
+If you need per-agent boundaries, use <code>agents.list[].tools</code> to deny <code>exec</code>.
+For group targeting, use <code>agents.list[].groupChat.mentionPatterns</code> so @mentions map cleanly to the intended agent.</p>
+<p>See <a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> for detailed examples.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

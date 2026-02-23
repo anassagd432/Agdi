@@ -161,7 +161,7 @@ export const discordPlugin: ChannelPlugin<ResolvedDiscordAccount> = {
   agentPrompt: {
     messageToolHints: () => [
       "- Discord components: set `components` when sending messages to include buttons, selects, or v2 containers.",
-      "- Forms: add `components.modal` (title, fields). OpenClaw adds a trigger button and routes submissions as new messages.",
+      "- Forms: add `components.modal` (title, fields). AGDI adds a trigger button and routes submissions as new messages.",
     ],
   },
   messaging: {

@@ -9,26 +9,26 @@ import {
 } from "./config-paths.js";
 import { readConfigFileSnapshot, validateConfigObject } from "./config.js";
 import { withTempHome } from "./test-helpers.js";
-import { OpenClawSchema } from "./zod-schema.js";
+import { AGDISchema } from "./zod-schema.js";
 
 describe("$schema key in config (#14998)", () => {
   it("accepts config with $schema string", () => {
-    const result = OpenClawSchema.safeParse({
-      $schema: "https://openclaw.ai/config.json",
+    const result = AGDISchema.safeParse({
+      $schema: "https://agdi.ai/config.json",
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.$schema).toBe("https://openclaw.ai/config.json");
+      expect(result.data.$schema).toBe("https://agdi.ai/config.json");
     }
   });
 
   it("accepts config without $schema", () => {
-    const result = OpenClawSchema.safeParse({});
+    const result = AGDISchema.safeParse({});
     expect(result.success).toBe(true);
   });
 
   it("rejects non-string $schema", () => {
-    const result = OpenClawSchema.safeParse({ $schema: 123 });
+    const result = AGDISchema.safeParse({ $schema: 123 });
     expect(result.success).toBe(false);
   });
 });
@@ -155,7 +155,7 @@ describe("gateway.tools config", () => {
 
 describe("cron webhook schema", () => {
   it("accepts cron.webhook and cron.webhookToken", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = AGDISchema.safeParse({
       cron: {
         enabled: true,
         webhook: "https://example.invalid/cron",
@@ -167,7 +167,7 @@ describe("cron webhook schema", () => {
   });
 
   it("rejects non-http(s) cron.webhook URLs", () => {
-    const res = OpenClawSchema.safeParse({
+    const res = AGDISchema.safeParse({
       cron: {
         webhook: "ftp://example.invalid/cron",
       },
@@ -273,10 +273,10 @@ describe("config strict validation", () => {
 
   it("flags legacy config entries without auto-migrating", async () => {
     await withTempHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
+      const configDir = path.join(home, ".agdi");
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
-        path.join(configDir, "openclaw.json"),
+        path.join(configDir, "agdi.json"),
         JSON.stringify({
           agents: { list: [{ id: "pi" }] },
           routing: { allowFrom: ["+15555550123"] },

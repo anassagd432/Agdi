@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android App — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="active" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Android App (Node)</h1>
+<h2>Support snapshot</h2>
+<ul>
+<li>Role: companion node app (Android does not host the Gateway).</li>
+<li>Gateway required: yes (run it on macOS, Linux, or Windows via WSL2).</li>
+<li>Install: <a href="/start/getting-started">Getting Started</a> + <a href="/gateway/pairing">Pairing</a>.</li>
+<li>Gateway: <a href="/gateway">Runbook</a> + <a href="/gateway/configuration">Configuration</a>.<ul>
+<li>Protocols: <a href="/gateway/protocol">Gateway protocol</a> (nodes + control plane).</li>
+</ul>
+</li>
+</ul>
+<h2>System control</h2>
+<p>System control (launchd/systemd) lives on the Gateway host. See <a href="/gateway">Gateway</a>.</p>
+<h2>Connection Runbook</h2>
+<p>Android node app ⇄ (mDNS/NSD + WebSocket) ⇄ <strong>Gateway</strong></p>
+<p>Android connects directly to the Gateway WebSocket (default <code>ws://&lt;host&gt;:18789</code>) and uses Gateway-owned pairing.</p>
+<h3>Prerequisites</h3>
+<ul>
+<li>You can run the Gateway on the “master” machine.</li>
+<li>Android device/emulator can reach the gateway WebSocket:<ul>
+<li>Same LAN with mDNS/NSD, <strong>or</strong></li>
+<li>Same Tailscale tailnet using Wide-Area Bonjour / unicast DNS-SD (see below), <strong>or</strong></li>
+<li>Manual gateway host/port (fallback)</li>
+</ul>
+</li>
+<li>You can run the CLI (<code>agdi</code>) on the gateway machine (or via SSH).</li>
+</ul>
+<h3>1) Start the Gateway</h3>
+<pre><code class="language-bash">agdi gateway --port 18789 --verbose
+</code></pre>
+<p>Confirm in logs you see something like:</p>
+<ul>
+<li><code>listening on ws://0.0.0.0:18789</code></li>
+</ul>
+<p>For tailnet-only setups (recommended for Vienna ⇄ London), bind the gateway to the tailnet IP:</p>
+<ul>
+<li>Set <code>gateway.bind: &quot;tailnet&quot;</code> in <code>~/.agdi/agdi.json</code> on the gateway host.</li>
+<li>Restart the Gateway / macOS menubar app.</li>
+</ul>
+<h3>2) Verify discovery (optional)</h3>
+<p>From the gateway machine:</p>
+<pre><code class="language-bash">dns-sd -B _agdi-gw._tcp local.
+</code></pre>
+<p>More debugging notes: <a href="/gateway/bonjour">Bonjour</a>.</p>
+<h4>Tailnet (Vienna ⇄ London) discovery via unicast DNS-SD</h4>
+<p>Android NSD/mDNS discovery won’t cross networks. If your Android node and the gateway are on different networks but connected via Tailscale, use Wide-Area Bonjour / unicast DNS-SD instead:</p>
+<ol>
+<li>Set up a DNS-SD zone (example <code>agdi.internal.</code>) on the gateway host and publish <code>_agdi-gw._tcp</code> records.</li>
+<li>Configure Tailscale split DNS for your chosen domain pointing at that DNS server.</li>
+</ol>
+<p>Details and example CoreDNS config: <a href="/gateway/bonjour">Bonjour</a>.</p>
+<h3>3) Connect from Android</h3>
+<p>In the Android app:</p>
+<ul>
+<li>The app keeps its gateway connection alive via a <strong>foreground service</strong> (persistent notification).</li>
+<li>Open <strong>Settings</strong>.</li>
+<li>Under <strong>Discovered Gateways</strong>, select your gateway and hit <strong>Connect</strong>.</li>
+<li>If mDNS is blocked, use <strong>Advanced → Manual Gateway</strong> (host + port) and <strong>Connect (Manual)</strong>.</li>
+</ul>
+<p>After the first successful pairing, Android auto-reconnects on launch:</p>
+<ul>
+<li>Manual endpoint (if enabled), otherwise</li>
+<li>The last discovered gateway (best-effort).</li>
+</ul>
+<h3>4) Approve pairing (CLI)</h3>
+<p>On the gateway machine:</p>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+</code></pre>
+<p>Pairing details: <a href="/gateway/pairing">Gateway pairing</a>.</p>
+<h3>5) Verify the node is connected</h3>
+<ul>
+<li><p>Via nodes status:</p>
+<pre><code class="language-bash">agdi nodes status
+</code></pre>
+</li>
+<li><p>Via Gateway:</p>
+<pre><code class="language-bash">agdi gateway call node.list --params &quot;{}&quot;
+</code></pre>
+</li>
+</ul>
+<h3>6) Chat + history</h3>
+<p>The Android node’s Chat sheet uses the gateway’s <strong>primary session key</strong> (<code>main</code>), so history and replies are shared with WebChat and other clients:</p>
+<ul>
+<li>History: <code>chat.history</code></li>
+<li>Send: <code>chat.send</code></li>
+<li>Push updates (best-effort): <code>chat.subscribe</code> → <code>event:&quot;chat&quot;</code></li>
+</ul>
+<h3>7) Canvas + camera</h3>
+<h4>Gateway Canvas Host (recommended for web content)</h4>
+<p>If you want the node to show real HTML/CSS/JS that the agent can edit on disk, point the node at the Gateway canvas host.</p>
+<p>Note: nodes load canvas from the Gateway HTTP server (same port as <code>gateway.port</code>, default <code>18789</code>).</p>
+<ol>
+<li><p>Create <code>~/.agdi/workspace/canvas/index.html</code> on the gateway host.</p>
+</li>
+<li><p>Navigate the node to it (LAN):</p>
+</li>
+</ol>
+<pre><code class="language-bash">agdi nodes invoke --node &quot;&lt;Android Node&gt;&quot; --command canvas.navigate --params &#39;{&quot;url&quot;:&quot;http://&lt;gateway-hostname&gt;.local:18789/__agdi__/canvas/&quot;}&#39;
+</code></pre>
+<p>Tailnet (optional): if both devices are on Tailscale, use a MagicDNS name or tailnet IP instead of <code>.local</code>, e.g. <code>http://&lt;gateway-magicdns&gt;:18789/__agdi__/canvas/</code>.</p>
+<p>This server injects a live-reload client into HTML and reloads on file changes.
+The A2UI host lives at <code>http://&lt;gateway-host&gt;:18789/__agdi__/a2ui/</code>.</p>
+<p>Canvas commands (foreground only):</p>
+<ul>
+<li><code>canvas.eval</code>, <code>canvas.snapshot</code>, <code>canvas.navigate</code> (use <code>{&quot;url&quot;:&quot;&quot;}</code> or <code>{&quot;url&quot;:&quot;/&quot;}</code> to return to the default scaffold). <code>canvas.snapshot</code> returns <code>{ format, base64 }</code> (default <code>format=&quot;jpeg&quot;</code>).</li>
+<li>A2UI: <code>canvas.a2ui.push</code>, <code>canvas.a2ui.reset</code> (<code>canvas.a2ui.pushJSONL</code> legacy alias)</li>
+</ul>
+<p>Camera commands (foreground only; permission-gated):</p>
+<ul>
+<li><code>camera.snap</code> (jpg)</li>
+<li><code>camera.clip</code> (mp4)</li>
+</ul>
+<p>See <a href="/nodes/camera">Camera node</a> for parameters and CLI helpers.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -9,12 +9,12 @@ import { setMSTeamsRuntime } from "./runtime.js";
 const runtimeStub = {
   state: {
     resolveStateDir: (env: NodeJS.ProcessEnv = process.env, homedir?: () => string) => {
-      const override = env.OPENCLAW_STATE_DIR?.trim() || env.OPENCLAW_STATE_DIR?.trim();
+      const override = env.AGDI_STATE_DIR?.trim() || env.AGDI_STATE_DIR?.trim();
       if (override) {
         return override;
       }
       const resolvedHome = homedir ? homedir() : os.homedir();
-      return path.join(resolvedHome, ".openclaw");
+      return path.join(resolvedHome, ".agdi");
     },
   },
 } as unknown as PluginRuntime;
@@ -39,7 +39,7 @@ describe("msteams polls", () => {
   it("extracts poll votes from activity values", () => {
     const vote = extractMSTeamsPollVote({
       value: {
-        openclawPollId: "poll-1",
+        agdiPollId: "poll-1",
         choices: "0,1",
       },
     });
@@ -51,7 +51,7 @@ describe("msteams polls", () => {
   });
 
   it("stores and records poll votes", async () => {
-    const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), "openclaw-msteams-polls-"));
+    const home = await fs.promises.mkdtemp(path.join(os.tmpdir(), "agdi-msteams-polls-"));
     const store = createMSTeamsPollStoreFs({ homedir: () => home });
     await store.createPoll({
       id: "poll-2",

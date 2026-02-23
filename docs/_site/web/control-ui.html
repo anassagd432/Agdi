@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control UI — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="active" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Control UI (browser)</h1>
+<p>The Control UI is a small <strong>Vite + Lit</strong> single-page app served by the Gateway:</p>
+<ul>
+<li>default: <code>http://&lt;host&gt;:18789/</code></li>
+<li>optional prefix: set <code>gateway.controlUi.basePath</code> (e.g. <code>/agdi</code>)</li>
+</ul>
+<p>It speaks <strong>directly to the Gateway WebSocket</strong> on the same port.</p>
+<h2>Quick open (local)</h2>
+<p>If the Gateway is running on the same computer, open:</p>
+<ul>
+<li><a href="http://127.0.0.1:18789/">http://127.0.0.1:18789/</a> (or <a href="http://localhost:18789/">http://localhost:18789/</a>)</li>
+</ul>
+<p>If the page fails to load, start the Gateway first: <code>agdi gateway</code>.</p>
+<p>Auth is supplied during the WebSocket handshake via:</p>
+<ul>
+<li><code>connect.params.auth.token</code></li>
+<li><code>connect.params.auth.password</code>
+The dashboard settings panel lets you store a token; passwords are not persisted.
+The onboarding wizard generates a gateway token by default, so paste it here on first connect.</li>
+</ul>
+<h2>Device pairing (first connection)</h2>
+<p>When you connect to the Control UI from a new browser or device, the Gateway
+requires a <strong>one-time pairing approval</strong> — even if you&#39;re on the same Tailnet
+with <code>gateway.auth.allowTailscale: true</code>. This is a security measure to prevent
+unauthorized access.</p>
+<p><strong>What you&#39;ll see:</strong> &quot;disconnected (1008): pairing required&quot;</p>
+<p><strong>To approve the device:</strong></p>
+<pre><code class="language-bash"># List pending requests
+agdi devices list
+
+# Approve by request ID
+agdi devices approve &lt;requestId&gt;
+</code></pre>
+<p>Once approved, the device is remembered and won&#39;t require re-approval unless
+you revoke it with <code>agdi devices revoke --device &lt;id&gt; --role &lt;role&gt;</code>. See
+<a href="/cli/devices">Devices CLI</a> for token rotation and revocation.</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Local connections (<code>127.0.0.1</code>) are auto-approved.</li>
+<li>Remote connections (LAN, Tailnet, etc.) require explicit approval.</li>
+<li>Each browser profile generates a unique device ID, so switching browsers or
+clearing browser data will require re-pairing.</li>
+</ul>
+<h2>What it can do (today)</h2>
+<ul>
+<li>Chat with the model via Gateway WS (<code>chat.history</code>, <code>chat.send</code>, <code>chat.abort</code>, <code>chat.inject</code>)</li>
+<li>Stream tool calls + live tool output cards in Chat (agent events)</li>
+<li>Channels: WhatsApp/Telegram/Discord/Slack + plugin channels (Mattermost, etc.) status + QR login + per-channel config (<code>channels.status</code>, <code>web.login.*</code>, <code>config.patch</code>)</li>
+<li>Instances: presence list + refresh (<code>system-presence</code>)</li>
+<li>Sessions: list + per-session thinking/verbose overrides (<code>sessions.list</code>, <code>sessions.patch</code>)</li>
+<li>Cron jobs: list/add/run/enable/disable + run history (<code>cron.*</code>)</li>
+<li>Skills: status, enable/disable, install, API key updates (<code>skills.*</code>)</li>
+<li>Nodes: list + caps (<code>node.list</code>)</li>
+<li>Exec approvals: edit gateway or node allowlists + ask policy for <code>exec host=gateway/node</code> (<code>exec.approvals.*</code>)</li>
+<li>Config: view/edit <code>~/.agdi/agdi.json</code> (<code>config.get</code>, <code>config.set</code>)</li>
+<li>Config: apply + restart with validation (<code>config.apply</code>) and wake the last active session</li>
+<li>Config writes include a base-hash guard to prevent clobbering concurrent edits</li>
+<li>Config schema + form rendering (<code>config.schema</code>, including plugin + channel schemas); Raw JSON editor remains available</li>
+<li>Debug: status/health/models snapshots + event log + manual RPC calls (<code>status</code>, <code>health</code>, <code>models.list</code>)</li>
+<li>Logs: live tail of gateway file logs with filter/export (<code>logs.tail</code>)</li>
+<li>Update: run a package/git update + restart (<code>update.run</code>) with a restart report</li>
+</ul>
+<p>Cron jobs panel notes:</p>
+<ul>
+<li>For isolated jobs, delivery defaults to announce summary. You can switch to none if you want internal-only runs.</li>
+<li>Channel/target fields appear when announce is selected.</li>
+<li>New job form includes a <strong>Notify webhook</strong> toggle (<code>notify</code> on the job).</li>
+<li>Gateway webhook posting requires both <code>notify: true</code> on the job and <code>cron.webhook</code> in config.</li>
+<li>Set <code>cron.webhookToken</code> to send a dedicated bearer token, if omitted the webhook is sent without an auth header.</li>
+</ul>
+<h2>Chat behavior</h2>
+<ul>
+<li><code>chat.send</code> is <strong>non-blocking</strong>: it acks immediately with <code>{ runId, status: &quot;started&quot; }</code> and the response streams via <code>chat</code> events.</li>
+<li>Re-sending with the same <code>idempotencyKey</code> returns <code>{ status: &quot;in_flight&quot; }</code> while running, and <code>{ status: &quot;ok&quot; }</code> after completion.</li>
+<li><code>chat.inject</code> appends an assistant note to the session transcript and broadcasts a <code>chat</code> event for UI-only updates (no agent run, no channel delivery).</li>
+<li>Stop:<ul>
+<li>Click <strong>Stop</strong> (calls <code>chat.abort</code>)</li>
+<li>Type <code>/stop</code> (or <code>stop|esc|abort|wait|exit|interrupt</code>) to abort out-of-band</li>
+<li><code>chat.abort</code> supports <code>{ sessionKey }</code> (no <code>runId</code>) to abort all active runs for that session</li>
+</ul>
+</li>
+<li>Abort partial retention:<ul>
+<li>When a run is aborted, partial assistant text can still be shown in the UI</li>
+<li>Gateway persists aborted partial assistant text into transcript history when buffered output exists</li>
+<li>Persisted entries include abort metadata so transcript consumers can tell abort partials from normal completion output</li>
+</ul>
+</li>
+</ul>
+<h2>Tailnet access (recommended)</h2>
+<h3>Integrated Tailscale Serve (preferred)</h3>
+<p>Keep the Gateway on loopback and let Tailscale Serve proxy it with HTTPS:</p>
+<pre><code class="language-bash">agdi gateway --tailscale serve
+</code></pre>
+<p>Open:</p>
+<ul>
+<li><code>https://&lt;magicdns&gt;/</code> (or your configured <code>gateway.controlUi.basePath</code>)</li>
+</ul>
+<p>By default, Serve requests can authenticate via Tailscale identity headers
+(<code>tailscale-user-login</code>) when <code>gateway.auth.allowTailscale</code> is <code>true</code>. AGDI
+verifies the identity by resolving the <code>x-forwarded-for</code> address with
+<code>tailscale whois</code> and matching it to the header, and only accepts these when the
+request hits loopback with Tailscale’s <code>x-forwarded-*</code> headers. Set
+<code>gateway.auth.allowTailscale: false</code> (or force <code>gateway.auth.mode: &quot;password&quot;</code>)
+if you want to require a token/password even for Serve traffic.</p>
+<h3>Bind to tailnet + token</h3>
+<pre><code class="language-bash">agdi gateway --bind tailnet --token &quot;$(openssl rand -hex 32)&quot;
+</code></pre>
+<p>Then open:</p>
+<ul>
+<li><code>http://&lt;tailscale-ip&gt;:18789/</code> (or your configured <code>gateway.controlUi.basePath</code>)</li>
+</ul>
+<p>Paste the token into the UI settings (sent as <code>connect.params.auth.token</code>).</p>
+<h2>Insecure HTTP</h2>
+<p>If you open the dashboard over plain HTTP (<code>http://&lt;lan-ip&gt;</code> or <code>http://&lt;tailscale-ip&gt;</code>),
+the browser runs in a <strong>non-secure context</strong> and blocks WebCrypto. By default,
+AGDI <strong>blocks</strong> Control UI connections without device identity.</p>
+<p><strong>Recommended fix:</strong> use HTTPS (Tailscale Serve) or open the UI locally:</p>
+<ul>
+<li><code>https://&lt;magicdns&gt;/</code> (Serve)</li>
+<li><code>http://127.0.0.1:18789/</code> (on the gateway host)</li>
+</ul>
+<p><strong>Downgrade example (token-only over HTTP):</strong></p>
+<pre><code class="language-json5">{
+  gateway: {
+    controlUi: { allowInsecureAuth: true },
+    bind: &quot;tailnet&quot;,
+    auth: { mode: &quot;token&quot;, token: &quot;replace-me&quot; },
+  },
+}
+</code></pre>
+<p>This disables device identity + pairing for the Control UI (even on HTTPS). Use
+only if you trust the network.</p>
+<p>See <a href="/gateway/tailscale">Tailscale</a> for HTTPS setup guidance.</p>
+<h2>Building the UI</h2>
+<p>The Gateway serves static files from <code>dist/control-ui</code>. Build them with:</p>
+<pre><code class="language-bash">pnpm ui:build # auto-installs UI deps on first run
+</code></pre>
+<p>Optional absolute base (when you want fixed asset URLs):</p>
+<pre><code class="language-bash">AGDI_CONTROL_UI_BASE_PATH=/agdi/ pnpm ui:build
+</code></pre>
+<p>For local development (separate dev server):</p>
+<pre><code class="language-bash">pnpm ui:dev # auto-installs UI deps on first run
+</code></pre>
+<p>Then point the UI at your Gateway WS URL (e.g. <code>ws://127.0.0.1:18789</code>).</p>
+<h2>Debugging/testing: dev server + remote Gateway</h2>
+<p>The Control UI is static files; the WebSocket target is configurable and can be
+different from the HTTP origin. This is handy when you want the Vite dev server
+locally but the Gateway runs elsewhere.</p>
+<ol>
+<li>Start the UI dev server: <code>pnpm ui:dev</code></li>
+<li>Open a URL like:</li>
+</ol>
+<pre><code class="language-text">http://localhost:5173/?gatewayUrl=ws://&lt;gateway-host&gt;:18789
+</code></pre>
+<p>Optional one-time auth (if needed):</p>
+<pre><code class="language-text">http://localhost:5173/?gatewayUrl=wss://&lt;gateway-host&gt;:18789&amp;token=&lt;gateway-token&gt;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>gatewayUrl</code> is stored in localStorage after load and removed from the URL.</li>
+<li><code>token</code> is stored in localStorage; <code>password</code> is kept in memory only.</li>
+<li>When <code>gatewayUrl</code> is set, the UI does not fall back to config or environment credentials.
+Provide <code>token</code> (or <code>password</code>) explicitly. Missing explicit credentials is an error.</li>
+<li>Use <code>wss://</code> when the Gateway is behind TLS (Tailscale Serve, HTTPS proxy, etc.).</li>
+<li><code>gatewayUrl</code> is only accepted in a top-level window (not embedded) to prevent clickjacking.</li>
+<li>For cross-origin dev setups (e.g. <code>pnpm ui:dev</code> to a remote Gateway), add the UI
+origin to <code>gateway.controlUi.allowedOrigins</code>.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    controlUi: {
+      allowedOrigins: [&quot;http://localhost:5173&quot;],
+    },
+  },
+}
+</code></pre>
+<p>Remote access setup details: <a href="/gateway/remote">Remote access</a>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

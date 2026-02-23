@@ -1,4 +1,4 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "openclaw/plugin-sdk";
 import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
 import { imessagePlugin } from "./src/channel.js";
 import { setIMessageRuntime } from "./src/runtime.js";
@@ -8,7 +8,7 @@ const plugin = {
   name: "iMessage",
   description: "iMessage channel plugin",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: AGDIPluginApi) {
     setIMessageRuntime(api.runtime);
     api.registerChannel({ plugin: imessagePlugin });
   },

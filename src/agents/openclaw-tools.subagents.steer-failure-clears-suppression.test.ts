@@ -25,20 +25,20 @@ vi.mock("../config/config.js", async (importOriginal) => {
 });
 
 import "./test-helpers/fast-core-tools.js";
-import { createOpenClawTools } from "./openclaw-tools.js";
+import { createAGDITools } from "./openclaw-tools.js";
 import {
   addSubagentRunForTests,
   listSubagentRunsForRequester,
   resetSubagentRegistryForTests,
 } from "./subagent-registry.js";
 
-describe("openclaw-tools: subagents steer failure", () => {
+describe("agdi-tools: subagents steer failure", () => {
   beforeEach(() => {
     resetSubagentRegistryForTests();
     callGatewayMock.mockReset();
     const storePath = path.join(
       os.tmpdir(),
-      `openclaw-subagents-steer-${Date.now()}-${Math.random().toString(16).slice(2)}.json`,
+      `agdi-subagents-steer-${Date.now()}-${Math.random().toString(16).slice(2)}.json`,
     );
     configOverride = {
       session: {
@@ -73,7 +73,7 @@ describe("openclaw-tools: subagents steer failure", () => {
       return {};
     });
 
-    const tool = createOpenClawTools({
+    const tool = createAGDITools({
       agentSessionKey: "agent:main:main",
       agentChannel: "discord",
     }).find((candidate) => candidate.name === "subagents");

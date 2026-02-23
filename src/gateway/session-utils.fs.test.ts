@@ -17,7 +17,7 @@ describe("readFirstUserMessageFromTranscript", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-fs-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-session-fs-test-"));
     storePath = path.join(tmpDir, "sessions.json");
   });
 
@@ -184,7 +184,7 @@ describe("readLastMessagePreviewFromTranscript", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-fs-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-session-fs-test-"));
     storePath = path.join(tmpDir, "sessions.json");
   });
 
@@ -373,7 +373,7 @@ describe("readSessionTitleFieldsFromTranscript cache", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-fs-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-session-fs-test-"));
     storePath = path.join(tmpDir, "sessions.json");
   });
 
@@ -437,7 +437,7 @@ describe("readSessionMessages", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-fs-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-session-fs-test-"));
     storePath = path.join(tmpDir, "sessions.json");
   });
 
@@ -468,13 +468,13 @@ describe("readSessionMessages", () => {
     const marker = out[1] as {
       role: string;
       content?: Array<{ text?: string }>;
-      __openclaw?: { kind?: string; id?: string };
+      __agdi?: { kind?: string; id?: string };
       timestamp?: number;
     };
     expect(marker.role).toBe("system");
     expect(marker.content?.[0]?.text).toBe("Compaction");
-    expect(marker.__openclaw?.kind).toBe("compaction");
-    expect(marker.__openclaw?.id).toBe("comp-1");
+    expect(marker.__agdi?.kind).toBe("compaction");
+    expect(marker.__agdi?.id).toBe("comp-1");
     expect(typeof marker.timestamp).toBe("number");
   });
 
@@ -536,7 +536,7 @@ describe("readSessionPreviewItemsFromTranscript", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-session-preview-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-session-preview-test-"));
     storePath = path.join(tmpDir, "sessions.json");
   });
 
@@ -635,22 +635,22 @@ describe("resolveSessionTranscriptCandidates", () => {
     vi.unstubAllEnvs();
   });
 
-  test("fallback candidate uses OPENCLAW_HOME instead of os.homedir()", () => {
-    vi.stubEnv("OPENCLAW_HOME", "/srv/openclaw-home");
+  test("fallback candidate uses AGDI_HOME instead of os.homedir()", () => {
+    vi.stubEnv("AGDI_HOME", "/srv/agdi-home");
     vi.stubEnv("HOME", "/home/other");
 
     const candidates = resolveSessionTranscriptCandidates("sess-1", undefined);
     const fallback = candidates[candidates.length - 1];
     expect(fallback).toBe(
-      path.join(path.resolve("/srv/openclaw-home"), ".openclaw", "sessions", "sess-1.jsonl"),
+      path.join(path.resolve("/srv/agdi-home"), ".agdi", "sessions", "sess-1.jsonl"),
     );
   });
 });
 
 describe("resolveSessionTranscriptCandidates safety", () => {
   test("keeps cross-agent absolute sessionFile when storePath agent context differs", () => {
-    const storePath = "/tmp/openclaw/agents/main/sessions/sessions.json";
-    const sessionFile = "/tmp/openclaw/agents/ops/sessions/sess-safe.jsonl";
+    const storePath = "/tmp/agdi/agents/main/sessions/sessions.json";
+    const sessionFile = "/tmp/agdi/agents/ops/sessions/sess-safe.jsonl";
     const candidates = resolveSessionTranscriptCandidates("sess-safe", storePath, sessionFile);
 
     expect(candidates.map((value) => path.resolve(value))).toContain(path.resolve(sessionFile));
@@ -667,14 +667,14 @@ describe("resolveSessionTranscriptCandidates safety", () => {
   test("drops unsafe session IDs instead of producing traversal paths", () => {
     const candidates = resolveSessionTranscriptCandidates(
       "../etc/passwd",
-      "/tmp/openclaw/agents/main/sessions/sessions.json",
+      "/tmp/agdi/agents/main/sessions/sessions.json",
     );
 
     expect(candidates).toEqual([]);
   });
 
   test("drops unsafe sessionFile candidates and keeps safe fallbacks", () => {
-    const storePath = "/tmp/openclaw/agents/main/sessions/sessions.json";
+    const storePath = "/tmp/agdi/agents/main/sessions/sessions.json";
     const candidates = resolveSessionTranscriptCandidates(
       "sess-safe",
       storePath,
@@ -693,9 +693,9 @@ describe("archiveSessionTranscripts", () => {
   let storePath: string;
 
   beforeAll(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-archive-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-archive-test-"));
     storePath = path.join(tmpDir, "sessions.json");
-    vi.stubEnv("OPENCLAW_HOME", tmpDir);
+    vi.stubEnv("AGDI_HOME", tmpDir);
   });
 
   afterAll(() => {

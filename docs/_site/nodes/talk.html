@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talk Mode — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="active" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Talk Mode</h1>
+<p>Talk mode is a continuous voice conversation loop:</p>
+<ol>
+<li>Listen for speech</li>
+<li>Send transcript to the model (main session, chat.send)</li>
+<li>Wait for the response</li>
+<li>Speak it via ElevenLabs (streaming playback)</li>
+</ol>
+<h2>Behavior (macOS)</h2>
+<ul>
+<li><strong>Always-on overlay</strong> while Talk mode is enabled.</li>
+<li><strong>Listening → Thinking → Speaking</strong> phase transitions.</li>
+<li>On a <strong>short pause</strong> (silence window), the current transcript is sent.</li>
+<li>Replies are <strong>written to WebChat</strong> (same as typing).</li>
+<li><strong>Interrupt on speech</strong> (default on): if the user starts talking while the assistant is speaking, we stop playback and note the interruption timestamp for the next prompt.</li>
+</ul>
+<h2>Voice directives in replies</h2>
+<p>The assistant may prefix its reply with a <strong>single JSON line</strong> to control voice:</p>
+<pre><code class="language-json">{ &quot;voice&quot;: &quot;&lt;voice-id&gt;&quot;, &quot;once&quot;: true }
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>First non-empty line only.</li>
+<li>Unknown keys are ignored.</li>
+<li><code>once: true</code> applies to the current reply only.</li>
+<li>Without <code>once</code>, the voice becomes the new default for Talk mode.</li>
+<li>The JSON line is stripped before TTS playback.</li>
+</ul>
+<p>Supported keys:</p>
+<ul>
+<li><code>voice</code> / <code>voice_id</code> / <code>voiceId</code></li>
+<li><code>model</code> / <code>model_id</code> / <code>modelId</code></li>
+<li><code>speed</code>, <code>rate</code> (WPM), <code>stability</code>, <code>similarity</code>, <code>style</code>, <code>speakerBoost</code></li>
+<li><code>seed</code>, <code>normalize</code>, <code>lang</code>, <code>output_format</code>, <code>latency_tier</code></li>
+<li><code>once</code></li>
+</ul>
+<h2>Config (<code>~/.agdi/agdi.json</code>)</h2>
+<pre><code class="language-json5">{
+  talk: {
+    voiceId: &quot;elevenlabs_voice_id&quot;,
+    modelId: &quot;eleven_v3&quot;,
+    outputFormat: &quot;mp3_44100_128&quot;,
+    apiKey: &quot;elevenlabs_api_key&quot;,
+    interruptOnSpeech: true,
+  },
+}
+</code></pre>
+<p>Defaults:</p>
+<ul>
+<li><code>interruptOnSpeech</code>: true</li>
+<li><code>voiceId</code>: falls back to <code>ELEVENLABS_VOICE_ID</code> / <code>SAG_VOICE_ID</code> (or first ElevenLabs voice when API key is available)</li>
+<li><code>modelId</code>: defaults to <code>eleven_v3</code> when unset</li>
+<li><code>apiKey</code>: falls back to <code>ELEVENLABS_API_KEY</code> (or gateway shell profile if available)</li>
+<li><code>outputFormat</code>: defaults to <code>pcm_44100</code> on macOS/iOS and <code>pcm_24000</code> on Android (set <code>mp3_*</code> to force MP3 streaming)</li>
+</ul>
+<h2>macOS UI</h2>
+<ul>
+<li>Menu bar toggle: <strong>Talk</strong></li>
+<li>Config tab: <strong>Talk Mode</strong> group (voice id + interrupt toggle)</li>
+<li>Overlay:<ul>
+<li><strong>Listening</strong>: cloud pulses with mic level</li>
+<li><strong>Thinking</strong>: sinking animation</li>
+<li><strong>Speaking</strong>: radiating rings</li>
+<li>Click cloud: stop speaking</li>
+<li>Click X: exit Talk mode</li>
+</ul>
+</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Requires Speech + Microphone permissions.</li>
+<li>Uses <code>chat.send</code> against session key <code>main</code>.</li>
+<li>TTS uses ElevenLabs streaming API with <code>ELEVENLABS_API_KEY</code> and incremental playback on macOS/iOS/Android for lower latency.</li>
+<li><code>stability</code> for <code>eleven_v3</code> is validated to <code>0.0</code>, <code>0.5</code>, or <code>1.0</code>; other models accept <code>0..1</code>.</li>
+<li><code>latency_tier</code> is validated to <code>0..4</code> when set.</li>
+<li>Android supports <code>pcm_16000</code>, <code>pcm_22050</code>, <code>pcm_24000</code>, and <code>pcm_44100</code> output formats for low-latency AudioTrack streaming.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

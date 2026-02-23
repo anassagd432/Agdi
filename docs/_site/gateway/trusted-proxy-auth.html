@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gateway/trusted-proxy-auth — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="active" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Trusted Proxy Auth</h1>
+<blockquote>
+<p>⚠️ <strong>Security-sensitive feature.</strong> This mode delegates authentication entirely to your reverse proxy. Misconfiguration can expose your Gateway to unauthorized access. Read this page carefully before enabling.</p>
+</blockquote>
+<h2>When to Use</h2>
+<p>Use <code>trusted-proxy</code> auth mode when:</p>
+<ul>
+<li>You run AGDI behind an <strong>identity-aware proxy</strong> (Pomerium, Caddy + OAuth, nginx + oauth2-proxy, Traefik + forward auth)</li>
+<li>Your proxy handles all authentication and passes user identity via headers</li>
+<li>You&#39;re in a Kubernetes or container environment where the proxy is the only path to the Gateway</li>
+<li>You&#39;re hitting WebSocket <code>1008 unauthorized</code> errors because browsers can&#39;t pass tokens in WS payloads</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul>
+<li>If your proxy doesn&#39;t authenticate users (just a TLS terminator or load balancer)</li>
+<li>If there&#39;s any path to the Gateway that bypasses the proxy (firewall holes, internal network access)</li>
+<li>If you&#39;re unsure whether your proxy correctly strips/overwrites forwarded headers</li>
+<li>If you only need personal single-user access (consider Tailscale Serve + loopback for simpler setup)</li>
+</ul>
+<h2>How It Works</h2>
+<ol>
+<li>Your reverse proxy authenticates users (OAuth, OIDC, SAML, etc.)</li>
+<li>Proxy adds a header with the authenticated user identity (e.g., <code>x-forwarded-user: nick@example.com</code>)</li>
+<li>AGDI checks that the request came from a <strong>trusted proxy IP</strong> (configured in <code>gateway.trustedProxies</code>)</li>
+<li>AGDI extracts the user identity from the configured header</li>
+<li>If everything checks out, the request is authorized</li>
+</ol>
+<h2>Configuration</h2>
+<pre><code class="language-json5">{
+  gateway: {
+    // Must bind to network interface (not loopback)
+    bind: &quot;lan&quot;,
+
+    // CRITICAL: Only add your proxy&#39;s IP(s) here
+    trustedProxies: [&quot;10.0.0.1&quot;, &quot;172.17.0.1&quot;],
+
+    auth: {
+      mode: &quot;trusted-proxy&quot;,
+      trustedProxy: {
+        // Header containing authenticated user identity (required)
+        userHeader: &quot;x-forwarded-user&quot;,
+
+        // Optional: headers that MUST be present (proxy verification)
+        requiredHeaders: [&quot;x-forwarded-proto&quot;, &quot;x-forwarded-host&quot;],
+
+        // Optional: restrict to specific users (empty = allow all)
+        allowUsers: [&quot;nick@example.com&quot;, &quot;admin@company.org&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Configuration Reference</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gateway.trustedProxies</code></td>
+<td>Yes</td>
+<td>Array of proxy IP addresses to trust. Requests from other IPs are rejected.</td>
+</tr>
+<tr>
+<td><code>gateway.auth.mode</code></td>
+<td>Yes</td>
+<td>Must be <code>&quot;trusted-proxy&quot;</code></td>
+</tr>
+<tr>
+<td><code>gateway.auth.trustedProxy.userHeader</code></td>
+<td>Yes</td>
+<td>Header name containing the authenticated user identity</td>
+</tr>
+<tr>
+<td><code>gateway.auth.trustedProxy.requiredHeaders</code></td>
+<td>No</td>
+<td>Additional headers that must be present for the request to be trusted</td>
+</tr>
+<tr>
+<td><code>gateway.auth.trustedProxy.allowUsers</code></td>
+<td>No</td>
+<td>Allowlist of user identities. Empty means allow all authenticated users.</td>
+</tr>
+</tbody></table>
+<h2>Proxy Setup Examples</h2>
+<h3>Pomerium</h3>
+<p>Pomerium passes identity in <code>x-pomerium-claim-email</code> (or other claim headers) and a JWT in <code>x-pomerium-jwt-assertion</code>.</p>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;lan&quot;,
+    trustedProxies: [&quot;10.0.0.1&quot;], // Pomerium&#39;s IP
+    auth: {
+      mode: &quot;trusted-proxy&quot;,
+      trustedProxy: {
+        userHeader: &quot;x-pomerium-claim-email&quot;,
+        requiredHeaders: [&quot;x-pomerium-jwt-assertion&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Pomerium config snippet:</p>
+<pre><code class="language-yaml">routes:
+  - from: https://agdi.example.com
+    to: http://agdi-gateway:18789
+    policy:
+      - allow:
+          or:
+            - email:
+                is: nick@example.com
+    pass_identity_headers: true
+</code></pre>
+<h3>Caddy with OAuth</h3>
+<p>Caddy with the <code>caddy-security</code> plugin can authenticate users and pass identity headers.</p>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;lan&quot;,
+    trustedProxies: [&quot;127.0.0.1&quot;], // Caddy&#39;s IP (if on same host)
+    auth: {
+      mode: &quot;trusted-proxy&quot;,
+      trustedProxy: {
+        userHeader: &quot;x-forwarded-user&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<p>Caddyfile snippet:</p>
+<pre><code>agdi.example.com {
+    authenticate with oauth2_provider
+    authorize with policy1
+
+    reverse_proxy agdi:18789 {
+        header_up X-Forwarded-User {http.auth.user.email}
+    }
+}
+</code></pre>
+<h3>nginx + oauth2-proxy</h3>
+<p>oauth2-proxy authenticates users and passes identity in <code>x-auth-request-email</code>.</p>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;lan&quot;,
+    trustedProxies: [&quot;10.0.0.1&quot;], // nginx/oauth2-proxy IP
+    auth: {
+      mode: &quot;trusted-proxy&quot;,
+      trustedProxy: {
+        userHeader: &quot;x-auth-request-email&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<p>nginx config snippet:</p>
+<pre><code class="language-nginx">location / {
+    auth_request /oauth2/auth;
+    auth_request_set $user $upstream_http_x_auth_request_email;
+
+    proxy_pass http://agdi:18789;
+    proxy_set_header X-Auth-Request-Email $user;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection &quot;upgrade&quot;;
+}
+</code></pre>
+<h3>Traefik with Forward Auth</h3>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;lan&quot;,
+    trustedProxies: [&quot;172.17.0.1&quot;], // Traefik container IP
+    auth: {
+      mode: &quot;trusted-proxy&quot;,
+      trustedProxy: {
+        userHeader: &quot;x-forwarded-user&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Security Checklist</h2>
+<p>Before enabling trusted-proxy auth, verify:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Proxy is the only path</strong>: The Gateway port is firewalled from everything except your proxy</li>
+<li><input disabled="" type="checkbox"> <strong>trustedProxies is minimal</strong>: Only your actual proxy IPs, not entire subnets</li>
+<li><input disabled="" type="checkbox"> <strong>Proxy strips headers</strong>: Your proxy overwrites (not appends) <code>x-forwarded-*</code> headers from clients</li>
+<li><input disabled="" type="checkbox"> <strong>TLS termination</strong>: Your proxy handles TLS; users connect via HTTPS</li>
+<li><input disabled="" type="checkbox"> <strong>allowUsers is set</strong> (recommended): Restrict to known users rather than allowing anyone authenticated</li>
+</ul>
+<h2>Security Audit</h2>
+<p><code>agdi security audit</code> will flag trusted-proxy auth with a <strong>critical</strong> severity finding. This is intentional — it&#39;s a reminder that you&#39;re delegating security to your proxy setup.</p>
+<p>The audit checks for:</p>
+<ul>
+<li>Missing <code>trustedProxies</code> configuration</li>
+<li>Missing <code>userHeader</code> configuration</li>
+<li>Empty <code>allowUsers</code> (allows any authenticated user)</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>&quot;trusted_proxy_untrusted_source&quot;</h3>
+<p>The request didn&#39;t come from an IP in <code>gateway.trustedProxies</code>. Check:</p>
+<ul>
+<li>Is the proxy IP correct? (Docker container IPs can change)</li>
+<li>Is there a load balancer in front of your proxy?</li>
+<li>Use <code>docker inspect</code> or <code>kubectl get pods -o wide</code> to find actual IPs</li>
+</ul>
+<h3>&quot;trusted_proxy_user_missing&quot;</h3>
+<p>The user header was empty or missing. Check:</p>
+<ul>
+<li>Is your proxy configured to pass identity headers?</li>
+<li>Is the header name correct? (case-insensitive, but spelling matters)</li>
+<li>Is the user actually authenticated at the proxy?</li>
+</ul>
+<h3>&quot;trusted<em>proxy_missing_header</em>*&quot;</h3>
+<p>A required header wasn&#39;t present. Check:</p>
+<ul>
+<li>Your proxy configuration for those specific headers</li>
+<li>Whether headers are being stripped somewhere in the chain</li>
+</ul>
+<h3>&quot;trusted_proxy_user_not_allowed&quot;</h3>
+<p>The user is authenticated but not in <code>allowUsers</code>. Either add them or remove the allowlist.</p>
+<h3>WebSocket Still Failing</h3>
+<p>Make sure your proxy:</p>
+<ul>
+<li>Supports WebSocket upgrades (<code>Upgrade: websocket</code>, <code>Connection: upgrade</code>)</li>
+<li>Passes the identity headers on WebSocket upgrade requests (not just HTTP)</li>
+<li>Doesn&#39;t have a separate auth path for WebSocket connections</li>
+</ul>
+<h2>Migration from Token Auth</h2>
+<p>If you&#39;re moving from token auth to trusted-proxy:</p>
+<ol>
+<li>Configure your proxy to authenticate users and pass headers</li>
+<li>Test the proxy setup independently (curl with headers)</li>
+<li>Update AGDI config with trusted-proxy auth</li>
+<li>Restart the Gateway</li>
+<li>Test WebSocket connections from the Control UI</li>
+<li>Run <code>agdi security audit</code> and review findings</li>
+</ol>
+<h2>Related</h2>
+<ul>
+<li><a href="/gateway/security">Security</a> — full security guide</li>
+<li><a href="/gateway/configuration">Configuration</a> — config reference</li>
+<li><a href="/gateway/remote">Remote Access</a> — other remote access patterns</li>
+<li><a href="/gateway/tailscale">Tailscale</a> — simpler alternative for tailnet-only access</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

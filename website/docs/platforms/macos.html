@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS App — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="active" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI macOS Companion (menu bar + gateway broker)</h1>
+<p>The macOS app is the <strong>menu‑bar companion</strong> for AGDI. It owns permissions,
+manages/attaches to the Gateway locally (launchd or manual), and exposes macOS
+capabilities to the agent as a node.</p>
+<h2>What it does</h2>
+<ul>
+<li>Shows native notifications and status in the menu bar.</li>
+<li>Owns TCC prompts (Notifications, Accessibility, Screen Recording, Microphone,
+Speech Recognition, Automation/AppleScript).</li>
+<li>Runs or connects to the Gateway (local or remote).</li>
+<li>Exposes macOS‑only tools (Canvas, Camera, Screen Recording, <code>system.run</code>).</li>
+<li>Starts the local node host service in <strong>remote</strong> mode (launchd), and stops it in <strong>local</strong> mode.</li>
+<li>Optionally hosts <strong>PeekabooBridge</strong> for UI automation.</li>
+<li>Installs the global CLI (<code>agdi</code>) via npm/pnpm on request (bun not recommended for the Gateway runtime).</li>
+</ul>
+<h2>Local vs remote mode</h2>
+<ul>
+<li><strong>Local</strong> (default): the app attaches to a running local Gateway if present;
+otherwise it enables the launchd service via <code>agdi gateway install</code>.</li>
+<li><strong>Remote</strong>: the app connects to a Gateway over SSH/Tailscale and never starts
+a local process.
+The app starts the local <strong>node host service</strong> so the remote Gateway can reach this Mac.
+The app does not spawn the Gateway as a child process.</li>
+</ul>
+<h2>Launchd control</h2>
+<p>The app manages a per‑user LaunchAgent labeled <code>bot.molt.gateway</code>
+(or <code>bot.molt.&lt;profile&gt;</code> when using <code>--profile</code>/<code>AGDI_PROFILE</code>; legacy <code>com.agdi.*</code> still unloads).</p>
+<pre><code class="language-bash">launchctl kickstart -k gui/$UID/bot.molt.gateway
+launchctl bootout gui/$UID/bot.molt.gateway
+</code></pre>
+<p>Replace the label with <code>bot.molt.&lt;profile&gt;</code> when running a named profile.</p>
+<p>If the LaunchAgent isn’t installed, enable it from the app or run
+<code>agdi gateway install</code>.</p>
+<h2>Node capabilities (mac)</h2>
+<p>The macOS app presents itself as a node. Common commands:</p>
+<ul>
+<li>Canvas: <code>canvas.present</code>, <code>canvas.navigate</code>, <code>canvas.eval</code>, <code>canvas.snapshot</code>, <code>canvas.a2ui.*</code></li>
+<li>Camera: <code>camera.snap</code>, <code>camera.clip</code></li>
+<li>Screen: <code>screen.record</code></li>
+<li>System: <code>system.run</code>, <code>system.notify</code></li>
+</ul>
+<p>The node reports a <code>permissions</code> map so agents can decide what’s allowed.</p>
+<p>Node service + app IPC:</p>
+<ul>
+<li>When the headless node host service is running (remote mode), it connects to the Gateway WS as a node.</li>
+<li><code>system.run</code> executes in the macOS app (UI/TCC context) over a local Unix socket; prompts + output stay in-app.</li>
+</ul>
+<p>Diagram (SCI):</p>
+<pre><code>Gateway -&gt; Node Service (WS)
+                 |  IPC (UDS + token + HMAC + TTL)
+                 v
+             Mac App (UI + TCC + system.run)
+</code></pre>
+<h2>Exec approvals (system.run)</h2>
+<p><code>system.run</code> is controlled by <strong>Exec approvals</strong> in the macOS app (Settings → Exec approvals).
+Security + ask + allowlist are stored locally on the Mac in:</p>
+<pre><code>~/.agdi/exec-approvals.json
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;defaults&quot;: {
+    &quot;security&quot;: &quot;deny&quot;,
+    &quot;ask&quot;: &quot;on-miss&quot;
+  },
+  &quot;agents&quot;: {
+    &quot;main&quot;: {
+      &quot;security&quot;: &quot;allowlist&quot;,
+      &quot;ask&quot;: &quot;on-miss&quot;,
+      &quot;allowlist&quot;: [{ &quot;pattern&quot;: &quot;/opt/homebrew/bin/rg&quot; }]
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>allowlist</code> entries are glob patterns for resolved binary paths.</li>
+<li>Choosing “Always Allow” in the prompt adds that command to the allowlist.</li>
+<li><code>system.run</code> environment overrides are filtered (drops <code>PATH</code>, <code>DYLD_*</code>, <code>LD_*</code>, <code>NODE_OPTIONS</code>, <code>PYTHON*</code>, <code>PERL*</code>, <code>RUBYOPT</code>) and then merged with the app’s environment.</li>
+</ul>
+<h2>Deep links</h2>
+<p>The app registers the <code>agdi://</code> URL scheme for local actions.</p>
+<h3><code>agdi://agent</code></h3>
+<p>Triggers a Gateway <code>agent</code> request.</p>
+<pre><code class="language-bash">open &#39;agdi://agent?message=Hello%20from%20deep%20link&#39;
+</code></pre>
+<p>Query parameters:</p>
+<ul>
+<li><code>message</code> (required)</li>
+<li><code>sessionKey</code> (optional)</li>
+<li><code>thinking</code> (optional)</li>
+<li><code>deliver</code> / <code>to</code> / <code>channel</code> (optional)</li>
+<li><code>timeoutSeconds</code> (optional)</li>
+<li><code>key</code> (optional unattended mode key)</li>
+</ul>
+<p>Safety:</p>
+<ul>
+<li>Without <code>key</code>, the app prompts for confirmation.</li>
+<li>Without <code>key</code>, the app enforces a short message limit for the confirmation prompt and ignores <code>deliver</code> / <code>to</code> / <code>channel</code>.</li>
+<li>With a valid <code>key</code>, the run is unattended (intended for personal automations).</li>
+</ul>
+<h2>Onboarding flow (typical)</h2>
+<ol>
+<li>Install and launch <strong>AGDI.app</strong>.</li>
+<li>Complete the permissions checklist (TCC prompts).</li>
+<li>Ensure <strong>Local</strong> mode is active and the Gateway is running.</li>
+<li>Install the CLI if you want terminal access.</li>
+</ol>
+<h2>Build &amp; dev workflow (native)</h2>
+<ul>
+<li><code>cd apps/macos &amp;&amp; swift build</code></li>
+<li><code>swift run AGDI</code> (or Xcode)</li>
+<li>Package app: <code>scripts/package-mac-app.sh</code></li>
+</ul>
+<h2>Debug gateway connectivity (macOS CLI)</h2>
+<p>Use the debug CLI to exercise the same Gateway WebSocket handshake and discovery
+logic that the macOS app uses, without launching the app.</p>
+<pre><code class="language-bash">cd apps/macos
+swift run agdi-mac connect --json
+swift run agdi-mac discover --timeout 3000 --json
+</code></pre>
+<p>Connect options:</p>
+<ul>
+<li><code>--url &lt;ws://host:port&gt;</code>: override config</li>
+<li><code>--mode &lt;local|remote&gt;</code>: resolve from config (default: config or local)</li>
+<li><code>--probe</code>: force a fresh health probe</li>
+<li><code>--timeout &lt;ms&gt;</code>: request timeout (default: <code>15000</code>)</li>
+<li><code>--json</code>: structured output for diffing</li>
+</ul>
+<p>Discovery options:</p>
+<ul>
+<li><code>--include-local</code>: include gateways that would be filtered as “local”</li>
+<li><code>--timeout &lt;ms&gt;</code>: overall discovery window (default: <code>2000</code>)</li>
+<li><code>--json</code>: structured output for diffing</li>
+</ul>
+<p>Tip: compare against <code>agdi gateway discover --json</code> to see whether the
+macOS app’s discovery pipeline (NWBrowser + tailnet DNS‑SD fallback) differs from
+the Node CLI’s <code>dns-sd</code> based discovery.</p>
+<h2>Remote connection plumbing (SSH tunnels)</h2>
+<p>When the macOS app runs in <strong>Remote</strong> mode, it opens an SSH tunnel so local UI
+components can talk to a remote Gateway as if it were on localhost.</p>
+<h3>Control tunnel (Gateway WebSocket port)</h3>
+<ul>
+<li><strong>Purpose:</strong> health checks, status, Web Chat, config, and other control-plane calls.</li>
+<li><strong>Local port:</strong> the Gateway port (default <code>18789</code>), always stable.</li>
+<li><strong>Remote port:</strong> the same Gateway port on the remote host.</li>
+<li><strong>Behavior:</strong> no random local port; the app reuses an existing healthy tunnel
+or restarts it if needed.</li>
+<li><strong>SSH shape:</strong> <code>ssh -N -L &lt;local&gt;:127.0.0.1:&lt;remote&gt;</code> with BatchMode +
+ExitOnForwardFailure + keepalive options.</li>
+<li><strong>IP reporting:</strong> the SSH tunnel uses loopback, so the gateway will see the node
+IP as <code>127.0.0.1</code>. Use <strong>Direct (ws/wss)</strong> transport if you want the real client
+IP to appear (see <a href="/docs/platforms/mac/remote">macOS remote access</a>).</li>
+</ul>
+<p>For setup steps, see <a href="/docs/platforms/mac/remote">macOS remote access</a>. For protocol
+details, see <a href="/docs/gateway/protocol">Gateway protocol</a>.</p>
+<h2>Related docs</h2>
+<ul>
+<li><a href="/docs/gateway">Gateway runbook</a></li>
+<li><a href="/docs/platforms/mac/bundled-gateway">Gateway (macOS)</a></li>
+<li><a href="/docs/platforms/mac/permissions">macOS permissions</a></li>
+<li><a href="/docs/platforms/mac/canvas">Canvas</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

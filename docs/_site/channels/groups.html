@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Groups — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="active" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Groups</h1>
+<p>AGDI treats group chats consistently across surfaces: WhatsApp, Telegram, Discord, Slack, Signal, iMessage, Microsoft Teams.</p>
+<h2>Beginner intro (2 minutes)</h2>
+<p>AGDI “lives” on your own messaging accounts. There is no separate WhatsApp bot user.
+If <strong>you</strong> are in a group, AGDI can see that group and respond there.</p>
+<p>Default behavior:</p>
+<ul>
+<li>Groups are restricted (<code>groupPolicy: &quot;allowlist&quot;</code>).</li>
+<li>Replies require a mention unless you explicitly disable mention gating.</li>
+</ul>
+<p>Translation: allowlisted senders can trigger AGDI by mentioning it.</p>
+<blockquote>
+<p>TL;DR</p>
+<ul>
+<li><strong>DM access</strong> is controlled by <code>*.allowFrom</code>.</li>
+<li><strong>Group access</strong> is controlled by <code>*.groupPolicy</code> + allowlists (<code>*.groups</code>, <code>*.groupAllowFrom</code>).</li>
+<li><strong>Reply triggering</strong> is controlled by mention gating (<code>requireMention</code>, <code>/activation</code>).</li>
+</ul>
+</blockquote>
+<p>Quick flow (what happens to a group message):</p>
+<pre><code>groupPolicy? disabled -&gt; drop
+groupPolicy? allowlist -&gt; group allowed? no -&gt; drop
+requireMention? yes -&gt; mentioned? no -&gt; store for context only
+otherwise -&gt; reply
+</code></pre>
+<p><img src="/images/groups-flow.svg" alt="Group message flow"></p>
+<p>If you want...</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>What to set</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Allow all groups but only reply on @mentions</td>
+<td><code>groups: { &quot;*&quot;: { requireMention: true } }</code></td>
+</tr>
+<tr>
+<td>Disable all group replies</td>
+<td><code>groupPolicy: &quot;disabled&quot;</code></td>
+</tr>
+<tr>
+<td>Only specific groups</td>
+<td><code>groups: { &quot;&lt;group-id&gt;&quot;: { ... } }</code> (no <code>&quot;*&quot;</code> key)</td>
+</tr>
+<tr>
+<td>Only you can trigger in groups</td>
+<td><code>groupPolicy: &quot;allowlist&quot;</code>, <code>groupAllowFrom: [&quot;+1555...&quot;]</code></td>
+</tr>
+</tbody></table>
+<h2>Session keys</h2>
+<ul>
+<li>Group sessions use <code>agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</code> session keys (rooms/channels use <code>agent:&lt;agentId&gt;:&lt;channel&gt;:channel:&lt;id&gt;</code>).</li>
+<li>Telegram forum topics add <code>:topic:&lt;threadId&gt;</code> to the group id so each topic has its own session.</li>
+<li>Direct chats use the main session (or per-sender if configured).</li>
+<li>Heartbeats are skipped for group sessions.</li>
+</ul>
+<h2>Pattern: personal DMs + public groups (single agent)</h2>
+<p>Yes — this works well if your “personal” traffic is <strong>DMs</strong> and your “public” traffic is <strong>groups</strong>.</p>
+<p>Why: in single-agent mode, DMs typically land in the <strong>main</strong> session key (<code>agent:main:main</code>), while groups always use <strong>non-main</strong> session keys (<code>agent:main:&lt;channel&gt;:group:&lt;id&gt;</code>). If you enable sandboxing with <code>mode: &quot;non-main&quot;</code>, those group sessions run in Docker while your main DM session stays on-host.</p>
+<p>This gives you one agent “brain” (shared workspace + memory), but two execution postures:</p>
+<ul>
+<li><strong>DMs</strong>: full tools (host)</li>
+<li><strong>Groups</strong>: sandbox + restricted tools (Docker)</li>
+</ul>
+<blockquote>
+<p>If you need truly separate workspaces/personas (“personal” and “public” must never mix), use a second agent + bindings. See <a href="/concepts/multi-agent">Multi-Agent Routing</a>.</p>
+</blockquote>
+<p>Example (DMs on host, groups sandboxed + messaging-only tools):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;, // groups/channels are non-main -&gt; sandboxed
+        scope: &quot;session&quot;, // strongest isolation (one container per group/channel)
+        workspaceAccess: &quot;none&quot;,
+      },
+    },
+  },
+  tools: {
+    sandbox: {
+      tools: {
+        // If allow is non-empty, everything else is blocked (deny still wins).
+        allow: [&quot;group:messaging&quot;, &quot;group:sessions&quot;],
+        deny: [&quot;group:runtime&quot;, &quot;group:fs&quot;, &quot;group:ui&quot;, &quot;nodes&quot;, &quot;cron&quot;, &quot;gateway&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Want “groups can only see folder X” instead of “no host access”? Keep <code>workspaceAccess: &quot;none&quot;</code> and mount only allowlisted paths into the sandbox:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;,
+        scope: &quot;session&quot;,
+        workspaceAccess: &quot;none&quot;,
+        docker: {
+          binds: [
+            // hostPath:containerPath:mode
+            &quot;/home/user/FriendsShared:/data:ro&quot;,
+          ],
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Related:</p>
+<ul>
+<li>Configuration keys and defaults: <a href="/gateway/configuration#agentsdefaultssandbox">Gateway configuration</a></li>
+<li>Debugging why a tool is blocked: <a href="/gateway/sandbox-vs-tool-policy-vs-elevated">Sandbox vs Tool Policy vs Elevated</a></li>
+<li>Bind mounts details: <a href="/gateway/sandboxing#custom-bind-mounts">Sandboxing</a></li>
+</ul>
+<h2>Display labels</h2>
+<ul>
+<li>UI labels use <code>displayName</code> when available, formatted as <code>&lt;channel&gt;:&lt;token&gt;</code>.</li>
+<li><code>#room</code> is reserved for rooms/channels; group chats use <code>g-&lt;slug&gt;</code> (lowercase, spaces -&gt; <code>-</code>, keep <code>#@+._-</code>).</li>
+</ul>
+<h2>Group policy</h2>
+<p>Control how group/room messages are handled per channel:</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groupPolicy: &quot;disabled&quot;, // &quot;open&quot; | &quot;disabled&quot; | &quot;allowlist&quot;
+      groupAllowFrom: [&quot;+15551234567&quot;],
+    },
+    telegram: {
+      groupPolicy: &quot;disabled&quot;,
+      groupAllowFrom: [&quot;123456789&quot;], // numeric Telegram user id (wizard can resolve @username)
+    },
+    signal: {
+      groupPolicy: &quot;disabled&quot;,
+      groupAllowFrom: [&quot;+15551234567&quot;],
+    },
+    imessage: {
+      groupPolicy: &quot;disabled&quot;,
+      groupAllowFrom: [&quot;chat_id:123&quot;],
+    },
+    msteams: {
+      groupPolicy: &quot;disabled&quot;,
+      groupAllowFrom: [&quot;user@org.com&quot;],
+    },
+    discord: {
+      groupPolicy: &quot;allowlist&quot;,
+      guilds: {
+        GUILD_ID: { channels: { help: { allow: true } } },
+      },
+    },
+    slack: {
+      groupPolicy: &quot;allowlist&quot;,
+      channels: { &quot;#general&quot;: { allow: true } },
+    },
+    matrix: {
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;@owner:example.org&quot;],
+      groups: {
+        &quot;!roomId:example.org&quot;: { allow: true },
+        &quot;#alias:example.org&quot;: { allow: true },
+      },
+    },
+  },
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&quot;open&quot;</code></td>
+<td>Groups bypass allowlists; mention-gating still applies.</td>
+</tr>
+<tr>
+<td><code>&quot;disabled&quot;</code></td>
+<td>Block all group messages entirely.</td>
+</tr>
+<tr>
+<td><code>&quot;allowlist&quot;</code></td>
+<td>Only allow groups/rooms that match the configured allowlist.</td>
+</tr>
+</tbody></table>
+<p>Notes:</p>
+<ul>
+<li><code>groupPolicy</code> is separate from mention-gating (which requires @mentions).</li>
+<li>WhatsApp/Telegram/Signal/iMessage/Microsoft Teams: use <code>groupAllowFrom</code> (fallback: explicit <code>allowFrom</code>).</li>
+<li>Discord: allowlist uses <code>channels.discord.guilds.&lt;id&gt;.channels</code>.</li>
+<li>Slack: allowlist uses <code>channels.slack.channels</code>.</li>
+<li>Matrix: allowlist uses <code>channels.matrix.groups</code> (room IDs, aliases, or names). Use <code>channels.matrix.groupAllowFrom</code> to restrict senders; per-room <code>users</code> allowlists are also supported.</li>
+<li>Group DMs are controlled separately (<code>channels.discord.dm.*</code>, <code>channels.slack.dm.*</code>).</li>
+<li>Telegram allowlist can match user IDs (<code>&quot;123456789&quot;</code>, <code>&quot;telegram:123456789&quot;</code>, <code>&quot;tg:123456789&quot;</code>) or usernames (<code>&quot;@alice&quot;</code> or <code>&quot;alice&quot;</code>); prefixes are case-insensitive.</li>
+<li>Default is <code>groupPolicy: &quot;allowlist&quot;</code>; if your group allowlist is empty, group messages are blocked.</li>
+</ul>
+<p>Quick mental model (evaluation order for group messages):</p>
+<ol>
+<li><code>groupPolicy</code> (open/disabled/allowlist)</li>
+<li>group allowlists (<code>*.groups</code>, <code>*.groupAllowFrom</code>, channel-specific allowlist)</li>
+<li>mention gating (<code>requireMention</code>, <code>/activation</code>)</li>
+</ol>
+<h2>Mention gating (default)</h2>
+<p>Group messages require a mention unless overridden per group. Defaults live per subsystem under <code>*.groups.&quot;*&quot;</code>.</p>
+<p>Replying to a bot message counts as an implicit mention (when the channel supports reply metadata). This applies to Telegram, WhatsApp, Slack, Discord, and Microsoft Teams.</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+        &quot;123@g.us&quot;: { requireMention: false },
+      },
+    },
+    telegram: {
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+        &quot;123456789&quot;: { requireMention: false },
+      },
+    },
+    imessage: {
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+        &quot;123&quot;: { requireMention: false },
+      },
+    },
+  },
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        groupChat: {
+          mentionPatterns: [&quot;@agdi&quot;, &quot;agdi&quot;, &quot;\\+15555550123&quot;],
+          historyLimit: 50,
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>mentionPatterns</code> are case-insensitive regexes.</li>
+<li>Surfaces that provide explicit mentions still pass; patterns are a fallback.</li>
+<li>Per-agent override: <code>agents.list[].groupChat.mentionPatterns</code> (useful when multiple agents share a group).</li>
+<li>Mention gating is only enforced when mention detection is possible (native mentions or <code>mentionPatterns</code> are configured).</li>
+<li>Discord defaults live in <code>channels.discord.guilds.&quot;*&quot;</code> (overridable per guild/channel).</li>
+<li>Group history context is wrapped uniformly across channels and is <strong>pending-only</strong> (messages skipped due to mention gating); use <code>messages.groupChat.historyLimit</code> for the global default and <code>channels.&lt;channel&gt;.historyLimit</code> (or <code>channels.&lt;channel&gt;.accounts.*.historyLimit</code>) for overrides. Set <code>0</code> to disable.</li>
+</ul>
+<h2>Group/channel tool restrictions (optional)</h2>
+<p>Some channel configs support restricting which tools are available <strong>inside a specific group/room/channel</strong>.</p>
+<ul>
+<li><code>tools</code>: allow/deny tools for the whole group.</li>
+<li><code>toolsBySender</code>: per-sender overrides within the group (keys are sender IDs/usernames/emails/phone numbers depending on the channel). Use <code>&quot;*&quot;</code> as a wildcard.</li>
+</ul>
+<p>Resolution order (most specific wins):</p>
+<ol>
+<li>group/channel <code>toolsBySender</code> match</li>
+<li>group/channel <code>tools</code></li>
+<li>default (<code>&quot;*&quot;</code>) <code>toolsBySender</code> match</li>
+<li>default (<code>&quot;*&quot;</code>) <code>tools</code></li>
+</ol>
+<p>Example (Telegram):</p>
+<pre><code class="language-json5">{
+  channels: {
+    telegram: {
+      groups: {
+        &quot;*&quot;: { tools: { deny: [&quot;exec&quot;] } },
+        &quot;-1001234567890&quot;: {
+          tools: { deny: [&quot;exec&quot;, &quot;read&quot;, &quot;write&quot;] },
+          toolsBySender: {
+            &quot;123456789&quot;: { alsoAllow: [&quot;exec&quot;] },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Group/channel tool restrictions are applied in addition to global/agent tool policy (deny still wins).</li>
+<li>Some channels use different nesting for rooms/channels (e.g., Discord <code>guilds.*.channels.*</code>, Slack <code>channels.*</code>, MS Teams <code>teams.*.channels.*</code>).</li>
+</ul>
+<h2>Group allowlists</h2>
+<p>When <code>channels.whatsapp.groups</code>, <code>channels.telegram.groups</code>, or <code>channels.imessage.groups</code> is configured, the keys act as a group allowlist. Use <code>&quot;*&quot;</code> to allow all groups while still setting default mention behavior.</p>
+<p>Common intents (copy/paste):</p>
+<ol>
+<li>Disable all group replies</li>
+</ol>
+<pre><code class="language-json5">{
+  channels: { whatsapp: { groupPolicy: &quot;disabled&quot; } },
+}
+</code></pre>
+<ol start="2">
+<li>Allow only specific groups (WhatsApp)</li>
+</ol>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groups: {
+        &quot;123@g.us&quot;: { requireMention: true },
+        &quot;456@g.us&quot;: { requireMention: false },
+      },
+    },
+  },
+}
+</code></pre>
+<ol start="3">
+<li>Allow all groups but require mention (explicit)</li>
+</ol>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+  },
+}
+</code></pre>
+<ol start="4">
+<li>Only the owner can trigger in groups (WhatsApp)</li>
+</ol>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;+15551234567&quot;],
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+  },
+}
+</code></pre>
+<h2>Activation (owner-only)</h2>
+<p>Group owners can toggle per-group activation:</p>
+<ul>
+<li><code>/activation mention</code></li>
+<li><code>/activation always</code></li>
+</ul>
+<p>Owner is determined by <code>channels.whatsapp.allowFrom</code> (or the bot’s self E.164 when unset). Send the command as a standalone message. Other surfaces currently ignore <code>/activation</code>.</p>
+<h2>Context fields</h2>
+<p>Group inbound payloads set:</p>
+<ul>
+<li><code>ChatType=group</code></li>
+<li><code>GroupSubject</code> (if known)</li>
+<li><code>GroupMembers</code> (if known)</li>
+<li><code>WasMentioned</code> (mention gating result)</li>
+<li>Telegram forum topics also include <code>MessageThreadId</code> and <code>IsForum</code>.</li>
+</ul>
+<p>The agent system prompt includes a group intro on the first turn of a new group session. It reminds the model to respond like a human, avoid Markdown tables, and avoid typing literal <code>\n</code> sequences.</p>
+<h2>iMessage specifics</h2>
+<ul>
+<li>Prefer <code>chat_id:&lt;id&gt;</code> when routing or allowlisting.</li>
+<li>List chats: <code>imsg chats --limit 20</code>.</li>
+<li>Group replies always go back to the same <code>chat_id</code>.</li>
+</ul>
+<h2>WhatsApp specifics</h2>
+<p>See <a href="/channels/group-messages">Group messages</a> for WhatsApp-only behavior (history injection, mention handling details).</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

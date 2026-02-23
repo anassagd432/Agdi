@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailscale — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="active" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Tailscale (Gateway dashboard)</h1>
+<p>AGDI can auto-configure Tailscale <strong>Serve</strong> (tailnet) or <strong>Funnel</strong> (public) for the
+Gateway dashboard and WebSocket port. This keeps the Gateway bound to loopback while
+Tailscale provides HTTPS, routing, and (for Serve) identity headers.</p>
+<h2>Modes</h2>
+<ul>
+<li><code>serve</code>: Tailnet-only Serve via <code>tailscale serve</code>. The gateway stays on <code>127.0.0.1</code>.</li>
+<li><code>funnel</code>: Public HTTPS via <code>tailscale funnel</code>. AGDI requires a shared password.</li>
+<li><code>off</code>: Default (no Tailscale automation).</li>
+</ul>
+<h2>Auth</h2>
+<p>Set <code>gateway.auth.mode</code> to control the handshake:</p>
+<ul>
+<li><code>token</code> (default when <code>AGDI_GATEWAY_TOKEN</code> is set)</li>
+<li><code>password</code> (shared secret via <code>AGDI_GATEWAY_PASSWORD</code> or config)</li>
+</ul>
+<p>When <code>tailscale.mode = &quot;serve&quot;</code> and <code>gateway.auth.allowTailscale</code> is <code>true</code>,
+valid Serve proxy requests can authenticate via Tailscale identity headers
+(<code>tailscale-user-login</code>) without supplying a token/password. AGDI verifies
+the identity by resolving the <code>x-forwarded-for</code> address via the local Tailscale
+daemon (<code>tailscale whois</code>) and matching it to the header before accepting it.
+AGDI only treats a request as Serve when it arrives from loopback with
+Tailscale’s <code>x-forwarded-for</code>, <code>x-forwarded-proto</code>, and <code>x-forwarded-host</code>
+headers.
+To require explicit credentials, set <code>gateway.auth.allowTailscale: false</code> or
+force <code>gateway.auth.mode: &quot;password&quot;</code>.</p>
+<h2>Config examples</h2>
+<h3>Tailnet-only (Serve)</h3>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;loopback&quot;,
+    tailscale: { mode: &quot;serve&quot; },
+  },
+}
+</code></pre>
+<p>Open: <code>https://&lt;magicdns&gt;/</code> (or your configured <code>gateway.controlUi.basePath</code>)</p>
+<h3>Tailnet-only (bind to Tailnet IP)</h3>
+<p>Use this when you want the Gateway to listen directly on the Tailnet IP (no Serve/Funnel).</p>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;tailnet&quot;,
+    auth: { mode: &quot;token&quot;, token: &quot;your-token&quot; },
+  },
+}
+</code></pre>
+<p>Connect from another Tailnet device:</p>
+<ul>
+<li>Control UI: <code>http://&lt;tailscale-ip&gt;:18789/</code></li>
+<li>WebSocket: <code>ws://&lt;tailscale-ip&gt;:18789</code></li>
+</ul>
+<p>Note: loopback (<code>http://127.0.0.1:18789</code>) will <strong>not</strong> work in this mode.</p>
+<h3>Public internet (Funnel + shared password)</h3>
+<pre><code class="language-json5">{
+  gateway: {
+    bind: &quot;loopback&quot;,
+    tailscale: { mode: &quot;funnel&quot; },
+    auth: { mode: &quot;password&quot;, password: &quot;replace-me&quot; },
+  },
+}
+</code></pre>
+<p>Prefer <code>AGDI_GATEWAY_PASSWORD</code> over committing a password to disk.</p>
+<h2>CLI examples</h2>
+<pre><code class="language-bash">agdi gateway --tailscale serve
+agdi gateway --tailscale funnel --auth password
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Tailscale Serve/Funnel requires the <code>tailscale</code> CLI to be installed and logged in.</li>
+<li><code>tailscale.mode: &quot;funnel&quot;</code> refuses to start unless auth mode is <code>password</code> to avoid public exposure.</li>
+<li>Set <code>gateway.tailscale.resetOnExit</code> if you want AGDI to undo <code>tailscale serve</code>
+or <code>tailscale funnel</code> configuration on shutdown.</li>
+<li><code>gateway.bind: &quot;tailnet&quot;</code> is a direct Tailnet bind (no HTTPS, no Serve/Funnel).</li>
+<li><code>gateway.bind: &quot;auto&quot;</code> prefers loopback; use <code>tailnet</code> if you want Tailnet-only.</li>
+<li>Serve/Funnel only expose the <strong>Gateway control UI + WS</strong>. Nodes connect over
+the same Gateway WS endpoint, so Serve can work for node access.</li>
+</ul>
+<h2>Browser control (remote Gateway + local browser)</h2>
+<p>If you run the Gateway on one machine but want to drive a browser on another machine,
+run a <strong>node host</strong> on the browser machine and keep both on the same tailnet.
+The Gateway will proxy browser actions to the node; no separate control server or Serve URL needed.</p>
+<p>Avoid Funnel for browser control; treat node pairing like operator access.</p>
+<h2>Tailscale prerequisites + limits</h2>
+<ul>
+<li>Serve requires HTTPS enabled for your tailnet; the CLI prompts if it is missing.</li>
+<li>Serve injects Tailscale identity headers; Funnel does not.</li>
+<li>Funnel requires Tailscale v1.38.3+, MagicDNS, HTTPS enabled, and a funnel node attribute.</li>
+<li>Funnel only supports ports <code>443</code>, <code>8443</code>, and <code>10000</code> over TLS.</li>
+<li>Funnel on macOS requires the open-source Tailscale app variant.</li>
+</ul>
+<h2>Learn more</h2>
+<ul>
+<li>Tailscale Serve overview: <a href="https://tailscale.com/kb/1312/serve">https://tailscale.com/kb/1312/serve</a></li>
+<li><code>tailscale serve</code> command: <a href="https://tailscale.com/kb/1242/tailscale-serve">https://tailscale.com/kb/1242/tailscale-serve</a></li>
+<li>Tailscale Funnel overview: <a href="https://tailscale.com/kb/1223/tailscale-funnel">https://tailscale.com/kb/1223/tailscale-funnel</a></li>
+<li><code>tailscale funnel</code> command: <a href="https://tailscale.com/kb/1311/tailscale-funnel">https://tailscale.com/kb/1311/tailscale-funnel</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nodes — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="active" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Nodes</h1>
+<p>A <strong>node</strong> is a companion device (macOS/iOS/Android/headless) that connects to the Gateway <strong>WebSocket</strong> (same port as operators) with <code>role: &quot;node&quot;</code> and exposes a command surface (e.g. <code>canvas.*</code>, <code>camera.*</code>, <code>system.*</code>) via <code>node.invoke</code>. Protocol details: <a href="/gateway/protocol">Gateway protocol</a>.</p>
+<p>Legacy transport: <a href="/gateway/bridge-protocol">Bridge protocol</a> (TCP JSONL; deprecated/removed for current nodes).</p>
+<p>macOS can also run in <strong>node mode</strong>: the menubar app connects to the Gateway’s WS server and exposes its local canvas/camera commands as a node (so <code>agdi nodes …</code> works against this Mac).</p>
+<p>Notes:</p>
+<ul>
+<li>Nodes are <strong>peripherals</strong>, not gateways. They don’t run the gateway service.</li>
+<li>Telegram/WhatsApp/etc. messages land on the <strong>gateway</strong>, not on nodes.</li>
+<li>Troubleshooting runbook: <a href="/nodes/troubleshooting">/nodes/troubleshooting</a></li>
+</ul>
+<h2>Pairing + status</h2>
+<p><strong>WS nodes use device pairing.</strong> Nodes present a device identity during <code>connect</code>; the Gateway
+creates a device pairing request for <code>role: node</code>. Approve via the devices CLI (or UI).</p>
+<p>Quick CLI:</p>
+<pre><code class="language-bash">agdi devices list
+agdi devices approve &lt;requestId&gt;
+agdi devices reject &lt;requestId&gt;
+agdi nodes status
+agdi nodes describe --node &lt;idOrNameOrIp&gt;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>nodes status</code> marks a node as <strong>paired</strong> when its device pairing role includes <code>node</code>.</li>
+<li><code>node.pair.*</code> (CLI: <code>agdi nodes pending/approve/reject</code>) is a separate gateway-owned
+node pairing store; it does <strong>not</strong> gate the WS <code>connect</code> handshake.</li>
+</ul>
+<h2>Remote node host (system.run)</h2>
+<p>Use a <strong>node host</strong> when your Gateway runs on one machine and you want commands
+to execute on another. The model still talks to the <strong>gateway</strong>; the gateway
+forwards <code>exec</code> calls to the <strong>node host</strong> when <code>host=node</code> is selected.</p>
+<h3>What runs where</h3>
+<ul>
+<li><strong>Gateway host</strong>: receives messages, runs the model, routes tool calls.</li>
+<li><strong>Node host</strong>: executes <code>system.run</code>/<code>system.which</code> on the node machine.</li>
+<li><strong>Approvals</strong>: enforced on the node host via <code>~/.agdi/exec-approvals.json</code>.</li>
+</ul>
+<h3>Start a node host (foreground)</h3>
+<p>On the node machine:</p>
+<pre><code class="language-bash">agdi node run --host &lt;gateway-host&gt; --port 18789 --display-name &quot;Build Node&quot;
+</code></pre>
+<h3>Remote gateway via SSH tunnel (loopback bind)</h3>
+<p>If the Gateway binds to loopback (<code>gateway.bind=loopback</code>, default in local mode),
+remote node hosts cannot connect directly. Create an SSH tunnel and point the
+node host at the local end of the tunnel.</p>
+<p>Example (node host -&gt; gateway host):</p>
+<pre><code class="language-bash"># Terminal A (keep running): forward local 18790 -&gt; gateway 127.0.0.1:18789
+ssh -N -L 18790:127.0.0.1:18789 user@gateway-host
+
+# Terminal B: export the gateway token and connect through the tunnel
+export AGDI_GATEWAY_TOKEN=&quot;&lt;gateway-token&gt;&quot;
+agdi node run --host 127.0.0.1 --port 18790 --display-name &quot;Build Node&quot;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The token is <code>gateway.auth.token</code> from the gateway config (<code>~/.agdi/agdi.json</code> on the gateway host).</li>
+<li><code>agdi node run</code> reads <code>AGDI_GATEWAY_TOKEN</code> for auth.</li>
+</ul>
+<h3>Start a node host (service)</h3>
+<pre><code class="language-bash">agdi node install --host &lt;gateway-host&gt; --port 18789 --display-name &quot;Build Node&quot;
+agdi node restart
+</code></pre>
+<h3>Pair + name</h3>
+<p>On the gateway host:</p>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+agdi nodes list
+</code></pre>
+<p>Naming options:</p>
+<ul>
+<li><code>--display-name</code> on <code>agdi node run</code> / <code>agdi node install</code> (persists in <code>~/.agdi/node.json</code> on the node).</li>
+<li><code>agdi nodes rename --node &lt;id|name|ip&gt; --name &quot;Build Node&quot;</code> (gateway override).</li>
+</ul>
+<h3>Allowlist the commands</h3>
+<p>Exec approvals are <strong>per node host</strong>. Add allowlist entries from the gateway:</p>
+<pre><code class="language-bash">agdi approvals allowlist add --node &lt;id|name|ip&gt; &quot;/usr/bin/uname&quot;
+agdi approvals allowlist add --node &lt;id|name|ip&gt; &quot;/usr/bin/sw_vers&quot;
+</code></pre>
+<p>Approvals live on the node host at <code>~/.agdi/exec-approvals.json</code>.</p>
+<h3>Point exec at the node</h3>
+<p>Configure defaults (gateway config):</p>
+<pre><code class="language-bash">agdi config set tools.exec.host node
+agdi config set tools.exec.security allowlist
+agdi config set tools.exec.node &quot;&lt;id-or-name&gt;&quot;
+</code></pre>
+<p>Or per session:</p>
+<pre><code>/exec host=node security=allowlist node=&lt;id-or-name&gt;
+</code></pre>
+<p>Once set, any <code>exec</code> call with <code>host=node</code> runs on the node host (subject to the
+node allowlist/approvals).</p>
+<p>Related:</p>
+<ul>
+<li><a href="/cli/node">Node host CLI</a></li>
+<li><a href="/tools/exec">Exec tool</a></li>
+<li><a href="/tools/exec-approvals">Exec approvals</a></li>
+</ul>
+<h2>Invoking commands</h2>
+<p>Low-level (raw RPC):</p>
+<pre><code class="language-bash">agdi nodes invoke --node &lt;idOrNameOrIp&gt; --command canvas.eval --params &#39;{&quot;javaScript&quot;:&quot;location.href&quot;}&#39;
+</code></pre>
+<p>Higher-level helpers exist for the common “give the agent a MEDIA attachment” workflows.</p>
+<h2>Screenshots (canvas snapshots)</h2>
+<p>If the node is showing the Canvas (WebView), <code>canvas.snapshot</code> returns <code>{ format, base64 }</code>.</p>
+<p>CLI helper (writes to a temp file and prints <code>MEDIA:&lt;path&gt;</code>):</p>
+<pre><code class="language-bash">agdi nodes canvas snapshot --node &lt;idOrNameOrIp&gt; --format png
+agdi nodes canvas snapshot --node &lt;idOrNameOrIp&gt; --format jpg --max-width 1200 --quality 0.9
+</code></pre>
+<h3>Canvas controls</h3>
+<pre><code class="language-bash">agdi nodes canvas present --node &lt;idOrNameOrIp&gt; --target https://example.com
+agdi nodes canvas hide --node &lt;idOrNameOrIp&gt;
+agdi nodes canvas navigate https://example.com --node &lt;idOrNameOrIp&gt;
+agdi nodes canvas eval --node &lt;idOrNameOrIp&gt; --js &quot;document.title&quot;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>canvas present</code> accepts URLs or local file paths (<code>--target</code>), plus optional <code>--x/--y/--width/--height</code> for positioning.</li>
+<li><code>canvas eval</code> accepts inline JS (<code>--js</code>) or a positional arg.</li>
+</ul>
+<h3>A2UI (Canvas)</h3>
+<pre><code class="language-bash">agdi nodes canvas a2ui push --node &lt;idOrNameOrIp&gt; --text &quot;Hello&quot;
+agdi nodes canvas a2ui push --node &lt;idOrNameOrIp&gt; --jsonl ./payload.jsonl
+agdi nodes canvas a2ui reset --node &lt;idOrNameOrIp&gt;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Only A2UI v0.8 JSONL is supported (v0.9/createSurface is rejected).</li>
+</ul>
+<h2>Photos + videos (node camera)</h2>
+<p>Photos (<code>jpg</code>):</p>
+<pre><code class="language-bash">agdi nodes camera list --node &lt;idOrNameOrIp&gt;
+agdi nodes camera snap --node &lt;idOrNameOrIp&gt;            # default: both facings (2 MEDIA lines)
+agdi nodes camera snap --node &lt;idOrNameOrIp&gt; --facing front
+</code></pre>
+<p>Video clips (<code>mp4</code>):</p>
+<pre><code class="language-bash">agdi nodes camera clip --node &lt;idOrNameOrIp&gt; --duration 10s
+agdi nodes camera clip --node &lt;idOrNameOrIp&gt; --duration 3000 --no-audio
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The node must be <strong>foregrounded</strong> for <code>canvas.*</code> and <code>camera.*</code> (background calls return <code>NODE_BACKGROUND_UNAVAILABLE</code>).</li>
+<li>Clip duration is clamped (currently <code>&lt;= 60s</code>) to avoid oversized base64 payloads.</li>
+<li>Android will prompt for <code>CAMERA</code>/<code>RECORD_AUDIO</code> permissions when possible; denied permissions fail with <code>*_PERMISSION_REQUIRED</code>.</li>
+</ul>
+<h2>Screen recordings (nodes)</h2>
+<p>Nodes expose <code>screen.record</code> (mp4). Example:</p>
+<pre><code class="language-bash">agdi nodes screen record --node &lt;idOrNameOrIp&gt; --duration 10s --fps 10
+agdi nodes screen record --node &lt;idOrNameOrIp&gt; --duration 10s --fps 10 --no-audio
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>screen.record</code> requires the node app to be foregrounded.</li>
+<li>Android will show the system screen-capture prompt before recording.</li>
+<li>Screen recordings are clamped to <code>&lt;= 60s</code>.</li>
+<li><code>--no-audio</code> disables microphone capture (supported on iOS/Android; macOS uses system capture audio).</li>
+<li>Use <code>--screen &lt;index&gt;</code> to select a display when multiple screens are available.</li>
+</ul>
+<h2>Location (nodes)</h2>
+<p>Nodes expose <code>location.get</code> when Location is enabled in settings.</p>
+<p>CLI helper:</p>
+<pre><code class="language-bash">agdi nodes location get --node &lt;idOrNameOrIp&gt;
+agdi nodes location get --node &lt;idOrNameOrIp&gt; --accuracy precise --max-age 15000 --location-timeout 10000
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Location is <strong>off by default</strong>.</li>
+<li>“Always” requires system permission; background fetch is best-effort.</li>
+<li>The response includes lat/lon, accuracy (meters), and timestamp.</li>
+</ul>
+<h2>SMS (Android nodes)</h2>
+<p>Android nodes can expose <code>sms.send</code> when the user grants <strong>SMS</strong> permission and the device supports telephony.</p>
+<p>Low-level invoke:</p>
+<pre><code class="language-bash">agdi nodes invoke --node &lt;idOrNameOrIp&gt; --command sms.send --params &#39;{&quot;to&quot;:&quot;+15555550123&quot;,&quot;message&quot;:&quot;Hello from AGDI&quot;}&#39;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The permission prompt must be accepted on the Android device before the capability is advertised.</li>
+<li>Wi-Fi-only devices without telephony will not advertise <code>sms.send</code>.</li>
+</ul>
+<h2>System commands (node host / mac node)</h2>
+<p>The macOS node exposes <code>system.run</code>, <code>system.notify</code>, and <code>system.execApprovals.get/set</code>.
+The headless node host exposes <code>system.run</code>, <code>system.which</code>, and <code>system.execApprovals.get/set</code>.</p>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi nodes run --node &lt;idOrNameOrIp&gt; -- echo &quot;Hello from mac node&quot;
+agdi nodes notify --node &lt;idOrNameOrIp&gt; --title &quot;Ping&quot; --body &quot;Gateway ready&quot;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>system.run</code> returns stdout/stderr/exit code in the payload.</li>
+<li><code>system.notify</code> respects notification permission state on the macOS app.</li>
+<li><code>system.run</code> supports <code>--cwd</code>, <code>--env KEY=VAL</code>, <code>--command-timeout</code>, and <code>--needs-screen-recording</code>.</li>
+<li><code>system.notify</code> supports <code>--priority &lt;passive|active|timeSensitive&gt;</code> and <code>--delivery &lt;system|overlay|auto&gt;</code>.</li>
+<li>Node hosts ignore <code>PATH</code> overrides. If you need extra PATH entries, configure the node host service environment (or install tools in standard locations) instead of passing <code>PATH</code> via <code>--env</code>.</li>
+<li>On macOS node mode, <code>system.run</code> is gated by exec approvals in the macOS app (Settings → Exec approvals).
+Ask/allowlist/full behave the same as the headless node host; denied prompts return <code>SYSTEM_RUN_DENIED</code>.</li>
+<li>On headless node host, <code>system.run</code> is gated by exec approvals (<code>~/.agdi/exec-approvals.json</code>).</li>
+</ul>
+<h2>Exec node binding</h2>
+<p>When multiple nodes are available, you can bind exec to a specific node.
+This sets the default node for <code>exec host=node</code> (and can be overridden per agent).</p>
+<p>Global default:</p>
+<pre><code class="language-bash">agdi config set tools.exec.node &quot;node-id-or-name&quot;
+</code></pre>
+<p>Per-agent override:</p>
+<pre><code class="language-bash">agdi config get agents.list
+agdi config set agents.list[0].tools.exec.node &quot;node-id-or-name&quot;
+</code></pre>
+<p>Unset to allow any node:</p>
+<pre><code class="language-bash">agdi config unset tools.exec.node
+agdi config unset agents.list[0].tools.exec.node
+</code></pre>
+<h2>Permissions map</h2>
+<p>Nodes may include a <code>permissions</code> map in <code>node.list</code> / <code>node.describe</code>, keyed by permission name (e.g. <code>screenRecording</code>, <code>accessibility</code>) with boolean values (<code>true</code> = granted).</p>
+<h2>Headless node host (cross-platform)</h2>
+<p>AGDI can run a <strong>headless node host</strong> (no UI) that connects to the Gateway
+WebSocket and exposes <code>system.run</code> / <code>system.which</code>. This is useful on Linux/Windows
+or for running a minimal node alongside a server.</p>
+<p>Start it:</p>
+<pre><code class="language-bash">agdi node run --host &lt;gateway-host&gt; --port 18789
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Pairing is still required (the Gateway will show a node approval prompt).</li>
+<li>The node host stores its node id, token, display name, and gateway connection info in <code>~/.agdi/node.json</code>.</li>
+<li>Exec approvals are enforced locally via <code>~/.agdi/exec-approvals.json</code>
+(see <a href="/tools/exec-approvals">Exec approvals</a>).</li>
+<li>On macOS, the headless node host prefers the companion app exec host when reachable and falls
+back to local execution if the app is unavailable. Set <code>AGDI_NODE_EXEC_HOST=app</code> to require
+the app, or <code>AGDI_NODE_EXEC_FALLBACK=0</code> to disable fallback.</li>
+<li>Add <code>--tls</code> / <code>--tls-fingerprint</code> when the Gateway WS uses TLS.</li>
+</ul>
+<h2>Mac node mode</h2>
+<ul>
+<li>The macOS menubar app connects to the Gateway WS server as a node (so <code>agdi nodes …</code> works against this Mac).</li>
+<li>In remote mode, the app opens an SSH tunnel for the Gateway port and connects to <code>localhost</code>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

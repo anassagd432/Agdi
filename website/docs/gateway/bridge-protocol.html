@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bridge Protocol — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="active" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Bridge protocol (legacy node transport)</h1>
+<p>The Bridge protocol is a <strong>legacy</strong> node transport (TCP JSONL). New node clients
+should use the unified Gateway WebSocket protocol instead.</p>
+<p>If you are building an operator or node client, use the
+<a href="/docs/gateway/protocol">Gateway protocol</a>.</p>
+<p><strong>Note:</strong> Current AGDI builds no longer ship the TCP bridge listener; this document is kept for historical reference.
+Legacy <code>bridge.*</code> config keys are no longer part of the config schema.</p>
+<h2>Why we have both</h2>
+<ul>
+<li><strong>Security boundary</strong>: the bridge exposes a small allowlist instead of the
+full gateway API surface.</li>
+<li><strong>Pairing + node identity</strong>: node admission is owned by the gateway and tied
+to a per-node token.</li>
+<li><strong>Discovery UX</strong>: nodes can discover gateways via Bonjour on LAN, or connect
+directly over a tailnet.</li>
+<li><strong>Loopback WS</strong>: the full WS control plane stays local unless tunneled via SSH.</li>
+</ul>
+<h2>Transport</h2>
+<ul>
+<li>TCP, one JSON object per line (JSONL).</li>
+<li>Optional TLS (when <code>bridge.tls.enabled</code> is true).</li>
+<li>Legacy default listener port was <code>18790</code> (current builds do not start a TCP bridge).</li>
+</ul>
+<p>When TLS is enabled, discovery TXT records include <code>bridgeTls=1</code> plus
+<code>bridgeTlsSha256</code> as a non-secret hint. Note that Bonjour/mDNS TXT records are
+unauthenticated; clients must not treat the advertised fingerprint as an
+authoritative pin without explicit user intent or other out-of-band verification.</p>
+<h2>Handshake + pairing</h2>
+<ol>
+<li>Client sends <code>hello</code> with node metadata + token (if already paired).</li>
+<li>If not paired, gateway replies <code>error</code> (<code>NOT_PAIRED</code>/<code>UNAUTHORIZED</code>).</li>
+<li>Client sends <code>pair-request</code>.</li>
+<li>Gateway waits for approval, then sends <code>pair-ok</code> and <code>hello-ok</code>.</li>
+</ol>
+<p><code>hello-ok</code> returns <code>serverName</code> and may include <code>canvasHostUrl</code>.</p>
+<h2>Frames</h2>
+<p>Client → Gateway:</p>
+<ul>
+<li><code>req</code> / <code>res</code>: scoped gateway RPC (chat, sessions, config, health, voicewake, skills.bins)</li>
+<li><code>event</code>: node signals (voice transcript, agent request, chat subscribe, exec lifecycle)</li>
+</ul>
+<p>Gateway → Client:</p>
+<ul>
+<li><code>invoke</code> / <code>invoke-res</code>: node commands (<code>canvas.*</code>, <code>camera.*</code>, <code>screen.record</code>,
+<code>location.get</code>, <code>sms.send</code>)</li>
+<li><code>event</code>: chat updates for subscribed sessions</li>
+<li><code>ping</code> / <code>pong</code>: keepalive</li>
+</ul>
+<p>Legacy allowlist enforcement lived in <code>src/gateway/server-bridge.ts</code> (removed).</p>
+<h2>Exec lifecycle events</h2>
+<p>Nodes can emit <code>exec.finished</code> or <code>exec.denied</code> events to surface system.run activity.
+These are mapped to system events in the gateway. (Legacy nodes may still emit <code>exec.started</code>.)</p>
+<p>Payload fields (all optional unless noted):</p>
+<ul>
+<li><code>sessionKey</code> (required): agent session to receive the system event.</li>
+<li><code>runId</code>: unique exec id for grouping.</li>
+<li><code>command</code>: raw or formatted command string.</li>
+<li><code>exitCode</code>, <code>timedOut</code>, <code>success</code>, <code>output</code>: completion details (finished only).</li>
+<li><code>reason</code>: denial reason (denied only).</li>
+</ul>
+<h2>Tailnet usage</h2>
+<ul>
+<li>Bind the bridge to a tailnet IP: <code>bridge.bind: &quot;tailnet&quot;</code> in
+<code>~/.agdi/agdi.json</code>.</li>
+<li>Clients connect via MagicDNS name or tailnet IP.</li>
+<li>Bonjour does <strong>not</strong> cross networks; use manual host/port or wide-area DNS‑SD
+when needed.</li>
+</ul>
+<h2>Versioning</h2>
+<p>Bridge is currently <strong>implicit v1</strong> (no min/max negotiation). Backward‑compat
+is expected; add a bridge protocol version field before any breaking changes.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image and Media Support — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="active" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Image &amp; Media Support — 2025-12-05</h1>
+<p>The WhatsApp channel runs via <strong>Baileys Web</strong>. This document captures the current media handling rules for send, gateway, and agent replies.</p>
+<h2>Goals</h2>
+<ul>
+<li>Send media with optional captions via <code>agdi message send --media</code>.</li>
+<li>Allow auto-replies from the web inbox to include media alongside text.</li>
+<li>Keep per-type limits sane and predictable.</li>
+</ul>
+<h2>CLI Surface</h2>
+<ul>
+<li><code>agdi message send --media &lt;path-or-url&gt; [--message &lt;caption&gt;]</code><ul>
+<li><code>--media</code> optional; caption can be empty for media-only sends.</li>
+<li><code>--dry-run</code> prints the resolved payload; <code>--json</code> emits <code>{ channel, to, messageId, mediaUrl, caption }</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>WhatsApp Web channel behavior</h2>
+<ul>
+<li>Input: local file path <strong>or</strong> HTTP(S) URL.</li>
+<li>Flow: load into a Buffer, detect media kind, and build the correct payload:<ul>
+<li><strong>Images:</strong> resize &amp; recompress to JPEG (max side 2048px) targeting <code>agents.defaults.mediaMaxMb</code> (default 5 MB), capped at 6 MB.</li>
+<li><strong>Audio/Voice/Video:</strong> pass-through up to 16 MB; audio is sent as a voice note (<code>ptt: true</code>).</li>
+<li><strong>Documents:</strong> anything else, up to 100 MB, with filename preserved when available.</li>
+</ul>
+</li>
+<li>WhatsApp GIF-style playback: send an MP4 with <code>gifPlayback: true</code> (CLI: <code>--gif-playback</code>) so mobile clients loop inline.</li>
+<li>MIME detection prefers magic bytes, then headers, then file extension.</li>
+<li>Caption comes from <code>--message</code> or <code>reply.text</code>; empty caption is allowed.</li>
+<li>Logging: non-verbose shows <code>↩️</code>/<code>✅</code>; verbose includes size and source path/URL.</li>
+</ul>
+<h2>Auto-Reply Pipeline</h2>
+<ul>
+<li><code>getReplyFromConfig</code> returns <code>{ text?, mediaUrl?, mediaUrls? }</code>.</li>
+<li>When media is present, the web sender resolves local paths or URLs using the same pipeline as <code>agdi message send</code>.</li>
+<li>Multiple media entries are sent sequentially if provided.</li>
+</ul>
+<h2>Inbound Media to Commands (Pi)</h2>
+<ul>
+<li>When inbound web messages include media, AGDI downloads to a temp file and exposes templating variables:<ul>
+<li><code>{{MediaUrl}}</code> pseudo-URL for the inbound media.</li>
+<li><code>{{MediaPath}}</code> local temp path written before running the command.</li>
+</ul>
+</li>
+<li>When a per-session Docker sandbox is enabled, inbound media is copied into the sandbox workspace and <code>MediaPath</code>/<code>MediaUrl</code> are rewritten to a relative path like <code>media/inbound/&lt;filename&gt;</code>.</li>
+<li>Media understanding (if configured via <code>tools.media.*</code> or shared <code>tools.media.models</code>) runs before templating and can insert <code>[Image]</code>, <code>[Audio]</code>, and <code>[Video]</code> blocks into <code>Body</code>.<ul>
+<li>Audio sets <code>{{Transcript}}</code> and uses the transcript for command parsing so slash commands still work.</li>
+<li>Video and image descriptions preserve any caption text for command parsing.</li>
+</ul>
+</li>
+<li>By default only the first matching image/audio/video attachment is processed; set <code>tools.media.&lt;cap&gt;.attachments</code> to process multiple attachments.</li>
+</ul>
+<h2>Limits &amp; Errors</h2>
+<p><strong>Outbound send caps (WhatsApp web send)</strong></p>
+<ul>
+<li>Images: ~6 MB cap after recompression.</li>
+<li>Audio/voice/video: 16 MB cap; documents: 100 MB cap.</li>
+<li>Oversize or unreadable media → clear error in logs and the reply is skipped.</li>
+</ul>
+<p><strong>Media understanding caps (transcription/description)</strong></p>
+<ul>
+<li>Image default: 10 MB (<code>tools.media.image.maxBytes</code>).</li>
+<li>Audio default: 20 MB (<code>tools.media.audio.maxBytes</code>).</li>
+<li>Video default: 50 MB (<code>tools.media.video.maxBytes</code>).</li>
+<li>Oversize media skips understanding, but replies still go through with the original body.</li>
+</ul>
+<h2>Notes for Tests</h2>
+<ul>
+<li>Cover send + reply flows for image/audio/document cases.</li>
+<li>Validate recompression for images (size bound) and voice-note flag for audio.</li>
+<li>Ensure multi-media replies fan out as sequential sends.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

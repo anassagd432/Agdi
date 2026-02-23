@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthropic — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab active" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/providers/index.html">Model Providers</a></li><li><a class="" href="/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="active" href="/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/providers/openai.html">OpenAI</a></li><li><a class="" href="/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/providers/litellm.html">litellm</a></li><li><a class="" href="/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/providers/minimax.html">MiniMax</a></li><li><a class="" href="/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/providers/glm.html">GLM Models</a></li><li><a class="" href="/providers/zai.html">Z.AI</a></li><li><a class="" href="/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Anthropic (Claude)</h1>
+<p>Anthropic builds the <strong>Claude</strong> model family and provides access via an API.
+In AGDI you can authenticate with an API key or a <strong>setup-token</strong>.</p>
+<h2>Option A: Anthropic API key</h2>
+<p><strong>Best for:</strong> standard API access and usage-based billing.
+Create your API key in the Anthropic Console.</p>
+<h3>CLI setup</h3>
+<pre><code class="language-bash">agdi onboard
+# choose: Anthropic API key
+
+# or non-interactive
+agdi onboard --anthropic-api-key &quot;$ANTHROPIC_API_KEY&quot;
+</code></pre>
+<h3>Config snippet</h3>
+<pre><code class="language-json5">{
+  env: { ANTHROPIC_API_KEY: &quot;sk-ant-...&quot; },
+  agents: { defaults: { model: { primary: &quot;anthropic/claude-opus-4-6&quot; } } },
+}
+</code></pre>
+<h2>Prompt caching (Anthropic API)</h2>
+<p>AGDI supports Anthropic&#39;s prompt caching feature. This is <strong>API-only</strong>; subscription auth does not honor cache settings.</p>
+<h3>Configuration</h3>
+<p>Use the <code>cacheRetention</code> parameter in your model config:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Cache Duration</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>none</code></td>
+<td>No caching</td>
+<td>Disable prompt caching</td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td>5 minutes</td>
+<td>Default for API Key auth</td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td>1 hour</td>
+<td>Extended cache (requires beta flag)</td>
+</tr>
+</tbody></table>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: {
+          params: { cacheRetention: &quot;long&quot; },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Defaults</h3>
+<p>When using Anthropic API Key authentication, AGDI automatically applies <code>cacheRetention: &quot;short&quot;</code> (5-minute cache) for all Anthropic models. You can override this by explicitly setting <code>cacheRetention</code> in your config.</p>
+<h3>Legacy parameter</h3>
+<p>The older <code>cacheControlTtl</code> parameter is still supported for backwards compatibility:</p>
+<ul>
+<li><code>&quot;5m&quot;</code> maps to <code>short</code></li>
+<li><code>&quot;1h&quot;</code> maps to <code>long</code></li>
+</ul>
+<p>We recommend migrating to the new <code>cacheRetention</code> parameter.</p>
+<p>AGDI includes the <code>extended-cache-ttl-2025-04-11</code> beta flag for Anthropic API
+requests; keep it if you override provider headers (see <a href="/gateway/configuration">/gateway/configuration</a>).</p>
+<h2>Option B: Claude setup-token</h2>
+<p><strong>Best for:</strong> using your Claude subscription.</p>
+<h3>Where to get a setup-token</h3>
+<p>Setup-tokens are created by the <strong>Claude Code CLI</strong>, not the Anthropic Console. You can run this on <strong>any machine</strong>:</p>
+<pre><code class="language-bash">claude setup-token
+</code></pre>
+<p>Paste the token into AGDI (wizard: <strong>Anthropic token (paste setup-token)</strong>), or run it on the gateway host:</p>
+<pre><code class="language-bash">agdi models auth setup-token --provider anthropic
+</code></pre>
+<p>If you generated the token on a different machine, paste it:</p>
+<pre><code class="language-bash">agdi models auth paste-token --provider anthropic
+</code></pre>
+<h3>CLI setup (setup-token)</h3>
+<pre><code class="language-bash"># Paste a setup-token during onboarding
+agdi onboard --auth-choice setup-token
+</code></pre>
+<h3>Config snippet (setup-token)</h3>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;anthropic/claude-opus-4-6&quot; } } },
+}
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Generate the setup-token with <code>claude setup-token</code> and paste it, or run <code>agdi models auth setup-token</code> on the gateway host.</li>
+<li>If you see “OAuth token refresh failed …” on a Claude subscription, re-auth with a setup-token. See <a href="/gateway/troubleshooting#oauth-token-refresh-failed-anthropic-claude-subscription">/gateway/troubleshooting#oauth-token-refresh-failed-anthropic-claude-subscription</a>.</li>
+<li>Auth details + reuse rules are in <a href="/concepts/oauth">/concepts/oauth</a>.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p><strong>401 errors / token suddenly invalid</strong></p>
+<ul>
+<li>Claude subscription auth can expire or be revoked. Re-run <code>claude setup-token</code>
+and paste it into the <strong>gateway host</strong>.</li>
+<li>If the Claude CLI login lives on a different machine, use
+<code>agdi models auth paste-token --provider anthropic</code> on the gateway host.</li>
+</ul>
+<p><strong>No API key found for provider &quot;anthropic&quot;</strong></p>
+<ul>
+<li>Auth is <strong>per agent</strong>. New agents don’t inherit the main agent’s keys.</li>
+<li>Re-run onboarding for that agent, or paste a setup-token / API key on the
+gateway host, then verify with <code>agdi models status</code>.</li>
+</ul>
+<p><strong>No credentials found for profile <code>anthropic:default</code></strong></p>
+<ul>
+<li>Run <code>agdi models status</code> to see which auth profile is active.</li>
+<li>Re-run onboarding, or paste a setup-token / API key for that profile.</li>
+</ul>
+<p><strong>No available auth profile (all in cooldown/unavailable)</strong></p>
+<ul>
+<li>Check <code>agdi models status --json</code> for <code>auth.unusableProfiles</code>.</li>
+<li>Add another Anthropic profile or wait for cooldown.</li>
+</ul>
+<p>More: <a href="/gateway/troubleshooting">/gateway/troubleshooting</a> and <a href="/help/faq">/help/faq</a>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS Dev Setup — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="active" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>macOS Developer Setup</h1>
+<p>This guide covers the necessary steps to build and run the AGDI macOS application from source.</p>
+<h2>Prerequisites</h2>
+<p>Before building the app, ensure you have the following installed:</p>
+<ol>
+<li><strong>Xcode 26.2+</strong>: Required for Swift development.</li>
+<li><strong>Node.js 22+ &amp; pnpm</strong>: Required for the gateway, CLI, and packaging scripts.</li>
+</ol>
+<h2>1. Install Dependencies</h2>
+<p>Install the project-wide dependencies:</p>
+<pre><code class="language-bash">pnpm install
+</code></pre>
+<h2>2. Build and Package the App</h2>
+<p>To build the macOS app and package it into <code>dist/AGDI.app</code>, run:</p>
+<pre><code class="language-bash">./scripts/package-mac-app.sh
+</code></pre>
+<p>If you don&#39;t have an Apple Developer ID certificate, the script will automatically use <strong>ad-hoc signing</strong> (<code>-</code>).</p>
+<p>For dev run modes, signing flags, and Team ID troubleshooting, see the macOS app README:
+<a href="https://github.com/agdi/agdi/blob/main/apps/macos/README.md">https://github.com/agdi/agdi/blob/main/apps/macos/README.md</a></p>
+<blockquote>
+<p><strong>Note</strong>: Ad-hoc signed apps may trigger security prompts. If the app crashes immediately with &quot;Abort trap 6&quot;, see the <a href="#troubleshooting">Troubleshooting</a> section.</p>
+</blockquote>
+<h2>3. Install the CLI</h2>
+<p>The macOS app expects a global <code>agdi</code> CLI install to manage background tasks.</p>
+<p><strong>To install it (recommended):</strong></p>
+<ol>
+<li>Open the AGDI app.</li>
+<li>Go to the <strong>General</strong> settings tab.</li>
+<li>Click <strong>&quot;Install CLI&quot;</strong>.</li>
+</ol>
+<p>Alternatively, install it manually:</p>
+<pre><code class="language-bash">npm install -g agdi@&lt;version&gt;
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Build Fails: Toolchain or SDK Mismatch</h3>
+<p>The macOS app build expects the latest macOS SDK and Swift 6.2 toolchain.</p>
+<p><strong>System dependencies (required):</strong></p>
+<ul>
+<li><strong>Latest macOS version available in Software Update</strong> (required by Xcode 26.2 SDKs)</li>
+<li><strong>Xcode 26.2</strong> (Swift 6.2 toolchain)</li>
+</ul>
+<p><strong>Checks:</strong></p>
+<pre><code class="language-bash">xcodebuild -version
+xcrun swift --version
+</code></pre>
+<p>If versions don’t match, update macOS/Xcode and re-run the build.</p>
+<h3>App Crashes on Permission Grant</h3>
+<p>If the app crashes when you try to allow <strong>Speech Recognition</strong> or <strong>Microphone</strong> access, it may be due to a corrupted TCC cache or signature mismatch.</p>
+<p><strong>Fix:</strong></p>
+<ol>
+<li><p>Reset the TCC permissions:</p>
+<pre><code class="language-bash">tccutil reset All bot.molt.mac.debug
+</code></pre>
+</li>
+<li><p>If that fails, change the <code>BUNDLE_ID</code> temporarily in <a href="https://github.com/agdi/agdi/blob/main/scripts/package-mac-app.sh"><code>scripts/package-mac-app.sh</code></a> to force a &quot;clean slate&quot; from macOS.</p>
+</li>
+</ol>
+<h3>Gateway &quot;Starting...&quot; indefinitely</h3>
+<p>If the gateway status stays on &quot;Starting...&quot;, check if a zombie process is holding the port:</p>
+<pre><code class="language-bash">agdi gateway status
+agdi gateway stop
+
+# If you’re not using a LaunchAgent (dev mode / manual runs), find the listener:
+lsof -nP -iTCP:18789 -sTCP:LISTEN
+</code></pre>
+<p>If a manual run is holding the port, stop that process (Ctrl+C). As a last resort, kill the PID you found above.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

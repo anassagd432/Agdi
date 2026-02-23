@@ -251,12 +251,12 @@ export function createMatrixRoomMessageHandler(params: MatrixMonitorHandlerParam
                   await sendMessageMatrix(
                     `room:${roomId}`,
                     [
-                      "OpenClaw: access not configured.",
+                      "AGDI: access not configured.",
                       "",
                       `Pairing code: ${code}`,
                       "",
                       "Ask the bot owner to approve with:",
-                      "openclaw pairing approve matrix <code>",
+                      "agdi pairing approve matrix <code>",
                     ].join("\n"),
                     { client },
                   );

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discovery and Transports — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="active" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Discovery &amp; transports</h1>
+<p>AGDI has two distinct problems that look similar on the surface:</p>
+<ol>
+<li><strong>Operator remote control</strong>: the macOS menu bar app controlling a gateway running elsewhere.</li>
+<li><strong>Node pairing</strong>: iOS/Android (and future nodes) finding a gateway and pairing securely.</li>
+</ol>
+<p>The design goal is to keep all network discovery/advertising in the <strong>Node Gateway</strong> (<code>agdi gateway</code>) and keep clients (mac app, iOS) as consumers.</p>
+<h2>Terms</h2>
+<ul>
+<li><strong>Gateway</strong>: a single long-running gateway process that owns state (sessions, pairing, node registry) and runs channels. Most setups use one per host; isolated multi-gateway setups are possible.</li>
+<li><strong>Gateway WS (control plane)</strong>: the WebSocket endpoint on <code>127.0.0.1:18789</code> by default; can be bound to LAN/tailnet via <code>gateway.bind</code>.</li>
+<li><strong>Direct WS transport</strong>: a LAN/tailnet-facing Gateway WS endpoint (no SSH).</li>
+<li><strong>SSH transport (fallback)</strong>: remote control by forwarding <code>127.0.0.1:18789</code> over SSH.</li>
+<li><strong>Legacy TCP bridge (deprecated/removed)</strong>: older node transport (see <a href="/gateway/bridge-protocol">Bridge protocol</a>); no longer advertised for discovery.</li>
+</ul>
+<p>Protocol details:</p>
+<ul>
+<li><a href="/gateway/protocol">Gateway protocol</a></li>
+<li><a href="/gateway/bridge-protocol">Bridge protocol (legacy)</a></li>
+</ul>
+<h2>Why we keep both “direct” and SSH</h2>
+<ul>
+<li><strong>Direct WS</strong> is the best UX on the same network and within a tailnet:<ul>
+<li>auto-discovery on LAN via Bonjour</li>
+<li>pairing tokens + ACLs owned by the gateway</li>
+<li>no shell access required; protocol surface can stay tight and auditable</li>
+</ul>
+</li>
+<li><strong>SSH</strong> remains the universal fallback:<ul>
+<li>works anywhere you have SSH access (even across unrelated networks)</li>
+<li>survives multicast/mDNS issues</li>
+<li>requires no new inbound ports besides SSH</li>
+</ul>
+</li>
+</ul>
+<h2>Discovery inputs (how clients learn where the gateway is)</h2>
+<h3>1) Bonjour / mDNS (LAN only)</h3>
+<p>Bonjour is best-effort and does not cross networks. It is only used for “same LAN” convenience.</p>
+<p>Target direction:</p>
+<ul>
+<li>The <strong>gateway</strong> advertises its WS endpoint via Bonjour.</li>
+<li>Clients browse and show a “pick a gateway” list, then store the chosen endpoint.</li>
+</ul>
+<p>Troubleshooting and beacon details: <a href="/gateway/bonjour">Bonjour</a>.</p>
+<h4>Service beacon details</h4>
+<ul>
+<li>Service types:<ul>
+<li><code>_agdi-gw._tcp</code> (gateway transport beacon)</li>
+</ul>
+</li>
+<li>TXT keys (non-secret):<ul>
+<li><code>role=gateway</code></li>
+<li><code>lanHost=&lt;hostname&gt;.local</code></li>
+<li><code>sshPort=22</code> (or whatever is advertised)</li>
+<li><code>gatewayPort=18789</code> (Gateway WS + HTTP)</li>
+<li><code>gatewayTls=1</code> (only when TLS is enabled)</li>
+<li><code>gatewayTlsSha256=&lt;sha256&gt;</code> (only when TLS is enabled and fingerprint is available)</li>
+<li><code>canvasPort=&lt;port&gt;</code> (canvas host port; currently the same as <code>gatewayPort</code> when the canvas host is enabled)</li>
+<li><code>cliPath=&lt;path&gt;</code> (optional; absolute path to a runnable <code>agdi</code> entrypoint or binary)</li>
+<li><code>tailnetDns=&lt;magicdns&gt;</code> (optional hint; auto-detected when Tailscale is available)</li>
+</ul>
+</li>
+</ul>
+<p>Security notes:</p>
+<ul>
+<li>Bonjour/mDNS TXT records are <strong>unauthenticated</strong>. Clients must treat TXT values as UX hints only.</li>
+<li>Routing (host/port) should prefer the <strong>resolved service endpoint</strong> (SRV + A/AAAA) over TXT-provided <code>lanHost</code>, <code>tailnetDns</code>, or <code>gatewayPort</code>.</li>
+<li>TLS pinning must never allow an advertised <code>gatewayTlsSha256</code> to override a previously stored pin.</li>
+<li>iOS/Android nodes should treat discovery-based direct connects as <strong>TLS-only</strong> and require an explicit “trust this fingerprint” confirmation before storing a first-time pin (out-of-band verification).</li>
+</ul>
+<p>Disable/override:</p>
+<ul>
+<li><code>AGDI_DISABLE_BONJOUR=1</code> disables advertising.</li>
+<li><code>gateway.bind</code> in <code>~/.agdi/agdi.json</code> controls the Gateway bind mode.</li>
+<li><code>AGDI_SSH_PORT</code> overrides the SSH port advertised in TXT (defaults to 22).</li>
+<li><code>AGDI_TAILNET_DNS</code> publishes a <code>tailnetDns</code> hint (MagicDNS).</li>
+<li><code>AGDI_CLI_PATH</code> overrides the advertised CLI path.</li>
+</ul>
+<h3>2) Tailnet (cross-network)</h3>
+<p>For London/Vienna style setups, Bonjour won’t help. The recommended “direct” target is:</p>
+<ul>
+<li>Tailscale MagicDNS name (preferred) or a stable tailnet IP.</li>
+</ul>
+<p>If the gateway can detect it is running under Tailscale, it publishes <code>tailnetDns</code> as an optional hint for clients (including wide-area beacons).</p>
+<h3>3) Manual / SSH target</h3>
+<p>When there is no direct route (or direct is disabled), clients can always connect via SSH by forwarding the loopback gateway port.</p>
+<p>See <a href="/gateway/remote">Remote access</a>.</p>
+<h2>Transport selection (client policy)</h2>
+<p>Recommended client behavior:</p>
+<ol>
+<li>If a paired direct endpoint is configured and reachable, use it.</li>
+<li>Else, if Bonjour finds a gateway on LAN, offer a one-tap “Use this gateway” choice and save it as the direct endpoint.</li>
+<li>Else, if a tailnet DNS/IP is configured, try direct.</li>
+<li>Else, fall back to SSH.</li>
+</ol>
+<h2>Pairing + auth (direct transport)</h2>
+<p>The gateway is the source of truth for node/client admission.</p>
+<ul>
+<li>Pairing requests are created/approved/rejected in the gateway (see <a href="/gateway/pairing">Gateway pairing</a>).</li>
+<li>The gateway enforces:<ul>
+<li>auth (token / keypair)</li>
+<li>scopes/ACLs (the gateway is not a raw proxy to every method)</li>
+<li>rate limits</li>
+</ul>
+</li>
+</ul>
+<h2>Responsibilities by component</h2>
+<ul>
+<li><strong>Gateway</strong>: advertises discovery beacons, owns pairing decisions, and hosts the WS endpoint.</li>
+<li><strong>macOS app</strong>: helps you pick a gateway, shows pairing prompts, and uses SSH only as a fallback.</li>
+<li><strong>iOS/Android nodes</strong>: browse Bonjour as a convenience and connect to the paired Gateway WS.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

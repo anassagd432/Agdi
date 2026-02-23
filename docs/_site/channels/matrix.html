@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="active" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Matrix (plugin)</h1>
+<p>Matrix is an open, decentralized messaging protocol. AGDI connects as a Matrix <strong>user</strong>
+on any homeserver, so you need a Matrix account for the bot. Once it is logged in, you can DM
+the bot directly or invite it to rooms (Matrix &quot;groups&quot;). Beeper is a valid client option too,
+but it requires E2EE to be enabled.</p>
+<p>Status: supported via plugin (@vector-im/matrix-bot-sdk). Direct messages, rooms, threads, media, reactions,
+polls (send + poll-start as text), location, and E2EE (with crypto support).</p>
+<h2>Plugin required</h2>
+<p>Matrix ships as a plugin and is not bundled with the core install.</p>
+<p>Install via CLI (npm registry):</p>
+<pre><code class="language-bash">agdi plugins install @agdi/matrix
+</code></pre>
+<p>Local checkout (when running from a git repo):</p>
+<pre><code class="language-bash">agdi plugins install ./extensions/matrix
+</code></pre>
+<p>If you choose Matrix during configure/onboarding and a git checkout is detected,
+AGDI will offer the local install path automatically.</p>
+<p>Details: <a href="/tools/plugin">Plugins</a></p>
+<h2>Setup</h2>
+<ol>
+<li><p>Install the Matrix plugin:</p>
+<ul>
+<li>From npm: <code>agdi plugins install @agdi/matrix</code></li>
+<li>From a local checkout: <code>agdi plugins install ./extensions/matrix</code></li>
+</ul>
+</li>
+<li><p>Create a Matrix account on a homeserver:</p>
+<ul>
+<li>Browse hosting options at <a href="https://matrix.org/ecosystem/hosting/">https://matrix.org/ecosystem/hosting/</a></li>
+<li>Or host it yourself.</li>
+</ul>
+</li>
+<li><p>Get an access token for the bot account:</p>
+<ul>
+<li>Use the Matrix login API with <code>curl</code> at your home server:</li>
+</ul>
+<pre><code class="language-bash">curl --request POST \
+  --url https://matrix.example.org/_matrix/client/v3/login \
+  --header &#39;Content-Type: application/json&#39; \
+  --data &#39;{
+  &quot;type&quot;: &quot;m.login.password&quot;,
+  &quot;identifier&quot;: {
+    &quot;type&quot;: &quot;m.id.user&quot;,
+    &quot;user&quot;: &quot;your-user-name&quot;
+  },
+  &quot;password&quot;: &quot;your-password&quot;
+}&#39;
+</code></pre>
+<ul>
+<li>Replace <code>matrix.example.org</code> with your homeserver URL.</li>
+<li>Or set <code>channels.matrix.userId</code> + <code>channels.matrix.password</code>: AGDI calls the same
+login endpoint, stores the access token in <code>~/.agdi/credentials/matrix/credentials.json</code>,
+and reuses it on next start.</li>
+</ul>
+</li>
+<li><p>Configure credentials:</p>
+<ul>
+<li>Env: <code>MATRIX_HOMESERVER</code>, <code>MATRIX_ACCESS_TOKEN</code> (or <code>MATRIX_USER_ID</code> + <code>MATRIX_PASSWORD</code>)</li>
+<li>Or config: <code>channels.matrix.*</code></li>
+<li>If both are set, config takes precedence.</li>
+<li>With access token: user ID is fetched automatically via <code>/whoami</code>.</li>
+<li>When set, <code>channels.matrix.userId</code> should be the full Matrix ID (example: <code>@bot:example.org</code>).</li>
+</ul>
+</li>
+<li><p>Restart the gateway (or finish onboarding).</p>
+</li>
+<li><p>Start a DM with the bot or invite it to a room from any Matrix client
+(Element, Beeper, etc.; see <a href="https://matrix.org/ecosystem/clients/">https://matrix.org/ecosystem/clients/</a>). Beeper requires E2EE,
+so set <code>channels.matrix.encryption: true</code> and verify the device.</p>
+</li>
+</ol>
+<p>Minimal config (access token, user ID auto-fetched):</p>
+<pre><code class="language-json5">{
+  channels: {
+    matrix: {
+      enabled: true,
+      homeserver: &quot;https://matrix.example.org&quot;,
+      accessToken: &quot;syt_***&quot;,
+      dm: { policy: &quot;pairing&quot; },
+    },
+  },
+}
+</code></pre>
+<p>E2EE config (end to end encryption enabled):</p>
+<pre><code class="language-json5">{
+  channels: {
+    matrix: {
+      enabled: true,
+      homeserver: &quot;https://matrix.example.org&quot;,
+      accessToken: &quot;syt_***&quot;,
+      encryption: true,
+      dm: { policy: &quot;pairing&quot; },
+    },
+  },
+}
+</code></pre>
+<h2>Encryption (E2EE)</h2>
+<p>End-to-end encryption is <strong>supported</strong> via the Rust crypto SDK.</p>
+<p>Enable with <code>channels.matrix.encryption: true</code>:</p>
+<ul>
+<li>If the crypto module loads, encrypted rooms are decrypted automatically.</li>
+<li>Outbound media is encrypted when sending to encrypted rooms.</li>
+<li>On first connection, AGDI requests device verification from your other sessions.</li>
+<li>Verify the device in another Matrix client (Element, etc.) to enable key sharing.</li>
+<li>If the crypto module cannot be loaded, E2EE is disabled and encrypted rooms will not decrypt;
+AGDI logs a warning.</li>
+<li>If you see missing crypto module errors (for example, <code>@matrix-org/matrix-sdk-crypto-nodejs-*</code>),
+allow build scripts for <code>@matrix-org/matrix-sdk-crypto-nodejs</code> and run
+<code>pnpm rebuild @matrix-org/matrix-sdk-crypto-nodejs</code> or fetch the binary with
+<code>node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js</code>.</li>
+</ul>
+<p>Crypto state is stored per account + access token in
+<code>~/.agdi/matrix/accounts/&lt;account&gt;/&lt;homeserver&gt;__&lt;user&gt;/&lt;token-hash&gt;/crypto/</code>
+(SQLite database). Sync state lives alongside it in <code>bot-storage.json</code>.
+If the access token (device) changes, a new store is created and the bot must be
+re-verified for encrypted rooms.</p>
+<p><strong>Device verification:</strong>
+When E2EE is enabled, the bot will request verification from your other sessions on startup.
+Open Element (or another client) and approve the verification request to establish trust.
+Once verified, the bot can decrypt messages in encrypted rooms.</p>
+<h2>Multi-account</h2>
+<p>Multi-account support: use <code>channels.matrix.accounts</code> with per-account credentials and optional <code>name</code>. See <a href="/gateway/configuration#telegramaccounts--discordaccounts--slackaccounts--signalaccounts--imessageaccounts"><code>gateway/configuration</code></a> for the shared pattern.</p>
+<p>Each account runs as a separate Matrix user on any homeserver. Per-account config
+inherits from the top-level <code>channels.matrix</code> settings and can override any option
+(DM policy, groups, encryption, etc.).</p>
+<pre><code class="language-json5">{
+  channels: {
+    matrix: {
+      enabled: true,
+      dm: { policy: &quot;pairing&quot; },
+      accounts: {
+        assistant: {
+          name: &quot;Main assistant&quot;,
+          homeserver: &quot;https://matrix.example.org&quot;,
+          accessToken: &quot;syt_assistant_***&quot;,
+          encryption: true,
+        },
+        alerts: {
+          name: &quot;Alerts bot&quot;,
+          homeserver: &quot;https://matrix.example.org&quot;,
+          accessToken: &quot;syt_alerts_***&quot;,
+          dm: { policy: &quot;allowlist&quot;, allowFrom: [&quot;@admin:example.org&quot;] },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Account startup is serialized to avoid race conditions with concurrent module imports.</li>
+<li>Env variables (<code>MATRIX_HOMESERVER</code>, <code>MATRIX_ACCESS_TOKEN</code>, etc.) only apply to the <strong>default</strong> account.</li>
+<li>Base channel settings (DM policy, group policy, mention gating, etc.) apply to all accounts unless overridden per account.</li>
+<li>Use <code>bindings[].match.accountId</code> to route each account to a different agent.</li>
+<li>Crypto state is stored per account + access token (separate key stores per account).</li>
+</ul>
+<h2>Routing model</h2>
+<ul>
+<li>Replies always go back to Matrix.</li>
+<li>DMs share the agent&#39;s main session; rooms map to group sessions.</li>
+</ul>
+<h2>Access control (DMs)</h2>
+<ul>
+<li>Default: <code>channels.matrix.dm.policy = &quot;pairing&quot;</code>. Unknown senders get a pairing code.</li>
+<li>Approve via:<ul>
+<li><code>agdi pairing list matrix</code></li>
+<li><code>agdi pairing approve matrix &lt;CODE&gt;</code></li>
+</ul>
+</li>
+<li>Public DMs: <code>channels.matrix.dm.policy=&quot;open&quot;</code> plus <code>channels.matrix.dm.allowFrom=[&quot;*&quot;]</code>.</li>
+<li><code>channels.matrix.dm.allowFrom</code> accepts full Matrix user IDs (example: <code>@user:server</code>). The wizard resolves display names to user IDs when directory search finds a single exact match.</li>
+<li>Do not use display names or bare localparts (example: <code>&quot;Alice&quot;</code> or <code>&quot;alice&quot;</code>). They are ambiguous and are ignored for allowlist matching. Use full <code>@user:server</code> IDs.</li>
+</ul>
+<h2>Rooms (groups)</h2>
+<ul>
+<li>Default: <code>channels.matrix.groupPolicy = &quot;allowlist&quot;</code> (mention-gated). Use <code>channels.defaults.groupPolicy</code> to override the default when unset.</li>
+<li>Allowlist rooms with <code>channels.matrix.groups</code> (room IDs or aliases; names are resolved to IDs when directory search finds a single exact match):</li>
+</ul>
+<pre><code class="language-json5">{
+  channels: {
+    matrix: {
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;!roomId:example.org&quot;: { allow: true },
+        &quot;#alias:example.org&quot;: { allow: true },
+      },
+      groupAllowFrom: [&quot;@owner:example.org&quot;],
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>requireMention: false</code> enables auto-reply in that room.</li>
+<li><code>groups.&quot;*&quot;</code> can set defaults for mention gating across rooms.</li>
+<li><code>groupAllowFrom</code> restricts which senders can trigger the bot in rooms (full Matrix user IDs).</li>
+<li>Per-room <code>users</code> allowlists can further restrict senders inside a specific room (use full Matrix user IDs).</li>
+<li>The configure wizard prompts for room allowlists (room IDs, aliases, or names) and resolves names only on an exact, unique match.</li>
+<li>On startup, AGDI resolves room/user names in allowlists to IDs and logs the mapping; unresolved entries are ignored for allowlist matching.</li>
+<li>Invites are auto-joined by default; control with <code>channels.matrix.autoJoin</code> and <code>channels.matrix.autoJoinAllowlist</code>.</li>
+<li>To allow <strong>no rooms</strong>, set <code>channels.matrix.groupPolicy: &quot;disabled&quot;</code> (or keep an empty allowlist).</li>
+<li>Legacy key: <code>channels.matrix.rooms</code> (same shape as <code>groups</code>).</li>
+</ul>
+<h2>Threads</h2>
+<ul>
+<li>Reply threading is supported.</li>
+<li><code>channels.matrix.threadReplies</code> controls whether replies stay in threads:<ul>
+<li><code>off</code>, <code>inbound</code> (default), <code>always</code></li>
+</ul>
+</li>
+<li><code>channels.matrix.replyToMode</code> controls reply-to metadata when not replying in a thread:<ul>
+<li><code>off</code> (default), <code>first</code>, <code>all</code></li>
+</ul>
+</li>
+</ul>
+<h2>Capabilities</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Direct messages</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Rooms</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Threads</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>Media</td>
+<td>✅ Supported</td>
+</tr>
+<tr>
+<td>E2EE</td>
+<td>✅ Supported (crypto module required)</td>
+</tr>
+<tr>
+<td>Reactions</td>
+<td>✅ Supported (send/read via tools)</td>
+</tr>
+<tr>
+<td>Polls</td>
+<td>✅ Send supported; inbound poll starts are converted to text (responses/ends ignored)</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>✅ Supported (geo URI; altitude ignored)</td>
+</tr>
+<tr>
+<td>Native commands</td>
+<td>✅ Supported</td>
+</tr>
+</tbody></table>
+<h2>Troubleshooting</h2>
+<p>Run this ladder first:</p>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Then confirm DM pairing state if needed:</p>
+<pre><code class="language-bash">agdi pairing list matrix
+</code></pre>
+<p>Common failures:</p>
+<ul>
+<li>Logged in but room messages ignored: room blocked by <code>groupPolicy</code> or room allowlist.</li>
+<li>DMs ignored: sender pending approval when <code>channels.matrix.dm.policy=&quot;pairing&quot;</code>.</li>
+<li>Encrypted rooms fail: crypto support or encryption settings mismatch.</li>
+</ul>
+<p>For triage flow: <a href="/channels/troubleshooting">/channels/troubleshooting</a>.</p>
+<h2>Configuration reference (Matrix)</h2>
+<p>Full configuration: <a href="/gateway/configuration">Configuration</a></p>
+<p>Provider options:</p>
+<ul>
+<li><code>channels.matrix.enabled</code>: enable/disable channel startup.</li>
+<li><code>channels.matrix.homeserver</code>: homeserver URL.</li>
+<li><code>channels.matrix.userId</code>: Matrix user ID (optional with access token).</li>
+<li><code>channels.matrix.accessToken</code>: access token.</li>
+<li><code>channels.matrix.password</code>: password for login (token stored).</li>
+<li><code>channels.matrix.deviceName</code>: device display name.</li>
+<li><code>channels.matrix.encryption</code>: enable E2EE (default: false).</li>
+<li><code>channels.matrix.initialSyncLimit</code>: initial sync limit.</li>
+<li><code>channels.matrix.threadReplies</code>: <code>off | inbound | always</code> (default: inbound).</li>
+<li><code>channels.matrix.textChunkLimit</code>: outbound text chunk size (chars).</li>
+<li><code>channels.matrix.chunkMode</code>: <code>length</code> (default) or <code>newline</code> to split on blank lines (paragraph boundaries) before length chunking.</li>
+<li><code>channels.matrix.dm.policy</code>: <code>pairing | allowlist | open | disabled</code> (default: pairing).</li>
+<li><code>channels.matrix.dm.allowFrom</code>: DM allowlist (full Matrix user IDs). <code>open</code> requires <code>&quot;*&quot;</code>. The wizard resolves names to IDs when possible.</li>
+<li><code>channels.matrix.groupPolicy</code>: <code>allowlist | open | disabled</code> (default: allowlist).</li>
+<li><code>channels.matrix.groupAllowFrom</code>: allowlisted senders for group messages (full Matrix user IDs).</li>
+<li><code>channels.matrix.allowlistOnly</code>: force allowlist rules for DMs + rooms.</li>
+<li><code>channels.matrix.groups</code>: group allowlist + per-room settings map.</li>
+<li><code>channels.matrix.rooms</code>: legacy group allowlist/config.</li>
+<li><code>channels.matrix.replyToMode</code>: reply-to mode for threads/tags.</li>
+<li><code>channels.matrix.mediaMaxMb</code>: inbound/outbound media cap (MB).</li>
+<li><code>channels.matrix.autoJoin</code>: invite handling (<code>always | allowlist | off</code>, default: always).</li>
+<li><code>channels.matrix.autoJoinAllowlist</code>: allowed room IDs/aliases for auto-join.</li>
+<li><code>channels.matrix.accounts</code>: multi-account configuration keyed by account ID (each account inherits top-level settings).</li>
+<li><code>channels.matrix.actions</code>: per-action tool gating (reactions/messages/pins/memberInfo/channelInfo).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

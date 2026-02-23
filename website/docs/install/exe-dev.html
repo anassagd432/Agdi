@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>exe.dev — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab active" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/docs/install/index.html">Install</a></li><li><a class="" href="/docs/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/docs/install/docker.html">Docker</a></li><li><a class="" href="/docs/install/podman.html">Podman</a></li><li><a class="" href="/docs/install/nix.html">Nix</a></li><li><a class="" href="/docs/install/ansible.html">Ansible</a></li><li><a class="" href="/docs/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/docs/install/updating.html">Updating</a></li><li><a class="" href="/docs/install/migrating.html">Migration Guide</a></li><li><a class="" href="/docs/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/docs/install/fly.html">Fly.io</a></li><li><a class="" href="/docs/install/hetzner.html">Hetzner</a></li><li><a class="" href="/docs/install/gcp.html">GCP</a></li><li><a class="" href="/docs/install/macos-vm.html">macOS VMs</a></li><li><a class="active" href="/docs/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/docs/install/railway.html">railway</a></li><li><a class="" href="/docs/install/render.html">render</a></li><li><a class="" href="/docs/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/docs/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>exe.dev</h1>
+<p>Goal: AGDI Gateway running on an exe.dev VM, reachable from your laptop via: <code>https://&lt;vm-name&gt;.exe.xyz</code></p>
+<p>This page assumes exe.dev&#39;s default <strong>exeuntu</strong> image. If you picked a different distro, map packages accordingly.</p>
+<h2>Beginner quick path</h2>
+<ol>
+<li><a href="https://exe.new/agdi">https://exe.new/agdi</a></li>
+<li>Fill in your auth key/token as needed</li>
+<li>Click on &quot;Agent&quot; next to your VM, and wait...</li>
+<li>???</li>
+<li>Profit</li>
+</ol>
+<h2>What you need</h2>
+<ul>
+<li>exe.dev account</li>
+<li><code>ssh exe.dev</code> access to <a href="https://exe.dev">exe.dev</a> virtual machines (optional)</li>
+</ul>
+<h2>Automated Install with Shelley</h2>
+<p>Shelley, <a href="https://exe.dev">exe.dev</a>&#39;s agent, can install AGDI instantly with our
+prompt. The prompt used is as below:</p>
+<pre><code>Set up AGDI (https://docs.agdi.ai/install) on this VM. Use the non-interactive and accept-risk flags for agdi onboarding. Add the supplied auth or token as needed. Configure nginx to forward from the default port 18789 to the root location on the default enabled site config, making sure to enable Websocket support. Pairing is done by &quot;agdi devices list&quot; and &quot;agdi device approve &lt;request id&gt;&quot;. Make sure the dashboard shows that AGDI&#39;s health is OK. exe.dev handles forwarding from port 8000 to port 80/443 and HTTPS for us, so the final &quot;reachable&quot; should be &lt;vm-name&gt;.exe.xyz, without port specification.
+</code></pre>
+<h2>Manual installation</h2>
+<h2>1) Create the VM</h2>
+<p>From your device:</p>
+<pre><code class="language-bash">ssh exe.dev new
+</code></pre>
+<p>Then connect:</p>
+<pre><code class="language-bash">ssh &lt;vm-name&gt;.exe.xyz
+</code></pre>
+<p>Tip: keep this VM <strong>stateful</strong>. AGDI stores state under <code>~/.agdi/</code> and <code>~/.agdi/workspace/</code>.</p>
+<h2>2) Install prerequisites (on the VM)</h2>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install -y git curl jq ca-certificates openssl
+</code></pre>
+<h2>3) Install AGDI</h2>
+<p>Run the AGDI install script:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash
+</code></pre>
+<h2>4) Setup nginx to proxy AGDI to port 8000</h2>
+<p>Edit <code>/etc/nginx/sites-enabled/default</code> with</p>
+<pre><code>server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    listen 8000;
+    listen [::]:8000;
+
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:18789;
+        proxy_http_version 1.1;
+
+        # WebSocket support
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+
+        # Standard proxy headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Timeout settings for long-lived connections
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+}
+</code></pre>
+<h2>5) Access AGDI and grant privileges</h2>
+<p>Access <code>https://&lt;vm-name&gt;.exe.xyz/</code> (see the Control UI output from onboarding). If it prompts for auth, paste the
+token from <code>gateway.auth.token</code> on the VM (retrieve with <code>agdi config get gateway.auth.token</code>, or generate one
+with <code>agdi doctor --generate-gateway-token</code>). Approve devices with <code>agdi devices list</code> and
+<code>agdi devices approve &lt;requestId&gt;</code>. When in doubt, use Shelley from your browser!</p>
+<h2>Remote Access</h2>
+<p>Remote access is handled by <a href="https://exe.dev">exe.dev</a>&#39;s authentication. By
+default, HTTP traffic from port 8000 is forwarded to <code>https://&lt;vm-name&gt;.exe.xyz</code>
+with email auth.</p>
+<h2>Updating</h2>
+<pre><code class="language-bash">npm i -g agdi@latest
+agdi doctor
+agdi gateway restart
+agdi health
+</code></pre>
+<p>Guide: <a href="/docs/install/updating">Updating</a></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

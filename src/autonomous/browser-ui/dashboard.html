@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGDI — Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030305;
+      --surface: #0a0b12;
+      --surface-glass: rgba(10, 11, 18, 0.75);
+      --card: #0d0e15;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(99, 102, 241, 0.4);
+      --text: #ffffff;
+      --text-2: #8a93a6;
+      --text-3: #5a6376;
+      --accent: #38bdf8;
+      --accent-alt: #a855f7;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 50%, #a855f7 100%);
+      --glow: rgba(99, 102, 241, 0.25);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Enterprise Matte Noise Texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    /* Background Grid */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(circle at top center, black 40%, transparent 90%);
+      -webkit-mask-image: radial-gradient(circle at top center, black 40%, transparent 90%);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* SVG Icons */
+    .icon-svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      grid-template-rows: 64px 1fr;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Specular Glass Header */
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+      box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.02);
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px var(--glow);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(90, 90, 122, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-2);
+      transition: all 0.3s;
+    }
+
+    .status-badge.planning {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+    }
+
+    .status-badge.executing {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+    }
+
+    .status-badge.observing {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .status-badge.repairing {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-3);
+    }
+
+    .status-dot.planning {
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.executing {
+      background: #818cf8;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.observing {
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.repairing {
+      background: var(--warning);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2);
+      }
+
+      50% {
+        opacity: 0.4;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0);
+      }
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .header-stat .value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+    }
+
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--error);
+      transition: 0.3s;
+      box-shadow: 0 0 8px var(--error);
+    }
+
+    .connection-dot.connected {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    /* Browser View Area */
+    .browser-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .url-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      background: var(--surface-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .view-toggle button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-2);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-toggle button.active {
+      background: var(--border);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .url-bar .nav-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-2);
+      padding: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .url-bar .nav-btn:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .url-bar input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: 0.2s;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .url-bar input:focus {
+      border-color: var(--accent);
+    }
+
+    .record-btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .record-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .record-btn.recording {
+      border-color: var(--error);
+      color: var(--error);
+      animation: recPulse 2s infinite;
+    }
+
+    @keyframes recPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* Live Stream View */
+    .browser-view {
+      flex: 1;
+      position: relative;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .browser-view img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .placeholder {
+      text-align: center;
+      color: var(--text-3);
+      font-size: 14px;
+    }
+
+    .placeholder .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      opacity: 0.5;
+    }
+
+    /* Glass Action Overlay */
+    .action-overlay {
+      position: absolute;
+      bottom: 84px;
+      left: 24px;
+      right: 24px;
+      background: rgba(10, 11, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      display: none;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .action-overlay.visible {
+      display: block;
+    }
+
+    .action-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .action-reasoning {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0.9;
+    }
+
+    /* Command Bar */
+    .command-bar {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px;
+      background: var(--surface-glass);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+    }
+
+    .voice-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+
+    .voice-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .voice-btn.active {
+      border-color: var(--error);
+      color: var(--error);
+      animation: pulse 1.5s infinite;
+    }
+
+    .command-bar input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 20px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .command-bar input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-run {
+      background: var(--gradient);
+      border: none;
+      border-radius: var(--radius);
+      padding: 0 24px;
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: 0.2s;
+    }
+
+    .btn-run:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-tab {
+      flex: 1;
+      padding: 14px 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: 0.2s;
+    }
+
+    .sidebar-tab:hover {
+      color: var(--text-2);
+    }
+
+    .sidebar-tab.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: slideUp 0.3s ease;
+    }
+
+    /* Goals */
+    .add-goal-form {
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .add-goal-form textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      min-height: 70px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .add-goal-form textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .add-goal-form select {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+
+    .btn-add {
+      background: var(--border);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: 0.2s;
+      flex: 1;
+    }
+
+    .btn-add:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .goal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+      transition: 0.2s;
+    }
+
+    .goal-card.active {
+      border-color: var(--border-hover);
+      box-shadow: 0 0 20px var(--glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .goal-desc {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--text);
+      flex: 1;
+      padding-right: 12px;
+    }
+
+    .goal-priority {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .goal-priority.critical {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .goal-priority.high {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .goal-priority.normal {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .goal-priority.low {
+      background: rgba(138, 147, 166, 0.1);
+      color: var(--text-2);
+      border: 1px solid rgba(138, 147, 166, 0.2);
+    }
+
+    .goal-status {
+      font-size: 11px;
+      color: var(--text-3);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 8px;
+    }
+
+    .goal-actions {
+      margin-top: 12px;
+    }
+
+    .goal-actions button {
+      padding: 6px 12px;
+      font-size: 11px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 600;
+    }
+
+    .goal-actions button:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* macOS Terminal Log */
+    #tab-log {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+      height: 100%;
+      border-radius: 0;
+    }
+
+    .terminal-header {
+      background: rgba(30, 30, 30, 0.9);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-title {
+      margin: 0 auto;
+      color: var(--text-3);
+      font-size: 11px;
+      font-family: sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    #logList {
+      padding: 16px;
+      flex: 1;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .log-entry {
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .log-entry .timestamp {
+      color: var(--text-3);
+    }
+
+    .log-entry .event-type {
+      font-weight: bold;
+    }
+
+    .log-entry .event-detail {
+      color: var(--text-2);
+      flex-basis: 100%;
+      padding-left: 60px;
+    }
+
+    .log-entry .state_change {
+      color: var(--accent);
+    }
+
+    .log-entry .action_executed {
+      color: var(--success);
+    }
+
+    .log-entry .goal_added {
+      color: var(--accent-alt);
+    }
+
+    .log-entry .error {
+      color: var(--error);
+    }
+
+    /* Brain Stats */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Chat input */
+    .message-bar {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-glass);
+      display: flex;
+      gap: 12px;
+    }
+
+    .message-bar input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .message-bar input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-send {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 0 16px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-send:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Modal */
+    .approval-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .approval-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .approval-card h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .approval-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .approval-risk {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+    }
+
+    .approval-risk.prompt {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .approval-risk.deny {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .approval-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .approval-buttons button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-deny {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-deny:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-allow {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-allow:hover {
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-always {
+      background: var(--gradient);
+      color: white;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <div class="logo-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg></div>
+          <span>AGDI Command Center</span>
+        </div>
+        <div class="status-badge idle" id="statusBadge">
+          <div class="status-dot idle" id="statusDot"></div>
+          <span id="statusText">IDLE</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-stat"><span>Goals</span><span class="value" id="goalCount">0</span></div>
+        <div class="header-stat"><span>Memory</span><span class="value" id="memoryCount">0</span></div>
+        <div class="header-stat"><span>Rules</span><span class="value" id="rulesCount">0</span></div>
+        <div class="header-stat"><span>v</span><span class="value" id="improvementVersion">0</span></div>
+        <div class="connection-dot" id="connectionDot" title="WebSocket Status"></div>
+      </div>
+    </header>
+
+    <!-- Browser/Desktop View -->
+    <main class="browser-panel">
+      <div class="url-bar">
+        <div class="view-toggle">
+          <button id="viewDesktop" class="active" onclick="setViewMode('desktop')"><svg class="icon-svg"
+              viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg> Desktop</button>
+          <button id="viewBrowser" onclick="setViewMode('browser')"><svg class="icon-svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+              </path>
+            </svg> Browser</button>
+        </div>
+        <button class="nav-btn" onclick="navigateBack()" title="Back"><svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg></button>
+        <button class="nav-btn" onclick="navigateForward()" title="Forward"><svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg></button>
+        <button class="nav-btn" onclick="reloadPage()" title="Reload"><svg class="icon-svg" viewBox="0 0 24 24">
+            <path d="M21 2v6h-6"></path>
+            <path d="M3 12a9 9 0 1 0 2.1-5.6L2 10"></path>
+          </svg></button>
+        <input type="text" id="urlInput" placeholder="Enter URL or path..." spellcheck="false">
+        <button class="nav-btn" onclick="navigateToUrl()" title="Go"><svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg></button>
+        <button id="recordBtn" class="record-btn" onclick="toggleRecording()"><svg class="icon-svg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg> Record</button>
+      </div>
+
+      <div class="browser-view" id="browserView">
+        <div class="placeholder" id="placeholder">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+          </svg>
+          <div style="font-weight: 500; color: var(--text);">Agent Vision Standby</div>
+          <div style="margin-top:8px;">Execute a command below to initialize the display server.</div>
+        </div>
+        <img id="browserImg" style="display:none;" alt="Live Agent Display Buffer">
+      </div>
+
+      <div class="action-overlay" id="actionOverlay">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <svg class="icon-svg" style="color: var(--accent);" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <div>
+            <div class="action-text" id="actionText"></div>
+            <div class="action-reasoning" id="actionReasoning"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Command Bar -->
+      <div class="command-bar">
+        <button id="voiceBtn" class="voice-btn" onclick="toggleVoice()" title="Voice control">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+          </svg>
+        </button>
+        <input type="text" id="commandInput" placeholder="Tell the agent what to do... (e.g. 'Run nmap on localhost')"
+          onkeydown="if(event.key==='Enter') sendCommand()">
+        <button class="btn-run" onclick="sendCommand()"><svg class="icon-svg" viewBox="0 0 24 24">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg> Execute</button>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-tabs">
+        <div class="sidebar-tab active" onclick="switchTab('goals')">Goals</div>
+        <div class="sidebar-tab" onclick="switchTab('log')">Daemon Log</div>
+        <div class="sidebar-tab" onclick="switchTab('brain')">Brain Stats</div>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Goals -->
+        <div class="tab-panel active" id="tab-goals">
+          <div class="add-goal-form">
+            <textarea id="goalInput" placeholder="Define a high-level objective..."></textarea>
+            <div class="form-row">
+              <select id="goalPriority">
+                <option value="normal">Normal Priority</option>
+                <option value="high">High Priority</option>
+                <option value="critical">Critical Path</option>
+                <option value="low">Low Priority</option>
+              </select>
+              <button class="btn-add" onclick="addGoal()">Queue Goal</button>
+            </div>
+          </div>
+          <div id="goalList"></div>
+        </div>
+
+        <!-- CLI Log -->
+        <div class="tab-panel" id="tab-log">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span style="background:#ff5f56; border: 1px solid #e0443e;"></span>
+              <span style="background:#ffbd2e; border: 1px solid #dea123;"></span>
+              <span style="background:#27c93f; border: 1px solid #1aab29;"></span>
+            </div>
+            <div class="terminal-title">agdi-daemon-stream</div>
+          </div>
+          <div id="logList"></div>
+        </div>
+
+        <!-- Brain -->
+        <div class="tab-panel" id="tab-brain">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="brainEpisodes">0</div>
+              <div class="stat-label">Episodes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="brainProcedures">0</div>
+              <div class="stat-label">Procedures</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" style="color:var(--error);" id="brainFailures">0</div>
+              <div class="stat-label">Failures</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="brainDomains">0</div>
+              <div class="stat-label">Domains</div>
+            </div>
+          </div>
+          <div
+            style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;">
+            Learned Rules</div>
+          <div id="rulesList" style="margin-bottom: 24px;"></div>
+          <div
+            style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;">
+            Blacklist</div>
+          <div id="blacklistList" style="margin-bottom: 24px;"></div>
+
+          <button class="btn-add"
+            style="width:100%; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;"
+            onclick="runImprovement()">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <path d="M12 2v20"></path>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Trigger Improvement Cycle
+          </button>
+        </div>
+      </div>
+
+      <div class="message-bar">
+        <input type="text" id="messageInput" placeholder="Send fallback message..."
+          onkeydown="if(event.key==='Enter') sendMessage()">
+        <button class="btn-send" onclick="sendMessage()"><svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg></button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Approval Modal -->
+  <div class="approval-modal" id="approvalModal">
+    <div class="approval-card">
+      <h3><svg class="icon-svg" style="color:var(--warning);" viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg> Authorization Required</h3>
+      <div class="approval-desc" id="approvalDesc">Action description</div>
+      <div class="approval-risk prompt" id="approvalRisk">prompt</div>
+      <div class="approval-buttons">
+        <button class="btn-deny" onclick="resolveApproval(false)">Deny Action</button>
+        <button class="btn-allow" onclick="resolveApproval(true)">Allow Once</button>
+        <button class="btn-always" onclick="resolveApproval(true, true)">Always Allow</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="client.js"></script>
+  <script>
+    // Tab switching logic embedded for standalone HTML
+    function switchTab(tabId) {
+      document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`.sidebar-tab[onclick*="${tabId}"]`).classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

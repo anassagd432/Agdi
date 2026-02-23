@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmail PubSub — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="active" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gmail Pub/Sub -&gt; AGDI</h1>
+<p>Goal: Gmail watch -&gt; Pub/Sub push -&gt; <code>gog gmail watch serve</code> -&gt; AGDI webhook.</p>
+<h2>Prereqs</h2>
+<ul>
+<li><code>gcloud</code> installed and logged in (<a href="https://docs.cloud.google.com/sdk/docs/install-sdk">install guide</a>).</li>
+<li><code>gog</code> (gogcli) installed and authorized for the Gmail account (<a href="https://gogcli.sh/">gogcli.sh</a>).</li>
+<li>AGDI hooks enabled (see <a href="/automation/webhook">Webhooks</a>).</li>
+<li><code>tailscale</code> logged in (<a href="https://tailscale.com/">tailscale.com</a>). Supported setup uses Tailscale Funnel for the public HTTPS endpoint.
+Other tunnel services can work, but are DIY/unsupported and require manual wiring.
+Right now, Tailscale is what we support.</li>
+</ul>
+<p>Example hook config (enable Gmail preset mapping):</p>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;AGDI_HOOK_TOKEN&quot;,
+    path: &quot;/hooks&quot;,
+    presets: [&quot;gmail&quot;],
+  },
+}
+</code></pre>
+<p>To deliver the Gmail summary to a chat surface, override the preset with a mapping
+that sets <code>deliver</code> + optional <code>channel</code>/<code>to</code>:</p>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;AGDI_HOOK_TOKEN&quot;,
+    presets: [&quot;gmail&quot;],
+    mappings: [
+      {
+        match: { path: &quot;gmail&quot; },
+        action: &quot;agent&quot;,
+        wakeMode: &quot;now&quot;,
+        name: &quot;Gmail&quot;,
+        sessionKey: &quot;hook:gmail:{{messages[0].id}}&quot;,
+        messageTemplate: &quot;New email from {{messages[0].from}}\nSubject: {{messages[0].subject}}\n{{messages[0].snippet}}\n{{messages[0].body}}&quot;,
+        model: &quot;openai/gpt-5.2-mini&quot;,
+        deliver: true,
+        channel: &quot;last&quot;,
+        // to: &quot;+15551234567&quot;
+      },
+    ],
+  },
+}
+</code></pre>
+<p>If you want a fixed channel, set <code>channel</code> + <code>to</code>. Otherwise <code>channel: &quot;last&quot;</code>
+uses the last delivery route (falls back to WhatsApp).</p>
+<p>To force a cheaper model for Gmail runs, set <code>model</code> in the mapping
+(<code>provider/model</code> or alias). If you enforce <code>agents.defaults.models</code>, include it there.</p>
+<p>To set a default model and thinking level specifically for Gmail hooks, add
+<code>hooks.gmail.model</code> / <code>hooks.gmail.thinking</code> in your config:</p>
+<pre><code class="language-json5">{
+  hooks: {
+    gmail: {
+      model: &quot;openrouter/meta-llama/llama-3.3-70b-instruct:free&quot;,
+      thinking: &quot;off&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Per-hook <code>model</code>/<code>thinking</code> in the mapping still overrides these defaults.</li>
+<li>Fallback order: <code>hooks.gmail.model</code> → <code>agents.defaults.model.fallbacks</code> → primary (auth/rate-limit/timeouts).</li>
+<li>If <code>agents.defaults.models</code> is set, the Gmail model must be in the allowlist.</li>
+<li>Gmail hook content is wrapped with external-content safety boundaries by default.
+To disable (dangerous), set <code>hooks.gmail.allowUnsafeExternalContent: true</code>.</li>
+</ul>
+<p>To customize payload handling further, add <code>hooks.mappings</code> or a JS/TS transform module
+under <code>~/.agdi/hooks/transforms</code> (see <a href="/automation/webhook">Webhooks</a>).</p>
+<h2>Wizard (recommended)</h2>
+<p>Use the AGDI helper to wire everything together (installs deps on macOS via brew):</p>
+<pre><code class="language-bash">agdi webhooks gmail setup \
+  --account agdi@gmail.com
+</code></pre>
+<p>Defaults:</p>
+<ul>
+<li>Uses Tailscale Funnel for the public push endpoint.</li>
+<li>Writes <code>hooks.gmail</code> config for <code>agdi webhooks gmail run</code>.</li>
+<li>Enables the Gmail hook preset (<code>hooks.presets: [&quot;gmail&quot;]</code>).</li>
+</ul>
+<p>Path note: when <code>tailscale.mode</code> is enabled, AGDI automatically sets
+<code>hooks.gmail.serve.path</code> to <code>/</code> and keeps the public path at
+<code>hooks.gmail.tailscale.path</code> (default <code>/gmail-pubsub</code>) because Tailscale
+strips the set-path prefix before proxying.
+If you need the backend to receive the prefixed path, set
+<code>hooks.gmail.tailscale.target</code> (or <code>--tailscale-target</code>) to a full URL like
+<code>http://127.0.0.1:8788/gmail-pubsub</code> and match <code>hooks.gmail.serve.path</code>.</p>
+<p>Want a custom endpoint? Use <code>--push-endpoint &lt;url&gt;</code> or <code>--tailscale off</code>.</p>
+<p>Platform note: on macOS the wizard installs <code>gcloud</code>, <code>gogcli</code>, and <code>tailscale</code>
+via Homebrew; on Linux install them manually first.</p>
+<p>Gateway auto-start (recommended):</p>
+<ul>
+<li>When <code>hooks.enabled=true</code> and <code>hooks.gmail.account</code> is set, the Gateway starts
+<code>gog gmail watch serve</code> on boot and auto-renews the watch.</li>
+<li>Set <code>AGDI_SKIP_GMAIL_WATCHER=1</code> to opt out (useful if you run the daemon yourself).</li>
+<li>Do not run the manual daemon at the same time, or you will hit
+<code>listen tcp 127.0.0.1:8788: bind: address already in use</code>.</li>
+</ul>
+<p>Manual daemon (starts <code>gog gmail watch serve</code> + auto-renew):</p>
+<pre><code class="language-bash">agdi webhooks gmail run
+</code></pre>
+<h2>One-time setup</h2>
+<ol>
+<li>Select the GCP project <strong>that owns the OAuth client</strong> used by <code>gog</code>.</li>
+</ol>
+<pre><code class="language-bash">gcloud auth login
+gcloud config set project &lt;project-id&gt;
+</code></pre>
+<p>Note: Gmail watch requires the Pub/Sub topic to live in the same project as the OAuth client.</p>
+<ol start="2">
+<li>Enable APIs:</li>
+</ol>
+<pre><code class="language-bash">gcloud services enable gmail.googleapis.com pubsub.googleapis.com
+</code></pre>
+<ol start="3">
+<li>Create a topic:</li>
+</ol>
+<pre><code class="language-bash">gcloud pubsub topics create gog-gmail-watch
+</code></pre>
+<ol start="4">
+<li>Allow Gmail push to publish:</li>
+</ol>
+<pre><code class="language-bash">gcloud pubsub topics add-iam-policy-binding gog-gmail-watch \
+  --member=serviceAccount:gmail-api-push@system.gserviceaccount.com \
+  --role=roles/pubsub.publisher
+</code></pre>
+<h2>Start the watch</h2>
+<pre><code class="language-bash">gog gmail watch start \
+  --account agdi@gmail.com \
+  --label INBOX \
+  --topic projects/&lt;project-id&gt;/topics/gog-gmail-watch
+</code></pre>
+<p>Save the <code>history_id</code> from the output (for debugging).</p>
+<h2>Run the push handler</h2>
+<p>Local example (shared token auth):</p>
+<pre><code class="language-bash">gog gmail watch serve \
+  --account agdi@gmail.com \
+  --bind 127.0.0.1 \
+  --port 8788 \
+  --path /gmail-pubsub \
+  --token &lt;shared&gt; \
+  --hook-url http://127.0.0.1:18789/hooks/gmail \
+  --hook-token AGDI_HOOK_TOKEN \
+  --include-body \
+  --max-bytes 20000
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>--token</code> protects the push endpoint (<code>x-gog-token</code> or <code>?token=</code>).</li>
+<li><code>--hook-url</code> points to AGDI <code>/hooks/gmail</code> (mapped; isolated run + summary to main).</li>
+<li><code>--include-body</code> and <code>--max-bytes</code> control the body snippet sent to AGDI.</li>
+</ul>
+<p>Recommended: <code>agdi webhooks gmail run</code> wraps the same flow and auto-renews the watch.</p>
+<h2>Expose the handler (advanced, unsupported)</h2>
+<p>If you need a non-Tailscale tunnel, wire it manually and use the public URL in the push
+subscription (unsupported, no guardrails):</p>
+<pre><code class="language-bash">cloudflared tunnel --url http://127.0.0.1:8788 --no-autoupdate
+</code></pre>
+<p>Use the generated URL as the push endpoint:</p>
+<pre><code class="language-bash">gcloud pubsub subscriptions create gog-gmail-watch-push \
+  --topic gog-gmail-watch \
+  --push-endpoint &quot;https://&lt;public-url&gt;/gmail-pubsub?token=&lt;shared&gt;&quot;
+</code></pre>
+<p>Production: use a stable HTTPS endpoint and configure Pub/Sub OIDC JWT, then run:</p>
+<pre><code class="language-bash">gog gmail watch serve --verify-oidc --oidc-email &lt;svc@...&gt;
+</code></pre>
+<h2>Test</h2>
+<p>Send a message to the watched inbox:</p>
+<pre><code class="language-bash">gog gmail send \
+  --account agdi@gmail.com \
+  --to agdi@gmail.com \
+  --subject &quot;watch test&quot; \
+  --body &quot;ping&quot;
+</code></pre>
+<p>Check watch state and history:</p>
+<pre><code class="language-bash">gog gmail watch status --account agdi@gmail.com
+gog gmail history --account agdi@gmail.com --since &lt;historyId&gt;
+</code></pre>
+<h2>Troubleshooting</h2>
+<ul>
+<li><code>Invalid topicName</code>: project mismatch (topic not in the OAuth client project).</li>
+<li><code>User not authorized</code>: missing <code>roles/pubsub.publisher</code> on the topic.</li>
+<li>Empty messages: Gmail push only provides <code>historyId</code>; fetch via <code>gog gmail history</code>.</li>
+</ul>
+<h2>Cleanup</h2>
+<pre><code class="language-bash">gog gmail watch stop --account agdi@gmail.com
+gcloud pubsub subscriptions delete gog-gmail-watch-push
+gcloud pubsub topics delete gog-gmail-watch
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

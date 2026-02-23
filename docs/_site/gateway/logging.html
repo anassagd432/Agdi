@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logging — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="active" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Logging</h1>
+<p>For a user-facing overview (CLI + Control UI + config), see <a href="/logging">/logging</a>.</p>
+<p>AGDI has two log “surfaces”:</p>
+<ul>
+<li><strong>Console output</strong> (what you see in the terminal / Debug UI).</li>
+<li><strong>File logs</strong> (JSON lines) written by the gateway logger.</li>
+</ul>
+<h2>File-based logger</h2>
+<ul>
+<li>Default rolling log file is under <code>/tmp/agdi/</code> (one file per day): <code>agdi-YYYY-MM-DD.log</code><ul>
+<li>Date uses the gateway host&#39;s local timezone.</li>
+</ul>
+</li>
+<li>The log file path and level can be configured via <code>~/.agdi/agdi.json</code>:<ul>
+<li><code>logging.file</code></li>
+<li><code>logging.level</code></li>
+</ul>
+</li>
+</ul>
+<p>The file format is one JSON object per line.</p>
+<p>The Control UI Logs tab tails this file via the gateway (<code>logs.tail</code>).
+CLI can do the same:</p>
+<pre><code class="language-bash">agdi logs --follow
+</code></pre>
+<p><strong>Verbose vs. log levels</strong></p>
+<ul>
+<li><strong>File logs</strong> are controlled exclusively by <code>logging.level</code>.</li>
+<li><code>--verbose</code> only affects <strong>console verbosity</strong> (and WS log style); it does <strong>not</strong>
+raise the file log level.</li>
+<li>To capture verbose-only details in file logs, set <code>logging.level</code> to <code>debug</code> or
+<code>trace</code>.</li>
+</ul>
+<h2>Console capture</h2>
+<p>The CLI captures <code>console.log/info/warn/error/debug/trace</code> and writes them to file logs,
+while still printing to stdout/stderr.</p>
+<p>You can tune console verbosity independently via:</p>
+<ul>
+<li><code>logging.consoleLevel</code> (default <code>info</code>)</li>
+<li><code>logging.consoleStyle</code> (<code>pretty</code> | <code>compact</code> | <code>json</code>)</li>
+</ul>
+<h2>Tool summary redaction</h2>
+<p>Verbose tool summaries (e.g. <code>🛠️ Exec: ...</code>) can mask sensitive tokens before they hit the
+console stream. This is <strong>tools-only</strong> and does not alter file logs.</p>
+<ul>
+<li><code>logging.redactSensitive</code>: <code>off</code> | <code>tools</code> (default: <code>tools</code>)</li>
+<li><code>logging.redactPatterns</code>: array of regex strings (overrides defaults)<ul>
+<li>Use raw regex strings (auto <code>gi</code>), or <code>/pattern/flags</code> if you need custom flags.</li>
+<li>Matches are masked by keeping the first 6 + last 4 chars (length &gt;= 18), otherwise <code>***</code>.</li>
+<li>Defaults cover common key assignments, CLI flags, JSON fields, bearer headers, PEM blocks, and popular token prefixes.</li>
+</ul>
+</li>
+</ul>
+<h2>Gateway WebSocket logs</h2>
+<p>The gateway prints WebSocket protocol logs in two modes:</p>
+<ul>
+<li><strong>Normal mode (no <code>--verbose</code>)</strong>: only “interesting” RPC results are printed:<ul>
+<li>errors (<code>ok=false</code>)</li>
+<li>slow calls (default threshold: <code>&gt;= 50ms</code>)</li>
+<li>parse errors</li>
+</ul>
+</li>
+<li><strong>Verbose mode (<code>--verbose</code>)</strong>: prints all WS request/response traffic.</li>
+</ul>
+<h3>WS log style</h3>
+<p><code>agdi gateway</code> supports a per-gateway style switch:</p>
+<ul>
+<li><code>--ws-log auto</code> (default): normal mode is optimized; verbose mode uses compact output</li>
+<li><code>--ws-log compact</code>: compact output (paired request/response) when verbose</li>
+<li><code>--ws-log full</code>: full per-frame output when verbose</li>
+<li><code>--compact</code>: alias for <code>--ws-log compact</code></li>
+</ul>
+<p>Examples:</p>
+<pre><code class="language-bash"># optimized (only errors/slow)
+agdi gateway
+
+# show all WS traffic (paired)
+agdi gateway --verbose --ws-log compact
+
+# show all WS traffic (full meta)
+agdi gateway --verbose --ws-log full
+</code></pre>
+<h2>Console formatting (subsystem logging)</h2>
+<p>The console formatter is <strong>TTY-aware</strong> and prints consistent, prefixed lines.
+Subsystem loggers keep output grouped and scannable.</p>
+<p>Behavior:</p>
+<ul>
+<li><strong>Subsystem prefixes</strong> on every line (e.g. <code>[gateway]</code>, <code>[canvas]</code>, <code>[tailscale]</code>)</li>
+<li><strong>Subsystem colors</strong> (stable per subsystem) plus level coloring</li>
+<li><strong>Color when output is a TTY or the environment looks like a rich terminal</strong> (<code>TERM</code>/<code>COLORTERM</code>/<code>TERM_PROGRAM</code>), respects <code>NO_COLOR</code></li>
+<li><strong>Shortened subsystem prefixes</strong>: drops leading <code>gateway/</code> + <code>channels/</code>, keeps last 2 segments (e.g. <code>whatsapp/outbound</code>)</li>
+<li><strong>Sub-loggers by subsystem</strong> (auto prefix + structured field <code>{ subsystem }</code>)</li>
+<li><strong><code>logRaw()</code></strong> for QR/UX output (no prefix, no formatting)</li>
+<li><strong>Console styles</strong> (e.g. <code>pretty | compact | json</code>)</li>
+<li><strong>Console log level</strong> separate from file log level (file keeps full detail when <code>logging.level</code> is set to <code>debug</code>/<code>trace</code>)</li>
+<li><strong>WhatsApp message bodies</strong> are logged at <code>debug</code> (use <code>--verbose</code> to see them)</li>
+</ul>
+<p>This keeps existing file logs stable while making interactive output scannable.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

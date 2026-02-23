@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { captureEnv } from "../test-utils/env.js";
 import "./test-helpers/fast-core-tools.js";
-import { createOpenClawTools } from "./openclaw-tools.js";
+import { createAGDITools } from "./openclaw-tools.js";
 
 vi.mock("./tools/gateway.js", () => ({
   callGatewayTool: vi.fn(async (method: string) => {
@@ -19,13 +19,13 @@ describe("gateway tool", () => {
   it("schedules SIGUSR1 restart", async () => {
     vi.useFakeTimers();
     const kill = vi.spyOn(process, "kill").mockImplementation(() => true);
-    const envSnapshot = captureEnv(["OPENCLAW_STATE_DIR", "OPENCLAW_PROFILE"]);
-    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-test-"));
-    process.env.OPENCLAW_STATE_DIR = stateDir;
-    process.env.OPENCLAW_PROFILE = "isolated";
+    const envSnapshot = captureEnv(["AGDI_STATE_DIR", "AGDI_PROFILE"]);
+    const stateDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-test-"));
+    process.env.AGDI_STATE_DIR = stateDir;
+    process.env.AGDI_PROFILE = "isolated";
 
     try {
-      const tool = createOpenClawTools({
+      const tool = createAGDITools({
         config: { commands: { restart: true } },
       }).find((candidate) => candidate.name === "gateway");
       expect(tool).toBeDefined();
@@ -51,7 +51,7 @@ describe("gateway tool", () => {
       };
       expect(parsed.payload?.kind).toBe("restart");
       expect(parsed.payload?.doctorHint).toBe(
-        "Run: openclaw --profile isolated doctor --non-interactive",
+        "Run: agdi --profile isolated doctor --non-interactive",
       );
 
       expect(kill).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe("gateway tool", () => {
 
   it("passes config.apply through gateway call", async () => {
     const { callGatewayTool } = await import("./tools/gateway.js");
-    const tool = createOpenClawTools({
+    const tool = createAGDITools({
       agentSessionKey: "agent:main:whatsapp:dm:+15555550123",
     }).find((candidate) => candidate.name === "gateway");
     expect(tool).toBeDefined();
@@ -75,7 +75,7 @@ describe("gateway tool", () => {
       throw new Error("missing gateway tool");
     }
 
-    const raw = '{\n  agents: { defaults: { workspace: "~/openclaw" } }\n}\n';
+    const raw = '{\n  agents: { defaults: { workspace: "~/agdi" } }\n}\n';
     await tool.execute("call2", {
       action: "config.apply",
       raw,
@@ -95,7 +95,7 @@ describe("gateway tool", () => {
 
   it("passes config.patch through gateway call", async () => {
     const { callGatewayTool } = await import("./tools/gateway.js");
-    const tool = createOpenClawTools({
+    const tool = createAGDITools({
       agentSessionKey: "agent:main:whatsapp:dm:+15555550123",
     }).find((candidate) => candidate.name === "gateway");
     expect(tool).toBeDefined();
@@ -123,7 +123,7 @@ describe("gateway tool", () => {
 
   it("passes update.run through gateway call", async () => {
     const { callGatewayTool } = await import("./tools/gateway.js");
-    const tool = createOpenClawTools({
+    const tool = createAGDITools({
       agentSessionKey: "agent:main:whatsapp:dm:+15555550123",
     }).find((candidate) => candidate.name === "gateway");
     expect(tool).toBeDefined();

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobster — AGDI Docs</title>
+  <meta name="description" content="Typed workflow runtime for AGDI — composable pipelines with approval gates.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="active" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Lobster</h1>
+<p>Lobster is a workflow shell that lets AGDI run multi-step tool sequences as a single, deterministic operation with explicit approval checkpoints.</p>
+<h2>Hook</h2>
+<p>Your assistant can build the tools that manage itself. Ask for a workflow, and 30 minutes later you have a CLI plus pipelines that run as one call. Lobster is the missing piece: deterministic pipelines, explicit approvals, and resumable state.</p>
+<h2>Why</h2>
+<p>Today, complex workflows require many back-and-forth tool calls. Each call costs tokens, and the LLM has to orchestrate every step. Lobster moves that orchestration into a typed runtime:</p>
+<ul>
+<li><strong>One call instead of many</strong>: AGDI runs one Lobster tool call and gets a structured result.</li>
+<li><strong>Approvals built in</strong>: Side effects (send email, post comment) halt the workflow until explicitly approved.</li>
+<li><strong>Resumable</strong>: Halted workflows return a token; approve and resume without re-running everything.</li>
+</ul>
+<h2>Why a DSL instead of plain programs?</h2>
+<p>Lobster is intentionally small. The goal is not &quot;a new language,&quot; it&#39;s a predictable, AI-friendly pipeline spec with first-class approvals and resume tokens.</p>
+<ul>
+<li><strong>Approve/resume is built in</strong>: A normal program can prompt a human, but it can’t <em>pause and resume</em> with a durable token without you inventing that runtime yourself.</li>
+<li><strong>Determinism + auditability</strong>: Pipelines are data, so they’re easy to log, diff, replay, and review.</li>
+<li><strong>Constrained surface for AI</strong>: A tiny grammar + JSON piping reduces “creative” code paths and makes validation realistic.</li>
+<li><strong>Safety policy baked in</strong>: Timeouts, output caps, sandbox checks, and allowlists are enforced by the runtime, not each script.</li>
+<li><strong>Still programmable</strong>: Each step can call any CLI or script. If you want JS/TS, generate <code>.lobster</code> files from code.</li>
+</ul>
+<h2>How it works</h2>
+<p>AGDI launches the local <code>lobster</code> CLI in <strong>tool mode</strong> and parses a JSON envelope from stdout.
+If the pipeline pauses for approval, the tool returns a <code>resumeToken</code> so you can continue later.</p>
+<h2>Pattern: small CLI + JSON pipes + approvals</h2>
+<p>Build tiny commands that speak JSON, then chain them into a single Lobster call. (Example command names below — swap in your own.)</p>
+<pre><code class="language-bash">inbox list --json
+inbox categorize --json
+inbox apply --json
+</code></pre>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;run&quot;,
+  &quot;pipeline&quot;: &quot;exec --json --shell &#39;inbox list --json&#39; | exec --stdin json --shell &#39;inbox categorize --json&#39; | exec --stdin json --shell &#39;inbox apply --json&#39; | approve --preview-from-stdin --limit 5 --prompt &#39;Apply changes?&#39;&quot;,
+  &quot;timeoutMs&quot;: 30000
+}
+</code></pre>
+<p>If the pipeline requests approval, resume with the token:</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;resume&quot;,
+  &quot;token&quot;: &quot;&lt;resumeToken&gt;&quot;,
+  &quot;approve&quot;: true
+}
+</code></pre>
+<p>AI triggers the workflow; Lobster executes the steps. Approval gates keep side effects explicit and auditable.</p>
+<p>Example: map input items into tool calls:</p>
+<pre><code class="language-bash">gog.gmail.search --query &#39;newer_than:1d&#39; \
+  | agdi.invoke --tool message --action send --each --item-key message --args-json &#39;{&quot;provider&quot;:&quot;telegram&quot;,&quot;to&quot;:&quot;...&quot;}&#39;
+</code></pre>
+<h2>JSON-only LLM steps (llm-task)</h2>
+<p>For workflows that need a <strong>structured LLM step</strong>, enable the optional
+<code>llm-task</code> plugin tool and call it from Lobster. This keeps the workflow
+deterministic while still letting you classify/summarize/draft with a model.</p>
+<p>Enable the tool:</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;llm-task&quot;: { &quot;enabled&quot;: true }
+    }
+  },
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;tools&quot;: { &quot;allow&quot;: [&quot;llm-task&quot;] }
+      }
+    ]
+  }
+}
+</code></pre>
+<p>Use it in a pipeline:</p>
+<pre><code class="language-lobster">agdi.invoke --tool llm-task --action json --args-json &#39;{
+  &quot;prompt&quot;: &quot;Given the input email, return intent and draft.&quot;,
+  &quot;input&quot;: { &quot;subject&quot;: &quot;Hello&quot;, &quot;body&quot;: &quot;Can you help?&quot; },
+  &quot;schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;intent&quot;: { &quot;type&quot;: &quot;string&quot; },
+      &quot;draft&quot;: { &quot;type&quot;: &quot;string&quot; }
+    },
+    &quot;required&quot;: [&quot;intent&quot;, &quot;draft&quot;],
+    &quot;additionalProperties&quot;: false
+  }
+}&#39;
+</code></pre>
+<p>See <a href="/docs/tools/llm-task">LLM Task</a> for details and configuration options.</p>
+<h2>Workflow files (.lobster)</h2>
+<p>Lobster can run YAML/JSON workflow files with <code>name</code>, <code>args</code>, <code>steps</code>, <code>env</code>, <code>condition</code>, and <code>approval</code> fields. In AGDI tool calls, set <code>pipeline</code> to the file path.</p>
+<pre><code class="language-yaml">name: inbox-triage
+args:
+  tag:
+    default: &quot;family&quot;
+steps:
+  - id: collect
+    command: inbox list --json
+  - id: categorize
+    command: inbox categorize --json
+    stdin: $collect.stdout
+  - id: approve
+    command: inbox apply --approve
+    stdin: $categorize.stdout
+    approval: required
+  - id: execute
+    command: inbox apply --execute
+    stdin: $categorize.stdout
+    condition: $approve.approved
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>stdin: $step.stdout</code> and <code>stdin: $step.json</code> pass a prior step’s output.</li>
+<li><code>condition</code> (or <code>when</code>) can gate steps on <code>$step.approved</code>.</li>
+</ul>
+<h2>Install Lobster</h2>
+<p>Install the Lobster CLI on the <strong>same host</strong> that runs the AGDI Gateway (see the <a href="https://github.com/agdi/lobster">Lobster repo</a>), and ensure <code>lobster</code> is on <code>PATH</code>.
+If you want to use a custom binary location, pass an <strong>absolute</strong> <code>lobsterPath</code> in the tool call.</p>
+<h2>Enable the tool</h2>
+<p>Lobster is an <strong>optional</strong> plugin tool (not enabled by default).</p>
+<p>Recommended (additive, safe):</p>
+<pre><code class="language-json">{
+  &quot;tools&quot;: {
+    &quot;alsoAllow&quot;: [&quot;lobster&quot;]
+  }
+}
+</code></pre>
+<p>Or per-agent:</p>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;tools&quot;: {
+          &quot;alsoAllow&quot;: [&quot;lobster&quot;]
+        }
+      }
+    ]
+  }
+}
+</code></pre>
+<p>Avoid using <code>tools.allow: [&quot;lobster&quot;]</code> unless you intend to run in restrictive allowlist mode.</p>
+<p>Note: allowlists are opt-in for optional plugins. If your allowlist only names
+plugin tools (like <code>lobster</code>), AGDI keeps core tools enabled. To restrict core
+tools, include the core tools or groups you want in the allowlist too.</p>
+<h2>Example: Email triage</h2>
+<p>Without Lobster:</p>
+<pre><code>User: &quot;Check my email and draft replies&quot;
+→ agdi calls gmail.list
+→ LLM summarizes
+→ User: &quot;draft replies to #2 and #5&quot;
+→ LLM drafts
+→ User: &quot;send #2&quot;
+→ agdi calls gmail.send
+(repeat daily, no memory of what was triaged)
+</code></pre>
+<p>With Lobster:</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;run&quot;,
+  &quot;pipeline&quot;: &quot;email.triage --limit 20&quot;,
+  &quot;timeoutMs&quot;: 30000
+}
+</code></pre>
+<p>Returns a JSON envelope (truncated):</p>
+<pre><code class="language-json">{
+  &quot;ok&quot;: true,
+  &quot;status&quot;: &quot;needs_approval&quot;,
+  &quot;output&quot;: [{ &quot;summary&quot;: &quot;5 need replies, 2 need action&quot; }],
+  &quot;requiresApproval&quot;: {
+    &quot;type&quot;: &quot;approval_request&quot;,
+    &quot;prompt&quot;: &quot;Send 2 draft replies?&quot;,
+    &quot;items&quot;: [],
+    &quot;resumeToken&quot;: &quot;...&quot;
+  }
+}
+</code></pre>
+<p>User approves → resume:</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;resume&quot;,
+  &quot;token&quot;: &quot;&lt;resumeToken&gt;&quot;,
+  &quot;approve&quot;: true
+}
+</code></pre>
+<p>One workflow. Deterministic. Safe.</p>
+<h2>Tool parameters</h2>
+<h3><code>run</code></h3>
+<p>Run a pipeline in tool mode.</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;run&quot;,
+  &quot;pipeline&quot;: &quot;gog.gmail.search --query &#39;newer_than:1d&#39; | email.triage&quot;,
+  &quot;cwd&quot;: &quot;/path/to/workspace&quot;,
+  &quot;timeoutMs&quot;: 30000,
+  &quot;maxStdoutBytes&quot;: 512000
+}
+</code></pre>
+<p>Run a workflow file with args:</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;run&quot;,
+  &quot;pipeline&quot;: &quot;/path/to/inbox-triage.lobster&quot;,
+  &quot;argsJson&quot;: &quot;{\&quot;tag\&quot;:\&quot;family\&quot;}&quot;
+}
+</code></pre>
+<h3><code>resume</code></h3>
+<p>Continue a halted workflow after approval.</p>
+<pre><code class="language-json">{
+  &quot;action&quot;: &quot;resume&quot;,
+  &quot;token&quot;: &quot;&lt;resumeToken&gt;&quot;,
+  &quot;approve&quot;: true
+}
+</code></pre>
+<h3>Optional inputs</h3>
+<ul>
+<li><code>lobsterPath</code>: Absolute path to the Lobster binary (omit to use <code>PATH</code>).</li>
+<li><code>cwd</code>: Working directory for the pipeline (defaults to the current process working directory).</li>
+<li><code>timeoutMs</code>: Kill the subprocess if it exceeds this duration (default: 20000).</li>
+<li><code>maxStdoutBytes</code>: Kill the subprocess if stdout exceeds this size (default: 512000).</li>
+<li><code>argsJson</code>: JSON string passed to <code>lobster run --args-json</code> (workflow files only).</li>
+</ul>
+<h2>Output envelope</h2>
+<p>Lobster returns a JSON envelope with one of three statuses:</p>
+<ul>
+<li><code>ok</code> → finished successfully</li>
+<li><code>needs_approval</code> → paused; <code>requiresApproval.resumeToken</code> is required to resume</li>
+<li><code>cancelled</code> → explicitly denied or cancelled</li>
+</ul>
+<p>The tool surfaces the envelope in both <code>content</code> (pretty JSON) and <code>details</code> (raw object).</p>
+<h2>Approvals</h2>
+<p>If <code>requiresApproval</code> is present, inspect the prompt and decide:</p>
+<ul>
+<li><code>approve: true</code> → resume and continue side effects</li>
+<li><code>approve: false</code> → cancel and finalize the workflow</li>
+</ul>
+<p>Use <code>approve --preview-from-stdin --limit N</code> to attach a JSON preview to approval requests without custom jq/heredoc glue. Resume tokens are now compact: Lobster stores workflow resume state under its state dir and hands back a small token key.</p>
+<h2>OpenProse</h2>
+<p>OpenProse pairs well with Lobster: use <code>/prose</code> to orchestrate multi-agent prep, then run a Lobster pipeline for deterministic approvals. If a Prose program needs Lobster, allow the <code>lobster</code> tool for sub-agents via <code>tools.subagents.tools</code>. See <a href="/docs/prose">OpenProse</a>.</p>
+<h2>Safety</h2>
+<ul>
+<li><strong>Local subprocess only</strong> — no network calls from the plugin itself.</li>
+<li><strong>No secrets</strong> — Lobster doesn&#39;t manage OAuth; it calls AGDI tools that do.</li>
+<li><strong>Sandbox-aware</strong> — disabled when the tool context is sandboxed.</li>
+<li><strong>Hardened</strong> — <code>lobsterPath</code> must be absolute if specified; timeouts and output caps enforced.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong><code>lobster subprocess timed out</code></strong> → increase <code>timeoutMs</code>, or split a long pipeline.</li>
+<li><strong><code>lobster output exceeded maxStdoutBytes</code></strong> → raise <code>maxStdoutBytes</code> or reduce output size.</li>
+<li><strong><code>lobster returned invalid JSON</code></strong> → ensure the pipeline runs in tool mode and prints only JSON.</li>
+<li><strong><code>lobster failed (code …)</code></strong> → run the same pipeline in a terminal to inspect stderr.</li>
+</ul>
+<h2>Learn more</h2>
+<ul>
+<li><a href="/docs/tools/plugin">Plugins</a></li>
+<li><a href="/docs/plugins/agent-tools">Plugin tool authoring</a></li>
+</ul>
+<h2>Case study: community workflows</h2>
+<p>One public example: a “second brain” CLI + Lobster pipelines that manage three Markdown vaults (personal, partner, shared). The CLI emits JSON for stats, inbox listings, and stale scans; Lobster chains those commands into workflows like <code>weekly-review</code>, <code>inbox-triage</code>, <code>memory-consolidation</code>, and <code>shared-task-sync</code>, each with approval gates. AI handles judgment (categorization) when available and falls back to deterministic rules when not.</p>
+<ul>
+<li>Thread: <a href="https://x.com/plattenschieber/status/2014508656335770033">https://x.com/plattenschieber/status/2014508656335770033</a></li>
+<li>Repo: <a href="https://github.com/bloomedai/brain-cli">https://github.com/bloomedai/brain-cli</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

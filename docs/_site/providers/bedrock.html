@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Bedrock — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab active" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/providers/index.html">Model Providers</a></li><li><a class="" href="/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/providers/openai.html">OpenAI</a></li><li><a class="" href="/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/providers/litellm.html">litellm</a></li><li><a class="active" href="/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/providers/minimax.html">MiniMax</a></li><li><a class="" href="/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/providers/glm.html">GLM Models</a></li><li><a class="" href="/providers/zai.html">Z.AI</a></li><li><a class="" href="/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Amazon Bedrock</h1>
+<p>AGDI can use <strong>Amazon Bedrock</strong> models via pi‑ai’s <strong>Bedrock Converse</strong>
+streaming provider. Bedrock auth uses the <strong>AWS SDK default credential chain</strong>,
+not an API key.</p>
+<h2>What pi‑ai supports</h2>
+<ul>
+<li>Provider: <code>amazon-bedrock</code></li>
+<li>API: <code>bedrock-converse-stream</code></li>
+<li>Auth: AWS credentials (env vars, shared config, or instance role)</li>
+<li>Region: <code>AWS_REGION</code> or <code>AWS_DEFAULT_REGION</code> (default: <code>us-east-1</code>)</li>
+</ul>
+<h2>Automatic model discovery</h2>
+<p>If AWS credentials are detected, AGDI can automatically discover Bedrock
+models that support <strong>streaming</strong> and <strong>text output</strong>. Discovery uses
+<code>bedrock:ListFoundationModels</code> and is cached (default: 1 hour).</p>
+<p>Config options live under <code>models.bedrockDiscovery</code>:</p>
+<pre><code class="language-json5">{
+  models: {
+    bedrockDiscovery: {
+      enabled: true,
+      region: &quot;us-east-1&quot;,
+      providerFilter: [&quot;anthropic&quot;, &quot;amazon&quot;],
+      refreshInterval: 3600,
+      defaultContextWindow: 32000,
+      defaultMaxTokens: 4096,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>enabled</code> defaults to <code>true</code> when AWS credentials are present.</li>
+<li><code>region</code> defaults to <code>AWS_REGION</code> or <code>AWS_DEFAULT_REGION</code>, then <code>us-east-1</code>.</li>
+<li><code>providerFilter</code> matches Bedrock provider names (for example <code>anthropic</code>).</li>
+<li><code>refreshInterval</code> is seconds; set to <code>0</code> to disable caching.</li>
+<li><code>defaultContextWindow</code> (default: <code>32000</code>) and <code>defaultMaxTokens</code> (default: <code>4096</code>)
+are used for discovered models (override if you know your model limits).</li>
+</ul>
+<h2>Setup (manual)</h2>
+<ol>
+<li>Ensure AWS credentials are available on the <strong>gateway host</strong>:</li>
+</ol>
+<pre><code class="language-bash">export AWS_ACCESS_KEY_ID=&quot;AKIA...&quot;
+export AWS_SECRET_ACCESS_KEY=&quot;...&quot;
+export AWS_REGION=&quot;us-east-1&quot;
+# Optional:
+export AWS_SESSION_TOKEN=&quot;...&quot;
+export AWS_PROFILE=&quot;your-profile&quot;
+# Optional (Bedrock API key/bearer token):
+export AWS_BEARER_TOKEN_BEDROCK=&quot;...&quot;
+</code></pre>
+<ol start="2">
+<li>Add a Bedrock provider and model to your config (no <code>apiKey</code> required):</li>
+</ol>
+<pre><code class="language-json5">{
+  models: {
+    providers: {
+      &quot;amazon-bedrock&quot;: {
+        baseUrl: &quot;https://bedrock-runtime.us-east-1.amazonaws.com&quot;,
+        api: &quot;bedrock-converse-stream&quot;,
+        auth: &quot;aws-sdk&quot;,
+        models: [
+          {
+            id: &quot;us.anthropic.claude-opus-4-6-v1:0&quot;,
+            name: &quot;Claude Opus 4.6 (Bedrock)&quot;,
+            reasoning: true,
+            input: [&quot;text&quot;, &quot;image&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 200000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+  agents: {
+    defaults: {
+      model: { primary: &quot;amazon-bedrock/us.anthropic.claude-opus-4-6-v1:0&quot; },
+    },
+  },
+}
+</code></pre>
+<h2>EC2 Instance Roles</h2>
+<p>When running AGDI on an EC2 instance with an IAM role attached, the AWS SDK
+will automatically use the instance metadata service (IMDS) for authentication.
+However, AGDI&#39;s credential detection currently only checks for environment
+variables, not IMDS credentials.</p>
+<p><strong>Workaround:</strong> Set <code>AWS_PROFILE=default</code> to signal that AWS credentials are
+available. The actual authentication still uses the instance role via IMDS.</p>
+<pre><code class="language-bash"># Add to ~/.bashrc or your shell profile
+export AWS_PROFILE=default
+export AWS_REGION=us-east-1
+</code></pre>
+<p><strong>Required IAM permissions</strong> for the EC2 instance role:</p>
+<ul>
+<li><code>bedrock:InvokeModel</code></li>
+<li><code>bedrock:InvokeModelWithResponseStream</code></li>
+<li><code>bedrock:ListFoundationModels</code> (for automatic discovery)</li>
+</ul>
+<p>Or attach the managed policy <code>AmazonBedrockFullAccess</code>.</p>
+<p><strong>Quick setup:</strong></p>
+<pre><code class="language-bash"># 1. Create IAM role and instance profile
+aws iam create-role --role-name EC2-Bedrock-Access \
+  --assume-role-policy-document &#39;{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [{
+      &quot;Effect&quot;: &quot;Allow&quot;,
+      &quot;Principal&quot;: {&quot;Service&quot;: &quot;ec2.amazonaws.com&quot;},
+      &quot;Action&quot;: &quot;sts:AssumeRole&quot;
+    }]
+  }&#39;
+
+aws iam attach-role-policy --role-name EC2-Bedrock-Access \
+  --policy-arn arn:aws:iam::aws:policy/AmazonBedrockFullAccess
+
+aws iam create-instance-profile --instance-profile-name EC2-Bedrock-Access
+aws iam add-role-to-instance-profile \
+  --instance-profile-name EC2-Bedrock-Access \
+  --role-name EC2-Bedrock-Access
+
+# 2. Attach to your EC2 instance
+aws ec2 associate-iam-instance-profile \
+  --instance-id i-xxxxx \
+  --iam-instance-profile Name=EC2-Bedrock-Access
+
+# 3. On the EC2 instance, enable discovery
+agdi config set models.bedrockDiscovery.enabled true
+agdi config set models.bedrockDiscovery.region us-east-1
+
+# 4. Set the workaround env vars
+echo &#39;export AWS_PROFILE=default&#39; &gt;&gt; ~/.bashrc
+echo &#39;export AWS_REGION=us-east-1&#39; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+
+# 5. Verify models are discovered
+agdi models list
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Bedrock requires <strong>model access</strong> enabled in your AWS account/region.</li>
+<li>Automatic discovery needs the <code>bedrock:ListFoundationModels</code> permission.</li>
+<li>If you use profiles, set <code>AWS_PROFILE</code> on the gateway host.</li>
+<li>AGDI surfaces the credential source in this order: <code>AWS_BEARER_TOKEN_BEDROCK</code>,
+then <code>AWS_ACCESS_KEY_ID</code> + <code>AWS_SECRET_ACCESS_KEY</code>, then <code>AWS_PROFILE</code>, then the
+default AWS SDK chain.</li>
+<li>Reasoning support depends on the model; check the Bedrock model card for
+current capabilities.</li>
+<li>If you prefer a managed key flow, you can also place an OpenAI‑compatible
+proxy in front of Bedrock and configure it as an OpenAI provider instead.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

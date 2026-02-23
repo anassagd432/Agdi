@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "openclaw/plugin-sdk";
 import crypto from "node:crypto";
 import { stripMarkdown } from "openclaw/plugin-sdk";
 import { resolveBlueBubblesAccount } from "./accounts.js";
@@ -16,7 +16,7 @@ export type BlueBubblesSendOpts = {
   password?: string;
   accountId?: string;
   timeoutMs?: number;
-  cfg?: OpenClawConfig;
+  cfg?: AGDIConfig;
   /** Message GUID to reply to (reply threading) */
   replyToMessageGuid?: string;
   /** Part index for reply (default: 0) */

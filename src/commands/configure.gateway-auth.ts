@@ -1,4 +1,4 @@
-import type { OpenClawConfig, GatewayAuthConfig } from "../config/config.js";
+import type { AGDIConfig, GatewayAuthConfig } from "../config/config.js";
 import type { RuntimeEnv } from "../runtime.js";
 import type { WizardPrompter } from "../wizard/prompts.js";
 import { ensureAuthProfileStore } from "../agents/auth-profiles.js";
@@ -71,10 +71,10 @@ export function buildGatewayAuthConfig(params: {
 }
 
 export async function promptAuthConfig(
-  cfg: OpenClawConfig,
+  cfg: AGDIConfig,
   runtime: RuntimeEnv,
   prompter: WizardPrompter,
-): Promise<OpenClawConfig> {
+): Promise<AGDIConfig> {
   const authChoice = await promptAuthChoiceGrouped({
     prompter,
     store: ensureAuthProfileStore(undefined, {

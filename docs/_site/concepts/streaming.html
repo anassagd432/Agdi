@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streaming and Chunking — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="active" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Streaming + chunking</h1>
+<p>AGDI has two separate “streaming” layers:</p>
+<ul>
+<li><strong>Block streaming (channels):</strong> emit completed <strong>blocks</strong> as the assistant writes. These are normal channel messages (not token deltas).</li>
+<li><strong>Token-ish streaming (Telegram only):</strong> update a temporary <strong>preview message</strong> with partial text while generating.</li>
+</ul>
+<p>There is <strong>no true token-delta streaming</strong> to channel messages today. Telegram preview streaming is the only partial-stream surface.</p>
+<h2>Block streaming (channel messages)</h2>
+<p>Block streaming sends assistant output in coarse chunks as it becomes available.</p>
+<pre><code>Model output
+  └─ text_delta/events
+       ├─ (blockStreamingBreak=text_end)
+       │    └─ chunker emits blocks as buffer grows
+       └─ (blockStreamingBreak=message_end)
+            └─ chunker flushes at message_end
+                   └─ channel send (block replies)
+</code></pre>
+<p>Legend:</p>
+<ul>
+<li><code>text_delta/events</code>: model stream events (may be sparse for non-streaming models).</li>
+<li><code>chunker</code>: <code>EmbeddedBlockChunker</code> applying min/max bounds + break preference.</li>
+<li><code>channel send</code>: actual outbound messages (block replies).</li>
+</ul>
+<p><strong>Controls:</strong></p>
+<ul>
+<li><code>agents.defaults.blockStreamingDefault</code>: <code>&quot;on&quot;</code>/<code>&quot;off&quot;</code> (default off).</li>
+<li>Channel overrides: <code>*.blockStreaming</code> (and per-account variants) to force <code>&quot;on&quot;</code>/<code>&quot;off&quot;</code> per channel.</li>
+<li><code>agents.defaults.blockStreamingBreak</code>: <code>&quot;text_end&quot;</code> or <code>&quot;message_end&quot;</code>.</li>
+<li><code>agents.defaults.blockStreamingChunk</code>: <code>{ minChars, maxChars, breakPreference? }</code>.</li>
+<li><code>agents.defaults.blockStreamingCoalesce</code>: <code>{ minChars?, maxChars?, idleMs? }</code> (merge streamed blocks before send).</li>
+<li>Channel hard cap: <code>*.textChunkLimit</code> (e.g., <code>channels.whatsapp.textChunkLimit</code>).</li>
+<li>Channel chunk mode: <code>*.chunkMode</code> (<code>length</code> default, <code>newline</code> splits on blank lines (paragraph boundaries) before length chunking).</li>
+<li>Discord soft cap: <code>channels.discord.maxLinesPerMessage</code> (default 17) splits tall replies to avoid UI clipping.</li>
+</ul>
+<p><strong>Boundary semantics:</strong></p>
+<ul>
+<li><code>text_end</code>: stream blocks as soon as chunker emits; flush on each <code>text_end</code>.</li>
+<li><code>message_end</code>: wait until assistant message finishes, then flush buffered output.</li>
+</ul>
+<p><code>message_end</code> still uses the chunker if the buffered text exceeds <code>maxChars</code>, so it can emit multiple chunks at the end.</p>
+<h2>Chunking algorithm (low/high bounds)</h2>
+<p>Block chunking is implemented by <code>EmbeddedBlockChunker</code>:</p>
+<ul>
+<li><strong>Low bound:</strong> don’t emit until buffer &gt;= <code>minChars</code> (unless forced).</li>
+<li><strong>High bound:</strong> prefer splits before <code>maxChars</code>; if forced, split at <code>maxChars</code>.</li>
+<li><strong>Break preference:</strong> <code>paragraph</code> → <code>newline</code> → <code>sentence</code> → <code>whitespace</code> → hard break.</li>
+<li><strong>Code fences:</strong> never split inside fences; when forced at <code>maxChars</code>, close + reopen the fence to keep Markdown valid.</li>
+</ul>
+<p><code>maxChars</code> is clamped to the channel <code>textChunkLimit</code>, so you can’t exceed per-channel caps.</p>
+<h2>Coalescing (merge streamed blocks)</h2>
+<p>When block streaming is enabled, AGDI can <strong>merge consecutive block chunks</strong>
+before sending them out. This reduces “single-line spam” while still providing
+progressive output.</p>
+<ul>
+<li>Coalescing waits for <strong>idle gaps</strong> (<code>idleMs</code>) before flushing.</li>
+<li>Buffers are capped by <code>maxChars</code> and will flush if they exceed it.</li>
+<li><code>minChars</code> prevents tiny fragments from sending until enough text accumulates
+(final flush always sends remaining text).</li>
+<li>Joiner is derived from <code>blockStreamingChunk.breakPreference</code>
+(<code>paragraph</code> → <code>\n\n</code>, <code>newline</code> → <code>\n</code>, <code>sentence</code> → space).</li>
+<li>Channel overrides are available via <code>*.blockStreamingCoalesce</code> (including per-account configs).</li>
+<li>Default coalesce <code>minChars</code> is bumped to 1500 for Signal/Slack/Discord unless overridden.</li>
+</ul>
+<h2>Human-like pacing between blocks</h2>
+<p>When block streaming is enabled, you can add a <strong>randomized pause</strong> between
+block replies (after the first block). This makes multi-bubble responses feel
+more natural.</p>
+<ul>
+<li>Config: <code>agents.defaults.humanDelay</code> (override per agent via <code>agents.list[].humanDelay</code>).</li>
+<li>Modes: <code>off</code> (default), <code>natural</code> (800–2500ms), <code>custom</code> (<code>minMs</code>/<code>maxMs</code>).</li>
+<li>Applies only to <strong>block replies</strong>, not final replies or tool summaries.</li>
+</ul>
+<h2>“Stream chunks or everything”</h2>
+<p>This maps to:</p>
+<ul>
+<li><strong>Stream chunks:</strong> <code>blockStreamingDefault: &quot;on&quot;</code> + <code>blockStreamingBreak: &quot;text_end&quot;</code> (emit as you go). Non-Telegram channels also need <code>*.blockStreaming: true</code>.</li>
+<li><strong>Stream everything at end:</strong> <code>blockStreamingBreak: &quot;message_end&quot;</code> (flush once, possibly multiple chunks if very long).</li>
+<li><strong>No block streaming:</strong> <code>blockStreamingDefault: &quot;off&quot;</code> (only final reply).</li>
+</ul>
+<p><strong>Channel note:</strong> For non-Telegram channels, block streaming is <strong>off unless</strong>
+<code>*.blockStreaming</code> is explicitly set to <code>true</code>. Telegram can stream a live preview
+(<code>channels.telegram.streamMode</code>) without block replies.</p>
+<p>Config location reminder: the <code>blockStreaming*</code> defaults live under
+<code>agents.defaults</code>, not the root config.</p>
+<h2>Telegram preview streaming (token-ish)</h2>
+<p>Telegram is the only channel with live preview streaming:</p>
+<ul>
+<li>Uses Bot API <code>sendMessage</code> (first update) + <code>editMessageText</code> (subsequent updates).</li>
+<li><code>channels.telegram.streamMode: &quot;partial&quot; | &quot;block&quot; | &quot;off&quot;</code>.<ul>
+<li><code>partial</code>: preview updates with latest stream text.</li>
+<li><code>block</code>: preview updates in chunked blocks (same chunker rules).</li>
+<li><code>off</code>: no preview streaming.</li>
+</ul>
+</li>
+<li>Preview chunk config (only for <code>streamMode: &quot;block&quot;</code>): <code>channels.telegram.draftChunk</code> (defaults: <code>minChars: 200</code>, <code>maxChars: 800</code>).</li>
+<li>Preview streaming is separate from block streaming.</li>
+<li>When Telegram block streaming is explicitly enabled, preview streaming is skipped to avoid double-streaming.</li>
+<li>Text-only finals are applied by editing the preview message in place.</li>
+<li>Non-text/complex finals fall back to normal final message delivery.</li>
+<li><code>/reasoning stream</code> writes reasoning into the live preview (Telegram only).</li>
+</ul>
+<pre><code>Telegram
+  └─ sendMessage (temporary preview message)
+       ├─ streamMode=partial → edit latest text
+       └─ streamMode=block   → chunker + edit updates
+  └─ final text-only reply → final edit on same message
+  └─ fallback: cleanup preview + normal final delivery (media/complex)
+</code></pre>
+<p>Legend:</p>
+<ul>
+<li><code>preview message</code>: temporary Telegram message updated during generation.</li>
+<li><code>final edit</code>: in-place edit on the same preview message (text-only).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

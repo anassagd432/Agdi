@@ -73,6 +73,16 @@ export async function runGatewayLoop(params: {
           }
         }
 
+        // Stop autonomous agent before closing the server
+        try {
+          const { stopAutonomous } = await import(
+            "../../autonomous/autonomous-gateway-hook.js"
+          );
+          await stopAutonomous();
+        } catch {
+          // autonomous module not available — skip
+        }
+
         await server?.close({
           reason: isRestart ? "gateway restarting" : "gateway stopping",
           restartExpectedMs: isRestart ? 1500 : null,
@@ -98,7 +108,7 @@ export async function runGatewayLoop(params: {
                 `full process restart failed (${respawn.detail ?? "unknown error"}); falling back to in-process restart`,
               );
             } else {
-              gatewayLog.info("restart mode: in-process restart (OPENCLAW_NO_RESPAWN)");
+              gatewayLog.info("restart mode: in-process restart (AGDI_NO_RESPAWN)");
             }
             shuttingDown = false;
             restartResolver?.();

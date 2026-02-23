@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="active" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Skills (AGDI)</h1>
+<p>AGDI uses <strong><a href="https://agentskills.io">AgentSkills</a>-compatible</strong> skill folders to teach the agent how to use tools. Each skill is a directory containing a <code>SKILL.md</code> with YAML frontmatter and instructions. AGDI loads <strong>bundled skills</strong> plus optional local overrides, and filters them at load time based on environment, config, and binary presence.</p>
+<h2>Locations and precedence</h2>
+<p>Skills are loaded from <strong>three</strong> places:</p>
+<ol>
+<li><strong>Bundled skills</strong>: shipped with the install (npm package or AGDI.app)</li>
+<li><strong>Managed/local skills</strong>: <code>~/.agdi/skills</code></li>
+<li><strong>Workspace skills</strong>: <code>&lt;workspace&gt;/skills</code></li>
+</ol>
+<p>If a skill name conflicts, precedence is:</p>
+<p><code>&lt;workspace&gt;/skills</code> (highest) → <code>~/.agdi/skills</code> → bundled skills (lowest)</p>
+<p>Additionally, you can configure extra skill folders (lowest precedence) via
+<code>skills.load.extraDirs</code> in <code>~/.agdi/agdi.json</code>.</p>
+<h2>Per-agent vs shared skills</h2>
+<p>In <strong>multi-agent</strong> setups, each agent has its own workspace. That means:</p>
+<ul>
+<li><strong>Per-agent skills</strong> live in <code>&lt;workspace&gt;/skills</code> for that agent only.</li>
+<li><strong>Shared skills</strong> live in <code>~/.agdi/skills</code> (managed/local) and are visible
+to <strong>all agents</strong> on the same machine.</li>
+<li><strong>Shared folders</strong> can also be added via <code>skills.load.extraDirs</code> (lowest
+precedence) if you want a common skills pack used by multiple agents.</li>
+</ul>
+<p>If the same skill name exists in more than one place, the usual precedence
+applies: workspace wins, then managed/local, then bundled.</p>
+<h2>Plugins + skills</h2>
+<p>Plugins can ship their own skills by listing <code>skills</code> directories in
+<code>agdi.plugin.json</code> (paths relative to the plugin root). Plugin skills load
+when the plugin is enabled and participate in the normal skill precedence rules.
+You can gate them via <code>metadata.agdi.requires.config</code> on the plugin’s config
+entry. See <a href="/tools/plugin">Plugins</a> for discovery/config and <a href="/tools">Tools</a> for the
+tool surface those skills teach.</p>
+<h2>ClawHub (install + sync)</h2>
+<p>ClawHub is the public skills registry for AGDI. Browse at
+<a href="https://clawhub.com">https://clawhub.com</a>. Use it to discover, install, update, and back up skills.
+Full guide: <a href="/tools/clawhub">ClawHub</a>.</p>
+<p>Common flows:</p>
+<ul>
+<li>Install a skill into your workspace:<ul>
+<li><code>clawhub install &lt;skill-slug&gt;</code></li>
+</ul>
+</li>
+<li>Update all installed skills:<ul>
+<li><code>clawhub update --all</code></li>
+</ul>
+</li>
+<li>Sync (scan + publish updates):<ul>
+<li><code>clawhub sync --all</code></li>
+</ul>
+</li>
+</ul>
+<p>By default, <code>clawhub</code> installs into <code>./skills</code> under your current working
+directory (or falls back to the configured AGDI workspace). AGDI picks
+that up as <code>&lt;workspace&gt;/skills</code> on the next session.</p>
+<h2>Security notes</h2>
+<ul>
+<li>Treat third-party skills as <strong>untrusted code</strong>. Read them before enabling.</li>
+<li>Prefer sandboxed runs for untrusted inputs and risky tools. See <a href="/gateway/sandboxing">Sandboxing</a>.</li>
+<li><code>skills.entries.*.env</code> and <code>skills.entries.*.apiKey</code> inject secrets into the <strong>host</strong> process
+for that agent turn (not the sandbox). Keep secrets out of prompts and logs.</li>
+<li>For a broader threat model and checklists, see <a href="/gateway/security">Security</a>.</li>
+</ul>
+<h2>Format (AgentSkills + Pi-compatible)</h2>
+<p><code>SKILL.md</code> must include at least:</p>
+<pre><code class="language-markdown">---
+name: nano-banana-pro
+description: Generate or edit images via Gemini 3 Pro Image
+---
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>We follow the AgentSkills spec for layout/intent.</li>
+<li>The parser used by the embedded agent supports <strong>single-line</strong> frontmatter keys only.</li>
+<li><code>metadata</code> should be a <strong>single-line JSON object</strong>.</li>
+<li>Use <code>{baseDir}</code> in instructions to reference the skill folder path.</li>
+<li>Optional frontmatter keys:<ul>
+<li><p><code>homepage</code> — URL surfaced as “Website” in the macOS Skills UI (also supported via <code>metadata.agdi.homepage</code>).</p>
+</li>
+<li><p><code>user-invocable</code> — <code>true|false</code> (default: <code>true</code>). When <code>true</code>, the skill is exposed as a user slash command.</p>
+</li>
+<li><p><code>disable-model-invocation</code> — <code>true|false</code> (default: <code>false</code>). When <code>true</code>, the skill is excluded from the model prompt (still available via user invocation).</p>
+</li>
+<li><p><code>command-dispatch</code> — <code>tool</code> (optional). When set to <code>tool</code>, the slash command bypasses the model and dispatches directly to a tool.</p>
+</li>
+<li><p><code>command-tool</code> — tool name to invoke when <code>command-dispatch: tool</code> is set.</p>
+</li>
+<li><p><code>command-arg-mode</code> — <code>raw</code> (default). For tool dispatch, forwards the raw args string to the tool (no core parsing).</p>
+<p>The tool is invoked with params:
+<code>{ command: &quot;&lt;raw args&gt;&quot;, commandName: &quot;&lt;slash command&gt;&quot;, skillName: &quot;&lt;skill name&gt;&quot; }</code>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Gating (load-time filters)</h2>
+<p>AGDI <strong>filters skills at load time</strong> using <code>metadata</code> (single-line JSON):</p>
+<pre><code class="language-markdown">---
+name: nano-banana-pro
+description: Generate or edit images via Gemini 3 Pro Image
+metadata:
+  {
+    &quot;agdi&quot;:
+      {
+        &quot;requires&quot;: { &quot;bins&quot;: [&quot;uv&quot;], &quot;env&quot;: [&quot;GEMINI_API_KEY&quot;], &quot;config&quot;: [&quot;browser.enabled&quot;] },
+        &quot;primaryEnv&quot;: &quot;GEMINI_API_KEY&quot;,
+      },
+  }
+---
+</code></pre>
+<p>Fields under <code>metadata.agdi</code>:</p>
+<ul>
+<li><code>always: true</code> — always include the skill (skip other gates).</li>
+<li><code>emoji</code> — optional emoji used by the macOS Skills UI.</li>
+<li><code>homepage</code> — optional URL shown as “Website” in the macOS Skills UI.</li>
+<li><code>os</code> — optional list of platforms (<code>darwin</code>, <code>linux</code>, <code>win32</code>). If set, the skill is only eligible on those OSes.</li>
+<li><code>requires.bins</code> — list; each must exist on <code>PATH</code>.</li>
+<li><code>requires.anyBins</code> — list; at least one must exist on <code>PATH</code>.</li>
+<li><code>requires.env</code> — list; env var must exist <strong>or</strong> be provided in config.</li>
+<li><code>requires.config</code> — list of <code>agdi.json</code> paths that must be truthy.</li>
+<li><code>primaryEnv</code> — env var name associated with <code>skills.entries.&lt;name&gt;.apiKey</code>.</li>
+<li><code>install</code> — optional array of installer specs used by the macOS Skills UI (brew/node/go/uv/download).</li>
+</ul>
+<p>Note on sandboxing:</p>
+<ul>
+<li><code>requires.bins</code> is checked on the <strong>host</strong> at skill load time.</li>
+<li>If an agent is sandboxed, the binary must also exist <strong>inside the container</strong>.
+Install it via <code>agents.defaults.sandbox.docker.setupCommand</code> (or a custom image).
+<code>setupCommand</code> runs once after the container is created.
+Package installs also require network egress, a writable root FS, and a root user in the sandbox.
+Example: the <code>summarize</code> skill (<code>skills/summarize/SKILL.md</code>) needs the <code>summarize</code> CLI
+in the sandbox container to run there.</li>
+</ul>
+<p>Installer example:</p>
+<pre><code class="language-markdown">---
+name: gemini
+description: Use Gemini CLI for coding assistance and Google search lookups.
+metadata:
+  {
+    &quot;agdi&quot;:
+      {
+        &quot;emoji&quot;: &quot;♊️&quot;,
+        &quot;requires&quot;: { &quot;bins&quot;: [&quot;gemini&quot;] },
+        &quot;install&quot;:
+          [
+            {
+              &quot;id&quot;: &quot;brew&quot;,
+              &quot;kind&quot;: &quot;brew&quot;,
+              &quot;formula&quot;: &quot;gemini-cli&quot;,
+              &quot;bins&quot;: [&quot;gemini&quot;],
+              &quot;label&quot;: &quot;Install Gemini CLI (brew)&quot;,
+            },
+          ],
+      },
+  }
+---
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If multiple installers are listed, the gateway picks a <strong>single</strong> preferred option (brew when available, otherwise node).</li>
+<li>If all installers are <code>download</code>, AGDI lists each entry so you can see the available artifacts.</li>
+<li>Installer specs can include <code>os: [&quot;darwin&quot;|&quot;linux&quot;|&quot;win32&quot;]</code> to filter options by platform.</li>
+<li>Node installs honor <code>skills.install.nodeManager</code> in <code>agdi.json</code> (default: npm; options: npm/pnpm/yarn/bun).
+This only affects <strong>skill installs</strong>; the Gateway runtime should still be Node
+(Bun is not recommended for WhatsApp/Telegram).</li>
+<li>Go installs: if <code>go</code> is missing and <code>brew</code> is available, the gateway installs Go via Homebrew first and sets <code>GOBIN</code> to Homebrew’s <code>bin</code> when possible.</li>
+<li>Download installs: <code>url</code> (required), <code>archive</code> (<code>tar.gz</code> | <code>tar.bz2</code> | <code>zip</code>), <code>extract</code> (default: auto when archive detected), <code>stripComponents</code>, <code>targetDir</code> (default: <code>~/.agdi/tools/&lt;skillKey&gt;</code>).</li>
+</ul>
+<p>If no <code>metadata.agdi</code> is present, the skill is always eligible (unless
+disabled in config or blocked by <code>skills.allowBundled</code> for bundled skills).</p>
+<h2>Config overrides (<code>~/.agdi/agdi.json</code>)</h2>
+<p>Bundled/managed skills can be toggled and supplied with env values:</p>
+<pre><code class="language-json5">{
+  skills: {
+    entries: {
+      &quot;nano-banana-pro&quot;: {
+        enabled: true,
+        apiKey: &quot;GEMINI_KEY_HERE&quot;,
+        env: {
+          GEMINI_API_KEY: &quot;GEMINI_KEY_HERE&quot;,
+        },
+        config: {
+          endpoint: &quot;https://example.invalid&quot;,
+          model: &quot;nano-pro&quot;,
+        },
+      },
+      peekaboo: { enabled: true },
+      sag: { enabled: false },
+    },
+  },
+}
+</code></pre>
+<p>Note: if the skill name contains hyphens, quote the key (JSON5 allows quoted keys).</p>
+<p>Config keys match the <strong>skill name</strong> by default. If a skill defines
+<code>metadata.agdi.skillKey</code>, use that key under <code>skills.entries</code>.</p>
+<p>Rules:</p>
+<ul>
+<li><code>enabled: false</code> disables the skill even if it’s bundled/installed.</li>
+<li><code>env</code>: injected <strong>only if</strong> the variable isn’t already set in the process.</li>
+<li><code>apiKey</code>: convenience for skills that declare <code>metadata.agdi.primaryEnv</code>.</li>
+<li><code>config</code>: optional bag for custom per-skill fields; custom keys must live here.</li>
+<li><code>allowBundled</code>: optional allowlist for <strong>bundled</strong> skills only. If set, only
+bundled skills in the list are eligible (managed/workspace skills unaffected).</li>
+</ul>
+<h2>Environment injection (per agent run)</h2>
+<p>When an agent run starts, AGDI:</p>
+<ol>
+<li>Reads skill metadata.</li>
+<li>Applies any <code>skills.entries.&lt;key&gt;.env</code> or <code>skills.entries.&lt;key&gt;.apiKey</code> to
+<code>process.env</code>.</li>
+<li>Builds the system prompt with <strong>eligible</strong> skills.</li>
+<li>Restores the original environment after the run ends.</li>
+</ol>
+<p>This is <strong>scoped to the agent run</strong>, not a global shell environment.</p>
+<h2>Session snapshot (performance)</h2>
+<p>AGDI snapshots the eligible skills <strong>when a session starts</strong> and reuses that list for subsequent turns in the same session. Changes to skills or config take effect on the next new session.</p>
+<p>Skills can also refresh mid-session when the skills watcher is enabled or when a new eligible remote node appears (see below). Think of this as a <strong>hot reload</strong>: the refreshed list is picked up on the next agent turn.</p>
+<h2>Remote macOS nodes (Linux gateway)</h2>
+<p>If the Gateway is running on Linux but a <strong>macOS node</strong> is connected <strong>with <code>system.run</code> allowed</strong> (Exec approvals security not set to <code>deny</code>), AGDI can treat macOS-only skills as eligible when the required binaries are present on that node. The agent should execute those skills via the <code>nodes</code> tool (typically <code>nodes.run</code>).</p>
+<p>This relies on the node reporting its command support and on a bin probe via <code>system.run</code>. If the macOS node goes offline later, the skills remain visible; invocations may fail until the node reconnects.</p>
+<h2>Skills watcher (auto-refresh)</h2>
+<p>By default, AGDI watches skill folders and bumps the skills snapshot when <code>SKILL.md</code> files change. Configure this under <code>skills.load</code>:</p>
+<pre><code class="language-json5">{
+  skills: {
+    load: {
+      watch: true,
+      watchDebounceMs: 250,
+    },
+  },
+}
+</code></pre>
+<h2>Token impact (skills list)</h2>
+<p>When skills are eligible, AGDI injects a compact XML list of available skills into the system prompt (via <code>formatSkillsForPrompt</code> in <code>pi-coding-agent</code>). The cost is deterministic:</p>
+<ul>
+<li><strong>Base overhead (only when ≥1 skill):</strong> 195 characters.</li>
+<li><strong>Per skill:</strong> 97 characters + the length of the XML-escaped <code>&lt;name&gt;</code>, <code>&lt;description&gt;</code>, and <code>&lt;location&gt;</code> values.</li>
+</ul>
+<p>Formula (characters):</p>
+<pre><code>total = 195 + Σ (97 + len(name_escaped) + len(description_escaped) + len(location_escaped))
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>XML escaping expands <code>&amp; &lt; &gt; &quot; &#39;</code> into entities (<code>&amp;amp;</code>, <code>&amp;lt;</code>, etc.), increasing length.</li>
+<li>Token counts vary by model tokenizer. A rough OpenAI-style estimate is ~4 chars/token, so <strong>97 chars ≈ 24 tokens</strong> per skill plus your actual field lengths.</li>
+</ul>
+<h2>Managed skills lifecycle</h2>
+<p>AGDI ships a baseline set of skills as <strong>bundled skills</strong> as part of the
+install (npm package or AGDI.app). <code>~/.agdi/skills</code> exists for local
+overrides (for example, pinning/patching a skill without changing the bundled
+copy). Workspace skills are user-owned and override both on name conflicts.</p>
+<h2>Config reference</h2>
+<p>See <a href="/tools/skills-config">Skills config</a> for the full configuration schema.</p>
+<h2>Looking for more skills?</h2>
+<p>Browse <a href="https://clawhub.com">https://clawhub.com</a>.</p>
+<hr>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

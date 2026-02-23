@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="active" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Testing</h1>
+<p>AGDI has three Vitest suites (unit/integration, e2e, live) and a small set of Docker runners.</p>
+<p>This doc is a “how we test” guide:</p>
+<ul>
+<li>What each suite covers (and what it deliberately does <em>not</em> cover)</li>
+<li>Which commands to run for common workflows (local, pre-push, debugging)</li>
+<li>How live tests discover credentials and select models/providers</li>
+<li>How to add regressions for real-world model/provider issues</li>
+</ul>
+<h2>Quick start</h2>
+<p>Most days:</p>
+<ul>
+<li>Full gate (expected before push): <code>pnpm build &amp;&amp; pnpm check &amp;&amp; pnpm test</code></li>
+</ul>
+<p>When you touch tests or want extra confidence:</p>
+<ul>
+<li>Coverage gate: <code>pnpm test:coverage</code></li>
+<li>E2E suite: <code>pnpm test:e2e</code></li>
+</ul>
+<p>When debugging real providers/models (requires real creds):</p>
+<ul>
+<li>Live suite (models + gateway tool/image probes): <code>pnpm test:live</code></li>
+</ul>
+<p>Tip: when you only need one failing case, prefer narrowing live tests via the allowlist env vars described below.</p>
+<h2>Test suites (what runs where)</h2>
+<p>Think of the suites as “increasing realism” (and increasing flakiness/cost):</p>
+<h3>Unit / integration (default)</h3>
+<ul>
+<li>Command: <code>pnpm test</code></li>
+<li>Config: <code>scripts/test-parallel.mjs</code> (runs <code>vitest.unit.config.ts</code>, <code>vitest.extensions.config.ts</code>, <code>vitest.gateway.config.ts</code>)</li>
+<li>Files: <code>src/**/*.test.ts</code>, <code>extensions/**/*.test.ts</code></li>
+<li>Scope:<ul>
+<li>Pure unit tests</li>
+<li>In-process integration tests (gateway auth, routing, tooling, parsing, config)</li>
+<li>Deterministic regressions for known bugs</li>
+</ul>
+</li>
+<li>Expectations:<ul>
+<li>Runs in CI</li>
+<li>No real keys required</li>
+<li>Should be fast and stable</li>
+</ul>
+</li>
+<li>Pool note:<ul>
+<li>AGDI uses Vitest <code>vmForks</code> on Node 22/23 for faster unit shards.</li>
+<li>On Node 24+, AGDI automatically falls back to regular <code>forks</code> to avoid Node VM linking errors (<code>ERR_VM_MODULE_LINK_FAILURE</code> / <code>module is already linked</code>).</li>
+<li>Override manually with <code>AGDI_TEST_VM_FORKS=0</code> (force <code>forks</code>) or <code>AGDI_TEST_VM_FORKS=1</code> (force <code>vmForks</code>).</li>
+</ul>
+</li>
+</ul>
+<h3>E2E (gateway smoke)</h3>
+<ul>
+<li>Command: <code>pnpm test:e2e</code></li>
+<li>Config: <code>vitest.e2e.config.ts</code></li>
+<li>Files: <code>src/**/*.e2e.test.ts</code></li>
+<li>Runtime defaults:<ul>
+<li>Uses Vitest <code>vmForks</code> for faster file startup.</li>
+<li>Uses adaptive workers (CI: 2-4, local: 4-8).</li>
+<li>Runs in silent mode by default to reduce console I/O overhead.</li>
+</ul>
+</li>
+<li>Useful overrides:<ul>
+<li><code>AGDI_E2E_WORKERS=&lt;n&gt;</code> to force worker count (capped at 16).</li>
+<li><code>AGDI_E2E_VERBOSE=1</code> to re-enable verbose console output.</li>
+</ul>
+</li>
+<li>Scope:<ul>
+<li>Multi-instance gateway end-to-end behavior</li>
+<li>WebSocket/HTTP surfaces, node pairing, and heavier networking</li>
+</ul>
+</li>
+<li>Expectations:<ul>
+<li>Runs in CI (when enabled in the pipeline)</li>
+<li>No real keys required</li>
+<li>More moving parts than unit tests (can be slower)</li>
+</ul>
+</li>
+</ul>
+<h3>Live (real providers + real models)</h3>
+<ul>
+<li>Command: <code>pnpm test:live</code></li>
+<li>Config: <code>vitest.live.config.ts</code></li>
+<li>Files: <code>src/**/*.live.test.ts</code></li>
+<li>Default: <strong>enabled</strong> by <code>pnpm test:live</code> (sets <code>AGDI_LIVE_TEST=1</code>)</li>
+<li>Scope:<ul>
+<li>“Does this provider/model actually work <em>today</em> with real creds?”</li>
+<li>Catch provider format changes, tool-calling quirks, auth issues, and rate limit behavior</li>
+</ul>
+</li>
+<li>Expectations:<ul>
+<li>Not CI-stable by design (real networks, real provider policies, quotas, outages)</li>
+<li>Costs money / uses rate limits</li>
+<li>Prefer running narrowed subsets instead of “everything”</li>
+<li>Live runs will source <code>~/.profile</code> to pick up missing API keys</li>
+<li>Anthropic key rotation: set <code>AGDI_LIVE_ANTHROPIC_KEYS=&quot;sk-...,sk-...&quot;</code> (or <code>AGDI_LIVE_ANTHROPIC_KEY=sk-...</code>) or multiple <code>ANTHROPIC_API_KEY*</code> vars; tests will retry on rate limits</li>
+</ul>
+</li>
+</ul>
+<h2>Which suite should I run?</h2>
+<p>Use this decision table:</p>
+<ul>
+<li>Editing logic/tests: run <code>pnpm test</code> (and <code>pnpm test:coverage</code> if you changed a lot)</li>
+<li>Touching gateway networking / WS protocol / pairing: add <code>pnpm test:e2e</code></li>
+<li>Debugging “my bot is down” / provider-specific failures / tool calling: run a narrowed <code>pnpm test:live</code></li>
+</ul>
+<h2>Live: model smoke (profile keys)</h2>
+<p>Live tests are split into two layers so we can isolate failures:</p>
+<ul>
+<li>“Direct model” tells us the provider/model can answer at all with the given key.</li>
+<li>“Gateway smoke” tells us the full gateway+agent pipeline works for that model (sessions, history, tools, sandbox policy, etc.).</li>
+</ul>
+<h3>Layer 1: Direct model completion (no gateway)</h3>
+<ul>
+<li>Test: <code>src/agents/models.profiles.live.test.ts</code></li>
+<li>Goal:<ul>
+<li>Enumerate discovered models</li>
+<li>Use <code>getApiKeyForModel</code> to select models you have creds for</li>
+<li>Run a small completion per model (and targeted regressions where needed)</li>
+</ul>
+</li>
+<li>How to enable:<ul>
+<li><code>pnpm test:live</code> (or <code>AGDI_LIVE_TEST=1</code> if invoking Vitest directly)</li>
+</ul>
+</li>
+<li>Set <code>AGDI_LIVE_MODELS=modern</code> (or <code>all</code>, alias for modern) to actually run this suite; otherwise it skips to keep <code>pnpm test:live</code> focused on gateway smoke</li>
+<li>How to select models:<ul>
+<li><code>AGDI_LIVE_MODELS=modern</code> to run the modern allowlist (Opus/Sonnet/Haiku 4.5, GPT-5.x + Codex, Gemini 3, GLM 4.7, MiniMax M2.1, Grok 4)</li>
+<li><code>AGDI_LIVE_MODELS=all</code> is an alias for the modern allowlist</li>
+<li>or <code>AGDI_LIVE_MODELS=&quot;openai/gpt-5.2,anthropic/claude-opus-4-6,...&quot;</code> (comma allowlist)</li>
+</ul>
+</li>
+<li>How to select providers:<ul>
+<li><code>AGDI_LIVE_PROVIDERS=&quot;google,google-antigravity,google-gemini-cli&quot;</code> (comma allowlist)</li>
+</ul>
+</li>
+<li>Where keys come from:<ul>
+<li>By default: profile store and env fallbacks</li>
+<li>Set <code>AGDI_LIVE_REQUIRE_PROFILE_KEYS=1</code> to enforce <strong>profile store</strong> only</li>
+</ul>
+</li>
+<li>Why this exists:<ul>
+<li>Separates “provider API is broken / key is invalid” from “gateway agent pipeline is broken”</li>
+<li>Contains small, isolated regressions (example: OpenAI Responses/Codex Responses reasoning replay + tool-call flows)</li>
+</ul>
+</li>
+</ul>
+<h3>Layer 2: Gateway + dev agent smoke (what “@agdi” actually does)</h3>
+<ul>
+<li>Test: <code>src/gateway/gateway-models.profiles.live.test.ts</code></li>
+<li>Goal:<ul>
+<li>Spin up an in-process gateway</li>
+<li>Create/patch a <code>agent:dev:*</code> session (model override per run)</li>
+<li>Iterate models-with-keys and assert:<ul>
+<li>“meaningful” response (no tools)</li>
+<li>a real tool invocation works (read probe)</li>
+<li>optional extra tool probes (exec+read probe)</li>
+<li>OpenAI regression paths (tool-call-only → follow-up) keep working</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Probe details (so you can explain failures quickly):<ul>
+<li><code>read</code> probe: the test writes a nonce file in the workspace and asks the agent to <code>read</code> it and echo the nonce back.</li>
+<li><code>exec+read</code> probe: the test asks the agent to <code>exec</code>-write a nonce into a temp file, then <code>read</code> it back.</li>
+<li>image probe: the test attaches a generated PNG (cat + randomized code) and expects the model to return <code>cat &lt;CODE&gt;</code>.</li>
+<li>Implementation reference: <code>src/gateway/gateway-models.profiles.live.test.ts</code> and <code>src/gateway/live-image-probe.ts</code>.</li>
+</ul>
+</li>
+<li>How to enable:<ul>
+<li><code>pnpm test:live</code> (or <code>AGDI_LIVE_TEST=1</code> if invoking Vitest directly)</li>
+</ul>
+</li>
+<li>How to select models:<ul>
+<li>Default: modern allowlist (Opus/Sonnet/Haiku 4.5, GPT-5.x + Codex, Gemini 3, GLM 4.7, MiniMax M2.1, Grok 4)</li>
+<li><code>AGDI_LIVE_GATEWAY_MODELS=all</code> is an alias for the modern allowlist</li>
+<li>Or set <code>AGDI_LIVE_GATEWAY_MODELS=&quot;provider/model&quot;</code> (or comma list) to narrow</li>
+</ul>
+</li>
+<li>How to select providers (avoid “OpenRouter everything”):<ul>
+<li><code>AGDI_LIVE_GATEWAY_PROVIDERS=&quot;google,google-antigravity,google-gemini-cli,openai,anthropic,zai,minimax&quot;</code> (comma allowlist)</li>
+</ul>
+</li>
+<li>Tool + image probes are always on in this live test:<ul>
+<li><code>read</code> probe + <code>exec+read</code> probe (tool stress)</li>
+<li>image probe runs when the model advertises image input support</li>
+<li>Flow (high level):<ul>
+<li>Test generates a tiny PNG with “CAT” + random code (<code>src/gateway/live-image-probe.ts</code>)</li>
+<li>Sends it via <code>agent</code> <code>attachments: [{ mimeType: &quot;image/png&quot;, content: &quot;&lt;base64&gt;&quot; }]</code></li>
+<li>Gateway parses attachments into <code>images[]</code> (<code>src/gateway/server-methods/agent.ts</code> + <code>src/gateway/chat-attachments.ts</code>)</li>
+<li>Embedded agent forwards a multimodal user message to the model</li>
+<li>Assertion: reply contains <code>cat</code> + the code (OCR tolerance: minor mistakes allowed)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Tip: to see what you can test on your machine (and the exact <code>provider/model</code> ids), run:</p>
+<pre><code class="language-bash">agdi models list
+agdi models list --json
+</code></pre>
+<h2>Live: Anthropic setup-token smoke</h2>
+<ul>
+<li>Test: <code>src/agents/anthropic.setup-token.live.test.ts</code></li>
+<li>Goal: verify Claude Code CLI setup-token (or a pasted setup-token profile) can complete an Anthropic prompt.</li>
+<li>Enable:<ul>
+<li><code>pnpm test:live</code> (or <code>AGDI_LIVE_TEST=1</code> if invoking Vitest directly)</li>
+<li><code>AGDI_LIVE_SETUP_TOKEN=1</code></li>
+</ul>
+</li>
+<li>Token sources (pick one):<ul>
+<li>Profile: <code>AGDI_LIVE_SETUP_TOKEN_PROFILE=anthropic:setup-token-test</code></li>
+<li>Raw token: <code>AGDI_LIVE_SETUP_TOKEN_VALUE=sk-ant-oat01-...</code></li>
+</ul>
+</li>
+<li>Model override (optional):<ul>
+<li><code>AGDI_LIVE_SETUP_TOKEN_MODEL=anthropic/claude-opus-4-6</code></li>
+</ul>
+</li>
+</ul>
+<p>Setup example:</p>
+<pre><code class="language-bash">agdi models auth paste-token --provider anthropic --profile-id anthropic:setup-token-test
+AGDI_LIVE_SETUP_TOKEN=1 AGDI_LIVE_SETUP_TOKEN_PROFILE=anthropic:setup-token-test pnpm test:live src/agents/anthropic.setup-token.live.test.ts
+</code></pre>
+<h2>Live: CLI backend smoke (Claude Code CLI or other local CLIs)</h2>
+<ul>
+<li>Test: <code>src/gateway/gateway-cli-backend.live.test.ts</code></li>
+<li>Goal: validate the Gateway + agent pipeline using a local CLI backend, without touching your default config.</li>
+<li>Enable:<ul>
+<li><code>pnpm test:live</code> (or <code>AGDI_LIVE_TEST=1</code> if invoking Vitest directly)</li>
+<li><code>AGDI_LIVE_CLI_BACKEND=1</code></li>
+</ul>
+</li>
+<li>Defaults:<ul>
+<li>Model: <code>claude-cli/claude-sonnet-4-5</code></li>
+<li>Command: <code>claude</code></li>
+<li>Args: <code>[&quot;-p&quot;,&quot;--output-format&quot;,&quot;json&quot;,&quot;--dangerously-skip-permissions&quot;]</code></li>
+</ul>
+</li>
+<li>Overrides (optional):<ul>
+<li><code>AGDI_LIVE_CLI_BACKEND_MODEL=&quot;claude-cli/claude-opus-4-6&quot;</code></li>
+<li><code>AGDI_LIVE_CLI_BACKEND_MODEL=&quot;codex-cli/gpt-5.3-codex&quot;</code></li>
+<li><code>AGDI_LIVE_CLI_BACKEND_COMMAND=&quot;/full/path/to/claude&quot;</code></li>
+<li><code>AGDI_LIVE_CLI_BACKEND_ARGS=&#39;[&quot;-p&quot;,&quot;--output-format&quot;,&quot;json&quot;,&quot;--permission-mode&quot;,&quot;bypassPermissions&quot;]&#39;</code></li>
+<li><code>AGDI_LIVE_CLI_BACKEND_CLEAR_ENV=&#39;[&quot;ANTHROPIC_API_KEY&quot;,&quot;ANTHROPIC_API_KEY_OLD&quot;]&#39;</code></li>
+<li><code>AGDI_LIVE_CLI_BACKEND_IMAGE_PROBE=1</code> to send a real image attachment (paths are injected into the prompt).</li>
+<li><code>AGDI_LIVE_CLI_BACKEND_IMAGE_ARG=&quot;--image&quot;</code> to pass image file paths as CLI args instead of prompt injection.</li>
+<li><code>AGDI_LIVE_CLI_BACKEND_IMAGE_MODE=&quot;repeat&quot;</code> (or <code>&quot;list&quot;</code>) to control how image args are passed when <code>IMAGE_ARG</code> is set.</li>
+<li><code>AGDI_LIVE_CLI_BACKEND_RESUME_PROBE=1</code> to send a second turn and validate resume flow.</li>
+</ul>
+</li>
+<li><code>AGDI_LIVE_CLI_BACKEND_DISABLE_MCP_CONFIG=0</code> to keep Claude Code CLI MCP config enabled (default disables MCP config with a temporary empty file).</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-bash">AGDI_LIVE_CLI_BACKEND=1 \
+  AGDI_LIVE_CLI_BACKEND_MODEL=&quot;claude-cli/claude-sonnet-4-5&quot; \
+  pnpm test:live src/gateway/gateway-cli-backend.live.test.ts
+</code></pre>
+<h3>Recommended live recipes</h3>
+<p>Narrow, explicit allowlists are fastest and least flaky:</p>
+<ul>
+<li><p>Single model, direct (no gateway):</p>
+<ul>
+<li><code>AGDI_LIVE_MODELS=&quot;openai/gpt-5.2&quot; pnpm test:live src/agents/models.profiles.live.test.ts</code></li>
+</ul>
+</li>
+<li><p>Single model, gateway smoke:</p>
+<ul>
+<li><code>AGDI_LIVE_GATEWAY_MODELS=&quot;openai/gpt-5.2&quot; pnpm test:live src/gateway/gateway-models.profiles.live.test.ts</code></li>
+</ul>
+</li>
+<li><p>Tool calling across several providers:</p>
+<ul>
+<li><code>AGDI_LIVE_GATEWAY_MODELS=&quot;openai/gpt-5.2,anthropic/claude-opus-4-6,google/gemini-3-flash-preview,zai/glm-4.7,minimax/minimax-m2.1&quot; pnpm test:live src/gateway/gateway-models.profiles.live.test.ts</code></li>
+</ul>
+</li>
+<li><p>Google focus (Gemini API key + Antigravity):</p>
+<ul>
+<li>Gemini (API key): <code>AGDI_LIVE_GATEWAY_MODELS=&quot;google/gemini-3-flash-preview&quot; pnpm test:live src/gateway/gateway-models.profiles.live.test.ts</code></li>
+<li>Antigravity (OAuth): <code>AGDI_LIVE_GATEWAY_MODELS=&quot;google-antigravity/claude-opus-4-6-thinking,google-antigravity/gemini-3-pro-high&quot; pnpm test:live src/gateway/gateway-models.profiles.live.test.ts</code></li>
+</ul>
+</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>google/...</code> uses the Gemini API (API key).</li>
+<li><code>google-antigravity/...</code> uses the Antigravity OAuth bridge (Cloud Code Assist-style agent endpoint).</li>
+<li><code>google-gemini-cli/...</code> uses the local Gemini CLI on your machine (separate auth + tooling quirks).</li>
+<li>Gemini API vs Gemini CLI:<ul>
+<li>API: AGDI calls Google’s hosted Gemini API over HTTP (API key / profile auth); this is what most users mean by “Gemini”.</li>
+<li>CLI: AGDI shells out to a local <code>gemini</code> binary; it has its own auth and can behave differently (streaming/tool support/version skew).</li>
+</ul>
+</li>
+</ul>
+<h2>Live: model matrix (what we cover)</h2>
+<p>There is no fixed “CI model list” (live is opt-in), but these are the <strong>recommended</strong> models to cover regularly on a dev machine with keys.</p>
+<h3>Modern smoke set (tool calling + image)</h3>
+<p>This is the “common models” run we expect to keep working:</p>
+<ul>
+<li>OpenAI (non-Codex): <code>openai/gpt-5.2</code> (optional: <code>openai/gpt-5.1</code>)</li>
+<li>OpenAI Codex: <code>openai-codex/gpt-5.3-codex</code> (optional: <code>openai-codex/gpt-5.3-codex-codex</code>)</li>
+<li>Anthropic: <code>anthropic/claude-opus-4-6</code> (or <code>anthropic/claude-sonnet-4-5</code>)</li>
+<li>Google (Gemini API): <code>google/gemini-3-pro-preview</code> and <code>google/gemini-3-flash-preview</code> (avoid older Gemini 2.x models)</li>
+<li>Google (Antigravity): <code>google-antigravity/claude-opus-4-6-thinking</code> and <code>google-antigravity/gemini-3-flash</code></li>
+<li>Z.AI (GLM): <code>zai/glm-4.7</code></li>
+<li>MiniMax: <code>minimax/minimax-m2.1</code></li>
+</ul>
+<p>Run gateway smoke with tools + image:
+<code>AGDI_LIVE_GATEWAY_MODELS=&quot;openai/gpt-5.2,openai-codex/gpt-5.3-codex,anthropic/claude-opus-4-6,google/gemini-3-pro-preview,google/gemini-3-flash-preview,google-antigravity/claude-opus-4-6-thinking,google-antigravity/gemini-3-flash,zai/glm-4.7,minimax/minimax-m2.1&quot; pnpm test:live src/gateway/gateway-models.profiles.live.test.ts</code></p>
+<h3>Baseline: tool calling (Read + optional Exec)</h3>
+<p>Pick at least one per provider family:</p>
+<ul>
+<li>OpenAI: <code>openai/gpt-5.2</code> (or <code>openai/gpt-5-mini</code>)</li>
+<li>Anthropic: <code>anthropic/claude-opus-4-6</code> (or <code>anthropic/claude-sonnet-4-5</code>)</li>
+<li>Google: <code>google/gemini-3-flash-preview</code> (or <code>google/gemini-3-pro-preview</code>)</li>
+<li>Z.AI (GLM): <code>zai/glm-4.7</code></li>
+<li>MiniMax: <code>minimax/minimax-m2.1</code></li>
+</ul>
+<p>Optional additional coverage (nice to have):</p>
+<ul>
+<li>xAI: <code>xai/grok-4</code> (or latest available)</li>
+<li>Mistral: <code>mistral/</code>… (pick one “tools” capable model you have enabled)</li>
+<li>Cerebras: <code>cerebras/</code>… (if you have access)</li>
+<li>LM Studio: <code>lmstudio/</code>… (local; tool calling depends on API mode)</li>
+</ul>
+<h3>Vision: image send (attachment → multimodal message)</h3>
+<p>Include at least one image-capable model in <code>AGDI_LIVE_GATEWAY_MODELS</code> (Claude/Gemini/OpenAI vision-capable variants, etc.) to exercise the image probe.</p>
+<h3>Aggregators / alternate gateways</h3>
+<p>If you have keys enabled, we also support testing via:</p>
+<ul>
+<li>OpenRouter: <code>openrouter/...</code> (hundreds of models; use <code>agdi models scan</code> to find tool+image capable candidates)</li>
+<li>OpenCode Zen: <code>opencode/...</code> (auth via <code>OPENCODE_API_KEY</code> / <code>OPENCODE_ZEN_API_KEY</code>)</li>
+</ul>
+<p>More providers you can include in the live matrix (if you have creds/config):</p>
+<ul>
+<li>Built-in: <code>openai</code>, <code>openai-codex</code>, <code>anthropic</code>, <code>google</code>, <code>google-vertex</code>, <code>google-antigravity</code>, <code>google-gemini-cli</code>, <code>zai</code>, <code>openrouter</code>, <code>opencode</code>, <code>xai</code>, <code>groq</code>, <code>cerebras</code>, <code>mistral</code>, <code>github-copilot</code></li>
+<li>Via <code>models.providers</code> (custom endpoints): <code>minimax</code> (cloud/API), plus any OpenAI/Anthropic-compatible proxy (LM Studio, vLLM, LiteLLM, etc.)</li>
+</ul>
+<p>Tip: don’t try to hardcode “all models” in docs. The authoritative list is whatever <code>discoverModels(...)</code> returns on your machine + whatever keys are available.</p>
+<h2>Credentials (never commit)</h2>
+<p>Live tests discover credentials the same way the CLI does. Practical implications:</p>
+<ul>
+<li><p>If the CLI works, live tests should find the same keys.</p>
+</li>
+<li><p>If a live test says “no creds”, debug the same way you’d debug <code>agdi models list</code> / model selection.</p>
+</li>
+<li><p>Profile store: <code>~/.agdi/credentials/</code> (preferred; what “profile keys” means in the tests)</p>
+</li>
+<li><p>Config: <code>~/.agdi/agdi.json</code> (or <code>AGDI_CONFIG_PATH</code>)</p>
+</li>
+</ul>
+<p>If you want to rely on env keys (e.g. exported in your <code>~/.profile</code>), run local tests after <code>source ~/.profile</code>, or use the Docker runners below (they can mount <code>~/.profile</code> into the container).</p>
+<h2>Deepgram live (audio transcription)</h2>
+<ul>
+<li>Test: <code>src/media-understanding/providers/deepgram/audio.live.test.ts</code></li>
+<li>Enable: <code>DEEPGRAM_API_KEY=... DEEPGRAM_LIVE_TEST=1 pnpm test:live src/media-understanding/providers/deepgram/audio.live.test.ts</code></li>
+</ul>
+<h2>Docker runners (optional “works in Linux” checks)</h2>
+<p>These run <code>pnpm test:live</code> inside the repo Docker image, mounting your local config dir and workspace (and sourcing <code>~/.profile</code> if mounted):</p>
+<ul>
+<li>Direct models: <code>pnpm test:docker:live-models</code> (script: <code>scripts/test-live-models-docker.sh</code>)</li>
+<li>Gateway + dev agent: <code>pnpm test:docker:live-gateway</code> (script: <code>scripts/test-live-gateway-models-docker.sh</code>)</li>
+<li>Onboarding wizard (TTY, full scaffolding): <code>pnpm test:docker:onboard</code> (script: <code>scripts/e2e/onboard-docker.sh</code>)</li>
+<li>Gateway networking (two containers, WS auth + health): <code>pnpm test:docker:gateway-network</code> (script: <code>scripts/e2e/gateway-network-docker.sh</code>)</li>
+<li>Plugins (custom extension load + registry smoke): <code>pnpm test:docker:plugins</code> (script: <code>scripts/e2e/plugins-docker.sh</code>)</li>
+</ul>
+<p>Useful env vars:</p>
+<ul>
+<li><code>AGDI_CONFIG_DIR=...</code> (default: <code>~/.agdi</code>) mounted to <code>/home/node/.agdi</code></li>
+<li><code>AGDI_WORKSPACE_DIR=...</code> (default: <code>~/.agdi/workspace</code>) mounted to <code>/home/node/.agdi/workspace</code></li>
+<li><code>AGDI_PROFILE_FILE=...</code> (default: <code>~/.profile</code>) mounted to <code>/home/node/.profile</code> and sourced before running tests</li>
+<li><code>AGDI_LIVE_GATEWAY_MODELS=...</code> / <code>AGDI_LIVE_MODELS=...</code> to narrow the run</li>
+<li><code>AGDI_LIVE_REQUIRE_PROFILE_KEYS=1</code> to ensure creds come from the profile store (not env)</li>
+</ul>
+<h2>Docs sanity</h2>
+<p>Run docs checks after doc edits: <code>pnpm docs:list</code>.</p>
+<h2>Offline regression (CI-safe)</h2>
+<p>These are “real pipeline” regressions without real providers:</p>
+<ul>
+<li>Gateway tool calling (mock OpenAI, real gateway + agent loop): <code>src/gateway/gateway.tool-calling.mock-openai.test.ts</code></li>
+<li>Gateway wizard (WS <code>wizard.start</code>/<code>wizard.next</code>, writes config + auth enforced): <code>src/gateway/gateway.wizard.e2e.test.ts</code></li>
+</ul>
+<h2>Agent reliability evals (skills)</h2>
+<p>We already have a few CI-safe tests that behave like “agent reliability evals”:</p>
+<ul>
+<li>Mock tool-calling through the real gateway + agent loop (<code>src/gateway/gateway.tool-calling.mock-openai.test.ts</code>).</li>
+<li>End-to-end wizard flows that validate session wiring and config effects (<code>src/gateway/gateway.wizard.e2e.test.ts</code>).</li>
+</ul>
+<p>What’s still missing for skills (see <a href="/tools/skills">Skills</a>):</p>
+<ul>
+<li><strong>Decisioning:</strong> when skills are listed in the prompt, does the agent pick the right skill (or avoid irrelevant ones)?</li>
+<li><strong>Compliance:</strong> does the agent read <code>SKILL.md</code> before use and follow required steps/args?</li>
+<li><strong>Workflow contracts:</strong> multi-turn scenarios that assert tool order, session history carryover, and sandbox boundaries.</li>
+</ul>
+<p>Future evals should stay deterministic first:</p>
+<ul>
+<li>A scenario runner using mock providers to assert tool calls + order, skill file reads, and session wiring.</li>
+<li>A small suite of skill-focused scenarios (use vs avoid, gating, prompt injection).</li>
+<li>Optional live evals (opt-in, env-gated) only after the CI-safe suite is in place.</li>
+</ul>
+<h2>Adding regressions (guidance)</h2>
+<p>When you fix a provider/model issue discovered in live:</p>
+<ul>
+<li>Add a CI-safe regression if possible (mock/stub provider, or capture the exact request-shape transformation)</li>
+<li>If it’s inherently live-only (rate limits, auth policies), keep the live test narrow and opt-in via env vars</li>
+<li>Prefer targeting the smallest layer that catches the bug:<ul>
+<li>provider request conversion/replay bug → direct models test</li>
+<li>gateway session/history/tool pipeline bug → gateway live smoke or CI-safe gateway mock test</li>
+</ul>
+</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

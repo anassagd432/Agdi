@@ -1,7 +1,7 @@
 import type {
   ChannelOnboardingAdapter,
   ChannelOnboardingDmPolicy,
-  OpenClawConfig,
+  AGDIConfig,
   WizardPrompter,
 } from "openclaw/plugin-sdk";
 import {
@@ -23,9 +23,9 @@ import { runZca, runZcaInteractive, checkZcaInstalled, parseJsonOutput } from ".
 const channel = "zalouser" as const;
 
 function setZalouserDmPolicy(
-  cfg: OpenClawConfig,
+  cfg: AGDIConfig,
   dmPolicy: "pairing" | "allowlist" | "open" | "disabled",
-): OpenClawConfig {
+): AGDIConfig {
   const allowFrom =
     dmPolicy === "open" ? addWildcardAllowFrom(cfg.channels?.zalouser?.allowFrom) : undefined;
   return {
@@ -38,7 +38,7 @@ function setZalouserDmPolicy(
         ...(allowFrom ? { allowFrom } : {}),
       },
     },
-  } as OpenClawConfig;
+  } as AGDIConfig;
 }
 
 async function noteZalouserHelp(prompter: WizardPrompter): Promise<void> {
@@ -50,17 +50,17 @@ async function noteZalouserHelp(prompter: WizardPrompter): Promise<void> {
       "1) Install zca-cli",
       "2) You'll scan a QR code with your Zalo app",
       "",
-      "Docs: https://docs.openclaw.ai/channels/zalouser",
+      "Docs: https://docs.agdi.ai/channels/zalouser",
     ].join("\n"),
     "Zalo Personal Setup",
   );
 }
 
 async function promptZalouserAllowFrom(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   prompter: WizardPrompter;
   accountId: string;
-}): Promise<OpenClawConfig> {
+}): Promise<AGDIConfig> {
   const { cfg, prompter, accountId } = params;
   const resolved = resolveZalouserAccountSync({ cfg, accountId });
   const existingAllowFrom = resolved.config.allowFrom ?? [];
@@ -138,7 +138,7 @@ async function promptZalouserAllowFrom(params: {
             allowFrom: unique,
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     }
 
     return {
@@ -159,15 +159,15 @@ async function promptZalouserAllowFrom(params: {
           },
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
   }
 }
 
 function setZalouserGroupPolicy(
-  cfg: OpenClawConfig,
+  cfg: AGDIConfig,
   accountId: string,
   groupPolicy: "open" | "allowlist" | "disabled",
-): OpenClawConfig {
+): AGDIConfig {
   if (accountId === DEFAULT_ACCOUNT_ID) {
     return {
       ...cfg,
@@ -179,7 +179,7 @@ function setZalouserGroupPolicy(
           groupPolicy,
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
   }
   return {
     ...cfg,
@@ -198,14 +198,14 @@ function setZalouserGroupPolicy(
         },
       },
     },
-  } as OpenClawConfig;
+  } as AGDIConfig;
 }
 
 function setZalouserGroupAllowlist(
-  cfg: OpenClawConfig,
+  cfg: AGDIConfig,
   accountId: string,
   groupKeys: string[],
-): OpenClawConfig {
+): AGDIConfig {
   const groups = Object.fromEntries(groupKeys.map((key) => [key, { allow: true }]));
   if (accountId === DEFAULT_ACCOUNT_ID) {
     return {
@@ -218,7 +218,7 @@ function setZalouserGroupAllowlist(
           groups,
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
   }
   return {
     ...cfg,
@@ -237,11 +237,11 @@ function setZalouserGroupAllowlist(
         },
       },
     },
-  } as OpenClawConfig;
+  } as AGDIConfig;
 }
 
 async function resolveZalouserGroups(params: {
-  cfg: OpenClawConfig;
+  cfg: AGDIConfig;
   accountId: string;
   entries: string[];
 }): Promise<Array<{ input: string; resolved: boolean; id?: string }>> {
@@ -340,7 +340,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
           "The `zca` binary was not found in PATH.",
           "",
           "Install zca-cli, then re-run onboarding:",
-          "Docs: https://docs.openclaw.ai/channels/zalouser",
+          "Docs: https://docs.agdi.ai/channels/zalouser",
         ].join("\n"),
         "Missing Dependency",
       );
@@ -417,7 +417,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
             profile: account.profile !== "default" ? account.profile : undefined,
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     } else {
       next = {
         ...next,
@@ -436,7 +436,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
             },
           },
         },
-      } as OpenClawConfig;
+      } as AGDIConfig;
     }
 
     if (forceAllowFrom) {

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z.AI — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab active" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/providers/index.html">Model Providers</a></li><li><a class="" href="/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/providers/openai.html">OpenAI</a></li><li><a class="" href="/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/providers/litellm.html">litellm</a></li><li><a class="" href="/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/providers/minimax.html">MiniMax</a></li><li><a class="" href="/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/providers/glm.html">GLM Models</a></li><li><a class="active" href="/providers/zai.html">Z.AI</a></li><li><a class="" href="/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Z.AI</h1>
+<p>Z.AI is the API platform for <strong>GLM</strong> models. It provides REST APIs for GLM and uses API keys
+for authentication. Create your API key in the Z.AI console. AGDI uses the <code>zai</code> provider
+with a Z.AI API key.</p>
+<h2>CLI setup</h2>
+<pre><code class="language-bash">agdi onboard --auth-choice zai-api-key
+# or non-interactive
+agdi onboard --zai-api-key &quot;$ZAI_API_KEY&quot;
+</code></pre>
+<h2>Config snippet</h2>
+<pre><code class="language-json5">{
+  env: { ZAI_API_KEY: &quot;sk-...&quot; },
+  agents: { defaults: { model: { primary: &quot;zai/glm-5&quot; } } },
+}
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>GLM models are available as <code>zai/&lt;model&gt;</code> (example: <code>zai/glm-5</code>).</li>
+<li>See <a href="/providers/glm">/providers/glm</a> for the model family overview.</li>
+<li>Z.AI uses Bearer auth with your API key.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-# @openclaw/voice-call
+# @agdi/voice-call
 
-Official Voice Call plugin for **OpenClaw**.
+Official Voice Call plugin for **AGDI**.
 
 Providers:
 
@@ -9,15 +9,15 @@ Providers:
 - **Plivo** (Voice API + XML transfer + GetInput speech)
 - **Mock** (dev/no network)
 
-Docs: `https://docs.openclaw.ai/plugins/voice-call`
-Plugin system: `https://docs.openclaw.ai/plugin`
+Docs: `https://docs.agdi.ai/plugins/voice-call`
+Plugin system: `https://docs.agdi.ai/plugin`
 
 ## Install (local dev)
 
-### Option A: install via OpenClaw (recommended)
+### Option A: install via AGDI (recommended)
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+agdi plugins install @agdi/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -25,9 +25,9 @@ Restart the Gateway afterwards.
 ### Option B: copy into your global extensions folder (dev)
 
 ```bash
-mkdir -p ~/.openclaw/extensions
-cp -R extensions/voice-call ~/.openclaw/extensions/voice-call
-cd ~/.openclaw/extensions/voice-call && pnpm install
+mkdir -p ~/.agdi/extensions
+cp -R extensions/voice-call ~/.agdi/extensions/voice-call
+cd ~/.agdi/extensions/voice-call && pnpm install
 ```
 
 ## Config
@@ -112,13 +112,13 @@ Notes:
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+agdi voicecall call --to "+15555550123" --message "Hello from AGDI"
+agdi voicecall continue --call-id <id> --message "Any questions?"
+agdi voicecall speak --call-id <id> --message "One moment"
+agdi voicecall end --call-id <id>
+agdi voicecall status --call-id <id>
+agdi voicecall tail
+agdi voicecall expose --mode funnel
 ```
 
 ## Tool
