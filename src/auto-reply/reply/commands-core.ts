@@ -33,6 +33,7 @@ import {
 } from "./commands-session.js";
 import { handleSubagentsCommand } from "./commands-subagents.js";
 import { handleTtsCommands } from "./commands-tts.js";
+import { handleJarvisCommands } from "./commands-jarvis.js";
 import { routeReply } from "./route-reply.js";
 
 let HANDLERS: CommandHandler[] | null = null;
@@ -48,6 +49,7 @@ export async function handleCommands(params: HandleCommandsParams): Promise<Comm
       handleUsageCommand,
       handleRestartCommand,
       handleTtsCommands,
+      handleJarvisCommands,
       handleHelpCommand,
       handleCommandsListCommand,
       handleStatusCommand,

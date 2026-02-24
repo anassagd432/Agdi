@@ -1113,6 +1113,7 @@
         <div class="sidebar-tab active" onclick="switchTab('goals')">Goals</div>
         <div class="sidebar-tab" onclick="switchTab('log')">Daemon Log</div>
         <div class="sidebar-tab" onclick="switchTab('brain')">Brain Stats</div>
+        <div class="sidebar-tab" onclick="switchTab('jarvis')">Jarvis</div>
       </div>
 
       <div class="sidebar-content">
@@ -1185,6 +1186,52 @@
             Trigger Improvement Cycle
           </button>
         </div>
+
+        <!-- Jarvis Voice Assistant -->
+        <div class="tab-panel" id="tab-jarvis">
+          <div style="text-align:center; margin-bottom:20px;">
+            <div
+              style="width:80px;height:80px;margin:0 auto 16px;border-radius:50%;background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:all 0.3s;"
+              id="jarvisOrb">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" id="jarvisIcon">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="22"></line>
+              </svg>
+            </div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px;" id="jarvisStateLabel">OFFLINE</div>
+            <div style="font-size:12px;color:var(--text-3);font-family:'JetBrains Mono',monospace;" id="jarvisUptime">—
+            </div>
+          </div>
+
+          <button id="jarvisToggleBtn" onclick="toggleJarvis()"
+            style="width:100%;padding:14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--success);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;">
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Activate Jarvis
+          </button>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="jarvisCmds">0</div>
+              <div class="stat-label">Commands</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="jarvisWakes">0</div>
+              <div class="stat-label">Wake Triggers</div>
+            </div>
+          </div>
+
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">
+            Last Transcript
+          </div>
+          <div id="jarvisTranscript"
+            style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:12px;color:var(--text-2);font-family:'JetBrains Mono',monospace;min-height:40px;">
+            No transcripts yet
+          </div>
+        </div>
       </div>
 
       <div class="message-bar">
@@ -1225,6 +1272,82 @@
       document.querySelector(`.sidebar-tab[onclick*="${tabId}"]`).classList.add('active');
       document.getElementById(`tab-${tabId}`).classList.add('active');
     }
+
+    // Jarvis dashboard controls
+    let jarvisActive = false;
+
+    async function toggleJarvis() {
+      const btn = document.getElementById('jarvisToggleBtn');
+      btn.disabled = true;
+      btn.textContent = jarvisActive ? 'Stopping...' : 'Starting...';
+      try {
+        const method = jarvisActive ? 'jarvis.stop' : 'jarvis.start';
+        if (typeof gatewayRequest === 'function') {
+          await gatewayRequest(method);
+        }
+        jarvisActive = !jarvisActive;
+        updateJarvisUI();
+      } catch (e) {
+        console.error('Jarvis toggle error:', e);
+      }
+      btn.disabled = false;
+    }
+
+    function updateJarvisUI() {
+      const orb = document.getElementById('jarvisOrb');
+      const icon = document.getElementById('jarvisIcon');
+      const label = document.getElementById('jarvisStateLabel');
+      const btn = document.getElementById('jarvisToggleBtn');
+
+      if (jarvisActive) {
+        orb.style.borderColor = 'var(--success)';
+        orb.style.boxShadow = '0 0 24px rgba(16,185,129,0.4)';
+        icon.setAttribute('stroke', 'var(--success)');
+        label.textContent = 'LISTENING';
+        label.style.color = 'var(--success)';
+        btn.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg> Deactivate Jarvis';
+        btn.style.color = 'var(--error)';
+        btn.style.borderColor = 'rgba(239,68,68,0.3)';
+      } else {
+        orb.style.borderColor = 'var(--border)';
+        orb.style.boxShadow = 'none';
+        icon.setAttribute('stroke', 'var(--text-3)');
+        label.textContent = 'OFFLINE';
+        label.style.color = 'var(--text)';
+        btn.innerHTML = '<svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Activate Jarvis';
+        btn.style.color = 'var(--success)';
+        btn.style.borderColor = 'var(--border)';
+      }
+    }
+
+    // Poll Jarvis status when tab is active
+    async function pollJarvisStatus() {
+      try {
+        if (typeof gatewayRequest !== 'function') return;
+        const status = await gatewayRequest('jarvis.status');
+        if (!status) return;
+        jarvisActive = status.state !== 'off';
+        updateJarvisUI();
+        const cmds = document.getElementById('jarvisCmds');
+        const wakes = document.getElementById('jarvisWakes');
+        const uptime = document.getElementById('jarvisUptime');
+        const transcript = document.getElementById('jarvisTranscript');
+        if (cmds) cmds.textContent = status.commandsProcessed ?? 0;
+        if (wakes) wakes.textContent = (status.wakeTriggers ?? []).length;
+        if (uptime && status.upSinceMs) {
+          const elapsed = Math.floor((Date.now() - status.upSinceMs) / 1000);
+          const m = Math.floor(elapsed / 60);
+          const s = elapsed % 60;
+          uptime.textContent = m > 0 ? `${m}m ${s}s` : `${s}s`;
+        } else if (uptime) {
+          uptime.textContent = '—';
+        }
+        if (transcript && status.lastTranscript) {
+          transcript.textContent = status.lastTranscript;
+        }
+      } catch (e) { /* silent */ }
+    }
+    setInterval(pollJarvisStatus, 3000);
   </script>
 </body>
 
