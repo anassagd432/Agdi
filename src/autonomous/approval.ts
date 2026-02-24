@@ -56,6 +56,7 @@ const DEFAULT_RISK: Record<DeviceActionType, ApprovalLevel> = {
   device_screenshot: "auto",
   device_focus_window: "auto",
   device_open_url: "auto",
+  device_click_image: "auto",
 
   // Prompt: medium risk, could be disruptive
   device_open_app: "prompt",

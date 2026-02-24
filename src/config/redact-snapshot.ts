@@ -1,4 +1,4 @@
-import type { ConfigFileSnapshot } from "./types.autonomous.js";
+import type { ConfigFileSnapshot } from "./types.openclaw.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { isSensitiveConfigPath, type ConfigUiHints } from "./schema.hints.js";
 

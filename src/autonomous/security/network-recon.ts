@@ -312,7 +312,7 @@ export class NetworkRecon {
 
     for (const type of types) {
       try {
-        const results = await dnsResolve(domain, type);
+        const results = await dnsResolve(domain, type) as unknown[];
         for (const r of results) {
           const value = typeof r === "string" ? r : JSON.stringify(r);
           records.push({ type, value });
