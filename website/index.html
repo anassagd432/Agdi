@@ -2,460 +2,652 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGDI — Your AI Operating System</title>
-    <meta name="description" content="AGDI is the first autonomous AI agent built to use computers natively.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AGDI — Self-Hosted AI Assistant Infrastructure</title>
+    <meta name="description"
+        content="Run your own AI assistant on your infrastructure. Connect any model to WhatsApp, Telegram, Slack, Discord, and 30+ channels. Full agent tools. Total control." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="AGDI — Self-Hosted AI Assistant Infrastructure" />
+    <meta property="og:description"
+        content="Connect any LLM to 36+ messaging channels. Self-hosted. Agent tools built in. Security-first." />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff5c5c'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='16' font-weight='700' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
-    <div class="bg-grid"></div>
-    <div class="blob" id="blob"></div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <a href="#" class="nav-logo">
-            <div class="icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                </svg></div>
-            <span>AGDI</span>
-        </a>
-        <div class="nav-links">
-            <a href="#vision">Vision</a>
-            <a href="#features">Capabilities</a>
-            <a href="#platforms">Platforms</a>
-        </div>
-        <div class="nav-actions">
-            <a href="https://github.com/openclaw/openclaw" target="_blank" class="nav-links"
-                style="color: var(--text-2); display: flex; text-decoration: none; font-weight: 500;">
-                <svg class="icon-svg" style="width: 18px; height: 18px; margin-right: 6px;" viewBox="0 0 24 24">
-                    <path
-                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-                    </path>
-                </svg>
-                GitHub
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="#" class="nav-brand" aria-label="AGDI Home">
+                <span class="nav-brand-icon">A</span>
+                AGDI
             </a>
-            <a href="#install" class="btn btn-primary">Get Started</a>
+
+            <div class="nav-links" id="nav-links" role="menubar">
+                <a href="#features" class="nav-link" role="menuitem">Features</a>
+                <a href="#channels" class="nav-link" role="menuitem">Channels</a>
+                <a href="#security" class="nav-link" role="menuitem">Security</a>
+                <a href="https://docs.agdi.ai" class="nav-link" role="menuitem" target="_blank" rel="noopener">Docs</a>
+                <a href="https://github.com/agdi/agdi" class="nav-link" role="menuitem" target="_blank"
+                    rel="noopener">GitHub</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="#deploy" class="btn btn-primary">Get Started</a>
+                <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-badge reveal">
-            <span class="dot"></span>
-            ✨ The Next Generation of Personal AI
-        </div>
-        <h1 class="reveal">The AI That Uses Your Computer<br><span class="gradient-text">Like You Do.</span></h1>
-        <p class="reveal">AGDI isn't just a copilot. It's an autonomous AI agent that sees your screen, controls your
-            mouse, types on your keyboard, and executes complex workflows for you.</p>
-
-        <div class="hero-actions reveal">
-            <a href="#install" class="btn btn-gradient">Get Started</a>
-            <a href="#vision" class="btn btn-glass">Explore Capabilities</a>
-        </div>
-
-        <!-- AI Core Visual -->
-        <div class="hero-ai-core reveal">
-            <div class="core-rings">
-                <div class="ring ring-1"></div>
-                <div class="ring ring-2"></div>
-                <div class="ring ring-3"></div>
-            </div>
-            <div class="core-orb">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 48px; height: 48px; color: white;">
-                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                </svg>
-            </div>
-            <div class="core-glow"></div>
-        </div>
-    </section>
-
-    <!-- Context Vision -->
-    <section class="context-section" id="vision">
-        <p class="lead reveal">
-            Operating systems were designed for human hands and eyes. <span>We built a secure, autonomous bridge so your
-                AI can see, click, and type natively. 🚀 No complex setup. 💡 No limits.</span>
-        </p>
-    </section>
-
-    <!-- Bento Features -->
-    <section class="bento-section" id="features">
-        <div class="bento-header reveal active">
-            <h2>Unprecedented <span class="gradient-glow">capability.</span></h2>
-            <div class="bento-accent-line"></div>
-        </div>
-
-        <div class="bento-grid">
-            <!-- Card 1: Large -->
-            <div class="bento-card bento-large reveal"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,212,255,0.4));">
-                <div class="bento-content">
-                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                            <line x1="8" y1="21" x2="16" y2="21"></line>
-                            <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg></div>
-                    <h3>🖱️ Mouse & Keyboard Control</h3>
-                    <p>Complete control over your computer. AGDI naturally handles all physical inputs across every
-                        major operating system without complex setup.</p>
-                    <div class="bento-index">01</div>
+    <!-- ==================== HERO ==================== -->
+    <section class="hero section" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    Self-hosted AI infrastructure
                 </div>
-            </div>
 
-            <!-- Card 2 -->
-            <div class="bento-card reveal"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,255,136,0.4));">
-                <div class="bento-content">
-                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg></div>
-                    <h3>👁️ Perfect Screen Vision</h3>
-                    <p>AGDI actually sees your screen just like a human does. It reads text and understands images
-                        securely on your device, in milliseconds.</p>
-                    <div class="bento-index">02</div>
-                </div>
-            </div>
+                <h1 class="hero-title">
+                    Your AI.<br />Your infrastructure.<br /><span class="accent">Every channel.</span>
+                </h1>
 
-            <!-- Card 3 -->
-            <div class="bento-card reveal"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(161,0,255,0.4));">
-                <div class="bento-content">
-                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg></div>
-                    <h3>🗣️ Talks Like a Human</h3>
-                    <p>Just tell AGDI what you want in plain English. It understands your natural language and instantly
-                        translates your words into actions.</p>
-                    <div class="bento-index">03</div>
-                </div>
-            </div>
+                <p class="hero-subtitle">
+                    Run your own AI assistant gateway. Connect any model to WhatsApp, Telegram, Slack, Discord, and 30+
+                    channels. Full agent tools. Total control.
+                </p>
 
-            <!-- Card 4: Wide -->
-            <div class="bento-card bento-wide reveal"
-                style="--custom-glow: linear-gradient(135deg, rgba(161,0,255,0.8), rgba(200,50,255,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
+                <div class="hero-ctas">
+                    <a href="#deploy" class="btn btn-primary btn-lg">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Run AGDI
+                    </a>
+                    <a href="https://github.com/agdi/agdi" class="btn btn-secondary btn-lg" target="_blank"
+                        rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                             <path
-                                d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z">
-                            </path>
-                            <path
-                                d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z">
-                            </path>
-                        </svg></div>
-                    <h3>🧠 Learns How You Work</h3>
-                    <p>AGDI remembers what you do. It watches your workflows and learns your personal habits, getting
-                        smarter and more personalized every single day.</p>
-                    <div class="bento-index">04</div>
-                </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="bento-card reveal" data-color="rgba(255,50,50,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,50,50,0.8), rgba(255,100,50,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.2); color: #ff5252;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z" />
                         </svg>
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1l2 3h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-3z" stroke="currentColor"
+                                stroke-width="1.5" />
+                        </svg>
+                        Open source
                     </div>
-                    <h3>🛡️ Always-On Security</h3>
-                    <p>Your personal digital bodyguard. AGDI can autonomously check for vulnerabilities and secure your
-                        device with enterprise-grade protection.</p>
-                    <div class="bento-index">05</div>
-                </div>
-            </div>
-
-            <!-- Card 6: Wide -->
-            <div class="bento-card bento-wide reveal"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(0,255,136,0.4));">
-                <div class="bento-content">
-                    <div class="bento-icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                            <polyline points="4 17 10 11 4 5"></polyline>
-                            <line x1="12" y1="19" x2="20" y2="19"></line>
-                        </svg></div>
-                    <h3>🔌 Connects to Everything</h3>
-                    <p>Make your computer part of the smart web. Easily link AGDI to Zapier, your phone, or other tools
-                        to automate actions from anywhere.</p>
-                    <div class="bento-index">06</div>
-                </div>
-            </div>
-
-            <!-- Card 7: Recon — Large -->
-            <div class="bento-card bento-large reveal" data-color="rgba(255,50,50,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,50,50,0.8), rgba(255,100,50,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.2); color: #ff5252;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="22" y1="12" x2="18" y2="12"></line>
-                            <line x1="6" y1="12" x2="2" y2="12"></line>
-                            <line x1="12" y1="6" x2="12" y2="2"></line>
-                            <line x1="12" y1="22" x2="12" y2="18"></line>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <rect x="2" y="5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M5 5V3.5a3 3 0 016 0V5" stroke="currentColor" stroke-width="1.5" />
                         </svg>
+                        Self-hosted
                     </div>
-                    <h3>🕵️ Autonomous Research</h3>
-                    <p>Give AGDI a topic and it will scour the web, read articles, and compile a comprehensive report
-                        for you while you sleep. Perfect for students and professionals.</p>
-                    <div class="bento-index">07</div>
-                </div>
-            </div>
-
-            <!-- Card 8: Self-Improvement -->
-            <div class="bento-card reveal" data-color="rgba(161,0,255,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(161,0,255,0.8), rgba(200,50,255,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(161,0,255,0.1); border-color: rgba(161,0,255,0.2); color: #a100ff;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                         </svg>
+                        36+ channels
                     </div>
-                    <h3>🔄 Gets Smarter Over Time</h3>
-                    <p>A built-in self-improvement engine analyzes its own performance and automatically tunes its
-                        strategies to get faster and more reliable.</p>
-                    <div class="bento-index">08</div>
-                </div>
-            </div>
-
-            <!-- Card 9: File Watcher -->
-            <div class="bento-card reveal" data-color="rgba(0,255,136,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(0,255,136,0.8), rgba(50,200,255,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.2); color: #00ff88;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 17 22 12"></polyline>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
                         </svg>
+                        Any model
                     </div>
-                    <h3>📁 Smart File Triggers</h3>
-                    <p>Set rules like "when a PDF arrives in Downloads, open it." AGDI watches your folders and
-                        automatically acts on new, changed, or deleted files.</p>
-                    <div class="bento-index">09</div>
                 </div>
             </div>
 
-            <!-- Card 10: Packet & Traffic — Wide -->
-            <div class="bento-card bento-wide reveal" data-color="rgba(0,212,255,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(0,212,255,0.8), rgba(161,0,255,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(0,212,255,0.1); border-color: rgba(0,212,255,0.2); color: #00d4ff;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                        </svg>
+            <!-- Hero Visual: Dashboard Mockup -->
+            <div class="hero-visual">
+                <div class="hero-float-badge">
+                    <span style="color: #25D366">●</span> WhatsApp connected
+                </div>
+                <div class="hero-float-badge">
+                    <span style="color: #5865F2">●</span> Discord active
+                </div>
+                <div class="hero-float-badge">
+                    <span style="color: #0088cc">●</span> Telegram ready
+                </div>
+
+                <div class="hero-visual-container">
+                    <div class="hero-window-bar">
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-title">AGDI Gateway — Control Panel</span>
                     </div>
-                    <h3>🌐 Browser Automation</h3>
-                    <p>Never do repetitive web tasks again. AGDI can log into websites, scrape data, fill out forms, and
-                        handle complex web interactions flawlessly.</p>
-                    <div class="bento-index">10</div>
-                </div>
-            </div>
-
-            <!-- Card 11: Multi-Platform — Wide -->
-            <div class="bento-card bento-wide reveal" data-color="rgba(255,179,71,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(255,179,71,0.8), rgba(255,50,50,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(255,179,71,0.1); border-color: rgba(255,179,71,0.2); color: #ffb347;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
+                    <div class="hero-dashboard">
+                        <div class="hero-dash-header">
+                            <span class="hero-dash-title">Gateway Overview</span>
+                            <span class="hero-dash-status">
+                                <span class="hero-dash-status-dot"></span>
+                                All systems operational
+                            </span>
+                        </div>
+                        <div class="hero-dash-grid">
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Active Channels</div>
+                                <div class="hero-dash-card-value teal">12</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Messages Today</div>
+                                <div class="hero-dash-card-value red">2,847</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Active Model</div>
+                                <div class="hero-dash-card-value green">GPT-4o</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Agent Tools</div>
+                                <div class="hero-dash-card-value blue">14</div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>💻 Runs on Any OS</h3>
-                    <p>Works natively on Linux, macOS, and Windows. AGDI auto-detects your platform and uses the right
-                        native tools — no configuration needed.</p>
-                    <div class="bento-index">11</div>
-                </div>
-            </div>
-
-            <!-- Card 13: Local AI — Wide -->
-            <div class="bento-card bento-wide reveal" data-color="rgba(100,150,255,0.8)"
-                style="--custom-glow: linear-gradient(135deg, rgba(100,150,255,0.8), rgba(161,0,255,0.8));">
-                <div class="bento-content">
-                    <div class="bento-icon"
-                        style="background: rgba(100,150,255,0.1); border-color: rgba(100,150,255,0.2); color: #6496ff;">
-                        <svg class="icon-svg" viewBox="0 0 24 24">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                            <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
-                            <path d="M3 12A9 3 0 0 0 21 12"></path>
-                        </svg>
-                    </div>
-                    <h3>⚡ Instant Local Execution</h3>
-                    <p>Because AGDI runs directly on your hardware, there's no waiting for cloud API responses. Every
-                        action is executed instantly with zero latency.</p>
-                    <div class="bento-index">12</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Marquee Platforms -->
-    <div class="marquee-container" id="platforms">
-        <div class="marquee">
-            <!-- Duplicated for seamless loop -->
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <polyline points="4 17 10 11 4 5"></polyline>
-                    <line x1="12" y1="19" x2="20" y2="19"></line>
-                </svg> Ubuntu / Kali Linux</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
-                </svg> macOS Sonoma</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                </svg> Windows 11</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg> Android (ADB)</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg> iOS / iPadOS</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg> Metasploit</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg> Nmap / SQLMap</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
-                </svg> Aircrack-ng</span>
-
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <polyline points="4 17 10 11 4 5"></polyline>
-                    <line x1="12" y1="19" x2="20" y2="19"></line>
-                </svg> Ubuntu / Kali Linux</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"></path>
-                </svg> macOS Sonoma</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                </svg> Windows 11</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg> Android (ADB)</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg> iOS / iPadOS</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg> Metasploit</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg> Nmap / SQLMap</span>
-            <span><svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
-                    <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
-                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
-                    <line x1="12" y1="20" x2="12.01" y2="20"></line>
-                </svg> Aircrack-ng</span>
-        </div>
-    </div>
-
-    <!-- CTA -->
-    <section class="cta" id="install">
-        <div class="cta-box reveal">
-            <div class="cta-content">
-                <h2>Unleash your computer.</h2>
-                <p>Zero configuration. Installs in seconds. Fully open source.</p>
-                <div class="install-command">
-                    <span style="color: #00d4ff;">npx</span> agdi agent
-                    <button title="Copy to clipboard"
-                        onclick="navigator.clipboard.writeText('npx agdi agent'); this.innerHTML='<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'20 6 9 17 4 12\'></polyline></svg>'; setTimeout(() => this.innerHTML='<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><rect x=\'9\' y=\'9\' width=\'13\' height=\'13\' rx=\'2\' ry=\'2\'></rect><path d=\'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\'></path></svg>', 2000);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <a href="#" class="footer-logo">
-                    <div class="icon"><svg class="icon-svg" viewBox="0 0 24 24">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-                        </svg></div>
-                    <span>AGDI</span>
+    <!-- ==================== FEATURES ("What AGDI Is") ==================== -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Platform Overview</div>
+                <h2 class="section-title">AI assistant infrastructure,<br />not just another chatbot</h2>
+                <p class="section-subtitle">AGDI is a complete runtime for running, routing, and controlling AI
+                    assistants across every surface you use.</p>
+            </div>
+
+            <div class="features-grid reveal">
+                <div class="feature-card" style="--card-accent: var(--accent-red)">
+                    <div class="feature-card-icon red">⚡</div>
+                    <h3 class="feature-card-title">Gateway Control Plane</h3>
+                    <p class="feature-card-desc">Central dashboard to configure, monitor, and control your AI assistant.
+                        Real-time status, config editor, and agent management.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-teal)">
+                    <div class="feature-card-icon teal">🔗</div>
+                    <h3 class="feature-card-title">Multi-Channel Reach</h3>
+                    <p class="feature-card-desc">One assistant, 36+ channels. WhatsApp, Telegram, Discord, Slack, Teams,
+                        Signal, iMessage, Matrix, and more.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-blue)">
+                    <div class="feature-card-icon blue">🧠</div>
+                    <h3 class="feature-card-title">Model Flexibility</h3>
+                    <p class="feature-card-desc">Use OpenAI, Anthropic, Gemini, Ollama, or any compatible provider.
+                        Switch models per-channel or per-agent. No vendor lock-in.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-purple)">
+                    <div class="feature-card-icon purple">🛠</div>
+                    <h3 class="feature-card-title">Tools + Automation</h3>
+                    <p class="feature-card-desc">Built-in agent tools: browser control, bash, filesystem, canvas,
+                        camera, cron scheduling, and sub-agents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== HOW IT WORKS ==================== -->
+    <section class="section" id="how-it-works"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: var(--space-xl);">
+                <div class="section-label" style="justify-content: center;">How It Works</div>
+                <h2 class="section-title">From install to operational in minutes</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Four steps to a fully autonomous AI assistant
+                    running on your infrastructure.</p>
+            </div>
+
+            <div class="steps-grid reveal">
+                <div class="step-item">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Install & Configure</h3>
+                    <p class="step-desc">One command setup. Configure your model provider keys and preferences via JSON
+                        or the web dashboard.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">Connect Channels</h3>
+                    <p class="step-desc">Add WhatsApp, Telegram, Discord, Slack — or any of the 36+ supported channels.
+                        Plug and play.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Enable Tools & Skills</h3>
+                    <p class="step-desc">Activate agent tools, browser automation, code execution, and custom skills to
+                        extend your assistant's capabilities.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">04</div>
+                    <h3 class="step-title">Operate from Anywhere</h3>
+                    <p class="step-desc">Manage everything from the web dashboard, native macOS/iOS/Android apps, or the
+                        CLI.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CHANNELS ==================== -->
+    <section class="section" id="channels">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Channel Integrations</div>
+                <h2 class="section-title">One assistant, every messaging surface</h2>
+                <p class="section-subtitle">Reach your AI from the apps you already use. No new UIs to learn. Your
+                    assistant lives where your conversations happen.</p>
+            </div>
+
+            <div class="channels-grid reveal">
+                <div class="channel-badge"><span class="channel-icon">💬</span> WhatsApp</div>
+                <div class="channel-badge"><span class="channel-icon">✈️</span> Telegram</div>
+                <div class="channel-badge"><span class="channel-icon">🎮</span> Discord</div>
+                <div class="channel-badge"><span class="channel-icon">💼</span> Slack</div>
+                <div class="channel-badge"><span class="channel-icon">🟦</span> Teams</div>
+                <div class="channel-badge"><span class="channel-icon">🔐</span> Signal</div>
+                <div class="channel-badge"><span class="channel-icon">💎</span> Matrix</div>
+                <div class="channel-badge"><span class="channel-icon">🍎</span> iMessage</div>
+                <div class="channel-badge"><span class="channel-icon">💜</span> Twitch</div>
+                <div class="channel-badge"><span class="channel-icon">📡</span> IRC</div>
+                <div class="channel-badge"><span class="channel-icon">🌐</span> WebChat</div>
+                <div class="channel-badge"><span class="channel-icon">📱</span> LINE</div>
+                <div class="channel-badge"><span class="channel-icon">🟢</span> Mattermost</div>
+                <div class="channel-badge"><span class="channel-icon">🔵</span> Google Chat</div>
+                <div class="channel-badge"><span class="channel-icon">⚡</span> Nostr</div>
+                <div class="channel-badge"><span class="channel-icon">💙</span> Zalo</div>
+                <div class="channel-badge"><span class="channel-icon">🟠</span> Nextcloud</div>
+                <div class="channel-badge"><span class="channel-icon">🪶</span> Feishu</div>
+            </div>
+
+            <div class="channel-count-row reveal">
+                <div class="channel-count">
+                    <strong>36+</strong> channels supported
+                </div>
+                <div class="channel-count" style="color: var(--text-tertiary);">
+                    · Extensible plugin system for custom channels
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MODELS / PROVIDERS ==================== -->
+    <section class="section" id="models"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Model Providers</div>
+                <h2 class="section-title">Use any model. Switch anytime.</h2>
+                <p class="section-subtitle">No vendor lock-in. Route different channels to different models. Failover
+                    automatically. Run local or cloud.</p>
+            </div>
+
+            <div class="providers-container reveal">
+                <div class="providers-row">
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #10a37f"></span>
+                        OpenAI</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #d4a574"></span>
+                        Anthropic</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #4285F4"></span>
+                        Google Gemini</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #ff6600"></span>
+                        Ollama</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #FF9900"></span> AWS
+                        Bedrock</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #764abc"></span>
+                        OpenRouter</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #22c55e"></span> Local
+                        LLMs</div>
+                    <div class="provider-chip"><span class="provider-chip-dot"
+                            style="background: var(--text-tertiary)"></span> Any OpenAI-compatible</div>
+                </div>
+
+                <div class="provider-features">
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Per-channel routing</div>
+                            <div class="provider-feature-desc">GPT-4o on Slack, Claude on Telegram, Ollama on local.
+                                Route each channel to the best model for the job.</div>
+                        </div>
+                    </div>
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Automatic failover</div>
+                            <div class="provider-feature-desc">If one provider goes down, AGDI routes to your fallback.
+                                No downtime for your users.</div>
+                        </div>
+                    </div>
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Run fully local</div>
+                            <div class="provider-feature-desc">Pair with Ollama or any local model. Zero data leaves
+                                your machine. Full privacy.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== AGENT TOOLS ==================== -->
+    <section class="section" id="tools">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Agent Capabilities</div>
+                <h2 class="section-title">Not a chatbot. A capable agent.</h2>
+                <p class="section-subtitle">AGDI ships with real tools. Your assistant can browse, execute code, manage
+                    files, and automate tasks on your behalf.</p>
+            </div>
+
+            <div class="tools-grid reveal">
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon">🌐</div>
+                        <div class="tool-card-name">browser</div>
+                    </div>
+                    <p class="tool-card-desc">Full Playwright-powered browser. Navigate, search, fill forms, take
+                        screenshots. Your AI sees the web.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: var(--accent-teal-dim); color: var(--accent-teal);">⌨️</div>
+                        <div class="tool-card-name">bash / shell</div>
+                    </div>
+                    <p class="tool-card-desc">Execute commands in a sandboxed shell. Run scripts, install tools, pipe
+                        outputs. Real system access, controlled.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(59,130,246,0.15); color: var(--accent-blue);">📁</div>
+                        <div class="tool-card-name">filesystem</div>
+                    </div>
+                    <p class="tool-card-desc">Read, write, edit, and organize files. Workspace-scoped or full access.
+                        Your AI works with your files.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(168,85,247,0.15); color: var(--accent-purple);">🎨</div>
+                        <div class="tool-card-name">canvas</div>
+                    </div>
+                    <p class="tool-card-desc">Generate HTML/React artifacts rendered in-browser. Build interactive
+                        prototypes and visual outputs.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(245,158,11,0.15); color: var(--accent-amber);">⏰</div>
+                        <div class="tool-card-name">cron / scheduler</div>
+                    </div>
+                    <p class="tool-card-desc">Schedule recurring tasks. Daily reports, periodic checks, automated
+                        maintenance. Set it and forget it.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(34,197,94,0.15); color: var(--accent-green);">🔀</div>
+                        <div class="tool-card-name">sub-agents</div>
+                    </div>
+                    <p class="tool-card-desc">Spawn focused sub-tasks. Delegate research, code review, or analysis to
+                        specialized agent instances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECURITY ==================== -->
+    <section class="section" id="security"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Security First</div>
+                <h2 class="section-title">Infrastructure-grade security, built in</h2>
+                <p class="section-subtitle">Control what your AI can access. Approve actions before they execute. Audit
+                    everything.</p>
+            </div>
+
+            <div class="security-grid reveal">
+                <div class="security-features">
+                    <div class="security-item">
+                        <div class="security-item-icon">🔒</div>
+                        <div>
+                            <div class="security-item-title">Tool Policies</div>
+                            <div class="security-item-desc">Whitelist or deny specific tools per channel, per user, or
+                                globally. Granular control over what the agent can do.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">✅</div>
+                        <div>
+                            <div class="security-item-title">Approval Gates</div>
+                            <div class="security-item-desc">Require human approval before executing sensitive actions.
+                                Auto-approve routine tasks, prompt for anything risky.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">📦</div>
+                        <div>
+                            <div class="security-item-title">Sandboxing</div>
+                            <div class="security-item-desc">Filesystem and command execution scoped to workspaces.
+                                Prevent unauthorized access beyond defined boundaries.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">🔑</div>
+                        <div>
+                            <div class="security-item-title">Credential Redaction</div>
+                            <div class="security-item-desc">API keys, tokens, and secrets automatically redacted from
+                                logs and config exports. Round-trip safe.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security visual: audit log mockup -->
+                <div class="security-visual">
+                    <div class="security-visual-header">Security Audit Log</div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:14:32</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">browser.navigate → docs.agdi.ai</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:14:45</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">fs.read → /workspace/report.md</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:01</span>
+                        <span class="security-log-warn">PROMPT</span>
+                        <span class="security-log-label">bash.exec → npm install lodash</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:12</span>
+                        <span class="security-log-ok">APPROVED</span>
+                        <span class="security-log-label">User confirmed bash.exec</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:28</span>
+                        <span class="security-log-deny">DENY</span>
+                        <span class="security-log-label">fs.write → /etc/passwd (out of scope)</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:41</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">canvas.render → dashboard.html</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:16:03</span>
+                        <span class="security-log-ok">REDACT</span>
+                        <span class="security-log-label">config.export → 3 credentials masked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NATIVE APPS ==================== -->
+    <section class="section" id="apps">
+        <div class="container">
+            <div class="reveal" style="text-align: center;">
+                <div class="section-label" style="justify-content: center;">Operate Anywhere</div>
+                <h2 class="section-title">Dashboard, CLI, and native apps</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Control your assistant from the web, terminal, or
+                    native apps on macOS, iOS, and Android.</p>
+            </div>
+
+            <div class="apps-grid reveal">
+                <div class="app-card">
+                    <div class="app-card-icon">🖥️</div>
+                    <h3 class="app-card-name">Web Dashboard</h3>
+                    <p class="app-card-desc">Full control panel. Config editor, chat, status monitoring, and agent
+                        management.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">⌨️</div>
+                    <h3 class="app-card-name">CLI</h3>
+                    <p class="app-card-desc">Power-user interface. Run commands, manage configs, and interact with your
+                        AI from the terminal.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">🍎</div>
+                    <h3 class="app-card-name">macOS & iOS</h3>
+                    <p class="app-card-desc">Native Swift apps. Menu bar access on Mac, full mobile experience on
+                        iPhone.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">🤖</div>
+                    <h3 class="app-card-name">Android</h3>
+                    <p class="app-card-desc">Kotlin native app. Full gateway access, notifications, and chat from your
+                        Android device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DEPLOY / CTA ==================== -->
+    <section class="section deploy-section" id="deploy">
+        <div class="container">
+            <div class="reveal" style="text-align: center;">
+                <div class="section-label" style="justify-content: center;">Get Started</div>
+                <h2 class="section-title">Deploy in under 2 minutes</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Pick your path. From npm to Docker to source — AGDI
+                    runs wherever Node.js runs.</p>
+            </div>
+
+            <div class="deploy-methods reveal">
+                <div class="deploy-card">
+                    <div class="deploy-card-label">npm</div>
+                    <code class="deploy-code">npx agdi@latest</code>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-card-label">Docker</div>
+                    <code class="deploy-code">docker run -d agdi/agdi:latest</code>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-card-label">From source</div>
+                    <code class="deploy-code">git clone && pnpm install && pnpm start</code>
+                </div>
+            </div>
+
+            <div class="deploy-ctas reveal">
+                <a href="https://docs.agdi.ai/quickstart" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                    Read the Quickstart
                 </a>
-                <p>The first autonomous AI agent built to use computers natively. No custom integrations required.</p>
-            </div>
-
-            <div class="footer-col">
-                <h4>Product</h4>
-                <ul>
-                    <li><a href="#features">Capabilities</a></li>
-                    <li><a href="#platforms">Platforms</a></li>
-                    <li><a href="/docs/autonomous/security/index.html">Security Suite</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="/docs/start/getting-started.html">Documentation</a></li>
-                    <li><a href="/docs/autonomous/index.html">Architecture</a></li>
-                    <li><a href="https://github.com/openclaw/openclaw">GitHub</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="#">Discord Server</a></li>
-                    <li><a href="#">Twitter / X</a></li>
-                    <li><a href="#">Blog</a></li>
-                </ul>
+                <a href="https://github.com/agdi/agdi" class="btn btn-secondary btn-lg" target="_blank" rel="noopener">
+                    Star on GitHub
+                </a>
+                <a href="https://docs.agdi.ai" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
+                    Full Documentation →
+                </a>
             </div>
         </div>
+    </section>
 
-        <div class="footer-bottom">
-            <div>&copy; 2026 AGDI. Open Source AI Automation.</div>
-            <div style="display: flex; gap: 24px;">
-                <a href="#" style="color: var(--text-3); text-decoration: none; transition: color 0.2s;"
-                    onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">Privacy
-                    Policy</a>
-                <a href="#" style="color: var(--text-3); text-decoration: none; transition: color 0.2s;"
-                    onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-3)'">Terms of
-                    Service</a>
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <span class="nav-brand-icon" style="width:28px; height:28px; font-size:0.75rem;">A</span>
+                        AGDI
+                    </div>
+                    <p class="footer-desc">Self-hosted AI assistant infrastructure. Your models, your data, every
+                        channel.</p>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Product</div>
+                    <a href="#features">Features</a>
+                    <a href="#channels">Channels</a>
+                    <a href="#tools">Agent Tools</a>
+                    <a href="#security">Security</a>
+                    <a href="#deploy">Get Started</a>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Resources</div>
+                    <a href="https://docs.agdi.ai" target="_blank" rel="noopener">Documentation</a>
+                    <a href="https://github.com/agdi/agdi" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://github.com/agdi/agdi/releases" target="_blank" rel="noopener">Releases</a>
+                    <a href="https://docs.agdi.ai/gateway/security" target="_blank" rel="noopener">Security Guide</a>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Community</div>
+                    <a href="https://github.com/agdi/agdi/discussions" target="_blank" rel="noopener">Discussions</a>
+                    <a href="https://github.com/agdi/agdi/issues" target="_blank" rel="noopener">Issues</a>
+                    <a href="https://discord.gg/agdi" target="_blank" rel="noopener">Discord</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>© 2026 AGDI. Open source under MIT license.</span>
+                <span>
+                    <a href="https://github.com/agdi/agdi" style="color: var(--text-secondary);">GitHub</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://docs.agdi.ai" style="color: var(--text-secondary);">Docs</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://trust.agdi.ai" style="color: var(--text-secondary);">Security</a>
+                </span>
             </div>
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <!-- Scripts -->
+    <script src="/js/main.js" type="module"></script>
 </body>
 
 </html>
