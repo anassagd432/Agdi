@@ -50,6 +50,14 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 
+  // Gradle toolchain: ensures the JDK 17 is used regardless of system JAVA_HOME.
+  // This fixes the "Gradle requires JVM 17" error when the system default is JDK 8.
+  java {
+    toolchain {
+      languageVersion.set(JavaLanguageVersion.of(17))
+    }
+  }
+
   packaging {
     resources {
       excludes += setOf(
@@ -84,7 +92,7 @@ androidComponents {
         val versionName = output.versionName.orNull ?: "0"
         val buildType = variant.buildType
 
-        val outputFileName = "openclaw-${versionName}-${buildType}.apk"
+        val outputFileName = "agdi-${versionName}-${buildType}.apk"
         output.outputFileName = outputFileName
       }
   }
