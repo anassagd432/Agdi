@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Architecture — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="active" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway architecture</h1>
+<p>Last updated: 2026-01-22</p>
+<h2>Overview</h2>
+<ul>
+<li>A single long‑lived <strong>Gateway</strong> owns all messaging surfaces (WhatsApp via
+Baileys, Telegram via grammY, Slack, Discord, Signal, iMessage, WebChat).</li>
+<li>Control-plane clients (macOS app, CLI, web UI, automations) connect to the
+Gateway over <strong>WebSocket</strong> on the configured bind host (default
+<code>127.0.0.1:18789</code>).</li>
+<li><strong>Nodes</strong> (macOS/iOS/Android/headless) also connect over <strong>WebSocket</strong>, but
+declare <code>role: node</code> with explicit caps/commands.</li>
+<li>One Gateway per host; it is the only place that opens a WhatsApp session.</li>
+<li>The <strong>canvas host</strong> is served by the Gateway HTTP server under:<ul>
+<li><code>/__agdi__/canvas/</code> (agent-editable HTML/CSS/JS)</li>
+<li><code>/__agdi__/a2ui/</code> (A2UI host)
+It uses the same port as the Gateway (default <code>18789</code>).</li>
+</ul>
+</li>
+</ul>
+<h2>Components and flows</h2>
+<h3>Gateway (daemon)</h3>
+<ul>
+<li>Maintains provider connections.</li>
+<li>Exposes a typed WS API (requests, responses, server‑push events).</li>
+<li>Validates inbound frames against JSON Schema.</li>
+<li>Emits events like <code>agent</code>, <code>chat</code>, <code>presence</code>, <code>health</code>, <code>heartbeat</code>, <code>cron</code>.</li>
+</ul>
+<h3>Clients (mac app / CLI / web admin)</h3>
+<ul>
+<li>One WS connection per client.</li>
+<li>Send requests (<code>health</code>, <code>status</code>, <code>send</code>, <code>agent</code>, <code>system-presence</code>).</li>
+<li>Subscribe to events (<code>tick</code>, <code>agent</code>, <code>presence</code>, <code>shutdown</code>).</li>
+</ul>
+<h3>Nodes (macOS / iOS / Android / headless)</h3>
+<ul>
+<li>Connect to the <strong>same WS server</strong> with <code>role: node</code>.</li>
+<li>Provide a device identity in <code>connect</code>; pairing is <strong>device‑based</strong> (role <code>node</code>) and
+approval lives in the device pairing store.</li>
+<li>Expose commands like <code>canvas.*</code>, <code>camera.*</code>, <code>screen.record</code>, <code>location.get</code>.</li>
+</ul>
+<p>Protocol details:</p>
+<ul>
+<li><a href="/gateway/protocol">Gateway protocol</a></li>
+</ul>
+<h3>WebChat</h3>
+<ul>
+<li>Static UI that uses the Gateway WS API for chat history and sends.</li>
+<li>In remote setups, connects through the same SSH/Tailscale tunnel as other
+clients.</li>
+</ul>
+<h2>Connection lifecycle (single client)</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Client
+    participant Gateway
+
+    Client-&gt;&gt;Gateway: req:connect
+    Gateway--&gt;&gt;Client: res (ok)
+    Note right of Gateway: or res error + close
+    Note left of Client: payload=hello-ok&lt;br&gt;snapshot: presence + health
+
+    Gateway--&gt;&gt;Client: event:presence
+    Gateway--&gt;&gt;Client: event:tick
+
+    Client-&gt;&gt;Gateway: req:agent
+    Gateway--&gt;&gt;Client: res:agent&lt;br&gt;ack {runId, status:&quot;accepted&quot;}
+    Gateway--&gt;&gt;Client: event:agent&lt;br&gt;(streaming)
+    Gateway--&gt;&gt;Client: res:agent&lt;br&gt;final {runId, status, summary}
+</code></pre>
+<h2>Wire protocol (summary)</h2>
+<ul>
+<li>Transport: WebSocket, text frames with JSON payloads.</li>
+<li>First frame <strong>must</strong> be <code>connect</code>.</li>
+<li>After handshake:<ul>
+<li>Requests: <code>{type:&quot;req&quot;, id, method, params}</code> → <code>{type:&quot;res&quot;, id, ok, payload|error}</code></li>
+<li>Events: <code>{type:&quot;event&quot;, event, payload, seq?, stateVersion?}</code></li>
+</ul>
+</li>
+<li>If <code>AGDI_GATEWAY_TOKEN</code> (or <code>--token</code>) is set, <code>connect.params.auth.token</code>
+must match or the socket closes.</li>
+<li>Idempotency keys are required for side‑effecting methods (<code>send</code>, <code>agent</code>) to
+safely retry; the server keeps a short‑lived dedupe cache.</li>
+<li>Nodes must include <code>role: &quot;node&quot;</code> plus caps/commands/permissions in <code>connect</code>.</li>
+</ul>
+<h2>Pairing + local trust</h2>
+<ul>
+<li>All WS clients (operators + nodes) include a <strong>device identity</strong> on <code>connect</code>.</li>
+<li>New device IDs require pairing approval; the Gateway issues a <strong>device token</strong>
+for subsequent connects.</li>
+<li><strong>Local</strong> connects (loopback or the gateway host’s own tailnet address) can be
+auto‑approved to keep same‑host UX smooth.</li>
+<li><strong>Non‑local</strong> connects must sign the <code>connect.challenge</code> nonce and require
+explicit approval.</li>
+<li>Gateway auth (<code>gateway.auth.*</code>) still applies to <strong>all</strong> connections, local or
+remote.</li>
+</ul>
+<p>Details: <a href="/gateway/protocol">Gateway protocol</a>, <a href="/channels/pairing">Pairing</a>,
+<a href="/gateway/security">Security</a>.</p>
+<h2>Protocol typing and codegen</h2>
+<ul>
+<li>TypeBox schemas define the protocol.</li>
+<li>JSON Schema is generated from those schemas.</li>
+<li>Swift models are generated from the JSON Schema.</li>
+</ul>
+<h2>Remote access</h2>
+<ul>
+<li><p>Preferred: Tailscale or VPN.</p>
+</li>
+<li><p>Alternative: SSH tunnel</p>
+<pre><code class="language-bash">ssh -N -L 18789:127.0.0.1:18789 user@host
+</code></pre>
+</li>
+<li><p>The same handshake + auth token apply over the tunnel.</p>
+</li>
+<li><p>TLS + optional pinning can be enabled for WS in remote setups.</p>
+</li>
+</ul>
+<h2>Operations snapshot</h2>
+<ul>
+<li>Start: <code>agdi gateway</code> (foreground, logs to stdout).</li>
+<li>Health: <code>health</code> over WS (also included in <code>hello-ok</code>).</li>
+<li>Supervision: launchd/systemd for auto‑restart.</li>
+</ul>
+<h2>Invariants</h2>
+<ul>
+<li>Exactly one Gateway controls a single Baileys session per host.</li>
+<li>Handshake is mandatory; any non‑JSON or non‑connect first frame is a hard close.</li>
+<li>Events are not replayed; clients must refresh on gaps.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

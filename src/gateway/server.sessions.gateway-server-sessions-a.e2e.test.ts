@@ -75,7 +75,7 @@ describe("gateway server sessions", () => {
   });
 
   test("lists and patches session store via sessions.* RPC", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     const now = Date.now();
     const recent = now - 30_000;
@@ -375,7 +375,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.preview returns transcript previews", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-preview-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-preview-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
     const sessionId = "sess-preview";
@@ -420,7 +420,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.preview resolves legacy mixed-case main alias with custom mainKey", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-preview-alias-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-preview-alias-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
     testState.agentsConfig = { list: [{ id: "ops", default: true }] };
@@ -466,7 +466,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.resolve and mutators clean legacy main-alias ghost keys", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-cleanup-alias-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-cleanup-alias-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
     testState.agentsConfig = { list: [{ id: "ops", default: true }] };
@@ -543,7 +543,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.delete rejects main and aborts active runs", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
 
@@ -597,7 +597,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.reset aborts active runs and clears queues", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
 
@@ -642,7 +642,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.reset emits internal command hook with reason", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
 
@@ -679,7 +679,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.reset returns unavailable when active run does not stop", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
 
@@ -728,7 +728,7 @@ describe("gateway server sessions", () => {
   });
 
   test("sessions.delete returns unavailable when active run does not stop", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-sessions-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-sessions-"));
     const storePath = path.join(dir, "sessions.json");
     testState.sessionStorePath = storePath;
 

@@ -83,6 +83,7 @@ export type GatewayRequestContext = {
     prompter: import("../../wizard/prompts.js").WizardPrompter,
   ) => Promise<void>;
   broadcastVoiceWakeChanged: (triggers: string[]) => void;
+  getJarvis?: () => import("../../autonomous/jarvis/jarvis-daemon.js").JarvisDaemon | null;
 };
 
 export type GatewayRequestOptions = {

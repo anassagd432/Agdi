@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../../config/config.js";
+import type { AGDIConfig } from "../../config/config.js";
 import { createModelSelectionState } from "./model-selection.js";
 
 vi.mock("../../agents/model-catalog.js", () => ({
@@ -23,7 +23,7 @@ describe("createModelSelectionState parent inheritance", () => {
   const defaultModel = "gpt-4o-mini";
 
   async function resolveState(params: {
-    cfg: OpenClawConfig;
+    cfg: AGDIConfig;
     sessionEntry: ReturnType<typeof makeEntry>;
     sessionStore: Record<string, ReturnType<typeof makeEntry>>;
     sessionKey: string;
@@ -45,7 +45,7 @@ describe("createModelSelectionState parent inheritance", () => {
   }
 
   it("inherits parent override from explicit parentSessionKey", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const parentKey = "agent:main:discord:channel:c1";
     const sessionKey = "agent:main:discord:channel:c1:thread:123";
     const parentEntry = makeEntry({
@@ -71,7 +71,7 @@ describe("createModelSelectionState parent inheritance", () => {
   });
 
   it("derives parent key from topic session suffix", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const parentKey = "agent:main:telegram:group:123";
     const sessionKey = "agent:main:telegram:group:123:topic:99";
     const parentEntry = makeEntry({
@@ -96,7 +96,7 @@ describe("createModelSelectionState parent inheritance", () => {
   });
 
   it("prefers child override over parent", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const parentKey = "agent:main:telegram:group:123";
     const sessionKey = "agent:main:telegram:group:123:topic:99";
     const parentEntry = makeEntry({
@@ -132,7 +132,7 @@ describe("createModelSelectionState parent inheritance", () => {
           },
         },
       },
-    } as OpenClawConfig;
+    } as AGDIConfig;
     const parentKey = "agent:main:slack:channel:c1";
     const sessionKey = "agent:main:slack:channel:c1:thread:123";
     const parentEntry = makeEntry({
@@ -157,7 +157,7 @@ describe("createModelSelectionState parent inheritance", () => {
   });
 
   it("applies stored override when heartbeat override was not resolved", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:discord:channel:c1";
     const sessionEntry = makeEntry({
       providerOverride: "openai",
@@ -186,7 +186,7 @@ describe("createModelSelectionState parent inheritance", () => {
   });
 
   it("skips stored override when heartbeat override was resolved", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:discord:channel:c1";
     const sessionEntry = makeEntry({
       providerOverride: "openai",
@@ -220,7 +220,7 @@ describe("createModelSelectionState respects session model override", () => {
   const defaultModel = "deepseek-v3-4bit-mlx";
 
   it("applies session modelOverride when set", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:main";
     const sessionEntry = makeEntry({
       providerOverride: "kimi-coding",
@@ -246,7 +246,7 @@ describe("createModelSelectionState respects session model override", () => {
   });
 
   it("falls back to default when no modelOverride is set", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:main";
     const sessionEntry = makeEntry();
     const sessionStore = { [sessionKey]: sessionEntry };
@@ -270,7 +270,7 @@ describe("createModelSelectionState respects session model override", () => {
 
   it("respects modelOverride even when session model field differs", async () => {
     // From issue #14783: stored override should beat last-used fallback model.
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:main";
     const sessionEntry = makeEntry({
       model: "k2p5",
@@ -299,7 +299,7 @@ describe("createModelSelectionState respects session model override", () => {
   });
 
   it("uses default provider when providerOverride is not set but modelOverride is", async () => {
-    const cfg = {} as OpenClawConfig;
+    const cfg = {} as AGDIConfig;
     const sessionKey = "agent:main:main";
     const sessionEntry = makeEntry({
       modelOverride: "deepseek-v3-4bit-mlx",

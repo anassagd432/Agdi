@@ -2,12 +2,12 @@
   "name": "@openclaw/imessage",
   "version": "2026.2.16",
   "private": true,
-  "description": "OpenClaw iMessage channel plugin",
+  "description": "AGDI iMessage channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "agdi": "workspace:*"
   },
-  "openclaw": {
+  "agdi": {
     "extensions": [
       "./index.ts"
     ]

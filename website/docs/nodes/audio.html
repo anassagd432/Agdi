@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio and Voice Notes — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="active" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Audio / Voice Notes — 2026-01-17</h1>
+<h2>What works</h2>
+<ul>
+<li><strong>Media understanding (audio)</strong>: If audio understanding is enabled (or auto‑detected), AGDI:<ol>
+<li>Locates the first audio attachment (local path or URL) and downloads it if needed.</li>
+<li>Enforces <code>maxBytes</code> before sending to each model entry.</li>
+<li>Runs the first eligible model entry in order (provider or CLI).</li>
+<li>If it fails or skips (size/timeout), it tries the next entry.</li>
+<li>On success, it replaces <code>Body</code> with an <code>[Audio]</code> block and sets <code>{{Transcript}}</code>.</li>
+</ol>
+</li>
+<li><strong>Command parsing</strong>: When transcription succeeds, <code>CommandBody</code>/<code>RawBody</code> are set to the transcript so slash commands still work.</li>
+<li><strong>Verbose logging</strong>: In <code>--verbose</code>, we log when transcription runs and when it replaces the body.</li>
+</ul>
+<h2>Auto-detection (default)</h2>
+<p>If you <strong>don’t configure models</strong> and <code>tools.media.audio.enabled</code> is <strong>not</strong> set to <code>false</code>,
+AGDI auto-detects in this order and stops at the first working option:</p>
+<ol>
+<li><strong>Local CLIs</strong> (if installed)<ul>
+<li><code>sherpa-onnx-offline</code> (requires <code>SHERPA_ONNX_MODEL_DIR</code> with encoder/decoder/joiner/tokens)</li>
+<li><code>whisper-cli</code> (from <code>whisper-cpp</code>; uses <code>WHISPER_CPP_MODEL</code> or the bundled tiny model)</li>
+<li><code>whisper</code> (Python CLI; downloads models automatically)</li>
+</ul>
+</li>
+<li><strong>Gemini CLI</strong> (<code>gemini</code>) using <code>read_many_files</code></li>
+<li><strong>Provider keys</strong> (OpenAI → Groq → Deepgram → Google)</li>
+</ol>
+<p>To disable auto-detection, set <code>tools.media.audio.enabled: false</code>.
+To customize, set <code>tools.media.audio.models</code>.
+Note: Binary detection is best-effort across macOS/Linux/Windows; ensure the CLI is on <code>PATH</code> (we expand <code>~</code>), or set an explicit CLI model with a full command path.</p>
+<h2>Config examples</h2>
+<h3>Provider + CLI fallback (OpenAI + Whisper CLI)</h3>
+<pre><code class="language-json5">{
+  tools: {
+    media: {
+      audio: {
+        enabled: true,
+        maxBytes: 20971520,
+        models: [
+          { provider: &quot;openai&quot;, model: &quot;gpt-4o-mini-transcribe&quot; },
+          {
+            type: &quot;cli&quot;,
+            command: &quot;whisper&quot;,
+            args: [&quot;--model&quot;, &quot;base&quot;, &quot;{{MediaPath}}&quot;],
+            timeoutSeconds: 45,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Provider-only with scope gating</h3>
+<pre><code class="language-json5">{
+  tools: {
+    media: {
+      audio: {
+        enabled: true,
+        scope: {
+          default: &quot;allow&quot;,
+          rules: [{ action: &quot;deny&quot;, match: { chatType: &quot;group&quot; } }],
+        },
+        models: [{ provider: &quot;openai&quot;, model: &quot;gpt-4o-mini-transcribe&quot; }],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Provider-only (Deepgram)</h3>
+<pre><code class="language-json5">{
+  tools: {
+    media: {
+      audio: {
+        enabled: true,
+        models: [{ provider: &quot;deepgram&quot;, model: &quot;nova-3&quot; }],
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Notes &amp; limits</h2>
+<ul>
+<li>Provider auth follows the standard model auth order (auth profiles, env vars, <code>models.providers.*.apiKey</code>).</li>
+<li>Deepgram picks up <code>DEEPGRAM_API_KEY</code> when <code>provider: &quot;deepgram&quot;</code> is used.</li>
+<li>Deepgram setup details: <a href="/docs/providers/deepgram">Deepgram (audio transcription)</a>.</li>
+<li>Audio providers can override <code>baseUrl</code>, <code>headers</code>, and <code>providerOptions</code> via <code>tools.media.audio</code>.</li>
+<li>Default size cap is 20MB (<code>tools.media.audio.maxBytes</code>). Oversize audio is skipped for that model and the next entry is tried.</li>
+<li>Default <code>maxChars</code> for audio is <strong>unset</strong> (full transcript). Set <code>tools.media.audio.maxChars</code> or per-entry <code>maxChars</code> to trim output.</li>
+<li>OpenAI auto default is <code>gpt-4o-mini-transcribe</code>; set <code>model: &quot;gpt-4o-transcribe&quot;</code> for higher accuracy.</li>
+<li>Use <code>tools.media.audio.attachments</code> to process multiple voice notes (<code>mode: &quot;all&quot;</code> + <code>maxAttachments</code>).</li>
+<li>Transcript is available to templates as <code>{{Transcript}}</code>.</li>
+<li>CLI stdout is capped (5MB); keep CLI output concise.</li>
+</ul>
+<h2>Mention Detection in Groups</h2>
+<p>When <code>requireMention: true</code> is set for a group chat, AGDI now transcribes audio <strong>before</strong> checking for mentions. This allows voice notes to be processed even when they contain mentions.</p>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>If a voice message has no text body and the group requires mentions, AGDI performs a &quot;preflight&quot; transcription.</li>
+<li>The transcript is checked for mention patterns (e.g., <code>@BotName</code>, emoji triggers).</li>
+<li>If a mention is found, the message proceeds through the full reply pipeline.</li>
+<li>The transcript is used for mention detection so voice notes can pass the mention gate.</li>
+</ol>
+<p><strong>Fallback behavior:</strong></p>
+<ul>
+<li>If transcription fails during preflight (timeout, API error, etc.), the message is processed based on text-only mention detection.</li>
+<li>This ensures that mixed messages (text + audio) are never incorrectly dropped.</li>
+</ul>
+<p><strong>Example:</strong> A user sends a voice note saying &quot;Hey @Claude, what&#39;s the weather?&quot; in a Telegram group with <code>requireMention: true</code>. The voice note is transcribed, the mention is detected, and the agent replies.</p>
+<h2>Gotchas</h2>
+<ul>
+<li>Scope rules use first-match wins. <code>chatType</code> is normalized to <code>direct</code>, <code>group</code>, or <code>room</code>.</li>
+<li>Ensure your CLI exits 0 and prints plain text; JSON needs to be massaged via <code>jq -r .text</code>.</li>
+<li>Keep timeouts reasonable (<code>timeoutSeconds</code>, default 60s) to avoid blocking the reply queue.</li>
+<li>Preflight transcription only processes the <strong>first</strong> audio attachment for mention detection. Additional audio is processed during the main media understanding phase.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

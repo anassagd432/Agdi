@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iMessage — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="active" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>iMessage (legacy: imsg)</h1>
+<p>For new iMessage deployments, use <a href="/docs/channels/bluebubbles">BlueBubbles</a>.</p>
+<p>The <code>imsg</code> integration is legacy and may be removed in a future release.</p>
+<p>Status: legacy external CLI integration. Gateway spawns <code>imsg rpc</code> and communicates over JSON-RPC on stdio (no separate daemon/port).</p>
+<CardGroup cols={3}>
+  <Card title="BlueBubbles (recommended)" icon="message-circle" href="/docs/channels/bluebubbles">
+    Preferred iMessage path for new setups.
+  </Card>
+  <Card title="Pairing" icon="link" href="/docs/channels/pairing">
+    iMessage DMs default to pairing mode.
+  </Card>
+  <Card title="Configuration reference" icon="settings" href="/docs/gateway/configuration-reference#imessage">
+    Full iMessage field reference.
+  </Card>
+</CardGroup>
+
+<h2>Quick setup</h2>
+<pre><code class="language-bash">brew install steipete/tap/imsg
+imsg rpc --help
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    imessage: {
+      enabled: true,
+      cliPath: &quot;/usr/local/bin/imsg&quot;,
+      dbPath: &quot;/Users/&lt;you&gt;/Library/Messages/chat.db&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<pre><code class="language-bash">agdi pairing list imessage
+agdi pairing approve imessage &lt;CODE&gt;
+</code></pre>
+<pre><code>    Pairing requests expire after 1 hour.
+  
+
+
+
+
+
+AGDI only requires a stdio-compatible `cliPath`, so you can point `cliPath` at a wrapper script that SSHes to a remote Mac and runs `imsg`.
+</code></pre>
+<pre><code class="language-bash">#!/usr/bin/env bash
+exec ssh -T gateway-host imsg &quot;$@&quot;
+</code></pre>
+<pre><code>Recommended config when attachments are enabled:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    imessage: {
+      enabled: true,
+      cliPath: &quot;~/.agdi/scripts/imsg-ssh&quot;,
+      remoteHost: &quot;user@gateway-host&quot;, // used for SCP attachment fetches
+      includeAttachments: true,
+    },
+  },
+}
+</code></pre>
+<pre><code>If `remoteHost` is not set, AGDI attempts to auto-detect it by parsing the SSH wrapper script.
+</code></pre>
+<h2>Requirements and permissions (macOS)</h2>
+<ul>
+<li>Messages must be signed in on the Mac running <code>imsg</code>.</li>
+<li>Full Disk Access is required for the process context running AGDI/<code>imsg</code> (Messages DB access).</li>
+<li>Automation permission is required to send messages through Messages.app.</li>
+</ul>
+<p>Permissions are granted per process context. If gateway runs headless (LaunchAgent/SSH), run a one-time interactive command in that same context to trigger prompts:</p>
+<pre><code class="language-bash">imsg chats --limit 1
+# or
+imsg send &lt;handle&gt; &quot;test&quot;
+</code></pre>
+<h2>Access control and routing</h2>
+<pre><code>`channels.imessage.dmPolicy` controls direct messages:
+
+- `pairing` (default)
+- `allowlist`
+- `open` (requires `allowFrom` to include `&quot;*&quot;`)
+- `disabled`
+
+Allowlist field: `channels.imessage.allowFrom`.
+
+Allowlist entries can be handles or chat targets (`chat_id:*`, `chat_guid:*`, `chat_identifier:*`).
+
+
+
+
+`channels.imessage.groupPolicy` controls group handling:
+
+- `allowlist` (default when configured)
+- `open`
+- `disabled`
+
+Group sender allowlist: `channels.imessage.groupAllowFrom`.
+
+Runtime fallback: if `groupAllowFrom` is unset, iMessage group sender checks fall back to `allowFrom` when available.
+
+Mention gating for groups:
+
+- iMessage has no native mention metadata
+- mention detection uses regex patterns (`agents.list[].groupChat.mentionPatterns`, fallback `messages.groupChat.mentionPatterns`)
+- with no configured patterns, mention gating cannot be enforced
+
+Control commands from authorized senders can bypass mention gating in groups.
+
+
+
+
+- DMs use direct routing; groups use group routing.
+- With default `session.dmScope=main`, iMessage DMs collapse into the agent main session.
+- Group sessions are isolated (`agent:&lt;agentId&gt;:imessage:group:&lt;chat_id&gt;`).
+- Replies route back to iMessage using originating channel/target metadata.
+
+Group-ish thread behavior:
+
+Some multi-participant iMessage threads can arrive with `is_group=false`.
+If that `chat_id` is explicitly configured under `channels.imessage.groups`, AGDI treats it as group traffic (group gating + group session isolation).
+</code></pre>
+<h2>Deployment patterns</h2>
+<pre><code>Use a dedicated Apple ID and macOS user so bot traffic is isolated from your personal Messages profile.
+
+Typical flow:
+
+1. Create/sign in a dedicated macOS user.
+2. Sign into Messages with the bot Apple ID in that user.
+3. Install `imsg` in that user.
+4. Create SSH wrapper so AGDI can run `imsg` in that user context.
+5. Point `channels.imessage.accounts.&lt;id&gt;.cliPath` and `.dbPath` to that user profile.
+
+First run may require GUI approvals (Automation + Full Disk Access) in that bot user session.
+
+
+
+
+Common topology:
+
+- gateway runs on Linux/VM
+- iMessage + `imsg` runs on a Mac in your tailnet
+- `cliPath` wrapper uses SSH to run `imsg`
+- `remoteHost` enables SCP attachment fetches
+
+Example:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    imessage: {
+      enabled: true,
+      cliPath: &quot;~/.agdi/scripts/imsg-ssh&quot;,
+      remoteHost: &quot;bot@mac-mini.tailnet-1234.ts.net&quot;,
+      includeAttachments: true,
+      dbPath: &quot;/Users/bot/Library/Messages/chat.db&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code class="language-bash">#!/usr/bin/env bash
+exec ssh -T bot@mac-mini.tailnet-1234.ts.net imsg &quot;$@&quot;
+</code></pre>
+<pre><code>Use SSH keys so both SSH and SCP are non-interactive.
+
+
+
+
+iMessage supports per-account config under `channels.imessage.accounts`.
+
+Each account can override fields such as `cliPath`, `dbPath`, `allowFrom`, `groupPolicy`, `mediaMaxMb`, and history settings.
+</code></pre>
+<h2>Media, chunking, and delivery targets</h2>
+<pre><code>- inbound attachment ingestion is optional: `channels.imessage.includeAttachments`
+- remote attachment paths can be fetched via SCP when `remoteHost` is set
+- outbound media size uses `channels.imessage.mediaMaxMb` (default 16 MB)
+
+
+
+- text chunk limit: `channels.imessage.textChunkLimit` (default 4000)
+- chunk mode: `channels.imessage.chunkMode`
+  - `length` (default)
+  - `newline` (paragraph-first splitting)
+
+
+
+Preferred explicit targets:
+
+- `chat_id:123` (recommended for stable routing)
+- `chat_guid:...`
+- `chat_identifier:...`
+
+Handle targets are also supported:
+
+- `imessage:+1555...`
+- `sms:+1555...`
+- `user@example.com`
+</code></pre>
+<pre><code class="language-bash">imsg chats --limit 20
+</code></pre>
+<h2>Config writes</h2>
+<p>iMessage allows channel-initiated config writes by default (for <code>/config set|unset</code> when <code>commands.config: true</code>).</p>
+<p>Disable:</p>
+<pre><code class="language-json5">{
+  channels: {
+    imessage: {
+      configWrites: false,
+    },
+  },
+}
+</code></pre>
+<h2>Troubleshooting</h2>
+<pre><code>Validate the binary and RPC support:
+</code></pre>
+<pre><code class="language-bash">imsg rpc --help
+agdi channels status --probe
+</code></pre>
+<pre><code>If probe reports RPC unsupported, update `imsg`.
+
+
+
+
+Check:
+
+- `channels.imessage.dmPolicy`
+- `channels.imessage.allowFrom`
+- pairing approvals (`agdi pairing list imessage`)
+
+
+
+
+Check:
+
+- `channels.imessage.groupPolicy`
+- `channels.imessage.groupAllowFrom`
+- `channels.imessage.groups` allowlist behavior
+- mention pattern configuration (`agents.list[].groupChat.mentionPatterns`)
+
+
+
+
+Check:
+
+- `channels.imessage.remoteHost`
+- SSH/SCP key auth from the gateway host
+- remote path readability on the Mac running Messages
+
+
+
+
+Re-run in an interactive GUI terminal in the same user/session context and approve prompts:
+</code></pre>
+<pre><code class="language-bash">imsg chats --limit 1
+imsg send &lt;handle&gt; &quot;test&quot;
+</code></pre>
+<pre><code>Confirm Full Disk Access + Automation are granted for the process context that runs AGDI/`imsg`.
+</code></pre>
+<h2>Configuration reference pointers</h2>
+<ul>
+<li><a href="/docs/gateway/configuration-reference#imessage">Configuration reference - iMessage</a></li>
+<li><a href="/docs/gateway/configuration">Gateway configuration</a></li>
+<li><a href="/docs/channels/pairing">Pairing</a></li>
+<li><a href="/docs/channels/bluebubbles">BlueBubbles</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

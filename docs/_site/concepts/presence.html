@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presence — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="active" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Presence</h1>
+<p>AGDI “presence” is a lightweight, best‑effort view of:</p>
+<ul>
+<li>the <strong>Gateway</strong> itself, and</li>
+<li><strong>clients connected to the Gateway</strong> (mac app, WebChat, CLI, etc.)</li>
+</ul>
+<p>Presence is used primarily to render the macOS app’s <strong>Instances</strong> tab and to
+provide quick operator visibility.</p>
+<h2>Presence fields (what shows up)</h2>
+<p>Presence entries are structured objects with fields like:</p>
+<ul>
+<li><code>instanceId</code> (optional but strongly recommended): stable client identity (usually <code>connect.client.instanceId</code>)</li>
+<li><code>host</code>: human‑friendly host name</li>
+<li><code>ip</code>: best‑effort IP address</li>
+<li><code>version</code>: client version string</li>
+<li><code>deviceFamily</code> / <code>modelIdentifier</code>: hardware hints</li>
+<li><code>mode</code>: <code>ui</code>, <code>webchat</code>, <code>cli</code>, <code>backend</code>, <code>probe</code>, <code>test</code>, <code>node</code>, ...</li>
+<li><code>lastInputSeconds</code>: “seconds since last user input” (if known)</li>
+<li><code>reason</code>: <code>self</code>, <code>connect</code>, <code>node-connected</code>, <code>periodic</code>, ...</li>
+<li><code>ts</code>: last update timestamp (ms since epoch)</li>
+</ul>
+<h2>Producers (where presence comes from)</h2>
+<p>Presence entries are produced by multiple sources and <strong>merged</strong>.</p>
+<h3>1) Gateway self entry</h3>
+<p>The Gateway always seeds a “self” entry at startup so UIs show the gateway host
+even before any clients connect.</p>
+<h3>2) WebSocket connect</h3>
+<p>Every WS client begins with a <code>connect</code> request. On successful handshake the
+Gateway upserts a presence entry for that connection.</p>
+<h4>Why one‑off CLI commands don’t show up</h4>
+<p>The CLI often connects for short, one‑off commands. To avoid spamming the
+Instances list, <code>client.mode === &quot;cli&quot;</code> is <strong>not</strong> turned into a presence entry.</p>
+<h3>3) <code>system-event</code> beacons</h3>
+<p>Clients can send richer periodic beacons via the <code>system-event</code> method. The mac
+app uses this to report host name, IP, and <code>lastInputSeconds</code>.</p>
+<h3>4) Node connects (role: node)</h3>
+<p>When a node connects over the Gateway WebSocket with <code>role: node</code>, the Gateway
+upserts a presence entry for that node (same flow as other WS clients).</p>
+<h2>Merge + dedupe rules (why <code>instanceId</code> matters)</h2>
+<p>Presence entries are stored in a single in‑memory map:</p>
+<ul>
+<li>Entries are keyed by a <strong>presence key</strong>.</li>
+<li>The best key is a stable <code>instanceId</code> (from <code>connect.client.instanceId</code>) that survives restarts.</li>
+<li>Keys are case‑insensitive.</li>
+</ul>
+<p>If a client reconnects without a stable <code>instanceId</code>, it may show up as a
+<strong>duplicate</strong> row.</p>
+<h2>TTL and bounded size</h2>
+<p>Presence is intentionally ephemeral:</p>
+<ul>
+<li><strong>TTL:</strong> entries older than 5 minutes are pruned</li>
+<li><strong>Max entries:</strong> 200 (oldest dropped first)</li>
+</ul>
+<p>This keeps the list fresh and avoids unbounded memory growth.</p>
+<h2>Remote/tunnel caveat (loopback IPs)</h2>
+<p>When a client connects over an SSH tunnel / local port forward, the Gateway may
+see the remote address as <code>127.0.0.1</code>. To avoid overwriting a good client‑reported
+IP, loopback remote addresses are ignored.</p>
+<h2>Consumers</h2>
+<h3>macOS Instances tab</h3>
+<p>The macOS app renders the output of <code>system-presence</code> and applies a small status
+indicator (Active/Idle/Stale) based on the age of the last update.</p>
+<h2>Debugging tips</h2>
+<ul>
+<li>To see the raw list, call <code>system-presence</code> against the Gateway.</li>
+<li>If you see duplicates:<ul>
+<li>confirm clients send a stable <code>client.instanceId</code> in the handshake</li>
+<li>confirm periodic beacons use the same <code>instanceId</code></li>
+<li>check whether the connection‑derived entry is missing <code>instanceId</code> (duplicates are expected)</li>
+</ul>
+</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

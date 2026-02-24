@@ -240,6 +240,35 @@ function buildChatCommands(): ChatCommandDefinition[] {
       },
     }),
     defineChatCommand({
+      key: "jarvis",
+      nativeName: "jarvis",
+      description: "Control Jarvis voice assistant.",
+      textAlias: "/jarvis",
+      category: "tools",
+      args: [
+        {
+          name: "action",
+          description: "Jarvis action",
+          type: "string",
+          choices: [
+            { value: "start", label: "Start" },
+            { value: "stop", label: "Stop" },
+            { value: "status", label: "Status" },
+            { value: "help", label: "Help" },
+          ],
+        },
+      ],
+      argsMenu: {
+        arg: "action",
+        title:
+          "Jarvis Voice Assistant:\n" +
+          "• Start – Activate always-on mic listening\n" +
+          "• Stop – Deactivate Jarvis\n" +
+          "• Status – Show current Jarvis state\n" +
+          "• Help – Show usage guide",
+      },
+    }),
+    defineChatCommand({
       key: "whoami",
       nativeName: "whoami",
       description: "Show your sender id.",
@@ -390,7 +419,7 @@ function buildChatCommands(): ChatCommandDefinition[] {
     defineChatCommand({
       key: "restart",
       nativeName: "restart",
-      description: "Restart OpenClaw.",
+      description: "Restart AGDI.",
       textAlias: "/restart",
       category: "tools",
     }),

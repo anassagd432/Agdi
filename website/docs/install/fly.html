@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fly.io — AGDI Docs</title>
+  <meta name="description" content="Deploy AGDI on Fly.io">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab active" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/docs/install/index.html">Install</a></li><li><a class="" href="/docs/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/docs/install/docker.html">Docker</a></li><li><a class="" href="/docs/install/podman.html">Podman</a></li><li><a class="" href="/docs/install/nix.html">Nix</a></li><li><a class="" href="/docs/install/ansible.html">Ansible</a></li><li><a class="" href="/docs/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/docs/install/updating.html">Updating</a></li><li><a class="" href="/docs/install/migrating.html">Migration Guide</a></li><li><a class="" href="/docs/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="active" href="/docs/install/fly.html">Fly.io</a></li><li><a class="" href="/docs/install/hetzner.html">Hetzner</a></li><li><a class="" href="/docs/install/gcp.html">GCP</a></li><li><a class="" href="/docs/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/docs/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/docs/install/railway.html">railway</a></li><li><a class="" href="/docs/install/render.html">render</a></li><li><a class="" href="/docs/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/docs/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Fly.io Deployment</h1>
+<p><strong>Goal:</strong> AGDI Gateway running on a <a href="https://fly.io">Fly.io</a> machine with persistent storage, automatic HTTPS, and Discord/channel access.</p>
+<h2>What you need</h2>
+<ul>
+<li><a href="https://fly.io/docs/hands-on/install-flyctl/">flyctl CLI</a> installed</li>
+<li>Fly.io account (free tier works)</li>
+<li>Model auth: Anthropic API key (or other provider keys)</li>
+<li>Channel credentials: Discord bot token, Telegram token, etc.</li>
+</ul>
+<h2>Beginner quick path</h2>
+<ol>
+<li>Clone repo → customize <code>fly.toml</code></li>
+<li>Create app + volume → set secrets</li>
+<li>Deploy with <code>fly deploy</code></li>
+<li>SSH in to create config or use Control UI</li>
+</ol>
+<h2>1) Create the Fly app</h2>
+<pre><code class="language-bash"># Clone the repo
+git clone https://github.com/agdi/agdi.git
+cd agdi
+
+# Create a new Fly app (pick your own name)
+fly apps create my-agdi
+
+# Create a persistent volume (1GB is usually enough)
+fly volumes create agdi_data --size 1 --region iad
+</code></pre>
+<p><strong>Tip:</strong> Choose a region close to you. Common options: <code>lhr</code> (London), <code>iad</code> (Virginia), <code>sjc</code> (San Jose).</p>
+<h2>2) Configure fly.toml</h2>
+<p>Edit <code>fly.toml</code> to match your app name and requirements.</p>
+<p><strong>Security note:</strong> The default config exposes a public URL. For a hardened deployment with no public IP, see <a href="#private-deployment-hardened">Private Deployment</a> or use <code>fly.private.toml</code>.</p>
+<pre><code class="language-toml">app = &quot;my-agdi&quot;  # Your app name
+primary_region = &quot;iad&quot;
+
+[build]
+  dockerfile = &quot;Dockerfile&quot;
+
+[env]
+  NODE_ENV = &quot;production&quot;
+  AGDI_PREFER_PNPM = &quot;1&quot;
+  AGDI_STATE_DIR = &quot;/data&quot;
+  NODE_OPTIONS = &quot;--max-old-space-size=1536&quot;
+
+[processes]
+  app = &quot;node dist/index.js gateway --allow-unconfigured --port 3000 --bind lan&quot;
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = [&quot;app&quot;]
+
+[[vm]]
+  size = &quot;shared-cpu-2x&quot;
+  memory = &quot;2048mb&quot;
+
+[mounts]
+  source = &quot;agdi_data&quot;
+  destination = &quot;/data&quot;
+</code></pre>
+<p><strong>Key settings:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--bind lan</code></td>
+<td>Binds to <code>0.0.0.0</code> so Fly&#39;s proxy can reach the gateway</td>
+</tr>
+<tr>
+<td><code>--allow-unconfigured</code></td>
+<td>Starts without a config file (you&#39;ll create one after)</td>
+</tr>
+<tr>
+<td><code>internal_port = 3000</code></td>
+<td>Must match <code>--port 3000</code> (or <code>AGDI_GATEWAY_PORT</code>) for Fly health checks</td>
+</tr>
+<tr>
+<td><code>memory = &quot;2048mb&quot;</code></td>
+<td>512MB is too small; 2GB recommended</td>
+</tr>
+<tr>
+<td><code>AGDI_STATE_DIR = &quot;/data&quot;</code></td>
+<td>Persists state on the volume</td>
+</tr>
+</tbody></table>
+<h2>3) Set secrets</h2>
+<pre><code class="language-bash"># Required: Gateway token (for non-loopback binding)
+fly secrets set AGDI_GATEWAY_TOKEN=$(openssl rand -hex 32)
+
+# Model provider API keys
+fly secrets set ANTHROPIC_API_KEY=sk-ant-...
+
+# Optional: Other providers
+fly secrets set OPENAI_API_KEY=sk-...
+fly secrets set GOOGLE_API_KEY=...
+
+# Channel tokens
+fly secrets set DISCORD_BOT_TOKEN=MTQ...
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Non-loopback binds (<code>--bind lan</code>) require <code>AGDI_GATEWAY_TOKEN</code> for security.</li>
+<li>Treat these tokens like passwords.</li>
+<li><strong>Prefer env vars over config file</strong> for all API keys and tokens. This keeps secrets out of <code>agdi.json</code> where they could be accidentally exposed or logged.</li>
+</ul>
+<h2>4) Deploy</h2>
+<pre><code class="language-bash">fly deploy
+</code></pre>
+<p>First deploy builds the Docker image (~2-3 minutes). Subsequent deploys are faster.</p>
+<p>After deployment, verify:</p>
+<pre><code class="language-bash">fly status
+fly logs
+</code></pre>
+<p>You should see:</p>
+<pre><code>[gateway] listening on ws://0.0.0.0:3000 (PID xxx)
+[discord] logged in to discord as xxx
+</code></pre>
+<h2>5) Create config file</h2>
+<p>SSH into the machine to create a proper config:</p>
+<pre><code class="language-bash">fly ssh console
+</code></pre>
+<p>Create the config directory and file:</p>
+<pre><code class="language-bash">mkdir -p /data
+cat &gt; /data/agdi.json &lt;&lt; &#39;EOF&#39;
+{
+  &quot;agents&quot;: {
+    &quot;defaults&quot;: {
+      &quot;model&quot;: {
+        &quot;primary&quot;: &quot;anthropic/claude-opus-4-6&quot;,
+        &quot;fallbacks&quot;: [&quot;anthropic/claude-sonnet-4-5&quot;, &quot;openai/gpt-4o&quot;]
+      },
+      &quot;maxConcurrent&quot;: 4
+    },
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;main&quot;,
+        &quot;default&quot;: true
+      }
+    ]
+  },
+  &quot;auth&quot;: {
+    &quot;profiles&quot;: {
+      &quot;anthropic:default&quot;: { &quot;mode&quot;: &quot;token&quot;, &quot;provider&quot;: &quot;anthropic&quot; },
+      &quot;openai:default&quot;: { &quot;mode&quot;: &quot;token&quot;, &quot;provider&quot;: &quot;openai&quot; }
+    }
+  },
+  &quot;bindings&quot;: [
+    {
+      &quot;agentId&quot;: &quot;main&quot;,
+      &quot;match&quot;: { &quot;channel&quot;: &quot;discord&quot; }
+    }
+  ],
+  &quot;channels&quot;: {
+    &quot;discord&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;groupPolicy&quot;: &quot;allowlist&quot;,
+      &quot;guilds&quot;: {
+        &quot;YOUR_GUILD_ID&quot;: {
+          &quot;channels&quot;: { &quot;general&quot;: { &quot;allow&quot;: true } },
+          &quot;requireMention&quot;: false
+        }
+      }
+    }
+  },
+  &quot;gateway&quot;: {
+    &quot;mode&quot;: &quot;local&quot;,
+    &quot;bind&quot;: &quot;auto&quot;
+  },
+  &quot;meta&quot;: {
+    &quot;lastTouchedVersion&quot;: &quot;2026.1.29&quot;
+  }
+}
+EOF
+</code></pre>
+<p><strong>Note:</strong> With <code>AGDI_STATE_DIR=/data</code>, the config path is <code>/data/agdi.json</code>.</p>
+<p><strong>Note:</strong> The Discord token can come from either:</p>
+<ul>
+<li>Environment variable: <code>DISCORD_BOT_TOKEN</code> (recommended for secrets)</li>
+<li>Config file: <code>channels.discord.token</code></li>
+</ul>
+<p>If using env var, no need to add token to config. The gateway reads <code>DISCORD_BOT_TOKEN</code> automatically.</p>
+<p>Restart to apply:</p>
+<pre><code class="language-bash">exit
+fly machine restart &lt;machine-id&gt;
+</code></pre>
+<h2>6) Access the Gateway</h2>
+<h3>Control UI</h3>
+<p>Open in browser:</p>
+<pre><code class="language-bash">fly open
+</code></pre>
+<p>Or visit <code>https://my-agdi.fly.dev/</code></p>
+<p>Paste your gateway token (the one from <code>AGDI_GATEWAY_TOKEN</code>) to authenticate.</p>
+<h3>Logs</h3>
+<pre><code class="language-bash">fly logs              # Live logs
+fly logs --no-tail    # Recent logs
+</code></pre>
+<h3>SSH Console</h3>
+<pre><code class="language-bash">fly ssh console
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>&quot;App is not listening on expected address&quot;</h3>
+<p>The gateway is binding to <code>127.0.0.1</code> instead of <code>0.0.0.0</code>.</p>
+<p><strong>Fix:</strong> Add <code>--bind lan</code> to your process command in <code>fly.toml</code>.</p>
+<h3>Health checks failing / connection refused</h3>
+<p>Fly can&#39;t reach the gateway on the configured port.</p>
+<p><strong>Fix:</strong> Ensure <code>internal_port</code> matches the gateway port (set <code>--port 3000</code> or <code>AGDI_GATEWAY_PORT=3000</code>).</p>
+<h3>OOM / Memory Issues</h3>
+<p>Container keeps restarting or getting killed. Signs: <code>SIGABRT</code>, <code>v8::internal::Runtime_AllocateInYoungGeneration</code>, or silent restarts.</p>
+<p><strong>Fix:</strong> Increase memory in <code>fly.toml</code>:</p>
+<pre><code class="language-toml">[[vm]]
+  memory = &quot;2048mb&quot;
+</code></pre>
+<p>Or update an existing machine:</p>
+<pre><code class="language-bash">fly machine update &lt;machine-id&gt; --vm-memory 2048 -y
+</code></pre>
+<p><strong>Note:</strong> 512MB is too small. 1GB may work but can OOM under load or with verbose logging. <strong>2GB is recommended.</strong></p>
+<h3>Gateway Lock Issues</h3>
+<p>Gateway refuses to start with &quot;already running&quot; errors.</p>
+<p>This happens when the container restarts but the PID lock file persists on the volume.</p>
+<p><strong>Fix:</strong> Delete the lock file:</p>
+<pre><code class="language-bash">fly ssh console --command &quot;rm -f /data/gateway.*.lock&quot;
+fly machine restart &lt;machine-id&gt;
+</code></pre>
+<p>The lock file is at <code>/data/gateway.*.lock</code> (not in a subdirectory).</p>
+<h3>Config Not Being Read</h3>
+<p>If using <code>--allow-unconfigured</code>, the gateway creates a minimal config. Your custom config at <code>/data/agdi.json</code> should be read on restart.</p>
+<p>Verify the config exists:</p>
+<pre><code class="language-bash">fly ssh console --command &quot;cat /data/agdi.json&quot;
+</code></pre>
+<h3>Writing Config via SSH</h3>
+<p>The <code>fly ssh console -C</code> command doesn&#39;t support shell redirection. To write a config file:</p>
+<pre><code class="language-bash"># Use echo + tee (pipe from local to remote)
+echo &#39;{&quot;your&quot;:&quot;config&quot;}&#39; | fly ssh console -C &quot;tee /data/agdi.json&quot;
+
+# Or use sftp
+fly sftp shell
+&gt; put /local/path/config.json /data/agdi.json
+</code></pre>
+<p><strong>Note:</strong> <code>fly sftp</code> may fail if the file already exists. Delete first:</p>
+<pre><code class="language-bash">fly ssh console --command &quot;rm /data/agdi.json&quot;
+</code></pre>
+<h3>State Not Persisting</h3>
+<p>If you lose credentials or sessions after a restart, the state dir is writing to the container filesystem.</p>
+<p><strong>Fix:</strong> Ensure <code>AGDI_STATE_DIR=/data</code> is set in <code>fly.toml</code> and redeploy.</p>
+<h2>Updates</h2>
+<pre><code class="language-bash"># Pull latest changes
+git pull
+
+# Redeploy
+fly deploy
+
+# Check health
+fly status
+fly logs
+</code></pre>
+<h3>Updating Machine Command</h3>
+<p>If you need to change the startup command without a full redeploy:</p>
+<pre><code class="language-bash"># Get machine ID
+fly machines list
+
+# Update command
+fly machine update &lt;machine-id&gt; --command &quot;node dist/index.js gateway --port 3000 --bind lan&quot; -y
+
+# Or with memory increase
+fly machine update &lt;machine-id&gt; --vm-memory 2048 --command &quot;node dist/index.js gateway --port 3000 --bind lan&quot; -y
+</code></pre>
+<p><strong>Note:</strong> After <code>fly deploy</code>, the machine command may reset to what&#39;s in <code>fly.toml</code>. If you made manual changes, re-apply them after deploy.</p>
+<h2>Private Deployment (Hardened)</h2>
+<p>By default, Fly allocates public IPs, making your gateway accessible at <code>https://your-app.fly.dev</code>. This is convenient but means your deployment is discoverable by internet scanners (Shodan, Censys, etc.).</p>
+<p>For a hardened deployment with <strong>no public exposure</strong>, use the private template.</p>
+<h3>When to use private deployment</h3>
+<ul>
+<li>You only make <strong>outbound</strong> calls/messages (no inbound webhooks)</li>
+<li>You use <strong>ngrok or Tailscale</strong> tunnels for any webhook callbacks</li>
+<li>You access the gateway via <strong>SSH, proxy, or WireGuard</strong> instead of browser</li>
+<li>You want the deployment <strong>hidden from internet scanners</strong></li>
+</ul>
+<h3>Setup</h3>
+<p>Use <code>fly.private.toml</code> instead of the standard config:</p>
+<pre><code class="language-bash"># Deploy with private config
+fly deploy -c fly.private.toml
+</code></pre>
+<p>Or convert an existing deployment:</p>
+<pre><code class="language-bash"># List current IPs
+fly ips list -a my-agdi
+
+# Release public IPs
+fly ips release &lt;public-ipv4&gt; -a my-agdi
+fly ips release &lt;public-ipv6&gt; -a my-agdi
+
+# Switch to private config so future deploys don&#39;t re-allocate public IPs
+# (remove [http_service] or deploy with the private template)
+fly deploy -c fly.private.toml
+
+# Allocate private-only IPv6
+fly ips allocate-v6 --private -a my-agdi
+</code></pre>
+<p>After this, <code>fly ips list</code> should show only a <code>private</code> type IP:</p>
+<pre><code>VERSION  IP                   TYPE             REGION
+v6       fdaa:x:x:x:x::x      private          global
+</code></pre>
+<h3>Accessing a private deployment</h3>
+<p>Since there&#39;s no public URL, use one of these methods:</p>
+<p><strong>Option 1: Local proxy (simplest)</strong></p>
+<pre><code class="language-bash"># Forward local port 3000 to the app
+fly proxy 3000:3000 -a my-agdi
+
+# Then open http://localhost:3000 in browser
+</code></pre>
+<p><strong>Option 2: WireGuard VPN</strong></p>
+<pre><code class="language-bash"># Create WireGuard config (one-time)
+fly wireguard create
+
+# Import to WireGuard client, then access via internal IPv6
+# Example: http://[fdaa:x:x:x:x::x]:3000
+</code></pre>
+<p><strong>Option 3: SSH only</strong></p>
+<pre><code class="language-bash">fly ssh console -a my-agdi
+</code></pre>
+<h3>Webhooks with private deployment</h3>
+<p>If you need webhook callbacks (Twilio, Telnyx, etc.) without public exposure:</p>
+<ol>
+<li><strong>ngrok tunnel</strong> - Run ngrok inside the container or as a sidecar</li>
+<li><strong>Tailscale Funnel</strong> - Expose specific paths via Tailscale</li>
+<li><strong>Outbound-only</strong> - Some providers (Twilio) work fine for outbound calls without webhooks</li>
+</ol>
+<p>Example voice-call config with ngrok:</p>
+<pre><code class="language-json">{
+  &quot;plugins&quot;: {
+    &quot;entries&quot;: {
+      &quot;voice-call&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;config&quot;: {
+          &quot;provider&quot;: &quot;twilio&quot;,
+          &quot;tunnel&quot;: { &quot;provider&quot;: &quot;ngrok&quot; },
+          &quot;webhookSecurity&quot;: {
+            &quot;allowedHosts&quot;: [&quot;example.ngrok.app&quot;]
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>The ngrok tunnel runs inside the container and provides a public webhook URL without exposing the Fly app itself. Set <code>webhookSecurity.allowedHosts</code> to the public tunnel hostname so forwarded host headers are accepted.</p>
+<h3>Security benefits</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Public</th>
+<th>Private</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Internet scanners</td>
+<td>Discoverable</td>
+<td>Hidden</td>
+</tr>
+<tr>
+<td>Direct attacks</td>
+<td>Possible</td>
+<td>Blocked</td>
+</tr>
+<tr>
+<td>Control UI access</td>
+<td>Browser</td>
+<td>Proxy/VPN</td>
+</tr>
+<tr>
+<td>Webhook delivery</td>
+<td>Direct</td>
+<td>Via tunnel</td>
+</tr>
+</tbody></table>
+<h2>Notes</h2>
+<ul>
+<li>Fly.io uses <strong>x86 architecture</strong> (not ARM)</li>
+<li>The Dockerfile is compatible with both architectures</li>
+<li>For WhatsApp/Telegram onboarding, use <code>fly ssh console</code></li>
+<li>Persistent data lives on the volume at <code>/data</code></li>
+<li>Signal requires Java + signal-cli; use a custom image and keep memory at 2GB+.</li>
+</ul>
+<h2>Cost</h2>
+<p>With the recommended config (<code>shared-cpu-2x</code>, 2GB RAM):</p>
+<ul>
+<li>~$10-15/month depending on usage</li>
+<li>Free tier includes some allowance</li>
+</ul>
+<p>See <a href="https://fly.io/docs/about/pricing/">Fly.io pricing</a> for details.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

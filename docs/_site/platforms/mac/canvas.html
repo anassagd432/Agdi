@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="active" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Canvas (macOS app)</h1>
+<p>The macOS app embeds an agent‑controlled <strong>Canvas panel</strong> using <code>WKWebView</code>. It
+is a lightweight visual workspace for HTML/CSS/JS, A2UI, and small interactive
+UI surfaces.</p>
+<h2>Where Canvas lives</h2>
+<p>Canvas state is stored under Application Support:</p>
+<ul>
+<li><code>~/Library/Application Support/AGDI/canvas/&lt;session&gt;/...</code></li>
+</ul>
+<p>The Canvas panel serves those files via a <strong>custom URL scheme</strong>:</p>
+<ul>
+<li><code>agdi-canvas://&lt;session&gt;/&lt;path&gt;</code></li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>agdi-canvas://main/</code> → <code>&lt;canvasRoot&gt;/main/index.html</code></li>
+<li><code>agdi-canvas://main/assets/app.css</code> → <code>&lt;canvasRoot&gt;/main/assets/app.css</code></li>
+<li><code>agdi-canvas://main/widgets/todo/</code> → <code>&lt;canvasRoot&gt;/main/widgets/todo/index.html</code></li>
+</ul>
+<p>If no <code>index.html</code> exists at the root, the app shows a <strong>built‑in scaffold page</strong>.</p>
+<h2>Panel behavior</h2>
+<ul>
+<li>Borderless, resizable panel anchored near the menu bar (or mouse cursor).</li>
+<li>Remembers size/position per session.</li>
+<li>Auto‑reloads when local canvas files change.</li>
+<li>Only one Canvas panel is visible at a time (session is switched as needed).</li>
+</ul>
+<p>Canvas can be disabled from Settings → <strong>Allow Canvas</strong>. When disabled, canvas
+node commands return <code>CANVAS_DISABLED</code>.</p>
+<h2>Agent API surface</h2>
+<p>Canvas is exposed via the <strong>Gateway WebSocket</strong>, so the agent can:</p>
+<ul>
+<li>show/hide the panel</li>
+<li>navigate to a path or URL</li>
+<li>evaluate JavaScript</li>
+<li>capture a snapshot image</li>
+</ul>
+<p>CLI examples:</p>
+<pre><code class="language-bash">agdi nodes canvas present --node &lt;id&gt;
+agdi nodes canvas navigate --node &lt;id&gt; --url &quot;/&quot;
+agdi nodes canvas eval --node &lt;id&gt; --js &quot;document.title&quot;
+agdi nodes canvas snapshot --node &lt;id&gt;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>canvas.navigate</code> accepts <strong>local canvas paths</strong>, <code>http(s)</code> URLs, and <code>file://</code> URLs.</li>
+<li>If you pass <code>&quot;/&quot;</code>, the Canvas shows the local scaffold or <code>index.html</code>.</li>
+</ul>
+<h2>A2UI in Canvas</h2>
+<p>A2UI is hosted by the Gateway canvas host and rendered inside the Canvas panel.
+When the Gateway advertises a Canvas host, the macOS app auto‑navigates to the
+A2UI host page on first open.</p>
+<p>Default A2UI host URL:</p>
+<pre><code>http://&lt;gateway-host&gt;:18789/__agdi__/a2ui/
+</code></pre>
+<h3>A2UI commands (v0.8)</h3>
+<p>Canvas currently accepts <strong>A2UI v0.8</strong> server→client messages:</p>
+<ul>
+<li><code>beginRendering</code></li>
+<li><code>surfaceUpdate</code></li>
+<li><code>dataModelUpdate</code></li>
+<li><code>deleteSurface</code></li>
+</ul>
+<p><code>createSurface</code> (v0.9) is not supported.</p>
+<p>CLI example:</p>
+<pre><code class="language-bash">cat &gt; /tmp/a2ui-v0.8.jsonl &lt;&lt;&#39;EOFA2&#39;
+{&quot;surfaceUpdate&quot;:{&quot;surfaceId&quot;:&quot;main&quot;,&quot;components&quot;:[{&quot;id&quot;:&quot;root&quot;,&quot;component&quot;:{&quot;Column&quot;:{&quot;children&quot;:{&quot;explicitList&quot;:[&quot;title&quot;,&quot;content&quot;]}}}},{&quot;id&quot;:&quot;title&quot;,&quot;component&quot;:{&quot;Text&quot;:{&quot;text&quot;:{&quot;literalString&quot;:&quot;Canvas (A2UI v0.8)&quot;},&quot;usageHint&quot;:&quot;h1&quot;}}},{&quot;id&quot;:&quot;content&quot;,&quot;component&quot;:{&quot;Text&quot;:{&quot;text&quot;:{&quot;literalString&quot;:&quot;If you can read this, A2UI push works.&quot;},&quot;usageHint&quot;:&quot;body&quot;}}}]}}
+{&quot;beginRendering&quot;:{&quot;surfaceId&quot;:&quot;main&quot;,&quot;root&quot;:&quot;root&quot;}}
+EOFA2
+
+agdi nodes canvas a2ui push --jsonl /tmp/a2ui-v0.8.jsonl --node &lt;id&gt;
+</code></pre>
+<p>Quick smoke:</p>
+<pre><code class="language-bash">agdi nodes canvas a2ui push --node &lt;id&gt; --text &quot;Hello from A2UI&quot;
+</code></pre>
+<h2>Triggering agent runs from Canvas</h2>
+<p>Canvas can trigger new agent runs via deep links:</p>
+<ul>
+<li><code>agdi://agent?...</code></li>
+</ul>
+<p>Example (in JS):</p>
+<pre><code class="language-js">window.location.href = &quot;agdi://agent?message=Review%20this%20design&quot;;
+</code></pre>
+<p>The app prompts for confirmation unless a valid key is provided.</p>
+<h2>Security notes</h2>
+<ul>
+<li>Canvas scheme blocks directory traversal; files must live under the session root.</li>
+<li>Local Canvas content uses a custom scheme (no loopback server required).</li>
+<li>External <code>http(s)</code> URLs are allowed only when explicitly navigated.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

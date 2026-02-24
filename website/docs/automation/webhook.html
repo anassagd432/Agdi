@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhooks — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="active" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Webhooks</h1>
+<p>Gateway can expose a small HTTP webhook endpoint for external triggers.</p>
+<h2>Enable</h2>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;shared-secret&quot;,
+    path: &quot;/hooks&quot;,
+    // Optional: restrict explicit `agentId` routing to this allowlist.
+    // Omit or include &quot;*&quot; to allow any agent.
+    // Set [] to deny all explicit `agentId` routing.
+    allowedAgentIds: [&quot;hooks&quot;, &quot;main&quot;],
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>hooks.token</code> is required when <code>hooks.enabled=true</code>.</li>
+<li><code>hooks.path</code> defaults to <code>/hooks</code>.</li>
+</ul>
+<h2>Auth</h2>
+<p>Every request must include the hook token. Prefer headers:</p>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code> (recommended)</li>
+<li><code>x-agdi-token: &lt;token&gt;</code></li>
+<li>Query-string tokens are rejected (<code>?token=...</code> returns <code>400</code>).</li>
+</ul>
+<h2>Endpoints</h2>
+<h3><code>POST /hooks/wake</code></h3>
+<p>Payload:</p>
+<pre><code class="language-json">{ &quot;text&quot;: &quot;System line&quot;, &quot;mode&quot;: &quot;now&quot; }
+</code></pre>
+<ul>
+<li><code>text</code> <strong>required</strong> (string): The description of the event (e.g., &quot;New email received&quot;).</li>
+<li><code>mode</code> optional (<code>now</code> | <code>next-heartbeat</code>): Whether to trigger an immediate heartbeat (default <code>now</code>) or wait for the next periodic check.</li>
+</ul>
+<p>Effect:</p>
+<ul>
+<li>Enqueues a system event for the <strong>main</strong> session</li>
+<li>If <code>mode=now</code>, triggers an immediate heartbeat</li>
+</ul>
+<h3><code>POST /hooks/agent</code></h3>
+<p>Payload:</p>
+<pre><code class="language-json">{
+  &quot;message&quot;: &quot;Run this&quot;,
+  &quot;name&quot;: &quot;Email&quot;,
+  &quot;agentId&quot;: &quot;hooks&quot;,
+  &quot;sessionKey&quot;: &quot;hook:email:msg-123&quot;,
+  &quot;wakeMode&quot;: &quot;now&quot;,
+  &quot;deliver&quot;: true,
+  &quot;channel&quot;: &quot;last&quot;,
+  &quot;to&quot;: &quot;+15551234567&quot;,
+  &quot;model&quot;: &quot;openai/gpt-5.2-mini&quot;,
+  &quot;thinking&quot;: &quot;low&quot;,
+  &quot;timeoutSeconds&quot;: 120
+}
+</code></pre>
+<ul>
+<li><code>message</code> <strong>required</strong> (string): The prompt or message for the agent to process.</li>
+<li><code>name</code> optional (string): Human-readable name for the hook (e.g., &quot;GitHub&quot;), used as a prefix in session summaries.</li>
+<li><code>agentId</code> optional (string): Route this hook to a specific agent. Unknown IDs fall back to the default agent. When set, the hook runs using the resolved agent&#39;s workspace and configuration.</li>
+<li><code>sessionKey</code> optional (string): The key used to identify the agent&#39;s session. By default this field is rejected unless <code>hooks.allowRequestSessionKey=true</code>.</li>
+<li><code>wakeMode</code> optional (<code>now</code> | <code>next-heartbeat</code>): Whether to trigger an immediate heartbeat (default <code>now</code>) or wait for the next periodic check.</li>
+<li><code>deliver</code> optional (boolean): If <code>true</code>, the agent&#39;s response will be sent to the messaging channel. Defaults to <code>true</code>. Responses that are only heartbeat acknowledgments are automatically skipped.</li>
+<li><code>channel</code> optional (string): The messaging channel for delivery. One of: <code>last</code>, <code>whatsapp</code>, <code>telegram</code>, <code>discord</code>, <code>slack</code>, <code>mattermost</code> (plugin), <code>signal</code>, <code>imessage</code>, <code>msteams</code>. Defaults to <code>last</code>.</li>
+<li><code>to</code> optional (string): The recipient identifier for the channel (e.g., phone number for WhatsApp/Signal, chat ID for Telegram, channel ID for Discord/Slack/Mattermost (plugin), conversation ID for MS Teams). Defaults to the last recipient in the main session.</li>
+<li><code>model</code> optional (string): Model override (e.g., <code>anthropic/claude-3-5-sonnet</code> or an alias). Must be in the allowed model list if restricted.</li>
+<li><code>thinking</code> optional (string): Thinking level override (e.g., <code>low</code>, <code>medium</code>, <code>high</code>).</li>
+<li><code>timeoutSeconds</code> optional (number): Maximum duration for the agent run in seconds.</li>
+</ul>
+<p>Effect:</p>
+<ul>
+<li>Runs an <strong>isolated</strong> agent turn (own session key)</li>
+<li>Always posts a summary into the <strong>main</strong> session</li>
+<li>If <code>wakeMode=now</code>, triggers an immediate heartbeat</li>
+</ul>
+<h2>Session key policy (breaking change)</h2>
+<p><code>/hooks/agent</code> payload <code>sessionKey</code> overrides are disabled by default.</p>
+<ul>
+<li>Recommended: set a fixed <code>hooks.defaultSessionKey</code> and keep request overrides off.</li>
+<li>Optional: allow request overrides only when needed, and restrict prefixes.</li>
+</ul>
+<p>Recommended config:</p>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;${AGDI_HOOKS_TOKEN}&quot;,
+    defaultSessionKey: &quot;hook:ingress&quot;,
+    allowRequestSessionKey: false,
+    allowedSessionKeyPrefixes: [&quot;hook:&quot;],
+  },
+}
+</code></pre>
+<p>Compatibility config (legacy behavior):</p>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;${AGDI_HOOKS_TOKEN}&quot;,
+    allowRequestSessionKey: true,
+    allowedSessionKeyPrefixes: [&quot;hook:&quot;], // strongly recommended
+  },
+}
+</code></pre>
+<h3><code>POST /hooks/&lt;name&gt;</code> (mapped)</h3>
+<p>Custom hook names are resolved via <code>hooks.mappings</code> (see configuration). A mapping can
+turn arbitrary payloads into <code>wake</code> or <code>agent</code> actions, with optional templates or
+code transforms.</p>
+<p>Mapping options (summary):</p>
+<ul>
+<li><code>hooks.presets: [&quot;gmail&quot;]</code> enables the built-in Gmail mapping.</li>
+<li><code>hooks.mappings</code> lets you define <code>match</code>, <code>action</code>, and templates in config.</li>
+<li><code>hooks.transformsDir</code> + <code>transform.module</code> loads a JS/TS module for custom logic.<ul>
+<li><code>hooks.transformsDir</code> (if set) must stay within the transforms root under your AGDI config directory (typically <code>~/.agdi/hooks/transforms</code>).</li>
+<li><code>transform.module</code> must resolve within the effective transforms directory (traversal/escape paths are rejected).</li>
+</ul>
+</li>
+<li>Use <code>match.source</code> to keep a generic ingest endpoint (payload-driven routing).</li>
+<li>TS transforms require a TS loader (e.g. <code>bun</code> or <code>tsx</code>) or precompiled <code>.js</code> at runtime.</li>
+<li>Set <code>deliver: true</code> + <code>channel</code>/<code>to</code> on mappings to route replies to a chat surface
+(<code>channel</code> defaults to <code>last</code> and falls back to WhatsApp).</li>
+<li><code>agentId</code> routes the hook to a specific agent; unknown IDs fall back to the default agent.</li>
+<li><code>hooks.allowedAgentIds</code> restricts explicit <code>agentId</code> routing. Omit it (or include <code>*</code>) to allow any agent. Set <code>[]</code> to deny explicit <code>agentId</code> routing.</li>
+<li><code>hooks.defaultSessionKey</code> sets the default session for hook agent runs when no explicit key is provided.</li>
+<li><code>hooks.allowRequestSessionKey</code> controls whether <code>/hooks/agent</code> payloads may set <code>sessionKey</code> (default: <code>false</code>).</li>
+<li><code>hooks.allowedSessionKeyPrefixes</code> optionally restricts explicit <code>sessionKey</code> values from request payloads and mappings.</li>
+<li><code>allowUnsafeExternalContent: true</code> disables the external content safety wrapper for that hook
+(dangerous; only for trusted internal sources).</li>
+<li><code>agdi webhooks gmail setup</code> writes <code>hooks.gmail</code> config for <code>agdi webhooks gmail run</code>.
+See <a href="/docs/automation/gmail-pubsub">Gmail Pub/Sub</a> for the full Gmail watch flow.</li>
+</ul>
+<h2>Responses</h2>
+<ul>
+<li><code>200</code> for <code>/hooks/wake</code></li>
+<li><code>202</code> for <code>/hooks/agent</code> (async run started)</li>
+<li><code>401</code> on auth failure</li>
+<li><code>429</code> after repeated auth failures from the same client (check <code>Retry-After</code>)</li>
+<li><code>400</code> on invalid payload</li>
+<li><code>413</code> on oversized payloads</li>
+</ul>
+<h2>Examples</h2>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:18789/hooks/wake \
+  -H &#39;Authorization: Bearer SECRET&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -d &#39;{&quot;text&quot;:&quot;New email received&quot;,&quot;mode&quot;:&quot;now&quot;}&#39;
+</code></pre>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:18789/hooks/agent \
+  -H &#39;x-agdi-token: SECRET&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -d &#39;{&quot;message&quot;:&quot;Summarize inbox&quot;,&quot;name&quot;:&quot;Email&quot;,&quot;wakeMode&quot;:&quot;next-heartbeat&quot;}&#39;
+</code></pre>
+<h3>Use a different model</h3>
+<p>Add <code>model</code> to the agent payload (or mapping) to override the model for that run:</p>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:18789/hooks/agent \
+  -H &#39;x-agdi-token: SECRET&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -d &#39;{&quot;message&quot;:&quot;Summarize inbox&quot;,&quot;name&quot;:&quot;Email&quot;,&quot;model&quot;:&quot;openai/gpt-5.2-mini&quot;}&#39;
+</code></pre>
+<p>If you enforce <code>agents.defaults.models</code>, make sure the override model is included there.</p>
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:18789/hooks/gmail \
+  -H &#39;Authorization: Bearer SECRET&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -d &#39;{&quot;source&quot;:&quot;gmail&quot;,&quot;messages&quot;:[{&quot;from&quot;:&quot;Ada&quot;,&quot;subject&quot;:&quot;Hello&quot;,&quot;snippet&quot;:&quot;Hi&quot;}]}&#39;
+</code></pre>
+<h2>Security</h2>
+<ul>
+<li>Keep hook endpoints behind loopback, tailnet, or trusted reverse proxy.</li>
+<li>Use a dedicated hook token; do not reuse gateway auth tokens.</li>
+<li>Repeated auth failures are rate-limited per client address to slow brute-force attempts.</li>
+<li>If you use multi-agent routing, set <code>hooks.allowedAgentIds</code> to limit explicit <code>agentId</code> selection.</li>
+<li>Keep <code>hooks.allowRequestSessionKey=false</code> unless you require caller-selected sessions.</li>
+<li>If you enable request <code>sessionKey</code>, restrict <code>hooks.allowedSessionKeyPrefixes</code> (for example, <code>[&quot;hook:&quot;]</code>).</li>
+<li>Avoid including sensitive raw payloads in webhook logs.</li>
+<li>Hook payloads are treated as untrusted and wrapped with safety boundaries by default.
+If you must disable this for a specific hook, set <code>allowUnsafeExternalContent: true</code>
+in that hook&#39;s mapping (dangerous).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -14,7 +14,7 @@ function makeThinkConfig(home: string) {
     agents: {
       defaults: {
         model: "anthropic/claude-opus-4-5",
-        workspace: path.join(home, "openclaw"),
+        workspace: path.join(home, "agdi"),
       },
     },
     session: { store: path.join(home, "sessions.json") },
@@ -26,7 +26,7 @@ function makeWhatsAppConfig(home: string) {
     agents: {
       defaults: {
         model: "anthropic/claude-opus-4-5",
-        workspace: path.join(home, "openclaw"),
+        workspace: path.join(home, "agdi"),
       },
     },
     channels: { whatsapp: { allowFrom: ["*"] } },
@@ -146,7 +146,7 @@ describe("directive behavior", () => {
           agents: {
             defaults: {
               model: "anthropic/claude-opus-4-5",
-              workspace: path.join(home, "openclaw"),
+              workspace: path.join(home, "agdi"),
             },
           },
           channels: { whatsapp: { allowFrom: ["*"] } },
@@ -180,7 +180,7 @@ describe("directive behavior", () => {
           agents: {
             defaults: {
               model: "anthropic/claude-opus-4-5",
-              workspace: path.join(home, "openclaw"),
+              workspace: path.join(home, "agdi"),
             },
           },
           channels: { whatsapp: { allowFrom: ["*"] } },

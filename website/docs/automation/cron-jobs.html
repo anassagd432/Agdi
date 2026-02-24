@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cron Jobs — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="active" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Cron jobs (Gateway scheduler)</h1>
+<blockquote>
+<p><strong>Cron vs Heartbeat?</strong> See <a href="/docs/automation/cron-vs-heartbeat">Cron vs Heartbeat</a> for guidance on when to use each.</p>
+</blockquote>
+<p>Cron is the Gateway’s built-in scheduler. It persists jobs, wakes the agent at
+the right time, and can optionally deliver output back to a chat.</p>
+<p>If you want <em>“run this every morning”</em> or <em>“poke the agent in 20 minutes”</em>,
+cron is the mechanism.</p>
+<p>Troubleshooting: <a href="/docs/automation/troubleshooting">/automation/troubleshooting</a></p>
+<h2>TL;DR</h2>
+<ul>
+<li>Cron runs <strong>inside the Gateway</strong> (not inside the model).</li>
+<li>Jobs persist under <code>~/.agdi/cron/</code> so restarts don’t lose schedules.</li>
+<li>Two execution styles:<ul>
+<li><strong>Main session</strong>: enqueue a system event, then run on the next heartbeat.</li>
+<li><strong>Isolated</strong>: run a dedicated agent turn in <code>cron:&lt;jobId&gt;</code>, with delivery (announce by default or none).</li>
+</ul>
+</li>
+<li>Wakeups are first-class: a job can request “wake now” vs “next heartbeat”.</li>
+<li>Webhook posting is opt-in per job: set <code>notify: true</code> and configure <code>cron.webhook</code>.</li>
+</ul>
+<h2>Quick start (actionable)</h2>
+<p>Create a one-shot reminder, verify it exists, and run it immediately:</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Reminder&quot; \
+  --at &quot;2026-02-01T16:00:00Z&quot; \
+  --session main \
+  --system-event &quot;Reminder: check the cron docs draft&quot; \
+  --wake now \
+  --delete-after-run
+
+agdi cron list
+agdi cron run &lt;job-id&gt;
+agdi cron runs --id &lt;job-id&gt;
+</code></pre>
+<p>Schedule a recurring isolated job with delivery:</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Morning brief&quot; \
+  --cron &quot;0 7 * * *&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --message &quot;Summarize overnight updates.&quot; \
+  --announce \
+  --channel slack \
+  --to &quot;channel:C1234567890&quot;
+</code></pre>
+<h2>Tool-call equivalents (Gateway cron tool)</h2>
+<p>For the canonical JSON shapes and examples, see <a href="/docs/automation/cron-jobs#json-schema-for-tool-calls">JSON schema for tool calls</a>.</p>
+<h2>Where cron jobs are stored</h2>
+<p>Cron jobs are persisted on the Gateway host at <code>~/.agdi/cron/jobs.json</code> by default.
+The Gateway loads the file into memory and writes it back on changes, so manual edits
+are only safe when the Gateway is stopped. Prefer <code>agdi cron add/edit</code> or the cron
+tool call API for changes.</p>
+<h2>Beginner-friendly overview</h2>
+<p>Think of a cron job as: <strong>when</strong> to run + <strong>what</strong> to do.</p>
+<ol>
+<li><p><strong>Choose a schedule</strong></p>
+<ul>
+<li>One-shot reminder → <code>schedule.kind = &quot;at&quot;</code> (CLI: <code>--at</code>)</li>
+<li>Repeating job → <code>schedule.kind = &quot;every&quot;</code> or <code>schedule.kind = &quot;cron&quot;</code></li>
+<li>If your ISO timestamp omits a timezone, it is treated as <strong>UTC</strong>.</li>
+</ul>
+</li>
+<li><p><strong>Choose where it runs</strong></p>
+<ul>
+<li><code>sessionTarget: &quot;main&quot;</code> → run during the next heartbeat with main context.</li>
+<li><code>sessionTarget: &quot;isolated&quot;</code> → run a dedicated agent turn in <code>cron:&lt;jobId&gt;</code>.</li>
+</ul>
+</li>
+<li><p><strong>Choose the payload</strong></p>
+<ul>
+<li>Main session → <code>payload.kind = &quot;systemEvent&quot;</code></li>
+<li>Isolated session → <code>payload.kind = &quot;agentTurn&quot;</code></li>
+</ul>
+</li>
+</ol>
+<p>Optional: one-shot jobs (<code>schedule.kind = &quot;at&quot;</code>) delete after success by default. Set
+<code>deleteAfterRun: false</code> to keep them (they will disable after success).</p>
+<h2>Concepts</h2>
+<h3>Jobs</h3>
+<p>A cron job is a stored record with:</p>
+<ul>
+<li>a <strong>schedule</strong> (when it should run),</li>
+<li>a <strong>payload</strong> (what it should do),</li>
+<li>optional <strong>delivery mode</strong> (announce or none).</li>
+<li>optional <strong>agent binding</strong> (<code>agentId</code>): run the job under a specific agent; if
+missing or unknown, the gateway falls back to the default agent.</li>
+</ul>
+<p>Jobs are identified by a stable <code>jobId</code> (used by CLI/Gateway APIs).
+In agent tool calls, <code>jobId</code> is canonical; legacy <code>id</code> is accepted for compatibility.
+One-shot jobs auto-delete after success by default; set <code>deleteAfterRun: false</code> to keep them.</p>
+<h3>Schedules</h3>
+<p>Cron supports three schedule kinds:</p>
+<ul>
+<li><code>at</code>: one-shot timestamp via <code>schedule.at</code> (ISO 8601).</li>
+<li><code>every</code>: fixed interval (ms).</li>
+<li><code>cron</code>: 5-field cron expression with optional IANA timezone.</li>
+</ul>
+<p>Cron expressions use <code>croner</code>. If a timezone is omitted, the Gateway host’s
+local timezone is used.</p>
+<h3>Main vs isolated execution</h3>
+<h4>Main session jobs (system events)</h4>
+<p>Main jobs enqueue a system event and optionally wake the heartbeat runner.
+They must use <code>payload.kind = &quot;systemEvent&quot;</code>.</p>
+<ul>
+<li><code>wakeMode: &quot;now&quot;</code> (default): event triggers an immediate heartbeat run.</li>
+<li><code>wakeMode: &quot;next-heartbeat&quot;</code>: event waits for the next scheduled heartbeat.</li>
+</ul>
+<p>This is the best fit when you want the normal heartbeat prompt + main-session context.
+See <a href="/docs/gateway/heartbeat">Heartbeat</a>.</p>
+<h4>Isolated jobs (dedicated cron sessions)</h4>
+<p>Isolated jobs run a dedicated agent turn in session <code>cron:&lt;jobId&gt;</code>.</p>
+<p>Key behaviors:</p>
+<ul>
+<li>Prompt is prefixed with <code>[cron:&lt;jobId&gt; &lt;job name&gt;]</code> for traceability.</li>
+<li>Each run starts a <strong>fresh session id</strong> (no prior conversation carry-over).</li>
+<li>Default behavior: if <code>delivery</code> is omitted, isolated jobs announce a summary (<code>delivery.mode = &quot;announce&quot;</code>).</li>
+<li><code>delivery.mode</code> (isolated-only) chooses what happens:<ul>
+<li><code>announce</code>: deliver a summary to the target channel and post a brief summary to the main session.</li>
+<li><code>none</code>: internal only (no delivery, no main-session summary).</li>
+</ul>
+</li>
+<li><code>wakeMode</code> controls when the main-session summary posts:<ul>
+<li><code>now</code>: immediate heartbeat.</li>
+<li><code>next-heartbeat</code>: waits for the next scheduled heartbeat.</li>
+</ul>
+</li>
+</ul>
+<p>Use isolated jobs for noisy, frequent, or &quot;background chores&quot; that shouldn&#39;t spam
+your main chat history.</p>
+<h3>Payload shapes (what runs)</h3>
+<p>Two payload kinds are supported:</p>
+<ul>
+<li><code>systemEvent</code>: main-session only, routed through the heartbeat prompt.</li>
+<li><code>agentTurn</code>: isolated-session only, runs a dedicated agent turn.</li>
+</ul>
+<p>Common <code>agentTurn</code> fields:</p>
+<ul>
+<li><code>message</code>: required text prompt.</li>
+<li><code>model</code> / <code>thinking</code>: optional overrides (see below).</li>
+<li><code>timeoutSeconds</code>: optional timeout override.</li>
+</ul>
+<p>Delivery config (isolated jobs only):</p>
+<ul>
+<li><code>delivery.mode</code>: <code>none</code> | <code>announce</code>.</li>
+<li><code>delivery.channel</code>: <code>last</code> or a specific channel.</li>
+<li><code>delivery.to</code>: channel-specific target (phone/chat/channel id).</li>
+<li><code>delivery.bestEffort</code>: avoid failing the job if announce delivery fails.</li>
+</ul>
+<p>Announce delivery suppresses messaging tool sends for the run; use <code>delivery.channel</code>/<code>delivery.to</code>
+to target the chat instead. When <code>delivery.mode = &quot;none&quot;</code>, no summary is posted to the main session.</p>
+<p>If <code>delivery</code> is omitted for isolated jobs, AGDI defaults to <code>announce</code>.</p>
+<h4>Announce delivery flow</h4>
+<p>When <code>delivery.mode = &quot;announce&quot;</code>, cron delivers directly via the outbound channel adapters.
+The main agent is not spun up to craft or forward the message.</p>
+<p>Behavior details:</p>
+<ul>
+<li>Content: delivery uses the isolated run&#39;s outbound payloads (text/media) with normal chunking and
+channel formatting.</li>
+<li>Heartbeat-only responses (<code>HEARTBEAT_OK</code> with no real content) are not delivered.</li>
+<li>If the isolated run already sent a message to the same target via the message tool, delivery is
+skipped to avoid duplicates.</li>
+<li>Missing or invalid delivery targets fail the job unless <code>delivery.bestEffort = true</code>.</li>
+<li>A short summary is posted to the main session only when <code>delivery.mode = &quot;announce&quot;</code>.</li>
+<li>The main-session summary respects <code>wakeMode</code>: <code>now</code> triggers an immediate heartbeat and
+<code>next-heartbeat</code> waits for the next scheduled heartbeat.</li>
+</ul>
+<h3>Model and thinking overrides</h3>
+<p>Isolated jobs (<code>agentTurn</code>) can override the model and thinking level:</p>
+<ul>
+<li><code>model</code>: Provider/model string (e.g., <code>anthropic/claude-sonnet-4-20250514</code>) or alias (e.g., <code>opus</code>)</li>
+<li><code>thinking</code>: Thinking level (<code>off</code>, <code>minimal</code>, <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>; GPT-5.2 + Codex models only)</li>
+</ul>
+<p>Note: You can set <code>model</code> on main-session jobs too, but it changes the shared main
+session model. We recommend model overrides only for isolated jobs to avoid
+unexpected context shifts.</p>
+<p>Resolution priority:</p>
+<ol>
+<li>Job payload override (highest)</li>
+<li>Hook-specific defaults (e.g., <code>hooks.gmail.model</code>)</li>
+<li>Agent config default</li>
+</ol>
+<h3>Delivery (channel + target)</h3>
+<p>Isolated jobs can deliver output to a channel via the top-level <code>delivery</code> config:</p>
+<ul>
+<li><code>delivery.mode</code>: <code>announce</code> (deliver a summary) or <code>none</code>.</li>
+<li><code>delivery.channel</code>: <code>whatsapp</code> / <code>telegram</code> / <code>discord</code> / <code>slack</code> / <code>mattermost</code> (plugin) / <code>signal</code> / <code>imessage</code> / <code>last</code>.</li>
+<li><code>delivery.to</code>: channel-specific recipient target.</li>
+</ul>
+<p>Delivery config is only valid for isolated jobs (<code>sessionTarget: &quot;isolated&quot;</code>).</p>
+<p>If <code>delivery.channel</code> or <code>delivery.to</code> is omitted, cron can fall back to the main session’s
+“last route” (the last place the agent replied).</p>
+<p>Target format reminders:</p>
+<ul>
+<li>Slack/Discord/Mattermost (plugin) targets should use explicit prefixes (e.g. <code>channel:&lt;id&gt;</code>, <code>user:&lt;id&gt;</code>) to avoid ambiguity.</li>
+<li>Telegram topics should use the <code>:topic:</code> form (see below).</li>
+</ul>
+<h4>Telegram delivery targets (topics / forum threads)</h4>
+<p>Telegram supports forum topics via <code>message_thread_id</code>. For cron delivery, you can encode
+the topic/thread into the <code>to</code> field:</p>
+<ul>
+<li><code>-1001234567890</code> (chat id only)</li>
+<li><code>-1001234567890:topic:123</code> (preferred: explicit topic marker)</li>
+<li><code>-1001234567890:123</code> (shorthand: numeric suffix)</li>
+</ul>
+<p>Prefixed targets like <code>telegram:...</code> / <code>telegram:group:...</code> are also accepted:</p>
+<ul>
+<li><code>telegram:group:-1001234567890:topic:123</code></li>
+</ul>
+<h2>JSON schema for tool calls</h2>
+<p>Use these shapes when calling Gateway <code>cron.*</code> tools directly (agent tool calls or RPC).
+CLI flags accept human durations like <code>20m</code>, but tool calls should use an ISO 8601 string
+for <code>schedule.at</code> and milliseconds for <code>schedule.everyMs</code>.</p>
+<h3>cron.add params</h3>
+<p>One-shot, main session job (system event):</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Reminder&quot;,
+  &quot;schedule&quot;: { &quot;kind&quot;: &quot;at&quot;, &quot;at&quot;: &quot;2026-02-01T16:00:00Z&quot; },
+  &quot;sessionTarget&quot;: &quot;main&quot;,
+  &quot;wakeMode&quot;: &quot;now&quot;,
+  &quot;payload&quot;: { &quot;kind&quot;: &quot;systemEvent&quot;, &quot;text&quot;: &quot;Reminder text&quot; },
+  &quot;deleteAfterRun&quot;: true
+}
+</code></pre>
+<p>Recurring, isolated job with delivery:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Morning brief&quot;,
+  &quot;schedule&quot;: { &quot;kind&quot;: &quot;cron&quot;, &quot;expr&quot;: &quot;0 7 * * *&quot;, &quot;tz&quot;: &quot;America/Los_Angeles&quot; },
+  &quot;sessionTarget&quot;: &quot;isolated&quot;,
+  &quot;wakeMode&quot;: &quot;next-heartbeat&quot;,
+  &quot;payload&quot;: {
+    &quot;kind&quot;: &quot;agentTurn&quot;,
+    &quot;message&quot;: &quot;Summarize overnight updates.&quot;
+  },
+  &quot;delivery&quot;: {
+    &quot;mode&quot;: &quot;announce&quot;,
+    &quot;channel&quot;: &quot;slack&quot;,
+    &quot;to&quot;: &quot;channel:C1234567890&quot;,
+    &quot;bestEffort&quot;: true
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>schedule.kind</code>: <code>at</code> (<code>at</code>), <code>every</code> (<code>everyMs</code>), or <code>cron</code> (<code>expr</code>, optional <code>tz</code>).</li>
+<li><code>schedule.at</code> accepts ISO 8601 (timezone optional; treated as UTC when omitted).</li>
+<li><code>everyMs</code> is milliseconds.</li>
+<li><code>sessionTarget</code> must be <code>&quot;main&quot;</code> or <code>&quot;isolated&quot;</code> and must match <code>payload.kind</code>.</li>
+<li>Optional fields: <code>agentId</code>, <code>description</code>, <code>enabled</code>, <code>notify</code>, <code>deleteAfterRun</code> (defaults to true for <code>at</code>),
+<code>delivery</code>.</li>
+<li><code>wakeMode</code> defaults to <code>&quot;now&quot;</code> when omitted.</li>
+</ul>
+<h3>cron.update params</h3>
+<pre><code class="language-json">{
+  &quot;jobId&quot;: &quot;job-123&quot;,
+  &quot;patch&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;schedule&quot;: { &quot;kind&quot;: &quot;every&quot;, &quot;everyMs&quot;: 3600000 }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>jobId</code> is canonical; <code>id</code> is accepted for compatibility.</li>
+<li>Use <code>agentId: null</code> in the patch to clear an agent binding.</li>
+</ul>
+<h3>cron.run and cron.remove params</h3>
+<pre><code class="language-json">{ &quot;jobId&quot;: &quot;job-123&quot;, &quot;mode&quot;: &quot;force&quot; }
+</code></pre>
+<pre><code class="language-json">{ &quot;jobId&quot;: &quot;job-123&quot; }
+</code></pre>
+<h2>Storage &amp; history</h2>
+<ul>
+<li>Job store: <code>~/.agdi/cron/jobs.json</code> (Gateway-managed JSON).</li>
+<li>Run history: <code>~/.agdi/cron/runs/&lt;jobId&gt;.jsonl</code> (JSONL, auto-pruned).</li>
+<li>Override store path: <code>cron.store</code> in config.</li>
+</ul>
+<h2>Configuration</h2>
+<pre><code class="language-json5">{
+  cron: {
+    enabled: true, // default true
+    store: &quot;~/.agdi/cron/jobs.json&quot;,
+    maxConcurrentRuns: 1, // default 1
+    webhook: &quot;https://example.invalid/cron-finished&quot;, // optional finished-run webhook endpoint
+    webhookToken: &quot;replace-with-dedicated-webhook-token&quot;, // optional, do not reuse gateway auth token
+  },
+}
+</code></pre>
+<p>Webhook behavior:</p>
+<ul>
+<li>The Gateway posts finished run events to <code>cron.webhook</code> only when the job has <code>notify: true</code>.</li>
+<li>Payload is the cron finished event JSON.</li>
+<li>If <code>cron.webhookToken</code> is set, auth header is <code>Authorization: Bearer &lt;cron.webhookToken&gt;</code>.</li>
+<li>If <code>cron.webhookToken</code> is not set, no <code>Authorization</code> header is sent.</li>
+</ul>
+<p>Disable cron entirely:</p>
+<ul>
+<li><code>cron.enabled: false</code> (config)</li>
+<li><code>AGDI_SKIP_CRON=1</code> (env)</li>
+</ul>
+<h2>CLI quickstart</h2>
+<p>One-shot reminder (UTC ISO, auto-delete after success):</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Send reminder&quot; \
+  --at &quot;2026-01-12T18:00:00Z&quot; \
+  --session main \
+  --system-event &quot;Reminder: submit expense report.&quot; \
+  --wake now \
+  --delete-after-run
+</code></pre>
+<p>One-shot reminder (main session, wake immediately):</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Calendar check&quot; \
+  --at &quot;20m&quot; \
+  --session main \
+  --system-event &quot;Next heartbeat: check calendar.&quot; \
+  --wake now
+</code></pre>
+<p>Recurring isolated job (announce to WhatsApp):</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Morning status&quot; \
+  --cron &quot;0 7 * * *&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --message &quot;Summarize inbox + calendar for today.&quot; \
+  --announce \
+  --channel whatsapp \
+  --to &quot;+15551234567&quot;
+</code></pre>
+<p>Recurring isolated job (deliver to a Telegram topic):</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Nightly summary (topic)&quot; \
+  --cron &quot;0 22 * * *&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --message &quot;Summarize today; send to the nightly topic.&quot; \
+  --announce \
+  --channel telegram \
+  --to &quot;-1001234567890:topic:123&quot;
+</code></pre>
+<p>Isolated job with model and thinking override:</p>
+<pre><code class="language-bash">agdi cron add \
+  --name &quot;Deep analysis&quot; \
+  --cron &quot;0 6 * * 1&quot; \
+  --tz &quot;America/Los_Angeles&quot; \
+  --session isolated \
+  --message &quot;Weekly deep analysis of project progress.&quot; \
+  --model &quot;opus&quot; \
+  --thinking high \
+  --announce \
+  --channel whatsapp \
+  --to &quot;+15551234567&quot;
+</code></pre>
+<p>Agent selection (multi-agent setups):</p>
+<pre><code class="language-bash"># Pin a job to agent &quot;ops&quot; (falls back to default if that agent is missing)
+agdi cron add --name &quot;Ops sweep&quot; --cron &quot;0 6 * * *&quot; --session isolated --message &quot;Check ops queue&quot; --agent ops
+
+# Switch or clear the agent on an existing job
+agdi cron edit &lt;jobId&gt; --agent ops
+agdi cron edit &lt;jobId&gt; --clear-agent
+</code></pre>
+<p>Manual run (force is the default, use <code>--due</code> to only run when due):</p>
+<pre><code class="language-bash">agdi cron run &lt;jobId&gt;
+agdi cron run &lt;jobId&gt; --due
+</code></pre>
+<p>Edit an existing job (patch fields):</p>
+<pre><code class="language-bash">agdi cron edit &lt;jobId&gt; \
+  --message &quot;Updated prompt&quot; \
+  --model &quot;opus&quot; \
+  --thinking low
+</code></pre>
+<p>Run history:</p>
+<pre><code class="language-bash">agdi cron runs --id &lt;jobId&gt; --limit 50
+</code></pre>
+<p>Immediate system event without creating a job:</p>
+<pre><code class="language-bash">agdi system event --mode now --text &quot;Next heartbeat: check battery.&quot;
+</code></pre>
+<h2>Gateway API surface</h2>
+<ul>
+<li><code>cron.list</code>, <code>cron.status</code>, <code>cron.add</code>, <code>cron.update</code>, <code>cron.remove</code></li>
+<li><code>cron.run</code> (force or due), <code>cron.runs</code>
+For immediate system events without a job, use <a href="/docs/cli/system"><code>agdi system event</code></a>.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>“Nothing runs”</h3>
+<ul>
+<li>Check cron is enabled: <code>cron.enabled</code> and <code>AGDI_SKIP_CRON</code>.</li>
+<li>Check the Gateway is running continuously (cron runs inside the Gateway process).</li>
+<li>For <code>cron</code> schedules: confirm timezone (<code>--tz</code>) vs the host timezone.</li>
+</ul>
+<h3>A recurring job keeps delaying after failures</h3>
+<ul>
+<li>AGDI applies exponential retry backoff for recurring jobs after consecutive errors:
+30s, 1m, 5m, 15m, then 60m between retries.</li>
+<li>Backoff resets automatically after the next successful run.</li>
+<li>One-shot (<code>at</code>) jobs disable after a terminal run (<code>ok</code>, <code>error</code>, or <code>skipped</code>) and do not retry.</li>
+</ul>
+<h3>Telegram delivers to the wrong place</h3>
+<ul>
+<li>For forum topics, use <code>-100…:topic:&lt;id&gt;</code> so it’s explicit and unambiguous.</li>
+<li>If you see <code>telegram:...</code> prefixes in logs or stored “last route” targets, that’s normal;
+cron delivery accepts them and still parses topic IDs correctly.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

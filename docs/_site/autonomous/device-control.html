@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Control — AGDI Docs</title>
+  <meta name="description" content="Native mouse, keyboard, and screen control across Linux, macOS, Windows, Android, and iOS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="active" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Device Control</h1>
+<p>AGDI controls devices at the OS level — no browser automation, no accessibility hacks. It binds directly to platform APIs for pixel-perfect control.</p>
+<h2>Supported Platforms</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Backend</th>
+<th>Mouse</th>
+<th>Keyboard</th>
+<th>Screen</th>
+<th>Apps</th>
+<th>Windows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Linux</strong></td>
+<td>X11 / xdotool</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>macOS</strong></td>
+<td>osascript / cliclick</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Windows</strong></td>
+<td>PowerShell / P/Invoke</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Android</strong></td>
+<td>ADB</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>iOS</strong></td>
+<td>libimobiledevice + WDA</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2>Usage</h2>
+<pre><code class="language-typescript">import { DeviceController } from &quot;agdi/autonomous&quot;;
+
+const controller = new DeviceController();
+
+// Mouse
+await controller.click(500, 250);
+await controller.doubleClick(500, 250);
+await controller.rightClick(500, 250);
+await controller.drag({ x: 100, y: 100 }, { x: 500, y: 500 });
+await controller.scroll(&quot;down&quot;, 3);
+
+// Keyboard
+await controller.type(&quot;Hello, world!&quot;);
+await controller.pressKey(&quot;Enter&quot;);
+await controller.hotkey([&quot;ctrl&quot;], &quot;c&quot;);
+
+// Screen
+const screenshot = await controller.captureScreen();
+const size = await controller.getScreenSize();
+
+// Applications
+await controller.openApp(&quot;firefox&quot;);
+await controller.openUrl(&quot;https://example.com&quot;);
+await controller.openFile(&quot;/path/to/document.pdf&quot;);
+
+// Windows
+const windows = await controller.listWindows();
+await controller.focusWindow(&quot;Terminal&quot;);
+await controller.maximizeWindow();
+await controller.closeWindow();
+</code></pre>
+<h2>Android (ADB)</h2>
+<pre><code class="language-typescript">import { AndroidBackend } from &quot;agdi/autonomous&quot;;
+
+const android = new AndroidBackend();
+
+// List connected devices
+const devices = await android.listDevices();
+
+// Control
+await android.tap(500, 800);
+await android.swipe(500, 1500, 500, 500);
+await android.typeText(&quot;search query&quot;);
+await android.pressKey(&quot;home&quot;);
+
+// Apps
+await android.launchApp(&quot;com.android.chrome&quot;);
+const apps = await android.listApps();
+
+// Screenshot
+const screenshot = await android.screenshot();
+</code></pre>
+<h2>iOS (libimobiledevice + WDA)</h2>
+<pre><code class="language-typescript">import { IOSBackend } from &quot;agdi/autonomous&quot;;
+
+const ios = new IOSBackend();
+
+// Device info
+const devices = await ios.listDevices();
+const info = await ios.getDeviceInfo();
+
+// Control via WebDriverAgent
+await ios.tap(200, 400);
+await ios.swipe(200, 600, 200, 200);
+await ios.typeText(&quot;hello&quot;);
+
+// Apps
+await ios.launchApp(&quot;com.apple.mobilesafari&quot;);
+const screenshot = await ios.screenshot();
+</code></pre>
+<h2>Screen OCR</h2>
+<p>Read text directly from the screen using Tesseract:</p>
+<pre><code class="language-typescript">import { ScreenOCR } from &quot;agdi/autonomous&quot;;
+
+const ocr = new ScreenOCR();
+const result = await ocr.readScreen();
+
+console.log(result.text);          // Full text
+console.log(result.words);         // Individual words with positions
+console.log(result.confidence);    // OCR confidence score
+
+// Find specific text on screen
+const location = await ocr.findText(&quot;Submit&quot;);
+if (location) {
+  await controller.click(location.x, location.y);
+}
+</code></pre>
+<h2>Dependency Check</h2>
+<p>Each backend can check if required tools are installed:</p>
+<pre><code class="language-typescript">const deps = await controller.checkDependencies();
+console.log(&quot;Available:&quot;, deps.available);
+console.log(&quot;Missing:&quot;, deps.missing);
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

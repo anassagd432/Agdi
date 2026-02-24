@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS Release — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="active" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI macOS release (Sparkle)</h1>
+<p>This app now ships Sparkle auto-updates. Release builds must be Developer ID–signed, zipped, and published with a signed appcast entry.</p>
+<h2>Prereqs</h2>
+<ul>
+<li>Developer ID Application cert installed (example: <code>Developer ID Application: &lt;Developer Name&gt; (&lt;TEAMID&gt;)</code>).</li>
+<li>Sparkle private key path set in the environment as <code>SPARKLE_PRIVATE_KEY_FILE</code> (path to your Sparkle ed25519 private key; public key baked into Info.plist). If it is missing, check <code>~/.profile</code>.</li>
+<li>Notary credentials (keychain profile or API key) for <code>xcrun notarytool</code> if you want Gatekeeper-safe DMG/zip distribution.<ul>
+<li>We use a Keychain profile named <code>agdi-notary</code>, created from App Store Connect API key env vars in your shell profile:<ul>
+<li><code>APP_STORE_CONNECT_API_KEY_P8</code>, <code>APP_STORE_CONNECT_KEY_ID</code>, <code>APP_STORE_CONNECT_ISSUER_ID</code></li>
+<li><code>echo &quot;$APP_STORE_CONNECT_API_KEY_P8&quot; | sed &#39;s/\\n/\n/g&#39; &gt; /tmp/agdi-notary.p8</code></li>
+<li><code>xcrun notarytool store-credentials &quot;agdi-notary&quot; --key /tmp/agdi-notary.p8 --key-id &quot;$APP_STORE_CONNECT_KEY_ID&quot; --issuer &quot;$APP_STORE_CONNECT_ISSUER_ID&quot;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>pnpm</code> deps installed (<code>pnpm install --config.node-linker=hoisted</code>).</li>
+<li>Sparkle tools are fetched automatically via SwiftPM at <code>apps/macos/.build/artifacts/sparkle/Sparkle/bin/</code> (<code>sign_update</code>, <code>generate_appcast</code>, etc.).</li>
+</ul>
+<h2>Build &amp; package</h2>
+<p>Notes:</p>
+<ul>
+<li><code>APP_BUILD</code> maps to <code>CFBundleVersion</code>/<code>sparkle:version</code>; keep it numeric + monotonic (no <code>-beta</code>), or Sparkle compares it as equal.</li>
+<li>Defaults to the current architecture (<code>$(uname -m)</code>). For release/universal builds, set <code>BUILD_ARCHS=&quot;arm64 x86_64&quot;</code> (or <code>BUILD_ARCHS=all</code>).</li>
+<li>Use <code>scripts/package-mac-dist.sh</code> for release artifacts (zip + DMG + notarization). Use <code>scripts/package-mac-app.sh</code> for local/dev packaging.</li>
+</ul>
+<pre><code class="language-bash"># From repo root; set release IDs so Sparkle feed is enabled.
+# APP_BUILD must be numeric + monotonic for Sparkle compare.
+BUNDLE_ID=bot.molt.mac \
+APP_VERSION=2026.2.16 \
+APP_BUILD=&quot;$(git rev-list --count HEAD)&quot; \
+BUILD_CONFIG=release \
+SIGN_IDENTITY=&quot;Developer ID Application: &lt;Developer Name&gt; (&lt;TEAMID&gt;)&quot; \
+scripts/package-mac-app.sh
+
+# Zip for distribution (includes resource forks for Sparkle delta support)
+ditto -c -k --sequesterRsrc --keepParent dist/AGDI.app dist/AGDI-2026.2.16.zip
+
+# Optional: also build a styled DMG for humans (drag to /Applications)
+scripts/create-dmg.sh dist/AGDI.app dist/AGDI-2026.2.16.dmg
+
+# Recommended: build + notarize/staple zip + DMG
+# First, create a keychain profile once:
+#   xcrun notarytool store-credentials &quot;agdi-notary&quot; \
+#     --apple-id &quot;&lt;apple-id&gt;&quot; --team-id &quot;&lt;team-id&gt;&quot; --password &quot;&lt;app-specific-password&gt;&quot;
+NOTARIZE=1 NOTARYTOOL_PROFILE=agdi-notary \
+BUNDLE_ID=bot.molt.mac \
+APP_VERSION=2026.2.16 \
+APP_BUILD=&quot;$(git rev-list --count HEAD)&quot; \
+BUILD_CONFIG=release \
+SIGN_IDENTITY=&quot;Developer ID Application: &lt;Developer Name&gt; (&lt;TEAMID&gt;)&quot; \
+scripts/package-mac-dist.sh
+
+# Optional: ship dSYM alongside the release
+ditto -c -k --keepParent apps/macos/.build/release/AGDI.app.dSYM dist/AGDI-2026.2.16.dSYM.zip
+</code></pre>
+<h2>Appcast entry</h2>
+<p>Use the release note generator so Sparkle renders formatted HTML notes:</p>
+<pre><code class="language-bash">SPARKLE_PRIVATE_KEY_FILE=/path/to/ed25519-private-key scripts/make_appcast.sh dist/AGDI-2026.2.16.zip https://raw.githubusercontent.com/agdi/agdi/main/appcast.xml
+</code></pre>
+<p>Generates HTML release notes from <code>CHANGELOG.md</code> (via <a href="https://github.com/agdi/agdi/blob/main/scripts/changelog-to-html.sh"><code>scripts/changelog-to-html.sh</code></a>) and embeds them in the appcast entry.
+Commit the updated <code>appcast.xml</code> alongside the release assets (zip + dSYM) when publishing.</p>
+<h2>Publish &amp; verify</h2>
+<ul>
+<li>Upload <code>AGDI-2026.2.16.zip</code> (and <code>AGDI-2026.2.16.dSYM.zip</code>) to the GitHub release for tag <code>v2026.2.16</code>.</li>
+<li>Ensure the raw appcast URL matches the baked feed: <code>https://raw.githubusercontent.com/agdi/agdi/main/appcast.xml</code>.</li>
+<li>Sanity checks:<ul>
+<li><code>curl -I https://raw.githubusercontent.com/agdi/agdi/main/appcast.xml</code> returns 200.</li>
+<li><code>curl -I &lt;enclosure url&gt;</code> returns 200 after assets upload.</li>
+<li>On a previous public build, run “Check for Updates…” from the About tab and verify Sparkle installs the new build cleanly.</li>
+</ul>
+</li>
+</ul>
+<p>Definition of done: signed app + appcast are published, update flow works from an older installed version, and release assets are attached to the GitHub release.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

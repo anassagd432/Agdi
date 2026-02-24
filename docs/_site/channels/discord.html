@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="active" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Discord (Bot API)</h1>
+<p>Status: ready for DMs and guild channels via the official Discord gateway.</p>
+<CardGroup cols={3}>
+  <Card title="Pairing" icon="link" href="/channels/pairing">
+    Discord DMs default to pairing mode.
+  </Card>
+  <Card title="Slash commands" icon="terminal" href="/tools/slash-commands">
+    Native command behavior and command catalog.
+  </Card>
+  <Card title="Channel troubleshooting" icon="wrench" href="/channels/troubleshooting">
+    Cross-channel diagnostics and repair flow.
+  </Card>
+</CardGroup>
+
+<h2>Quick setup</h2>
+<pre><code>Create an application in the Discord Developer Portal, add a bot, then enable:
+
+- **Message Content Intent**
+- **Server Members Intent** (required for role allowlists and role-based routing; recommended for name-to-ID allowlist matching)
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      enabled: true,
+      token: &quot;YOUR_BOT_TOKEN&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>Env fallback for the default account:
+</code></pre>
+<pre><code class="language-bash">DISCORD_BOT_TOKEN=...
+</code></pre>
+<pre><code>Invite the bot to your server with message permissions.
+</code></pre>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<pre><code class="language-bash">agdi pairing list discord
+agdi pairing approve discord &lt;CODE&gt;
+</code></pre>
+<pre><code>Pairing codes expire after 1 hour.
+</code></pre>
+<p>Token resolution is account-aware. Config token values win over env fallback. <code>DISCORD_BOT_TOKEN</code> is only used for the default account.</p>
+<h2>Runtime model</h2>
+<ul>
+<li>Gateway owns the Discord connection.</li>
+<li>Reply routing is deterministic: Discord inbound replies back to Discord.</li>
+<li>By default (<code>session.dmScope=main</code>), direct chats share the agent main session (<code>agent:main:main</code>).</li>
+<li>Guild channels are isolated session keys (<code>agent:&lt;agentId&gt;:discord:channel:&lt;channelId&gt;</code>).</li>
+<li>Group DMs are ignored by default (<code>channels.discord.dm.groupEnabled=false</code>).</li>
+<li>Native slash commands run in isolated command sessions (<code>agent:&lt;agentId&gt;:discord:slash:&lt;userId&gt;</code>), while still carrying <code>CommandTargetSessionKey</code> to the routed conversation session.</li>
+</ul>
+<h2>Interactive components</h2>
+<p>AGDI supports Discord components v2 containers for agent messages. Use the message tool with a <code>components</code> payload. Interaction results are routed back to the agent as normal inbound messages and follow the existing Discord <code>replyToMode</code> settings.</p>
+<p>Supported blocks:</p>
+<ul>
+<li><code>text</code>, <code>section</code>, <code>separator</code>, <code>actions</code>, <code>media-gallery</code>, <code>file</code></li>
+<li>Action rows allow up to 5 buttons or a single select menu</li>
+<li>Select types: <code>string</code>, <code>user</code>, <code>role</code>, <code>mentionable</code>, <code>channel</code></li>
+</ul>
+<p>File attachments:</p>
+<ul>
+<li><code>file</code> blocks must point to an attachment reference (<code>attachment://&lt;filename&gt;</code>)</li>
+<li>Provide the attachment via <code>media</code>/<code>path</code>/<code>filePath</code> (single file); use <code>media-gallery</code> for multiple files</li>
+<li>Use <code>filename</code> to override the upload name when it should match the attachment reference</li>
+</ul>
+<p>Modal forms:</p>
+<ul>
+<li>Add <code>components.modal</code> with up to 5 fields</li>
+<li>Field types: <code>text</code>, <code>checkbox</code>, <code>radio</code>, <code>select</code>, <code>role-select</code>, <code>user-select</code></li>
+<li>AGDI adds a trigger button automatically</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channel: &quot;discord&quot;,
+  action: &quot;send&quot;,
+  to: &quot;channel:123456789012345678&quot;,
+  message: &quot;Optional fallback text&quot;,
+  components: {
+    text: &quot;Choose a path&quot;,
+    blocks: [
+      {
+        type: &quot;actions&quot;,
+        buttons: [
+          { label: &quot;Approve&quot;, style: &quot;success&quot; },
+          { label: &quot;Decline&quot;, style: &quot;danger&quot; },
+        ],
+      },
+      {
+        type: &quot;actions&quot;,
+        select: {
+          type: &quot;string&quot;,
+          placeholder: &quot;Pick an option&quot;,
+          options: [
+            { label: &quot;Option A&quot;, value: &quot;a&quot; },
+            { label: &quot;Option B&quot;, value: &quot;b&quot; },
+          ],
+        },
+      },
+    ],
+    modal: {
+      title: &quot;Details&quot;,
+      triggerLabel: &quot;Open form&quot;,
+      fields: [
+        { type: &quot;text&quot;, label: &quot;Requester&quot; },
+        {
+          type: &quot;select&quot;,
+          label: &quot;Priority&quot;,
+          options: [
+            { label: &quot;Low&quot;, value: &quot;low&quot; },
+            { label: &quot;High&quot;, value: &quot;high&quot; },
+          ],
+        },
+      ],
+    },
+  },
+}
+</code></pre>
+<h2>Access control and routing</h2>
+<pre><code>`channels.discord.dmPolicy` controls DM access (legacy: `channels.discord.dm.policy`):
+
+- `pairing` (default)
+- `allowlist`
+- `open` (requires `channels.discord.allowFrom` to include `&quot;*&quot;`; legacy: `channels.discord.dm.allowFrom`)
+- `disabled`
+
+If DM policy is not open, unknown users are blocked (or prompted for pairing in `pairing` mode).
+
+DM target format for delivery:
+
+- `user:&lt;id&gt;`
+- `&lt;@id&gt;` mention
+
+Bare numeric IDs are ambiguous and rejected unless an explicit user/channel target kind is provided.
+
+
+
+
+Guild handling is controlled by `channels.discord.groupPolicy`:
+
+- `open`
+- `allowlist`
+- `disabled`
+
+Secure baseline when `channels.discord` exists is `allowlist`.
+
+`allowlist` behavior:
+
+- guild must match `channels.discord.guilds` (`id` preferred, slug accepted)
+- optional sender allowlists: `users` (IDs or names) and `roles` (role IDs only); if either is configured, senders are allowed when they match `users` OR `roles`
+- if a guild has `channels` configured, non-listed channels are denied
+- if a guild has no `channels` block, all channels in that allowlisted guild are allowed
+
+Example:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      groupPolicy: &quot;allowlist&quot;,
+      guilds: {
+        &quot;123456789012345678&quot;: {
+          requireMention: true,
+          users: [&quot;987654321098765432&quot;],
+          roles: [&quot;123456789012345678&quot;],
+          channels: {
+            general: { allow: true },
+            help: { allow: true, requireMention: true },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<pre><code>If you only set `DISCORD_BOT_TOKEN` and do not create a `channels.discord` block, runtime fallback is `groupPolicy=&quot;open&quot;` (with a warning in logs).
+
+
+
+
+Guild messages are mention-gated by default.
+
+Mention detection includes:
+
+- explicit bot mention
+- configured mention patterns (`agents.list[].groupChat.mentionPatterns`, fallback `messages.groupChat.mentionPatterns`)
+- implicit reply-to-bot behavior in supported cases
+
+`requireMention` is configured per guild/channel (`channels.discord.guilds...`).
+
+Group DMs:
+
+- default: ignored (`dm.groupEnabled=false`)
+- optional allowlist via `dm.groupChannels` (channel IDs or slugs)
+</code></pre>
+<h3>Role-based agent routing</h3>
+<p>Use <code>bindings[].match.roles</code> to route Discord guild members to different agents by role ID. Role-based bindings accept role IDs only and are evaluated after peer or parent-peer bindings and before guild-only bindings. If a binding also sets other match fields (for example <code>peer</code> + <code>guildId</code> + <code>roles</code>), all configured fields must match.</p>
+<pre><code class="language-json5">{
+  bindings: [
+    {
+      agentId: &quot;opus&quot;,
+      match: {
+        channel: &quot;discord&quot;,
+        guildId: &quot;123456789012345678&quot;,
+        roles: [&quot;111111111111111111&quot;],
+      },
+    },
+    {
+      agentId: &quot;sonnet&quot;,
+      match: {
+        channel: &quot;discord&quot;,
+        guildId: &quot;123456789012345678&quot;,
+      },
+    },
+  ],
+}
+</code></pre>
+<h2>Developer Portal setup</h2>
+<pre><code>1. Discord Developer Portal -&gt; **Applications** -&gt; **New Application**
+2. **Bot** -&gt; **Add Bot**
+3. Copy bot token
+
+
+
+
+In **Bot -&gt; Privileged Gateway Intents**, enable:
+
+- Message Content Intent
+- Server Members Intent (recommended)
+
+Presence intent is optional and only required if you want to receive presence updates. Setting bot presence (`setPresence`) does not require enabling presence updates for members.
+
+
+
+
+OAuth URL generator:
+
+- scopes: `bot`, `applications.commands`
+
+Typical baseline permissions:
+
+- View Channels
+- Send Messages
+- Read Message History
+- Embed Links
+- Attach Files
+- Add Reactions (optional)
+
+Avoid `Administrator` unless explicitly needed.
+
+
+
+
+Enable Discord Developer Mode, then copy:
+
+- server ID
+- channel ID
+- user ID
+
+Prefer numeric IDs in AGDI config for reliable audits and probes.
+</code></pre>
+<h2>Native commands and command auth</h2>
+<ul>
+<li><code>commands.native</code> defaults to <code>&quot;auto&quot;</code> and is enabled for Discord.</li>
+<li>Per-channel override: <code>channels.discord.commands.native</code>.</li>
+<li><code>commands.native=false</code> explicitly clears previously registered Discord native commands.</li>
+<li>Native command auth uses the same Discord allowlists/policies as normal message handling.</li>
+<li>Commands may still be visible in Discord UI for users who are not authorized; execution still enforces AGDI auth and returns &quot;not authorized&quot;.</li>
+</ul>
+<p>See <a href="/tools/slash-commands">Slash commands</a> for command catalog and behavior.</p>
+<h2>Feature details</h2>
+<pre><code>Discord supports reply tags in agent output:
+
+- `[[reply_to_current]]`
+- `[[reply_to:&lt;id&gt;]]`
+
+Controlled by `channels.discord.replyToMode`:
+
+- `off` (default)
+- `first`
+- `all`
+
+Note: `off` disables implicit reply threading. Explicit `[[reply_to_*]]` tags are still honored.
+
+Message IDs are surfaced in context/history so agents can target specific messages.
+
+
+
+
+Guild history context:
+
+- `channels.discord.historyLimit` default `20`
+- fallback: `messages.groupChat.historyLimit`
+- `0` disables
+
+DM history controls:
+
+- `channels.discord.dmHistoryLimit`
+- `channels.discord.dms[&quot;&lt;user_id&gt;&quot;].historyLimit`
+
+Thread behavior:
+
+- Discord threads are routed as channel sessions
+- parent thread metadata can be used for parent-session linkage
+- thread config inherits parent channel config unless a thread-specific entry exists
+
+Channel topics are injected as **untrusted** context (not as system prompt).
+
+
+
+
+Per-guild reaction notification mode:
+
+- `off`
+- `own` (default)
+- `all`
+- `allowlist` (uses `guilds.&lt;id&gt;.users`)
+
+Reaction events are turned into system events and attached to the routed Discord session.
+
+
+
+
+`ackReaction` sends an acknowledgement emoji while AGDI is processing an inbound message.
+
+Resolution order:
+
+- `channels.discord.accounts.&lt;accountId&gt;.ackReaction`
+- `channels.discord.ackReaction`
+- `messages.ackReaction`
+- agent identity emoji fallback (`agents.list[].identity.emoji`, else &quot;👀&quot;)
+
+Notes:
+
+- Discord accepts unicode emoji or custom emoji names.
+- Use `&quot;&quot;` to disable the reaction for a channel or account.
+
+
+
+
+Channel-initiated config writes are enabled by default.
+
+This affects `/config set|unset` flows (when command features are enabled).
+
+Disable:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      configWrites: false,
+    },
+  },
+}
+</code></pre>
+<pre><code>Route Discord gateway WebSocket traffic through an HTTP(S) proxy with `channels.discord.proxy`.
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      proxy: &quot;http://proxy.example:8080&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>Per-account override:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      accounts: {
+        primary: {
+          proxy: &quot;http://proxy.example:8080&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<pre><code>Enable PluralKit resolution to map proxied messages to system member identity:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      pluralkit: {
+        enabled: true,
+        token: &quot;pk_live_...&quot;, // optional; needed for private systems
+      },
+    },
+  },
+}
+</code></pre>
+<pre><code>Notes:
+
+- allowlists can use `pk:&lt;memberId&gt;`
+- member display names are matched by name/slug
+- lookups use original message ID and are time-window constrained
+- if lookup fails, proxied messages are treated as bot messages and dropped unless `allowBots=true`
+
+
+
+
+Presence updates are applied only when you set a status or activity field.
+
+Status only example:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      status: &quot;idle&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>Activity example (custom status is the default activity type):
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      activity: &quot;Focus time&quot;,
+      activityType: 4,
+    },
+  },
+}
+</code></pre>
+<pre><code>Streaming example:
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      activity: &quot;Live coding&quot;,
+      activityType: 1,
+      activityUrl: &quot;https://twitch.tv/agdi&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>Activity type map:
+
+- 0: Playing
+- 1: Streaming (requires `activityUrl`)
+- 2: Listening
+- 3: Watching
+- 4: Custom (uses the activity text as the status state; emoji is optional)
+- 5: Competing
+
+
+
+
+Discord supports button-based exec approvals in DMs and can optionally post approval prompts in the originating channel.
+
+Config path:
+
+- `channels.discord.execApprovals.enabled`
+- `channels.discord.execApprovals.approvers`
+- `channels.discord.execApprovals.target` (`dm` | `channel` | `both`, default: `dm`)
+- `agentFilter`, `sessionFilter`, `cleanupAfterResolve`
+
+When `target` is `channel` or `both`, the approval prompt is visible in the channel. Only configured approvers can use the buttons; other users receive an ephemeral denial. Approval prompts include the command text, so only enable channel delivery in trusted channels. If the channel ID cannot be derived from the session key, AGDI falls back to DM delivery.
+
+If approvals fail with unknown approval IDs, verify approver list and feature enablement.
+
+Related docs: [Exec approvals](/tools/exec-approvals)
+</code></pre>
+<h2>Tools and action gates</h2>
+<p>Discord message actions include messaging, channel admin, moderation, presence, and metadata actions.</p>
+<p>Core examples:</p>
+<ul>
+<li>messaging: <code>sendMessage</code>, <code>readMessages</code>, <code>editMessage</code>, <code>deleteMessage</code>, <code>threadReply</code></li>
+<li>reactions: <code>react</code>, <code>reactions</code>, <code>emojiList</code></li>
+<li>moderation: <code>timeout</code>, <code>kick</code>, <code>ban</code></li>
+<li>presence: <code>setPresence</code></li>
+</ul>
+<p>Action gates live under <code>channels.discord.actions.*</code>.</p>
+<p>Default gate behavior:</p>
+<table>
+<thead>
+<tr>
+<th>Action group</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>reactions, messages, threads, pins, polls, search, memberInfo, roleInfo, channelInfo, channels, voiceStatus, events, stickers, emojiUploads, stickerUploads, permissions</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td>roles</td>
+<td>disabled</td>
+</tr>
+<tr>
+<td>moderation</td>
+<td>disabled</td>
+</tr>
+<tr>
+<td>presence</td>
+<td>disabled</td>
+</tr>
+</tbody></table>
+<h2>Components v2 UI</h2>
+<p>AGDI uses Discord components v2 for exec approvals and cross-context markers. Discord message actions can also accept <code>components</code> for custom UI (advanced; requires Carbon component instances), while legacy <code>embeds</code> remain available but are not recommended.</p>
+<ul>
+<li><code>channels.discord.ui.components.accentColor</code> sets the accent color used by Discord component containers (hex).</li>
+<li>Set per account with <code>channels.discord.accounts.&lt;id&gt;.ui.components.accentColor</code>.</li>
+<li><code>embeds</code> are ignored when components v2 are present.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      ui: {
+        components: {
+          accentColor: &quot;#5865F2&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Voice messages</h2>
+<p>Discord voice messages show a waveform preview and require OGG/Opus audio plus metadata. AGDI generates the waveform automatically, but it needs <code>ffmpeg</code> and <code>ffprobe</code> available on the gateway host to inspect and convert audio files.</p>
+<p>Requirements and constraints:</p>
+<ul>
+<li>Provide a <strong>local file path</strong> (URLs are rejected).</li>
+<li>Omit text content (Discord does not allow text + voice message in the same payload).</li>
+<li>Any audio format is accepted; AGDI converts to OGG/Opus when needed.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-bash">message(action=&quot;send&quot;, channel=&quot;discord&quot;, target=&quot;channel:123&quot;, path=&quot;/path/to/audio.mp3&quot;, asVoice=true)
+</code></pre>
+<h2>Troubleshooting</h2>
+<pre><code>- enable Message Content Intent
+- enable Server Members Intent when you depend on user/member resolution
+- restart gateway after changing intents
+
+
+
+
+
+- verify `groupPolicy`
+- verify guild allowlist under `channels.discord.guilds`
+- if guild `channels` map exists, only listed channels are allowed
+- verify `requireMention` behavior and mention patterns
+
+Useful checks:
+</code></pre>
+<pre><code class="language-bash">agdi doctor
+agdi channels status --probe
+agdi logs --follow
+</code></pre>
+<pre><code>Common causes:
+
+- `groupPolicy=&quot;allowlist&quot;` without matching guild/channel allowlist
+- `requireMention` configured in the wrong place (must be under `channels.discord.guilds` or channel entry)
+- sender blocked by guild/channel `users` allowlist
+
+
+
+
+`channels status --probe` permission checks only work for numeric channel IDs.
+
+If you use slug keys, runtime matching can still work, but probe cannot fully verify permissions.
+
+
+
+
+
+- DM disabled: `channels.discord.dm.enabled=false`
+- DM policy disabled: `channels.discord.dmPolicy=&quot;disabled&quot;` (legacy: `channels.discord.dm.policy`)
+- awaiting pairing approval in `pairing` mode
+
+
+
+
+By default bot-authored messages are ignored.
+
+If you set `channels.discord.allowBots=true`, use strict mention and allowlist rules to avoid loop behavior.
+</code></pre>
+<h2>Configuration reference pointers</h2>
+<p>Primary reference:</p>
+<ul>
+<li><a href="/gateway/configuration-reference#discord">Configuration reference - Discord</a></li>
+</ul>
+<p>High-signal Discord fields:</p>
+<ul>
+<li>startup/auth: <code>enabled</code>, <code>token</code>, <code>accounts.*</code>, <code>allowBots</code></li>
+<li>policy: <code>groupPolicy</code>, <code>dm.*</code>, <code>guilds.*</code>, <code>guilds.*.channels.*</code></li>
+<li>command: <code>commands.native</code>, <code>commands.useAccessGroups</code>, <code>configWrites</code></li>
+<li>reply/history: <code>replyToMode</code>, <code>historyLimit</code>, <code>dmHistoryLimit</code>, <code>dms.*.historyLimit</code></li>
+<li>delivery: <code>textChunkLimit</code>, <code>chunkMode</code>, <code>maxLinesPerMessage</code></li>
+<li>media/retry: <code>mediaMaxMb</code>, <code>retry</code></li>
+<li>actions: <code>actions.*</code></li>
+<li>presence: <code>activity</code>, <code>status</code>, <code>activityType</code>, <code>activityUrl</code></li>
+<li>UI: <code>ui.components.accentColor</code></li>
+<li>features: <code>pluralkit</code>, <code>execApprovals</code>, <code>intents</code>, <code>agentComponents</code>, <code>heartbeat</code>, <code>responsePrefix</code></li>
+</ul>
+<h2>Safety and operations</h2>
+<ul>
+<li>Treat bot tokens as secrets (<code>DISCORD_BOT_TOKEN</code> preferred in supervised environments).</li>
+<li>Grant least-privilege Discord permissions.</li>
+<li>If command deploy/state is stale, restart gateway and re-check with <code>agdi channels status --probe</code>.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="/channels/pairing">Pairing</a></li>
+<li><a href="/channels/channel-routing">Channel routing</a></li>
+<li><a href="/channels/troubleshooting">Troubleshooting</a></li>
+<li><a href="/tools/slash-commands">Slash commands</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

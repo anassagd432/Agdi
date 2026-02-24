@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docs Hubs — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="active" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Docs hubs</h1>
+<p>If you are new to AGDI, start with <a href="/start/getting-started">Getting Started</a>.</p>
+<p>Use these hubs to discover every page, including deep dives and reference docs that don’t appear in the left nav.</p>
+<h2>Start here</h2>
+<ul>
+<li><a href="/">Index</a></li>
+<li><a href="/start/getting-started">Getting Started</a></li>
+<li><a href="/start/quickstart">Quick start</a></li>
+<li><a href="/start/onboarding">Onboarding</a></li>
+<li><a href="/start/wizard">Wizard</a></li>
+<li><a href="/start/setup">Setup</a></li>
+<li><a href="http://127.0.0.1:18789/">Dashboard (local Gateway)</a></li>
+<li><a href="/help">Help</a></li>
+<li><a href="/start/docs-directory">Docs directory</a></li>
+<li><a href="/gateway/configuration">Configuration</a></li>
+<li><a href="/gateway/configuration-examples">Configuration examples</a></li>
+<li><a href="/start/agdi">AGDI assistant</a></li>
+<li><a href="/start/showcase">Showcase</a></li>
+<li><a href="/start/lore">Lore</a></li>
+</ul>
+<h2>Installation + updates</h2>
+<ul>
+<li><a href="/install/docker">Docker</a></li>
+<li><a href="/install/nix">Nix</a></li>
+<li><a href="/install/updating">Updating / rollback</a></li>
+<li><a href="/install/bun">Bun workflow (experimental)</a></li>
+</ul>
+<h2>Core concepts</h2>
+<ul>
+<li><a href="/concepts/architecture">Architecture</a></li>
+<li><a href="/concepts/features">Features</a></li>
+<li><a href="/network">Network hub</a></li>
+<li><a href="/concepts/agent">Agent runtime</a></li>
+<li><a href="/concepts/agent-workspace">Agent workspace</a></li>
+<li><a href="/concepts/memory">Memory</a></li>
+<li><a href="/concepts/agent-loop">Agent loop</a></li>
+<li><a href="/concepts/streaming">Streaming + chunking</a></li>
+<li><a href="/concepts/multi-agent">Multi-agent routing</a></li>
+<li><a href="/concepts/compaction">Compaction</a></li>
+<li><a href="/concepts/session">Sessions</a></li>
+<li><a href="/concepts/sessions">Sessions (alias)</a></li>
+<li><a href="/concepts/session-pruning">Session pruning</a></li>
+<li><a href="/concepts/session-tool">Session tools</a></li>
+<li><a href="/concepts/queue">Queue</a></li>
+<li><a href="/tools/slash-commands">Slash commands</a></li>
+<li><a href="/reference/rpc">RPC adapters</a></li>
+<li><a href="/concepts/typebox">TypeBox schemas</a></li>
+<li><a href="/concepts/timezone">Timezone handling</a></li>
+<li><a href="/concepts/presence">Presence</a></li>
+<li><a href="/gateway/discovery">Discovery + transports</a></li>
+<li><a href="/gateway/bonjour">Bonjour</a></li>
+<li><a href="/channels/channel-routing">Channel routing</a></li>
+<li><a href="/channels/groups">Groups</a></li>
+<li><a href="/channels/group-messages">Group messages</a></li>
+<li><a href="/concepts/model-failover">Model failover</a></li>
+<li><a href="/concepts/oauth">OAuth</a></li>
+</ul>
+<h2>Providers + ingress</h2>
+<ul>
+<li><a href="/channels">Chat channels hub</a></li>
+<li><a href="/providers/models">Model providers hub</a></li>
+<li><a href="/channels/whatsapp">WhatsApp</a></li>
+<li><a href="/channels/telegram">Telegram</a></li>
+<li><a href="/channels/grammy">Telegram (grammY notes)</a></li>
+<li><a href="/channels/slack">Slack</a></li>
+<li><a href="/channels/discord">Discord</a></li>
+<li><a href="/channels/mattermost">Mattermost</a> (plugin)</li>
+<li><a href="/channels/signal">Signal</a></li>
+<li><a href="/channels/bluebubbles">BlueBubbles (iMessage)</a></li>
+<li><a href="/channels/imessage">iMessage (legacy)</a></li>
+<li><a href="/channels/location">Location parsing</a></li>
+<li><a href="/web/webchat">WebChat</a></li>
+<li><a href="/automation/webhook">Webhooks</a></li>
+<li><a href="/automation/gmail-pubsub">Gmail Pub/Sub</a></li>
+</ul>
+<h2>Gateway + operations</h2>
+<ul>
+<li><a href="/gateway">Gateway runbook</a></li>
+<li><a href="/gateway/network-model">Network model</a></li>
+<li><a href="/gateway/pairing">Gateway pairing</a></li>
+<li><a href="/gateway/gateway-lock">Gateway lock</a></li>
+<li><a href="/gateway/background-process">Background process</a></li>
+<li><a href="/gateway/health">Health</a></li>
+<li><a href="/gateway/heartbeat">Heartbeat</a></li>
+<li><a href="/gateway/doctor">Doctor</a></li>
+<li><a href="/gateway/logging">Logging</a></li>
+<li><a href="/gateway/sandboxing">Sandboxing</a></li>
+<li><a href="/web/dashboard">Dashboard</a></li>
+<li><a href="/web/control-ui">Control UI</a></li>
+<li><a href="/gateway/remote">Remote access</a></li>
+<li><a href="/gateway/remote-gateway-readme">Remote gateway README</a></li>
+<li><a href="/gateway/tailscale">Tailscale</a></li>
+<li><a href="/gateway/security">Security</a></li>
+<li><a href="/gateway/troubleshooting">Troubleshooting</a></li>
+</ul>
+<h2>Tools + automation</h2>
+<ul>
+<li><a href="/tools">Tools surface</a></li>
+<li><a href="/prose">OpenProse</a></li>
+<li><a href="/cli">CLI reference</a></li>
+<li><a href="/tools/exec">Exec tool</a></li>
+<li><a href="/tools/elevated">Elevated mode</a></li>
+<li><a href="/automation/cron-jobs">Cron jobs</a></li>
+<li><a href="/automation/cron-vs-heartbeat">Cron vs Heartbeat</a></li>
+<li><a href="/tools/thinking">Thinking + verbose</a></li>
+<li><a href="/concepts/models">Models</a></li>
+<li><a href="/tools/subagents">Sub-agents</a></li>
+<li><a href="/tools/agent-send">Agent send CLI</a></li>
+<li><a href="/web/tui">Terminal UI</a></li>
+<li><a href="/tools/browser">Browser control</a></li>
+<li><a href="/tools/browser-linux-troubleshooting">Browser (Linux troubleshooting)</a></li>
+<li><a href="/automation/poll">Polls</a></li>
+</ul>
+<h2>Nodes, media, voice</h2>
+<ul>
+<li><a href="/nodes">Nodes overview</a></li>
+<li><a href="/nodes/camera">Camera</a></li>
+<li><a href="/nodes/images">Images</a></li>
+<li><a href="/nodes/audio">Audio</a></li>
+<li><a href="/nodes/location-command">Location command</a></li>
+<li><a href="/nodes/voicewake">Voice wake</a></li>
+<li><a href="/nodes/talk">Talk mode</a></li>
+</ul>
+<h2>Platforms</h2>
+<ul>
+<li><a href="/platforms">Platforms overview</a></li>
+<li><a href="/platforms/macos">macOS</a></li>
+<li><a href="/platforms/ios">iOS</a></li>
+<li><a href="/platforms/android">Android</a></li>
+<li><a href="/platforms/windows">Windows (WSL2)</a></li>
+<li><a href="/platforms/linux">Linux</a></li>
+<li><a href="/web">Web surfaces</a></li>
+</ul>
+<h2>macOS companion app (advanced)</h2>
+<ul>
+<li><a href="/platforms/mac/dev-setup">macOS dev setup</a></li>
+<li><a href="/platforms/mac/menu-bar">macOS menu bar</a></li>
+<li><a href="/platforms/mac/voicewake">macOS voice wake</a></li>
+<li><a href="/platforms/mac/voice-overlay">macOS voice overlay</a></li>
+<li><a href="/platforms/mac/webchat">macOS WebChat</a></li>
+<li><a href="/platforms/mac/canvas">macOS Canvas</a></li>
+<li><a href="/platforms/mac/child-process">macOS child process</a></li>
+<li><a href="/platforms/mac/health">macOS health</a></li>
+<li><a href="/platforms/mac/icon">macOS icon</a></li>
+<li><a href="/platforms/mac/logging">macOS logging</a></li>
+<li><a href="/platforms/mac/permissions">macOS permissions</a></li>
+<li><a href="/platforms/mac/remote">macOS remote</a></li>
+<li><a href="/platforms/mac/signing">macOS signing</a></li>
+<li><a href="/platforms/mac/release">macOS release</a></li>
+<li><a href="/platforms/mac/bundled-gateway">macOS gateway (launchd)</a></li>
+<li><a href="/platforms/mac/xpc">macOS XPC</a></li>
+<li><a href="/platforms/mac/skills">macOS skills</a></li>
+<li><a href="/platforms/mac/peekaboo">macOS Peekaboo</a></li>
+</ul>
+<h2>Workspace + templates</h2>
+<ul>
+<li><a href="/tools/skills">Skills</a></li>
+<li><a href="/tools/clawhub">ClawHub</a></li>
+<li><a href="/tools/skills-config">Skills config</a></li>
+<li><a href="/reference/AGENTS.default">Default AGENTS</a></li>
+<li><a href="/reference/templates/AGENTS">Templates: AGENTS</a></li>
+<li><a href="/reference/templates/BOOTSTRAP">Templates: BOOTSTRAP</a></li>
+<li><a href="/reference/templates/HEARTBEAT">Templates: HEARTBEAT</a></li>
+<li><a href="/reference/templates/IDENTITY">Templates: IDENTITY</a></li>
+<li><a href="/reference/templates/SOUL">Templates: SOUL</a></li>
+<li><a href="/reference/templates/TOOLS">Templates: TOOLS</a></li>
+<li><a href="/reference/templates/USER">Templates: USER</a></li>
+</ul>
+<h2>Experiments (exploratory)</h2>
+<ul>
+<li><a href="/experiments/onboarding-config-protocol">Onboarding config protocol</a></li>
+<li><a href="/experiments/plans/cron-add-hardening">Cron hardening notes</a></li>
+<li><a href="/experiments/plans/group-policy-hardening">Group policy hardening notes</a></li>
+<li><a href="/experiments/research/memory">Research: memory</a></li>
+<li><a href="/experiments/proposals/model-config">Model config exploration</a></li>
+</ul>
+<h2>Project</h2>
+<ul>
+<li><a href="/reference/credits">Credits</a></li>
+</ul>
+<h2>Testing + release</h2>
+<ul>
+<li><a href="/reference/test">Testing</a></li>
+<li><a href="/reference/RELEASING">Release checklist</a></li>
+<li><a href="/reference/device-models">Device models</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

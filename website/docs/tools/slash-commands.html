@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slash Commands — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="active" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Slash commands</h1>
+<p>Commands are handled by the Gateway. Most commands must be sent as a <strong>standalone</strong> message that starts with <code>/</code>.
+The host-only bash chat command uses <code>! &lt;cmd&gt;</code> (with <code>/bash &lt;cmd&gt;</code> as an alias).</p>
+<p>There are two related systems:</p>
+<ul>
+<li><strong>Commands</strong>: standalone <code>/...</code> messages.</li>
+<li><strong>Directives</strong>: <code>/think</code>, <code>/verbose</code>, <code>/reasoning</code>, <code>/elevated</code>, <code>/exec</code>, <code>/model</code>, <code>/queue</code>.<ul>
+<li>Directives are stripped from the message before the model sees it.</li>
+<li>In normal chat messages (not directive-only), they are treated as “inline hints” and do <strong>not</strong> persist session settings.</li>
+<li>In directive-only messages (the message contains only directives), they persist to the session and reply with an acknowledgement.</li>
+<li>Directives are only applied for <strong>authorized senders</strong>. If <code>commands.allowFrom</code> is set, it is the only
+allowlist used; otherwise authorization comes from channel allowlists/pairing plus <code>commands.useAccessGroups</code>.
+Unauthorized senders see directives treated as plain text.</li>
+</ul>
+</li>
+</ul>
+<p>There are also a few <strong>inline shortcuts</strong> (allowlisted/authorized senders only): <code>/help</code>, <code>/commands</code>, <code>/status</code>, <code>/whoami</code> (<code>/id</code>).
+They run immediately, are stripped before the model sees the message, and the remaining text continues through the normal flow.</p>
+<h2>Config</h2>
+<pre><code class="language-json5">{
+  commands: {
+    native: &quot;auto&quot;,
+    nativeSkills: &quot;auto&quot;,
+    text: true,
+    bash: false,
+    bashForegroundMs: 2000,
+    config: false,
+    debug: false,
+    restart: false,
+    allowFrom: {
+      &quot;*&quot;: [&quot;user1&quot;],
+      discord: [&quot;user:123&quot;],
+    },
+    useAccessGroups: true,
+  },
+}
+</code></pre>
+<ul>
+<li><code>commands.text</code> (default <code>true</code>) enables parsing <code>/...</code> in chat messages.<ul>
+<li>On surfaces without native commands (WhatsApp/WebChat/Signal/iMessage/Google Chat/MS Teams), text commands still work even if you set this to <code>false</code>.</li>
+</ul>
+</li>
+<li><code>commands.native</code> (default <code>&quot;auto&quot;</code>) registers native commands.<ul>
+<li>Auto: on for Discord/Telegram; off for Slack (until you add slash commands); ignored for providers without native support.</li>
+<li>Set <code>channels.discord.commands.native</code>, <code>channels.telegram.commands.native</code>, or <code>channels.slack.commands.native</code> to override per provider (bool or <code>&quot;auto&quot;</code>).</li>
+<li><code>false</code> clears previously registered commands on Discord/Telegram at startup. Slack commands are managed in the Slack app and are not removed automatically.</li>
+</ul>
+</li>
+<li><code>commands.nativeSkills</code> (default <code>&quot;auto&quot;</code>) registers <strong>skill</strong> commands natively when supported.<ul>
+<li>Auto: on for Discord/Telegram; off for Slack (Slack requires creating a slash command per skill).</li>
+<li>Set <code>channels.discord.commands.nativeSkills</code>, <code>channels.telegram.commands.nativeSkills</code>, or <code>channels.slack.commands.nativeSkills</code> to override per provider (bool or <code>&quot;auto&quot;</code>).</li>
+</ul>
+</li>
+<li><code>commands.bash</code> (default <code>false</code>) enables <code>! &lt;cmd&gt;</code> to run host shell commands (<code>/bash &lt;cmd&gt;</code> is an alias; requires <code>tools.elevated</code> allowlists).</li>
+<li><code>commands.bashForegroundMs</code> (default <code>2000</code>) controls how long bash waits before switching to background mode (<code>0</code> backgrounds immediately).</li>
+<li><code>commands.config</code> (default <code>false</code>) enables <code>/config</code> (reads/writes <code>agdi.json</code>).</li>
+<li><code>commands.debug</code> (default <code>false</code>) enables <code>/debug</code> (runtime-only overrides).</li>
+<li><code>commands.allowFrom</code> (optional) sets a per-provider allowlist for command authorization. When configured, it is the
+only authorization source for commands and directives (channel allowlists/pairing and <code>commands.useAccessGroups</code>
+are ignored). Use <code>&quot;*&quot;</code> for a global default; provider-specific keys override it.</li>
+<li><code>commands.useAccessGroups</code> (default <code>true</code>) enforces allowlists/policies for commands when <code>commands.allowFrom</code> is not set.</li>
+</ul>
+<h2>Command list</h2>
+<p>Text + native (when enabled):</p>
+<ul>
+<li><code>/help</code></li>
+<li><code>/commands</code></li>
+<li><code>/skill &lt;name&gt; [input]</code> (run a skill by name)</li>
+<li><code>/status</code> (show current status; includes provider usage/quota for the current model provider when available)</li>
+<li><code>/allowlist</code> (list/add/remove allowlist entries)</li>
+<li><code>/approve &lt;id&gt; allow-once|allow-always|deny</code> (resolve exec approval prompts)</li>
+<li><code>/context [list|detail|json]</code> (explain “context”; <code>detail</code> shows per-file + per-tool + per-skill + system prompt size)</li>
+<li><code>/whoami</code> (show your sender id; alias: <code>/id</code>)</li>
+<li><code>/subagents list|kill|log|info|send|steer</code> (inspect, kill, log, or steer sub-agent runs for the current session)</li>
+<li><code>/kill &lt;id|#|all&gt;</code> (immediately abort one or all running sub-agents for this session; no confirmation message)</li>
+<li><code>/steer &lt;id|#&gt; &lt;message&gt;</code> (steer a running sub-agent immediately: in-run when possible, otherwise abort current work and restart on the steer message)</li>
+<li><code>/tell &lt;id|#&gt; &lt;message&gt;</code> (alias for <code>/steer</code>)</li>
+<li><code>/config show|get|set|unset</code> (persist config to disk, owner-only; requires <code>commands.config: true</code>)</li>
+<li><code>/debug show|set|unset|reset</code> (runtime overrides, owner-only; requires <code>commands.debug: true</code>)</li>
+<li><code>/usage off|tokens|full|cost</code> (per-response usage footer or local cost summary)</li>
+<li><code>/tts off|always|inbound|tagged|status|provider|limit|summary|audio</code> (control TTS; see <a href="/docs/tts">/tts</a>)<ul>
+<li>Discord: native command is <code>/voice</code> (Discord reserves <code>/tts</code>); text <code>/tts</code> still works.</li>
+</ul>
+</li>
+<li><code>/stop</code></li>
+<li><code>/restart</code></li>
+<li><code>/dock-telegram</code> (alias: <code>/dock_telegram</code>) (switch replies to Telegram)</li>
+<li><code>/dock-discord</code> (alias: <code>/dock_discord</code>) (switch replies to Discord)</li>
+<li><code>/dock-slack</code> (alias: <code>/dock_slack</code>) (switch replies to Slack)</li>
+<li><code>/activation mention|always</code> (groups only)</li>
+<li><code>/send on|off|inherit</code> (owner-only)</li>
+<li><code>/reset</code> or <code>/new [model]</code> (optional model hint; remainder is passed through)</li>
+<li><code>/think &lt;off|minimal|low|medium|high|xhigh&gt;</code> (dynamic choices by model/provider; aliases: <code>/thinking</code>, <code>/t</code>)</li>
+<li><code>/verbose on|full|off</code> (alias: <code>/v</code>)</li>
+<li><code>/reasoning on|off|stream</code> (alias: <code>/reason</code>; when on, sends a separate message prefixed <code>Reasoning:</code>; <code>stream</code> = Telegram draft only)</li>
+<li><code>/elevated on|off|ask|full</code> (alias: <code>/elev</code>; <code>full</code> skips exec approvals)</li>
+<li><code>/exec host=&lt;sandbox|gateway|node&gt; security=&lt;deny|allowlist|full&gt; ask=&lt;off|on-miss|always&gt; node=&lt;id&gt;</code> (send <code>/exec</code> to show current)</li>
+<li><code>/model &lt;name&gt;</code> (alias: <code>/models</code>; or <code>/&lt;alias&gt;</code> from <code>agents.defaults.models.*.alias</code>)</li>
+<li><code>/queue &lt;mode&gt;</code> (plus options like <code>debounce:2s cap:25 drop:summarize</code>; send <code>/queue</code> to see current settings)</li>
+<li><code>/bash &lt;command&gt;</code> (host-only; alias for <code>! &lt;command&gt;</code>; requires <code>commands.bash: true</code> + <code>tools.elevated</code> allowlists)</li>
+</ul>
+<p>Text-only:</p>
+<ul>
+<li><code>/compact [instructions]</code> (see <a href="/docs/concepts/compaction">/concepts/compaction</a>)</li>
+<li><code>! &lt;command&gt;</code> (host-only; one at a time; use <code>!poll</code> + <code>!stop</code> for long-running jobs)</li>
+<li><code>!poll</code> (check output / status; accepts optional <code>sessionId</code>; <code>/bash poll</code> also works)</li>
+<li><code>!stop</code> (stop the running bash job; accepts optional <code>sessionId</code>; <code>/bash stop</code> also works)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Commands accept an optional <code>:</code> between the command and args (e.g. <code>/think: high</code>, <code>/send: on</code>, <code>/help:</code>).</li>
+<li><code>/new &lt;model&gt;</code> accepts a model alias, <code>provider/model</code>, or a provider name (fuzzy match); if no match, the text is treated as the message body.</li>
+<li>For full provider usage breakdown, use <code>agdi status --usage</code>.</li>
+<li><code>/allowlist add|remove</code> requires <code>commands.config=true</code> and honors channel <code>configWrites</code>.</li>
+<li><code>/usage</code> controls the per-response usage footer; <code>/usage cost</code> prints a local cost summary from AGDI session logs.</li>
+<li><code>/restart</code> is disabled by default; set <code>commands.restart: true</code> to enable it.</li>
+<li><code>/verbose</code> is meant for debugging and extra visibility; keep it <strong>off</strong> in normal use.</li>
+<li><code>/reasoning</code> (and <code>/verbose</code>) are risky in group settings: they may reveal internal reasoning or tool output you did not intend to expose. Prefer leaving them off, especially in group chats.</li>
+<li><strong>Fast path:</strong> command-only messages from allowlisted senders are handled immediately (bypass queue + model).</li>
+<li><strong>Group mention gating:</strong> command-only messages from allowlisted senders bypass mention requirements.</li>
+<li><strong>Inline shortcuts (allowlisted senders only):</strong> certain commands also work when embedded in a normal message and are stripped before the model sees the remaining text.<ul>
+<li>Example: <code>hey /status</code> triggers a status reply, and the remaining text continues through the normal flow.</li>
+</ul>
+</li>
+<li>Currently: <code>/help</code>, <code>/commands</code>, <code>/status</code>, <code>/whoami</code> (<code>/id</code>).</li>
+<li>Unauthorized command-only messages are silently ignored, and inline <code>/...</code> tokens are treated as plain text.</li>
+<li><strong>Skill commands:</strong> <code>user-invocable</code> skills are exposed as slash commands. Names are sanitized to <code>a-z0-9_</code> (max 32 chars); collisions get numeric suffixes (e.g. <code>_2</code>).<ul>
+<li><code>/skill &lt;name&gt; [input]</code> runs a skill by name (useful when native command limits prevent per-skill commands).</li>
+<li>By default, skill commands are forwarded to the model as a normal request.</li>
+<li>Skills may optionally declare <code>command-dispatch: tool</code> to route the command directly to a tool (deterministic, no model).</li>
+<li>Example: <code>/prose</code> (OpenProse plugin) — see <a href="/docs/prose">OpenProse</a>.</li>
+</ul>
+</li>
+<li><strong>Native command arguments:</strong> Discord uses autocomplete for dynamic options (and button menus when you omit required args). Telegram and Slack show a button menu when a command supports choices and you omit the arg.</li>
+</ul>
+<h2>Usage surfaces (what shows where)</h2>
+<ul>
+<li><strong>Provider usage/quota</strong> (example: “Claude 80% left”) shows up in <code>/status</code> for the current model provider when usage tracking is enabled.</li>
+<li><strong>Per-response tokens/cost</strong> is controlled by <code>/usage off|tokens|full</code> (appended to normal replies).</li>
+<li><code>/model status</code> is about <strong>models/auth/endpoints</strong>, not usage.</li>
+</ul>
+<h2>Model selection (<code>/model</code>)</h2>
+<p><code>/model</code> is implemented as a directive.</p>
+<p>Examples:</p>
+<pre><code>/model
+/model list
+/model 3
+/model openai/gpt-5.2
+/model opus@anthropic:default
+/model status
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>/model</code> and <code>/model list</code> show a compact, numbered picker (model family + available providers).</li>
+<li><code>/model &lt;#&gt;</code> selects from that picker (and prefers the current provider when possible).</li>
+<li><code>/model status</code> shows the detailed view, including configured provider endpoint (<code>baseUrl</code>) and API mode (<code>api</code>) when available.</li>
+</ul>
+<h2>Debug overrides</h2>
+<p><code>/debug</code> lets you set <strong>runtime-only</strong> config overrides (memory, not disk). Owner-only. Disabled by default; enable with <code>commands.debug: true</code>.</p>
+<p>Examples:</p>
+<pre><code>/debug show
+/debug set messages.responsePrefix=&quot;[agdi]&quot;
+/debug set channels.whatsapp.allowFrom=[&quot;+1555&quot;,&quot;+4477&quot;]
+/debug unset messages.responsePrefix
+/debug reset
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Overrides apply immediately to new config reads, but do <strong>not</strong> write to <code>agdi.json</code>.</li>
+<li>Use <code>/debug reset</code> to clear all overrides and return to the on-disk config.</li>
+</ul>
+<h2>Config updates</h2>
+<p><code>/config</code> writes to your on-disk config (<code>agdi.json</code>). Owner-only. Disabled by default; enable with <code>commands.config: true</code>.</p>
+<p>Examples:</p>
+<pre><code>/config show
+/config show messages.responsePrefix
+/config get messages.responsePrefix
+/config set messages.responsePrefix=&quot;[agdi]&quot;
+/config unset messages.responsePrefix
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Config is validated before write; invalid changes are rejected.</li>
+<li><code>/config</code> updates persist across restarts.</li>
+</ul>
+<h2>Surface notes</h2>
+<ul>
+<li><strong>Text commands</strong> run in the normal chat session (DMs share <code>main</code>, groups have their own session).</li>
+<li><strong>Native commands</strong> use isolated sessions:<ul>
+<li>Discord: <code>agent:&lt;agentId&gt;:discord:slash:&lt;userId&gt;</code></li>
+<li>Slack: <code>agent:&lt;agentId&gt;:slack:slash:&lt;userId&gt;</code> (prefix configurable via <code>channels.slack.slashCommand.sessionPrefix</code>)</li>
+<li>Telegram: <code>telegram:slash:&lt;userId&gt;</code> (targets the chat session via <code>CommandTargetSessionKey</code>)</li>
+</ul>
+</li>
+<li><strong><code>/stop</code></strong> targets the active chat session so it can abort the current run.</li>
+<li><strong>Slack:</strong> <code>channels.slack.slashCommand</code> is still supported for a single <code>/agdi</code>-style command. If you enable <code>commands.native</code>, you must create one Slack slash command per built-in command (same names as <code>/help</code>). Command argument menus for Slack are delivered as ephemeral Block Kit buttons.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slack — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="active" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Slack</h1>
+<p>Status: production-ready for DMs + channels via Slack app integrations. Default mode is Socket Mode; HTTP Events API mode is also supported.</p>
+<CardGroup cols={3}>
+  <Card title="Pairing" icon="link" href="/docs/channels/pairing">
+    Slack DMs default to pairing mode.
+  </Card>
+  <Card title="Slash commands" icon="terminal" href="/docs/tools/slash-commands">
+    Native command behavior and command catalog.
+  </Card>
+  <Card title="Channel troubleshooting" icon="wrench" href="/docs/channels/troubleshooting">
+    Cross-channel diagnostics and repair playbooks.
+  </Card>
+</CardGroup>
+
+<h2>Quick setup</h2>
+<pre><code>    In Slack app settings:
+
+    - enable **Socket Mode**
+    - create **App Token** (`xapp-...`) with `connections:write`
+    - install app and copy **Bot Token** (`xoxb-...`)
+  
+
+  
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    slack: {
+      enabled: true,
+      mode: &quot;socket&quot;,
+      appToken: &quot;xapp-...&quot;,
+      botToken: &quot;xoxb-...&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>    Env fallback (default account only):
+</code></pre>
+<pre><code class="language-bash">SLACK_APP_TOKEN=xapp-...
+SLACK_BOT_TOKEN=xoxb-...
+</code></pre>
+<pre><code>    Subscribe bot events for:
+
+    - `app_mention`
+    - `message.channels`, `message.groups`, `message.im`, `message.mpim`
+    - `reaction_added`, `reaction_removed`
+    - `member_joined_channel`, `member_left_channel`
+    - `channel_rename`
+    - `pin_added`, `pin_removed`
+
+    Also enable App Home **Messages Tab** for DMs.
+  
+
+  
+</code></pre>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<pre><code>    - set mode to HTTP (`channels.slack.mode=&quot;http&quot;`)
+    - copy Slack **Signing Secret**
+    - set Event Subscriptions + Interactivity + Slash command Request URL to the same webhook path (default `/slack/events`)
+
+  
+
+  
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    slack: {
+      enabled: true,
+      mode: &quot;http&quot;,
+      botToken: &quot;xoxb-...&quot;,
+      signingSecret: &quot;your-signing-secret&quot;,
+      webhookPath: &quot;/slack/events&quot;,
+    },
+  },
+}
+</code></pre>
+<pre><code>    Per-account HTTP mode is supported.
+
+    Give each account a distinct `webhookPath` so registrations do not collide.
+  
+</code></pre>
+<h2>Token model</h2>
+<ul>
+<li><code>botToken</code> + <code>appToken</code> are required for Socket Mode.</li>
+<li>HTTP mode requires <code>botToken</code> + <code>signingSecret</code>.</li>
+<li>Config tokens override env fallback.</li>
+<li><code>SLACK_BOT_TOKEN</code> / <code>SLACK_APP_TOKEN</code> env fallback applies only to the default account.</li>
+<li><code>userToken</code> (<code>xoxp-...</code>) is config-only (no env fallback) and defaults to read-only behavior (<code>userTokenReadOnly: true</code>).</li>
+<li>Optional: add <code>chat:write.customize</code> if you want outgoing messages to use the active agent identity (custom <code>username</code> and icon). <code>icon_emoji</code> uses <code>:emoji_name:</code> syntax.</li>
+</ul>
+<p>For actions/directory reads, user token can be preferred when configured. For writes, bot token remains preferred; user-token writes are only allowed when <code>userTokenReadOnly: false</code> and bot token is unavailable.</p>
+<h2>Access control and routing</h2>
+<pre><code>`channels.slack.dmPolicy` controls DM access (legacy: `channels.slack.dm.policy`):
+
+- `pairing` (default)
+- `allowlist`
+- `open` (requires `channels.slack.allowFrom` to include `&quot;*&quot;`; legacy: `channels.slack.dm.allowFrom`)
+- `disabled`
+
+DM flags:
+
+- `dm.enabled` (default true)
+- `channels.slack.allowFrom` (preferred)
+- `dm.allowFrom` (legacy)
+- `dm.groupEnabled` (group DMs default false)
+- `dm.groupChannels` (optional MPIM allowlist)
+
+Pairing in DMs uses `agdi pairing approve slack &lt;code&gt;`.
+
+
+
+
+`channels.slack.groupPolicy` controls channel handling:
+
+- `open`
+- `allowlist`
+- `disabled`
+
+Channel allowlist lives under `channels.slack.channels`.
+
+Runtime note: if `channels.slack` is completely missing (env-only setup) and `channels.defaults.groupPolicy` is unset, runtime falls back to `groupPolicy=&quot;open&quot;` and logs a warning.
+
+Name/ID resolution:
+
+- channel allowlist entries and DM allowlist entries are resolved at startup when token access allows
+- unresolved entries are kept as configured
+
+
+
+
+Channel messages are mention-gated by default.
+
+Mention sources:
+
+- explicit app mention (`&lt;@botId&gt;`)
+- mention regex patterns (`agents.list[].groupChat.mentionPatterns`, fallback `messages.groupChat.mentionPatterns`)
+- implicit reply-to-bot thread behavior
+
+Per-channel controls (`channels.slack.channels.&lt;id|name&gt;`):
+
+- `requireMention`
+- `users` (allowlist)
+- `allowBots`
+- `skills`
+- `systemPrompt`
+- `tools`, `toolsBySender`
+</code></pre>
+<h2>Commands and slash behavior</h2>
+<ul>
+<li>Native command auto-mode is <strong>off</strong> for Slack (<code>commands.native: &quot;auto&quot;</code> does not enable Slack native commands).</li>
+<li>Enable native Slack command handlers with <code>channels.slack.commands.native: true</code> (or global <code>commands.native: true</code>).</li>
+<li>When native commands are enabled, register matching slash commands in Slack (<code>/&lt;command&gt;</code> names).</li>
+<li>If native commands are not enabled, you can run a single configured slash command via <code>channels.slack.slashCommand</code>.</li>
+</ul>
+<p>Default slash command settings:</p>
+<ul>
+<li><code>enabled: false</code></li>
+<li><code>name: &quot;agdi&quot;</code></li>
+<li><code>sessionPrefix: &quot;slack:slash&quot;</code></li>
+<li><code>ephemeral: true</code></li>
+</ul>
+<p>Slash sessions use isolated keys:</p>
+<ul>
+<li><code>agent:&lt;agentId&gt;:slack:slash:&lt;userId&gt;</code></li>
+</ul>
+<p>and still route command execution against the target conversation session (<code>CommandTargetSessionKey</code>).</p>
+<h2>Threading, sessions, and reply tags</h2>
+<ul>
+<li>DMs route as <code>direct</code>; channels as <code>channel</code>; MPIMs as <code>group</code>.</li>
+<li>With default <code>session.dmScope=main</code>, Slack DMs collapse to agent main session.</li>
+<li>Channel sessions: <code>agent:&lt;agentId&gt;:slack:channel:&lt;channelId&gt;</code>.</li>
+<li>Thread replies can create thread session suffixes (<code>:thread:&lt;threadTs&gt;</code>) when applicable.</li>
+<li><code>channels.slack.thread.historyScope</code> default is <code>thread</code>; <code>thread.inheritParent</code> default is <code>false</code>.</li>
+<li><code>channels.slack.thread.initialHistoryLimit</code> controls how many existing thread messages are fetched when a new thread session starts (default <code>20</code>; set <code>0</code> to disable).</li>
+</ul>
+<p>Reply threading controls:</p>
+<ul>
+<li><code>channels.slack.replyToMode</code>: <code>off|first|all</code> (default <code>off</code>)</li>
+<li><code>channels.slack.replyToModeByChatType</code>: per <code>direct|group|channel</code></li>
+<li>legacy fallback for direct chats: <code>channels.slack.dm.replyToMode</code></li>
+</ul>
+<p>Manual reply tags are supported:</p>
+<ul>
+<li><code>[[reply_to_current]]</code></li>
+<li><code>[[reply_to:&lt;id&gt;]]</code></li>
+</ul>
+<p>Note: <code>replyToMode=&quot;off&quot;</code> disables implicit reply threading. Explicit <code>[[reply_to_*]]</code> tags are still honored.</p>
+<h2>Media, chunking, and delivery</h2>
+<pre><code>Slack file attachments are downloaded from Slack-hosted private URLs (token-authenticated request flow) and written to the media store when fetch succeeds and size limits permit.
+
+Runtime inbound size cap defaults to `20MB` unless overridden by `channels.slack.mediaMaxMb`.
+
+
+
+
+- text chunks use `channels.slack.textChunkLimit` (default 4000)
+- `channels.slack.chunkMode=&quot;newline&quot;` enables paragraph-first splitting
+- file sends use Slack upload APIs and can include thread replies (`thread_ts`)
+- outbound media cap follows `channels.slack.mediaMaxMb` when configured; otherwise channel sends use MIME-kind defaults from media pipeline
+
+
+
+Preferred explicit targets:
+
+- `user:&lt;id&gt;` for DMs
+- `channel:&lt;id&gt;` for channels
+
+Slack DMs are opened via Slack conversation APIs when sending to user targets.
+</code></pre>
+<h2>Actions and gates</h2>
+<p>Slack actions are controlled by <code>channels.slack.actions.*</code>.</p>
+<p>Available action groups in current Slack tooling:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>messages</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td>reactions</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td>pins</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td>memberInfo</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td>emojiList</td>
+<td>enabled</td>
+</tr>
+</tbody></table>
+<h2>Events and operational behavior</h2>
+<ul>
+<li>Message edits/deletes/thread broadcasts are mapped into system events.</li>
+<li>Reaction add/remove events are mapped into system events.</li>
+<li>Member join/leave, channel created/renamed, and pin add/remove events are mapped into system events.</li>
+<li><code>channel_id_changed</code> can migrate channel config keys when <code>configWrites</code> is enabled.</li>
+<li>Channel topic/purpose metadata is treated as untrusted context and can be injected into routing context.</li>
+</ul>
+<h2>Ack reactions</h2>
+<p><code>ackReaction</code> sends an acknowledgement emoji while AGDI is processing an inbound message.</p>
+<p>Resolution order:</p>
+<ul>
+<li><code>channels.slack.accounts.&lt;accountId&gt;.ackReaction</code></li>
+<li><code>channels.slack.ackReaction</code></li>
+<li><code>messages.ackReaction</code></li>
+<li>agent identity emoji fallback (<code>agents.list[].identity.emoji</code>, else &quot;👀&quot;)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Slack expects shortcodes (for example <code>&quot;eyes&quot;</code>).</li>
+<li>Use <code>&quot;&quot;</code> to disable the reaction for a channel or account.</li>
+</ul>
+<h2>Manifest and scope checklist</h2>
+<pre><code class="language-json">{
+  &quot;display_information&quot;: {
+    &quot;name&quot;: &quot;AGDI&quot;,
+    &quot;description&quot;: &quot;Slack connector for AGDI&quot;
+  },
+  &quot;features&quot;: {
+    &quot;bot_user&quot;: {
+      &quot;display_name&quot;: &quot;AGDI&quot;,
+      &quot;always_online&quot;: false
+    },
+    &quot;app_home&quot;: {
+      &quot;messages_tab_enabled&quot;: true,
+      &quot;messages_tab_read_only_enabled&quot;: false
+    },
+    &quot;slash_commands&quot;: [
+      {
+        &quot;command&quot;: &quot;/agdi&quot;,
+        &quot;description&quot;: &quot;Send a message to AGDI&quot;,
+        &quot;should_escape&quot;: false
+      }
+    ]
+  },
+  &quot;oauth_config&quot;: {
+    &quot;scopes&quot;: {
+      &quot;bot&quot;: [
+        &quot;chat:write&quot;,
+        &quot;channels:history&quot;,
+        &quot;channels:read&quot;,
+        &quot;groups:history&quot;,
+        &quot;im:history&quot;,
+        &quot;mpim:history&quot;,
+        &quot;users:read&quot;,
+        &quot;app_mentions:read&quot;,
+        &quot;reactions:read&quot;,
+        &quot;reactions:write&quot;,
+        &quot;pins:read&quot;,
+        &quot;pins:write&quot;,
+        &quot;emoji:read&quot;,
+        &quot;commands&quot;,
+        &quot;files:read&quot;,
+        &quot;files:write&quot;
+      ]
+    }
+  },
+  &quot;settings&quot;: {
+    &quot;socket_mode_enabled&quot;: true,
+    &quot;event_subscriptions&quot;: {
+      &quot;bot_events&quot;: [
+        &quot;app_mention&quot;,
+        &quot;message.channels&quot;,
+        &quot;message.groups&quot;,
+        &quot;message.im&quot;,
+        &quot;message.mpim&quot;,
+        &quot;reaction_added&quot;,
+        &quot;reaction_removed&quot;,
+        &quot;member_joined_channel&quot;,
+        &quot;member_left_channel&quot;,
+        &quot;channel_rename&quot;,
+        &quot;pin_added&quot;,
+        &quot;pin_removed&quot;
+      ]
+    }
+  }
+}
+</code></pre>
+<pre><code>If you configure `channels.slack.userToken`, typical read scopes are:
+
+- `channels:history`, `groups:history`, `im:history`, `mpim:history`
+- `channels:read`, `groups:read`, `im:read`, `mpim:read`
+- `users:read`
+- `reactions:read`
+- `pins:read`
+- `emoji:read`
+- `search:read` (if you depend on Slack search reads)
+</code></pre>
+<h2>Troubleshooting</h2>
+<pre><code>Check, in order:
+
+- `groupPolicy`
+- channel allowlist (`channels.slack.channels`)
+- `requireMention`
+- per-channel `users` allowlist
+
+Useful commands:
+</code></pre>
+<pre><code class="language-bash">agdi channels status --probe
+agdi logs --follow
+agdi doctor
+</code></pre>
+<pre><code>Check:
+
+- `channels.slack.dm.enabled`
+- `channels.slack.dmPolicy` (or legacy `channels.slack.dm.policy`)
+- pairing approvals / allowlist entries
+</code></pre>
+<pre><code class="language-bash">agdi pairing list slack
+</code></pre>
+<pre><code>Validate bot + app tokens and Socket Mode enablement in Slack app settings.
+
+
+
+Validate:
+
+- signing secret
+- webhook path
+- Slack Request URLs (Events + Interactivity + Slash Commands)
+- unique `webhookPath` per HTTP account
+
+
+
+
+Verify whether you intended:
+
+- native command mode (`channels.slack.commands.native: true`) with matching slash commands registered in Slack
+- or single slash command mode (`channels.slack.slashCommand.enabled: true`)
+
+Also check `commands.useAccessGroups` and channel/user allowlists.
+</code></pre>
+<h2>Configuration reference pointers</h2>
+<p>Primary reference:</p>
+<ul>
+<li><p><a href="/docs/gateway/configuration-reference#slack">Configuration reference - Slack</a></p>
+<p>High-signal Slack fields:</p>
+<ul>
+<li>mode/auth: <code>mode</code>, <code>botToken</code>, <code>appToken</code>, <code>signingSecret</code>, <code>webhookPath</code>, <code>accounts.*</code></li>
+<li>DM access: <code>dm.enabled</code>, <code>dmPolicy</code>, <code>allowFrom</code> (legacy: <code>dm.policy</code>, <code>dm.allowFrom</code>), <code>dm.groupEnabled</code>, <code>dm.groupChannels</code></li>
+<li>channel access: <code>groupPolicy</code>, <code>channels.*</code>, <code>channels.*.users</code>, <code>channels.*.requireMention</code></li>
+<li>threading/history: <code>replyToMode</code>, <code>replyToModeByChatType</code>, <code>thread.*</code>, <code>historyLimit</code>, <code>dmHistoryLimit</code>, <code>dms.*.historyLimit</code></li>
+<li>delivery: <code>textChunkLimit</code>, <code>chunkMode</code>, <code>mediaMaxMb</code></li>
+<li>ops/features: <code>configWrites</code>, <code>commands.native</code>, <code>slashCommand.*</code>, <code>actions.*</code>, <code>userToken</code>, <code>userTokenReadOnly</code></li>
+</ul>
+</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><a href="/docs/channels/pairing">Pairing</a></li>
+<li><a href="/docs/channels/channel-routing">Channel routing</a></li>
+<li><a href="/docs/channels/troubleshooting">Troubleshooting</a></li>
+<li><a href="/docs/gateway/configuration">Configuration</a></li>
+<li><a href="/docs/tools/slash-commands">Slash commands</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

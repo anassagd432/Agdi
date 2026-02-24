@@ -1,12 +1,12 @@
 {
   "name": "@openclaw/bluebubbles",
   "version": "2026.2.16",
-  "description": "OpenClaw BlueBubbles channel plugin",
+  "description": "AGDI BlueBubbles channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "agdi": "workspace:*"
   },
-  "openclaw": {
+  "agdi": {
     "extensions": [
       "./index.ts"
     ],

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Providers — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab active" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/providers/index.html">Model Providers</a></li><li><a class="" href="/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="active" href="/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/providers/openai.html">OpenAI</a></li><li><a class="" href="/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/providers/litellm.html">litellm</a></li><li><a class="" href="/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/providers/minimax.html">MiniMax</a></li><li><a class="" href="/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/providers/glm.html">GLM Models</a></li><li><a class="" href="/providers/zai.html">Z.AI</a></li><li><a class="" href="/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Model providers</h1>
+<p>This page covers <strong>LLM/model providers</strong> (not chat channels like WhatsApp/Telegram).
+For model selection rules, see <a href="/concepts/models">/concepts/models</a>.</p>
+<h2>Quick rules</h2>
+<ul>
+<li>Model refs use <code>provider/model</code> (example: <code>opencode/claude-opus-4-6</code>).</li>
+<li>If you set <code>agents.defaults.models</code>, it becomes the allowlist.</li>
+<li>CLI helpers: <code>agdi onboard</code>, <code>agdi models list</code>, <code>agdi models set &lt;provider/model&gt;</code>.</li>
+</ul>
+<h2>Built-in providers (pi-ai catalog)</h2>
+<p>AGDI ships with the pi‑ai catalog. These providers require <strong>no</strong>
+<code>models.providers</code> config; just set auth + pick a model.</p>
+<h3>OpenAI</h3>
+<ul>
+<li>Provider: <code>openai</code></li>
+<li>Auth: <code>OPENAI_API_KEY</code></li>
+<li>Example model: <code>openai/gpt-5.1-codex</code></li>
+<li>CLI: <code>agdi onboard --auth-choice openai-api-key</code></li>
+</ul>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;openai/gpt-5.1-codex&quot; } } },
+}
+</code></pre>
+<h3>Anthropic</h3>
+<ul>
+<li>Provider: <code>anthropic</code></li>
+<li>Auth: <code>ANTHROPIC_API_KEY</code> or <code>claude setup-token</code></li>
+<li>Example model: <code>anthropic/claude-opus-4-6</code></li>
+<li>CLI: <code>agdi onboard --auth-choice token</code> (paste setup-token) or <code>agdi models auth paste-token --provider anthropic</code></li>
+</ul>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;anthropic/claude-opus-4-6&quot; } } },
+}
+</code></pre>
+<h3>OpenAI Code (Codex)</h3>
+<ul>
+<li>Provider: <code>openai-codex</code></li>
+<li>Auth: OAuth (ChatGPT)</li>
+<li>Example model: <code>openai-codex/gpt-5.3-codex</code></li>
+<li>CLI: <code>agdi onboard --auth-choice openai-codex</code> or <code>agdi models auth login --provider openai-codex</code></li>
+</ul>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;openai-codex/gpt-5.3-codex&quot; } } },
+}
+</code></pre>
+<h3>OpenCode Zen</h3>
+<ul>
+<li>Provider: <code>opencode</code></li>
+<li>Auth: <code>OPENCODE_API_KEY</code> (or <code>OPENCODE_ZEN_API_KEY</code>)</li>
+<li>Example model: <code>opencode/claude-opus-4-6</code></li>
+<li>CLI: <code>agdi onboard --auth-choice opencode-zen</code></li>
+</ul>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;opencode/claude-opus-4-6&quot; } } },
+}
+</code></pre>
+<h3>Google Gemini (API key)</h3>
+<ul>
+<li>Provider: <code>google</code></li>
+<li>Auth: <code>GEMINI_API_KEY</code></li>
+<li>Example model: <code>google/gemini-3-pro-preview</code></li>
+<li>CLI: <code>agdi onboard --auth-choice gemini-api-key</code></li>
+</ul>
+<h3>Google Vertex, Antigravity, and Gemini CLI</h3>
+<ul>
+<li>Providers: <code>google-vertex</code>, <code>google-antigravity</code>, <code>google-gemini-cli</code></li>
+<li>Auth: Vertex uses gcloud ADC; Antigravity/Gemini CLI use their respective auth flows</li>
+<li>Antigravity OAuth is shipped as a bundled plugin (<code>google-antigravity-auth</code>, disabled by default).<ul>
+<li>Enable: <code>agdi plugins enable google-antigravity-auth</code></li>
+<li>Login: <code>agdi models auth login --provider google-antigravity --set-default</code></li>
+</ul>
+</li>
+<li>Gemini CLI OAuth is shipped as a bundled plugin (<code>google-gemini-cli-auth</code>, disabled by default).<ul>
+<li>Enable: <code>agdi plugins enable google-gemini-cli-auth</code></li>
+<li>Login: <code>agdi models auth login --provider google-gemini-cli --set-default</code></li>
+<li>Note: you do <strong>not</strong> paste a client id or secret into <code>agdi.json</code>. The CLI login flow stores
+tokens in auth profiles on the gateway host.</li>
+</ul>
+</li>
+</ul>
+<h3>Z.AI (GLM)</h3>
+<ul>
+<li>Provider: <code>zai</code></li>
+<li>Auth: <code>ZAI_API_KEY</code></li>
+<li>Example model: <code>zai/glm-4.7</code></li>
+<li>CLI: <code>agdi onboard --auth-choice zai-api-key</code><ul>
+<li>Aliases: <code>z.ai/*</code> and <code>z-ai/*</code> normalize to <code>zai/*</code></li>
+</ul>
+</li>
+</ul>
+<h3>Vercel AI Gateway</h3>
+<ul>
+<li>Provider: <code>vercel-ai-gateway</code></li>
+<li>Auth: <code>AI_GATEWAY_API_KEY</code></li>
+<li>Example model: <code>vercel-ai-gateway/anthropic/claude-opus-4.6</code></li>
+<li>CLI: <code>agdi onboard --auth-choice ai-gateway-api-key</code></li>
+</ul>
+<h3>Other built-in providers</h3>
+<ul>
+<li>OpenRouter: <code>openrouter</code> (<code>OPENROUTER_API_KEY</code>)</li>
+<li>Example model: <code>openrouter/anthropic/claude-sonnet-4-5</code></li>
+<li>xAI: <code>xai</code> (<code>XAI_API_KEY</code>)</li>
+<li>Groq: <code>groq</code> (<code>GROQ_API_KEY</code>)</li>
+<li>Cerebras: <code>cerebras</code> (<code>CEREBRAS_API_KEY</code>)<ul>
+<li>GLM models on Cerebras use ids <code>zai-glm-4.7</code> and <code>zai-glm-4.6</code>.</li>
+<li>OpenAI-compatible base URL: <code>https://api.cerebras.ai/v1</code>.</li>
+</ul>
+</li>
+<li>Mistral: <code>mistral</code> (<code>MISTRAL_API_KEY</code>)</li>
+<li>GitHub Copilot: <code>github-copilot</code> (<code>COPILOT_GITHUB_TOKEN</code> / <code>GH_TOKEN</code> / <code>GITHUB_TOKEN</code>)</li>
+<li>Hugging Face Inference: <code>huggingface</code> (<code>HUGGINGFACE_HUB_TOKEN</code> or <code>HF_TOKEN</code>) — OpenAI-compatible router; example model: <code>huggingface/deepseek-ai/DeepSeek-R1</code>; CLI: <code>agdi onboard --auth-choice huggingface-api-key</code>. See <a href="/providers/huggingface">Hugging Face (Inference)</a>.</li>
+</ul>
+<h2>Providers via <code>models.providers</code> (custom/base URL)</h2>
+<p>Use <code>models.providers</code> (or <code>models.json</code>) to add <strong>custom</strong> providers or
+OpenAI/Anthropic‑compatible proxies.</p>
+<h3>Moonshot AI (Kimi)</h3>
+<p>Moonshot uses OpenAI-compatible endpoints, so configure it as a custom provider:</p>
+<ul>
+<li>Provider: <code>moonshot</code></li>
+<li>Auth: <code>MOONSHOT_API_KEY</code></li>
+<li>Example model: <code>moonshot/kimi-k2.5</code></li>
+</ul>
+<p>Kimi K2 model IDs:</p>
+<p>{/<em>moonshot-kimi-k2-model-refs:start</em>/ &amp;&amp; null}</p>
+<ul>
+<li><code>moonshot/kimi-k2.5</code></li>
+<li><code>moonshot/kimi-k2-0905-preview</code></li>
+<li><code>moonshot/kimi-k2-turbo-preview</code></li>
+<li><code>moonshot/kimi-k2-thinking</code></li>
+<li><code>moonshot/kimi-k2-thinking-turbo</code>
+{/<em>moonshot-kimi-k2-model-refs:end</em>/ &amp;&amp; null}</li>
+</ul>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: { model: { primary: &quot;moonshot/kimi-k2.5&quot; } },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      moonshot: {
+        baseUrl: &quot;https://api.moonshot.ai/v1&quot;,
+        apiKey: &quot;${MOONSHOT_API_KEY}&quot;,
+        api: &quot;openai-completions&quot;,
+        models: [{ id: &quot;kimi-k2.5&quot;, name: &quot;Kimi K2.5&quot; }],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Kimi Coding</h3>
+<p>Kimi Coding uses Moonshot AI&#39;s Anthropic-compatible endpoint:</p>
+<ul>
+<li>Provider: <code>kimi-coding</code></li>
+<li>Auth: <code>KIMI_API_KEY</code></li>
+<li>Example model: <code>kimi-coding/k2p5</code></li>
+</ul>
+<pre><code class="language-json5">{
+  env: { KIMI_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: { model: { primary: &quot;kimi-coding/k2p5&quot; } },
+  },
+}
+</code></pre>
+<h3>Qwen OAuth (free tier)</h3>
+<p>Qwen provides OAuth access to Qwen Coder + Vision via a device-code flow.
+Enable the bundled plugin, then log in:</p>
+<pre><code class="language-bash">agdi plugins enable qwen-portal-auth
+agdi models auth login --provider qwen-portal --set-default
+</code></pre>
+<p>Model refs:</p>
+<ul>
+<li><code>qwen-portal/coder-model</code></li>
+<li><code>qwen-portal/vision-model</code></li>
+</ul>
+<p>See <a href="/providers/qwen">/providers/qwen</a> for setup details and notes.</p>
+<h3>Synthetic</h3>
+<p>Synthetic provides Anthropic-compatible models behind the <code>synthetic</code> provider:</p>
+<ul>
+<li>Provider: <code>synthetic</code></li>
+<li>Auth: <code>SYNTHETIC_API_KEY</code></li>
+<li>Example model: <code>synthetic/hf:MiniMaxAI/MiniMax-M2.1</code></li>
+<li>CLI: <code>agdi onboard --auth-choice synthetic-api-key</code></li>
+</ul>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: { model: { primary: &quot;synthetic/hf:MiniMaxAI/MiniMax-M2.1&quot; } },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      synthetic: {
+        baseUrl: &quot;https://api.synthetic.new/anthropic&quot;,
+        apiKey: &quot;${SYNTHETIC_API_KEY}&quot;,
+        api: &quot;anthropic-messages&quot;,
+        models: [{ id: &quot;hf:MiniMaxAI/MiniMax-M2.1&quot;, name: &quot;MiniMax M2.1&quot; }],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>MiniMax</h3>
+<p>MiniMax is configured via <code>models.providers</code> because it uses custom endpoints:</p>
+<ul>
+<li>MiniMax (Anthropic‑compatible): <code>--auth-choice minimax-api</code></li>
+<li>Auth: <code>MINIMAX_API_KEY</code></li>
+</ul>
+<p>See <a href="/providers/minimax">/providers/minimax</a> for setup details, model options, and config snippets.</p>
+<h3>Ollama</h3>
+<p>Ollama is a local LLM runtime that provides an OpenAI-compatible API:</p>
+<ul>
+<li>Provider: <code>ollama</code></li>
+<li>Auth: None required (local server)</li>
+<li>Example model: <code>ollama/llama3.3</code></li>
+<li>Installation: <a href="https://ollama.ai">https://ollama.ai</a></li>
+</ul>
+<pre><code class="language-bash"># Install Ollama, then pull a model:
+ollama pull llama3.3
+</code></pre>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: { model: { primary: &quot;ollama/llama3.3&quot; } },
+  },
+}
+</code></pre>
+<p>Ollama is automatically detected when running locally at <code>http://127.0.0.1:11434/v1</code>. See <a href="/providers/ollama">/providers/ollama</a> for model recommendations and custom configuration.</p>
+<h3>vLLM</h3>
+<p>vLLM is a local (or self-hosted) OpenAI-compatible server:</p>
+<ul>
+<li>Provider: <code>vllm</code></li>
+<li>Auth: Optional (depends on your server)</li>
+<li>Default base URL: <code>http://127.0.0.1:8000/v1</code></li>
+</ul>
+<p>To opt in to auto-discovery locally (any value works if your server doesn’t enforce auth):</p>
+<pre><code class="language-bash">export VLLM_API_KEY=&quot;vllm-local&quot;
+</code></pre>
+<p>Then set a model (replace with one of the IDs returned by <code>/v1/models</code>):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: { model: { primary: &quot;vllm/your-model-id&quot; } },
+  },
+}
+</code></pre>
+<p>See <a href="/providers/vllm">/providers/vllm</a> for details.</p>
+<h3>Local proxies (LM Studio, vLLM, LiteLLM, etc.)</h3>
+<p>Example (OpenAI‑compatible):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;lmstudio/minimax-m2.1-gs32&quot; },
+      models: { &quot;lmstudio/minimax-m2.1-gs32&quot;: { alias: &quot;Minimax&quot; } },
+    },
+  },
+  models: {
+    providers: {
+      lmstudio: {
+        baseUrl: &quot;http://localhost:1234/v1&quot;,
+        apiKey: &quot;LMSTUDIO_KEY&quot;,
+        api: &quot;openai-completions&quot;,
+        models: [
+          {
+            id: &quot;minimax-m2.1-gs32&quot;,
+            name: &quot;MiniMax M2.1&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 200000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>For custom providers, <code>reasoning</code>, <code>input</code>, <code>cost</code>, <code>contextWindow</code>, and <code>maxTokens</code> are optional.
+When omitted, AGDI defaults to:<ul>
+<li><code>reasoning: false</code></li>
+<li><code>input: [&quot;text&quot;]</code></li>
+<li><code>cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }</code></li>
+<li><code>contextWindow: 200000</code></li>
+<li><code>maxTokens: 8192</code></li>
+</ul>
+</li>
+<li>Recommended: set explicit values that match your proxy/model limits.</li>
+</ul>
+<h2>CLI examples</h2>
+<pre><code class="language-bash">agdi onboard --auth-choice opencode-zen
+agdi models set opencode/claude-opus-4-6
+agdi models list
+</code></pre>
+<p>See also: <a href="/gateway/configuration">/gateway/configuration</a> for full configuration examples.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

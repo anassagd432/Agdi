@@ -37,7 +37,7 @@ vi.mock("../config/sessions.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../config/sessions.js")>();
   return {
     ...actual,
-    resolveStorePath: vi.fn(() => "/tmp/openclaw-sessions.json"),
+    resolveStorePath: vi.fn(() => "/tmp/agdi-sessions.json"),
     updateLastRoute: (...args: unknown[]) => updateLastRouteMock(...args),
     resolveSessionKey: vi.fn(),
   };
@@ -60,10 +60,10 @@ const BASE_CFG = {
   agents: {
     defaults: {
       model: "anthropic/claude-opus-4-5",
-      workspace: "/tmp/openclaw",
+      workspace: "/tmp/agdi",
     },
   },
-  session: { store: "/tmp/openclaw-sessions.json" },
+  session: { store: "/tmp/agdi-sessions.json" },
 } as const;
 
 const CATEGORY_GUILD_CFG = {

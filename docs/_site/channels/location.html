@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Channel Location Parsing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="active" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Channel location parsing</h1>
+<p>AGDI normalizes shared locations from chat channels into:</p>
+<ul>
+<li>human-readable text appended to the inbound body, and</li>
+<li>structured fields in the auto-reply context payload.</li>
+</ul>
+<p>Currently supported:</p>
+<ul>
+<li><strong>Telegram</strong> (location pins + venues + live locations)</li>
+<li><strong>WhatsApp</strong> (locationMessage + liveLocationMessage)</li>
+<li><strong>Matrix</strong> (<code>m.location</code> with <code>geo_uri</code>)</li>
+</ul>
+<h2>Text formatting</h2>
+<p>Locations are rendered as friendly lines without brackets:</p>
+<ul>
+<li>Pin:<ul>
+<li><code>📍 48.858844, 2.294351 ±12m</code></li>
+</ul>
+</li>
+<li>Named place:<ul>
+<li><code>📍 Eiffel Tower — Champ de Mars, Paris (48.858844, 2.294351 ±12m)</code></li>
+</ul>
+</li>
+<li>Live share:<ul>
+<li><code>🛰 Live location: 48.858844, 2.294351 ±12m</code></li>
+</ul>
+</li>
+</ul>
+<p>If the channel includes a caption/comment, it is appended on the next line:</p>
+<pre><code>📍 48.858844, 2.294351 ±12m
+Meet here
+</code></pre>
+<h2>Context fields</h2>
+<p>When a location is present, these fields are added to <code>ctx</code>:</p>
+<ul>
+<li><code>LocationLat</code> (number)</li>
+<li><code>LocationLon</code> (number)</li>
+<li><code>LocationAccuracy</code> (number, meters; optional)</li>
+<li><code>LocationName</code> (string; optional)</li>
+<li><code>LocationAddress</code> (string; optional)</li>
+<li><code>LocationSource</code> (<code>pin | place | live</code>)</li>
+<li><code>LocationIsLive</code> (boolean)</li>
+</ul>
+<h2>Channel notes</h2>
+<ul>
+<li><strong>Telegram</strong>: venues map to <code>LocationName/LocationAddress</code>; live locations use <code>live_period</code>.</li>
+<li><strong>WhatsApp</strong>: <code>locationMessage.comment</code> and <code>liveLocationMessage.caption</code> are appended as the caption line.</li>
+<li><strong>Matrix</strong>: <code>geo_uri</code> is parsed as a pin location; altitude is ignored and <code>LocationIsLive</code> is always false.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

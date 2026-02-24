@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Network Recon — AGDI Docs</title>
+  <meta name="description" content="Host discovery, port scanning, DNS enumeration, and traceroute.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="active" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Network Recon</h1>
+<p>Full network reconnaissance powered by nmap, masscan, and native TCP sockets.</p>
+<h2>Capabilities</h2>
+<ul>
+<li><strong>Host Discovery</strong> — Ping sweep, ARP scan for live hosts</li>
+<li><strong>Port Scanning</strong> — SYN, connect, UDP, ACK, FIN techniques</li>
+<li><strong>Service Detection</strong> — Version fingerprinting on open ports</li>
+<li><strong>DNS Enumeration</strong> — A, AAAA, MX, NS, TXT, CNAME, SOA + subdomain brute</li>
+<li><strong>Traceroute</strong> — Full hop-by-hop path tracing</li>
+<li><strong>Masscan</strong> — Ultra-fast scanning up to 65535 ports</li>
+</ul>
+<h2>Usage</h2>
+<pre><code class="language-typescript">import { NetworkRecon } from &quot;agdi/autonomous&quot;;
+
+const recon = new NetworkRecon();
+
+// Event-driven results
+recon.on((event) =&gt; {
+  if (event.kind === &quot;port_found&quot;) {
+    console.log(`Port ${event.port.port} is ${event.port.state}`);
+  }
+});
+
+// Discover live hosts
+const hosts = await recon.discoverHosts(&quot;192.168.1.0/24&quot;);
+
+// Full port scan
+const result = await recon.scanPorts({
+  target: &quot;10.0.0.1&quot;,
+  ports: &quot;1-65535&quot;,
+  technique: &quot;syn&quot;,
+  serviceDetection: true,
+  aggressive: true,
+});
+
+// DNS enumeration (includes subdomain brute force)
+const records = await recon.dnsEnum(&quot;example.com&quot;);
+
+// Traceroute
+const hops = await recon.traceroute(&quot;8.8.8.8&quot;);
+
+// Ultra-fast masscan
+const ports = await recon.masscan(&quot;10.0.0.0/24&quot;, &quot;1-65535&quot;, 10000);
+</code></pre>
+<h2>Dependencies</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Required</th>
+<th>Fallback</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nmap</td>
+<td>Recommended</td>
+<td>Native TCP connect scan</td>
+</tr>
+<tr>
+<td>masscan</td>
+<td>Optional</td>
+<td>—</td>
+</tr>
+<tr>
+<td>arp-scan</td>
+<td>Optional</td>
+<td>Ping sweep</td>
+</tr>
+<tr>
+<td>traceroute</td>
+<td>Optional</td>
+<td>—</td>
+</tr>
+</tbody></table>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

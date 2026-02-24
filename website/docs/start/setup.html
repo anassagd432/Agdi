@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab active" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/docs/help/index.html">Help</a></li><li><a class="" href="/docs/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/docs/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/docs/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/docs/help/environment.html">Environment Variables</a></li><li><a class="" href="/docs/help/debugging.html">Debugging</a></li><li><a class="" href="/docs/help/testing.html">Testing</a></li><li><a class="" href="/docs/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/docs/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/docs/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="active" href="/docs/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/docs/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/docs/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/docs/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Setup</h1>
+<p>If you are setting up for the first time, start with <a href="/docs/start/getting-started">Getting Started</a>.
+For wizard details, see <a href="/docs/start/wizard">Onboarding Wizard</a>.</p>
+<p>Last updated: 2026-01-01</p>
+<h2>TL;DR</h2>
+<ul>
+<li><strong>Tailoring lives outside the repo:</strong> <code>~/.agdi/workspace</code> (workspace) + <code>~/.agdi/agdi.json</code> (config).</li>
+<li><strong>Stable workflow:</strong> install the macOS app; let it run the bundled Gateway.</li>
+<li><strong>Bleeding edge workflow:</strong> run the Gateway yourself via <code>pnpm gateway:watch</code>, then let the macOS app attach in Local mode.</li>
+</ul>
+<h2>Prereqs (from source)</h2>
+<ul>
+<li>Node <code>&gt;=22</code></li>
+<li><code>pnpm</code></li>
+<li>Docker (optional; only for containerized setup/e2e — see <a href="/docs/install/docker">Docker</a>)</li>
+</ul>
+<h2>Tailoring strategy (so updates don’t hurt)</h2>
+<p>If you want “100% tailored to me” <em>and</em> easy updates, keep your customization in:</p>
+<ul>
+<li><strong>Config:</strong> <code>~/.agdi/agdi.json</code> (JSON/JSON5-ish)</li>
+<li><strong>Workspace:</strong> <code>~/.agdi/workspace</code> (skills, prompts, memories; make it a private git repo)</li>
+</ul>
+<p>Bootstrap once:</p>
+<pre><code class="language-bash">agdi setup
+</code></pre>
+<p>From inside this repo, use the local CLI entry:</p>
+<pre><code class="language-bash">agdi setup
+</code></pre>
+<p>If you don’t have a global install yet, run it via <code>pnpm agdi setup</code>.</p>
+<h2>Run the Gateway from this repo</h2>
+<p>After <code>pnpm build</code>, you can run the packaged CLI directly:</p>
+<pre><code class="language-bash">node agdi.mjs gateway --port 18789 --verbose
+</code></pre>
+<h2>Stable workflow (macOS app first)</h2>
+<ol>
+<li>Install + launch <strong>AGDI.app</strong> (menu bar).</li>
+<li>Complete the onboarding/permissions checklist (TCC prompts).</li>
+<li>Ensure Gateway is <strong>Local</strong> and running (the app manages it).</li>
+<li>Link surfaces (example: WhatsApp):</li>
+</ol>
+<pre><code class="language-bash">agdi channels login
+</code></pre>
+<ol start="5">
+<li>Sanity check:</li>
+</ol>
+<pre><code class="language-bash">agdi health
+</code></pre>
+<p>If onboarding is not available in your build:</p>
+<ul>
+<li>Run <code>agdi setup</code>, then <code>agdi channels login</code>, then start the Gateway manually (<code>agdi gateway</code>).</li>
+</ul>
+<h2>Bleeding edge workflow (Gateway in a terminal)</h2>
+<p>Goal: work on the TypeScript Gateway, get hot reload, keep the macOS app UI attached.</p>
+<h3>0) (Optional) Run the macOS app from source too</h3>
+<p>If you also want the macOS app on the bleeding edge:</p>
+<pre><code class="language-bash">./scripts/restart-mac.sh
+</code></pre>
+<h3>1) Start the dev Gateway</h3>
+<pre><code class="language-bash">pnpm install
+pnpm gateway:watch
+</code></pre>
+<p><code>gateway:watch</code> runs the gateway in watch mode and reloads on TypeScript changes.</p>
+<h3>2) Point the macOS app at your running Gateway</h3>
+<p>In <strong>AGDI.app</strong>:</p>
+<ul>
+<li>Connection Mode: <strong>Local</strong>
+The app will attach to the running gateway on the configured port.</li>
+</ul>
+<h3>3) Verify</h3>
+<ul>
+<li>In-app Gateway status should read <strong>“Using existing gateway …”</strong></li>
+<li>Or via CLI:</li>
+</ul>
+<pre><code class="language-bash">agdi health
+</code></pre>
+<h3>Common footguns</h3>
+<ul>
+<li><strong>Wrong port:</strong> Gateway WS defaults to <code>ws://127.0.0.1:18789</code>; keep app + CLI on the same port.</li>
+<li><strong>Where state lives:</strong><ul>
+<li>Credentials: <code>~/.agdi/credentials/</code></li>
+<li>Sessions: <code>~/.agdi/agents/&lt;agentId&gt;/sessions/</code></li>
+<li>Logs: <code>/tmp/agdi/</code></li>
+</ul>
+</li>
+</ul>
+<h2>Credential storage map</h2>
+<p>Use this when debugging auth or deciding what to back up:</p>
+<ul>
+<li><strong>WhatsApp</strong>: <code>~/.agdi/credentials/whatsapp/&lt;accountId&gt;/creds.json</code></li>
+<li><strong>Telegram bot token</strong>: config/env or <code>channels.telegram.tokenFile</code></li>
+<li><strong>Discord bot token</strong>: config/env (token file not yet supported)</li>
+<li><strong>Slack tokens</strong>: config/env (<code>channels.slack.*</code>)</li>
+<li><strong>Pairing allowlists</strong>: <code>~/.agdi/credentials/&lt;channel&gt;-allowFrom.json</code></li>
+<li><strong>Model auth profiles</strong>: <code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json</code></li>
+<li><strong>Legacy OAuth import</strong>: <code>~/.agdi/credentials/oauth.json</code>
+More detail: <a href="/docs/gateway/security#credential-storage-map">Security</a>.</li>
+</ul>
+<h2>Updating (without wrecking your setup)</h2>
+<ul>
+<li>Keep <code>~/.agdi/workspace</code> and <code>~/.agdi/</code> as “your stuff”; don’t put personal prompts/config into the <code>agdi</code> repo.</li>
+<li>Updating source: <code>git pull</code> + <code>pnpm install</code> (when lockfile changed) + keep using <code>pnpm gateway:watch</code>.</li>
+</ul>
+<h2>Linux (systemd user service)</h2>
+<p>Linux installs use a systemd <strong>user</strong> service. By default, systemd stops user
+services on logout/idle, which kills the Gateway. Onboarding attempts to enable
+lingering for you (may prompt for sudo). If it’s still off, run:</p>
+<pre><code class="language-bash">sudo loginctl enable-linger $USER
+</code></pre>
+<p>For always-on or multi-user servers, consider a <strong>system</strong> service instead of a
+user service (no lingering needed). See <a href="/docs/gateway">Gateway runbook</a> for the systemd notes.</p>
+<h2>Related docs</h2>
+<ul>
+<li><a href="/docs/gateway">Gateway runbook</a> (flags, supervision, ports)</li>
+<li><a href="/docs/gateway/configuration">Gateway configuration</a> (config schema + examples)</li>
+<li><a href="/docs/channels/discord">Discord</a> and <a href="/docs/channels/telegram">Telegram</a> (reply tags + replyToMode settings)</li>
+<li><a href="/docs/start/agdi">AGDI assistant setup</a></li>
+<li><a href="/docs/platforms/macos">macOS app</a> (gateway lifecycle)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -2,12 +2,12 @@
   "name": "@openclaw/minimax-portal-auth",
   "version": "2026.2.16",
   "private": true,
-  "description": "OpenClaw MiniMax Portal OAuth provider plugin",
+  "description": "AGDI MiniMax Portal OAuth provider plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "agdi": "workspace:*"
   },
-  "openclaw": {
+  "agdi": {
     "extensions": [
       "./index.ts"
     ]

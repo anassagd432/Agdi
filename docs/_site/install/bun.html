@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bun (Experimental) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="active" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Bun (experimental)</h1>
+<p>Goal: run this repo with <strong>Bun</strong> (optional, not recommended for WhatsApp/Telegram)
+without diverging from pnpm workflows.</p>
+<p>⚠️ <strong>Not recommended for Gateway runtime</strong> (WhatsApp/Telegram bugs). Use Node for production.</p>
+<h2>Status</h2>
+<ul>
+<li>Bun is an optional local runtime for running TypeScript directly (<code>bun run …</code>, <code>bun --watch …</code>).</li>
+<li><code>pnpm</code> is the default for builds and remains fully supported (and used by some docs tooling).</li>
+<li>Bun cannot use <code>pnpm-lock.yaml</code> and will ignore it.</li>
+</ul>
+<h2>Install</h2>
+<p>Default:</p>
+<pre><code class="language-sh">bun install
+</code></pre>
+<p>Note: <code>bun.lock</code>/<code>bun.lockb</code> are gitignored, so there’s no repo churn either way. If you want <em>no lockfile writes</em>:</p>
+<pre><code class="language-sh">bun install --no-save
+</code></pre>
+<h2>Build / Test (Bun)</h2>
+<pre><code class="language-sh">bun run build
+bun run vitest run
+</code></pre>
+<h2>Bun lifecycle scripts (blocked by default)</h2>
+<p>Bun may block dependency lifecycle scripts unless explicitly trusted (<code>bun pm untrusted</code> / <code>bun pm trust</code>).
+For this repo, the commonly blocked scripts are not required:</p>
+<ul>
+<li><code>@whiskeysockets/baileys</code> <code>preinstall</code>: checks Node major &gt;= 20 (we run Node 22+).</li>
+<li><code>protobufjs</code> <code>postinstall</code>: emits warnings about incompatible version schemes (no build artifacts).</li>
+</ul>
+<p>If you hit a real runtime issue that requires these scripts, trust them explicitly:</p>
+<pre><code class="language-sh">bun pm trust @whiskeysockets/baileys protobufjs
+</code></pre>
+<h2>Caveats</h2>
+<ul>
+<li>Some scripts still hardcode pnpm (e.g. <code>docs:build</code>, <code>ui:*</code>, <code>protocol:check</code>). Run those via pnpm for now.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

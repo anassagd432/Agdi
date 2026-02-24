@@ -1,9 +1,9 @@
 import {
   emptyPluginConfigSchema,
-  type OpenClawPluginApi,
+  type AGDIPluginApi,
   type ProviderAuthContext,
   type ProviderAuthResult,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import { loginMiniMaxPortalOAuth, type MiniMaxRegion } from "./oauth.js";
 
 const PROVIDER_ID = "minimax-portal";
@@ -132,7 +132,7 @@ const minimaxPortalPlugin = {
   name: "MiniMax OAuth",
   description: "OAuth flow for MiniMax models",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: AGDIPluginApi) {
     api.registerProvider({
       id: PROVIDER_ID,
       label: PROVIDER_LABEL,

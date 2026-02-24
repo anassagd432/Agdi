@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniMax — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab active" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/providers/index.html">Model Providers</a></li><li><a class="" href="/docs/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/docs/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/docs/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/docs/providers/anthropic.html">Anthropic</a></li><li><a class="" href="/docs/providers/openai.html">OpenAI</a></li><li><a class="" href="/docs/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/docs/providers/litellm.html">litellm</a></li><li><a class="" href="/docs/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/docs/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/docs/providers/moonshot.html">Moonshot AI</a></li><li><a class="active" href="/docs/providers/minimax.html">MiniMax</a></li><li><a class="" href="/docs/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/docs/providers/glm.html">GLM Models</a></li><li><a class="" href="/docs/providers/zai.html">Z.AI</a></li><li><a class="" href="/docs/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/docs/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>MiniMax</h1>
+<p>MiniMax is an AI company that builds the <strong>M2/M2.1</strong> model family. The current
+coding-focused release is <strong>MiniMax M2.1</strong> (December 23, 2025), built for
+real-world complex tasks.</p>
+<p>Source: <a href="https://www.minimax.io/news/minimax-m21">MiniMax M2.1 release note</a></p>
+<h2>Model overview (M2.1)</h2>
+<p>MiniMax highlights these improvements in M2.1:</p>
+<ul>
+<li>Stronger <strong>multi-language coding</strong> (Rust, Java, Go, C++, Kotlin, Objective-C, TS/JS).</li>
+<li>Better <strong>web/app development</strong> and aesthetic output quality (including native mobile).</li>
+<li>Improved <strong>composite instruction</strong> handling for office-style workflows, building on
+interleaved thinking and integrated constraint execution.</li>
+<li><strong>More concise responses</strong> with lower token usage and faster iteration loops.</li>
+<li>Stronger <strong>tool/agent framework</strong> compatibility and context management (Claude Code,
+Droid/Factory AI, Cline, Kilo Code, Roo Code, BlackBox).</li>
+<li>Higher-quality <strong>dialogue and technical writing</strong> outputs.</li>
+</ul>
+<h2>MiniMax M2.1 vs MiniMax M2.1 Lightning</h2>
+<ul>
+<li><strong>Speed:</strong> Lightning is the “fast” variant in MiniMax’s pricing docs.</li>
+<li><strong>Cost:</strong> Pricing shows the same input cost, but Lightning has higher output cost.</li>
+<li><strong>Coding plan routing:</strong> The Lightning back-end isn’t directly available on the MiniMax
+coding plan. MiniMax auto-routes most requests to Lightning, but falls back to the
+regular M2.1 back-end during traffic spikes.</li>
+</ul>
+<h2>Choose a setup</h2>
+<h3>MiniMax OAuth (Coding Plan) — recommended</h3>
+<p><strong>Best for:</strong> quick setup with MiniMax Coding Plan via OAuth, no API key required.</p>
+<p>Enable the bundled OAuth plugin and authenticate:</p>
+<pre><code class="language-bash">agdi plugins enable minimax-portal-auth  # skip if already loaded.
+agdi gateway restart  # restart if gateway is already running
+agdi onboard --auth-choice minimax-portal
+</code></pre>
+<p>You will be prompted to select an endpoint:</p>
+<ul>
+<li><strong>Global</strong> - International users (<code>api.minimax.io</code>)</li>
+<li><strong>CN</strong> - Users in China (<code>api.minimaxi.com</code>)</li>
+</ul>
+<p>See <a href="https://github.com/agdi/agdi/tree/main/extensions/minimax-portal-auth">MiniMax OAuth plugin README</a> for details.</p>
+<h3>MiniMax M2.1 (API key)</h3>
+<p><strong>Best for:</strong> hosted MiniMax with Anthropic-compatible API.</p>
+<p>Configure via CLI:</p>
+<ul>
+<li>Run <code>agdi configure</code></li>
+<li>Select <strong>Model/auth</strong></li>
+<li>Choose <strong>MiniMax M2.1</strong></li>
+</ul>
+<pre><code class="language-json5">{
+  env: { MINIMAX_API_KEY: &quot;sk-...&quot; },
+  agents: { defaults: { model: { primary: &quot;minimax/MiniMax-M2.1&quot; } } },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      minimax: {
+        baseUrl: &quot;https://api.minimax.io/anthropic&quot;,
+        apiKey: &quot;${MINIMAX_API_KEY}&quot;,
+        api: &quot;anthropic-messages&quot;,
+        models: [
+          {
+            id: &quot;MiniMax-M2.1&quot;,
+            name: &quot;MiniMax M2.1&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 15, output: 60, cacheRead: 2, cacheWrite: 10 },
+            contextWindow: 200000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>MiniMax M2.1 as fallback (Opus primary)</h3>
+<p><strong>Best for:</strong> keep Opus 4.6 as primary, fail over to MiniMax M2.1.</p>
+<pre><code class="language-json5">{
+  env: { MINIMAX_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;opus&quot; },
+        &quot;minimax/MiniMax-M2.1&quot;: { alias: &quot;minimax&quot; },
+      },
+      model: {
+        primary: &quot;anthropic/claude-opus-4-6&quot;,
+        fallbacks: [&quot;minimax/MiniMax-M2.1&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Optional: Local via LM Studio (manual)</h3>
+<p><strong>Best for:</strong> local inference with LM Studio.
+We have seen strong results with MiniMax M2.1 on powerful hardware (e.g. a
+desktop/server) using LM Studio&#39;s local server.</p>
+<p>Configure manually via <code>agdi.json</code>:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;lmstudio/minimax-m2.1-gs32&quot; },
+      models: { &quot;lmstudio/minimax-m2.1-gs32&quot;: { alias: &quot;Minimax&quot; } },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      lmstudio: {
+        baseUrl: &quot;http://127.0.0.1:1234/v1&quot;,
+        apiKey: &quot;lmstudio&quot;,
+        api: &quot;openai-responses&quot;,
+        models: [
+          {
+            id: &quot;minimax-m2.1-gs32&quot;,
+            name: &quot;MiniMax M2.1 GS32&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 196608,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Configure via <code>agdi configure</code></h2>
+<p>Use the interactive config wizard to set MiniMax without editing JSON:</p>
+<ol>
+<li>Run <code>agdi configure</code>.</li>
+<li>Select <strong>Model/auth</strong>.</li>
+<li>Choose <strong>MiniMax M2.1</strong>.</li>
+<li>Pick your default model when prompted.</li>
+</ol>
+<h2>Configuration options</h2>
+<ul>
+<li><code>models.providers.minimax.baseUrl</code>: prefer <code>https://api.minimax.io/anthropic</code> (Anthropic-compatible); <code>https://api.minimax.io/v1</code> is optional for OpenAI-compatible payloads.</li>
+<li><code>models.providers.minimax.api</code>: prefer <code>anthropic-messages</code>; <code>openai-completions</code> is optional for OpenAI-compatible payloads.</li>
+<li><code>models.providers.minimax.apiKey</code>: MiniMax API key (<code>MINIMAX_API_KEY</code>).</li>
+<li><code>models.providers.minimax.models</code>: define <code>id</code>, <code>name</code>, <code>reasoning</code>, <code>contextWindow</code>, <code>maxTokens</code>, <code>cost</code>.</li>
+<li><code>agents.defaults.models</code>: alias models you want in the allowlist.</li>
+<li><code>models.mode</code>: keep <code>merge</code> if you want to add MiniMax alongside built-ins.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Model refs are <code>minimax/&lt;model&gt;</code>.</li>
+<li>Coding Plan usage API: <code>https://api.minimaxi.com/v1/api/openplatform/coding_plan/remains</code> (requires a coding plan key).</li>
+<li>Update pricing values in <code>models.json</code> if you need exact cost tracking.</li>
+<li>Referral link for MiniMax Coding Plan (10% off): <a href="https://platform.minimax.io/subscribe/coding-plan?code=DbXJTRClnb&source=link">https://platform.minimax.io/subscribe/coding-plan?code=DbXJTRClnb&amp;source=link</a></li>
+<li>See <a href="/docs/concepts/model-providers">/concepts/model-providers</a> for provider rules.</li>
+<li>Use <code>agdi models list</code> and <code>agdi models set minimax/MiniMax-M2.1</code> to switch.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>“Unknown model: minimax/MiniMax-M2.1”</h3>
+<p>This usually means the <strong>MiniMax provider isn’t configured</strong> (no provider entry
+and no MiniMax auth profile/env key found). A fix for this detection is in
+<strong>2026.1.12</strong> (unreleased at the time of writing). Fix by:</p>
+<ul>
+<li>Upgrading to <strong>2026.1.12</strong> (or run from source <code>main</code>), then restarting the gateway.</li>
+<li>Running <code>agdi configure</code> and selecting <strong>MiniMax M2.1</strong>, or</li>
+<li>Adding the <code>models.providers.minimax</code> block manually, or</li>
+<li>Setting <code>MINIMAX_API_KEY</code> (or a MiniMax auth profile) so the provider can be injected.</li>
+</ul>
+<p>Make sure the model id is <strong>case‑sensitive</strong>:</p>
+<ul>
+<li><code>minimax/MiniMax-M2.1</code></li>
+<li><code>minimax/MiniMax-M2.1-lightning</code></li>
+</ul>
+<p>Then recheck with:</p>
+<pre><code class="language-bash">agdi models list
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

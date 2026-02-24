@@ -18,7 +18,7 @@ export type { UpdateCommandOptions, UpdateStatusOptions, UpdateWizardOptions };
 export function registerUpdateCli(program: Command) {
   const update = program
     .command("update")
-    .description("Update OpenClaw to the latest version")
+    .description("Update AGDI to the latest version")
     .option("--json", "Output result as JSON", false)
     .option("--no-restart", "Skip restarting the gateway service after a successful update")
     .option("--channel <stable|beta|dev>", "Persist update channel (git + npm)")
@@ -27,15 +27,15 @@ export function registerUpdateCli(program: Command) {
     .option("--yes", "Skip confirmation prompts (non-interactive)", false)
     .addHelpText("after", () => {
       const examples = [
-        ["openclaw update", "Update a source checkout (git)"],
-        ["openclaw update --channel beta", "Switch to beta channel (git + npm)"],
-        ["openclaw update --channel dev", "Switch to dev channel (git + npm)"],
-        ["openclaw update --tag beta", "One-off update to a dist-tag or version"],
-        ["openclaw update --no-restart", "Update without restarting the service"],
-        ["openclaw update --json", "Output result as JSON"],
-        ["openclaw update --yes", "Non-interactive (accept downgrade prompts)"],
-        ["openclaw update wizard", "Interactive update wizard"],
-        ["openclaw --update", "Shorthand for openclaw update"],
+        ["agdi update", "Update a source checkout (git)"],
+        ["agdi update --channel beta", "Switch to beta channel (git + npm)"],
+        ["agdi update --channel dev", "Switch to dev channel (git + npm)"],
+        ["agdi update --tag beta", "One-off update to a dist-tag or version"],
+        ["agdi update --no-restart", "Update without restarting the service"],
+        ["agdi update --json", "Output result as JSON"],
+        ["agdi update --yes", "Non-interactive (accept downgrade prompts)"],
+        ["agdi update wizard", "Interactive update wizard"],
+        ["agdi --update", "Shorthand for agdi update"],
       ] as const;
       const fmtExamples = examples
         .map(([cmd, desc]) => `  ${theme.command(cmd)} ${theme.muted(`# ${desc}`)}`)
@@ -47,7 +47,7 @@ ${theme.heading("What this does:")}
 
 ${theme.heading("Switch channels:")}
   - Use --channel stable|beta|dev to persist the update channel in config
-  - Run openclaw update status to see the active channel and source
+  - Run agdi update status to see the active channel and source
   - Use --tag <dist-tag|version> for a one-off npm update without persisting
 
 ${theme.heading("Non-interactive:")}
@@ -63,7 +63,7 @@ ${theme.heading("Notes:")}
   - Downgrades require confirmation (can break configuration)
   - Skips update if the working directory has uncommitted changes
 
-${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/update")}`;
+${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.agdi.ai/cli/update")}`;
     })
     .action(async (opts) => {
       try {
@@ -87,7 +87,7 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/up
     .option("--timeout <seconds>", "Timeout for each update step in seconds (default: 1200)")
     .addHelpText(
       "after",
-      `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/update")}\n`,
+      `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.agdi.ai/cli/update")}\n`,
     )
     .action(async (opts) => {
       try {
@@ -109,14 +109,14 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/up
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw update status", "Show channel + version status."],
-          ["openclaw update status --json", "JSON output."],
-          ["openclaw update status --timeout 10", "Custom timeout."],
+          ["agdi update status", "Show channel + version status."],
+          ["agdi update status --json", "JSON output."],
+          ["agdi update status --timeout 10", "Custom timeout."],
         ])}\n\n${theme.heading("Notes:")}\n${theme.muted(
           "- Shows current update channel (stable/beta/dev) and source",
         )}\n${theme.muted("- Includes git tag/branch/SHA for source checkouts")}\n\n${theme.muted(
           "Docs:",
-        )} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/update")}`,
+        )} ${formatDocsLink("/cli/update", "docs.agdi.ai/cli/update")}`,
     )
     .action(async (opts) => {
       try {

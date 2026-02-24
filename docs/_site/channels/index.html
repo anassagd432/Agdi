@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Channels — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="active" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Chat Channels</h1>
+<p>AGDI can talk to you on any chat app you already use. Each channel connects via the Gateway.
+Text is supported everywhere; media and reactions vary by channel.</p>
+<h2>Supported channels</h2>
+<ul>
+<li><a href="/channels/whatsapp">WhatsApp</a> — Most popular; uses Baileys and requires QR pairing.</li>
+<li><a href="/channels/telegram">Telegram</a> — Bot API via grammY; supports groups.</li>
+<li><a href="/channels/discord">Discord</a> — Discord Bot API + Gateway; supports servers, channels, and DMs.</li>
+<li><a href="/channels/irc">IRC</a> — Classic IRC servers; channels + DMs with pairing/allowlist controls.</li>
+<li><a href="/channels/slack">Slack</a> — Bolt SDK; workspace apps.</li>
+<li><a href="/channels/feishu">Feishu</a> — Feishu/Lark bot via WebSocket (plugin, installed separately).</li>
+<li><a href="/channels/googlechat">Google Chat</a> — Google Chat API app via HTTP webhook.</li>
+<li><a href="/channels/mattermost">Mattermost</a> — Bot API + WebSocket; channels, groups, DMs (plugin, installed separately).</li>
+<li><a href="/channels/signal">Signal</a> — signal-cli; privacy-focused.</li>
+<li><a href="/channels/bluebubbles">BlueBubbles</a> — <strong>Recommended for iMessage</strong>; uses the BlueBubbles macOS server REST API with full feature support (edit, unsend, effects, reactions, group management — edit currently broken on macOS 26 Tahoe).</li>
+<li><a href="/channels/imessage">iMessage (legacy)</a> — Legacy macOS integration via imsg CLI (deprecated, use BlueBubbles for new setups).</li>
+<li><a href="/channels/msteams">Microsoft Teams</a> — Bot Framework; enterprise support (plugin, installed separately).</li>
+<li><a href="/channels/line">LINE</a> — LINE Messaging API bot (plugin, installed separately).</li>
+<li><a href="/channels/nextcloud-talk">Nextcloud Talk</a> — Self-hosted chat via Nextcloud Talk (plugin, installed separately).</li>
+<li><a href="/channels/matrix">Matrix</a> — Matrix protocol (plugin, installed separately).</li>
+<li><a href="/channels/nostr">Nostr</a> — Decentralized DMs via NIP-04 (plugin, installed separately).</li>
+<li><a href="/channels/tlon">Tlon</a> — Urbit-based messenger (plugin, installed separately).</li>
+<li><a href="/channels/twitch">Twitch</a> — Twitch chat via IRC connection (plugin, installed separately).</li>
+<li><a href="/channels/zalo">Zalo</a> — Zalo Bot API; Vietnam&#39;s popular messenger (plugin, installed separately).</li>
+<li><a href="/channels/zalouser">Zalo Personal</a> — Zalo personal account via QR login (plugin, installed separately).</li>
+<li><a href="/web/webchat">WebChat</a> — Gateway WebChat UI over WebSocket.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>Channels can run simultaneously; configure multiple and AGDI will route per chat.</li>
+<li>Fastest setup is usually <strong>Telegram</strong> (simple bot token). WhatsApp requires QR pairing and
+stores more state on disk.</li>
+<li>Group behavior varies by channel; see <a href="/channels/groups">Groups</a>.</li>
+<li>DM pairing and allowlists are enforced for safety; see <a href="/gateway/security">Security</a>.</li>
+<li>Telegram internals: <a href="/channels/grammy">grammY notes</a>.</li>
+<li>Troubleshooting: <a href="/channels/troubleshooting">Channel troubleshooting</a>.</li>
+<li>Model providers are documented separately; see <a href="/providers/models">Model Providers</a>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

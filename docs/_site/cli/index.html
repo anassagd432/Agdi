@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLI Reference — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="active" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>CLI reference</h1>
+<p>This page describes the current CLI behavior. If commands change, update this doc.</p>
+<h2>Command pages</h2>
+<ul>
+<li><a href="/cli/setup"><code>setup</code></a></li>
+<li><a href="/cli/onboard"><code>onboard</code></a></li>
+<li><a href="/cli/configure"><code>configure</code></a></li>
+<li><a href="/cli/config"><code>config</code></a></li>
+<li><a href="/cli/doctor"><code>doctor</code></a></li>
+<li><a href="/cli/dashboard"><code>dashboard</code></a></li>
+<li><a href="/cli/reset"><code>reset</code></a></li>
+<li><a href="/cli/uninstall"><code>uninstall</code></a></li>
+<li><a href="/cli/update"><code>update</code></a></li>
+<li><a href="/cli/message"><code>message</code></a></li>
+<li><a href="/cli/agent"><code>agent</code></a></li>
+<li><a href="/cli/agents"><code>agents</code></a></li>
+<li><a href="/cli/acp"><code>acp</code></a></li>
+<li><a href="/cli/status"><code>status</code></a></li>
+<li><a href="/cli/health"><code>health</code></a></li>
+<li><a href="/cli/sessions"><code>sessions</code></a></li>
+<li><a href="/cli/gateway"><code>gateway</code></a></li>
+<li><a href="/cli/logs"><code>logs</code></a></li>
+<li><a href="/cli/system"><code>system</code></a></li>
+<li><a href="/cli/models"><code>models</code></a></li>
+<li><a href="/cli/memory"><code>memory</code></a></li>
+<li><a href="/cli/nodes"><code>nodes</code></a></li>
+<li><a href="/cli/devices"><code>devices</code></a></li>
+<li><a href="/cli/node"><code>node</code></a></li>
+<li><a href="/cli/approvals"><code>approvals</code></a></li>
+<li><a href="/cli/sandbox"><code>sandbox</code></a></li>
+<li><a href="/cli/tui"><code>tui</code></a></li>
+<li><a href="/cli/browser"><code>browser</code></a></li>
+<li><a href="/cli/cron"><code>cron</code></a></li>
+<li><a href="/cli/dns"><code>dns</code></a></li>
+<li><a href="/cli/docs"><code>docs</code></a></li>
+<li><a href="/cli/hooks"><code>hooks</code></a></li>
+<li><a href="/cli/webhooks"><code>webhooks</code></a></li>
+<li><a href="/cli/pairing"><code>pairing</code></a></li>
+<li><a href="/cli/plugins"><code>plugins</code></a> (plugin commands)</li>
+<li><a href="/cli/channels"><code>channels</code></a></li>
+<li><a href="/cli/security"><code>security</code></a></li>
+<li><a href="/cli/skills"><code>skills</code></a></li>
+<li><a href="/cli/voicecall"><code>voicecall</code></a> (plugin; if installed)</li>
+</ul>
+<h2>Global flags</h2>
+<ul>
+<li><code>--dev</code>: isolate state under <code>~/.agdi-dev</code> and shift default ports.</li>
+<li><code>--profile &lt;name&gt;</code>: isolate state under <code>~/.agdi-&lt;name&gt;</code>.</li>
+<li><code>--no-color</code>: disable ANSI colors.</li>
+<li><code>--update</code>: shorthand for <code>agdi update</code> (source installs only).</li>
+<li><code>-V</code>, <code>--version</code>, <code>-v</code>: print version and exit.</li>
+</ul>
+<h2>Output styling</h2>
+<ul>
+<li>ANSI colors and progress indicators only render in TTY sessions.</li>
+<li>OSC-8 hyperlinks render as clickable links in supported terminals; otherwise we fall back to plain URLs.</li>
+<li><code>--json</code> (and <code>--plain</code> where supported) disables styling for clean output.</li>
+<li><code>--no-color</code> disables ANSI styling; <code>NO_COLOR=1</code> is also respected.</li>
+<li>Long-running commands show a progress indicator (OSC 9;4 when supported).</li>
+</ul>
+<h2>Color palette</h2>
+<p>AGDI uses a lobster palette for CLI output.</p>
+<ul>
+<li><code>accent</code> (#FF5A2D): headings, labels, primary highlights.</li>
+<li><code>accentBright</code> (#FF7A3D): command names, emphasis.</li>
+<li><code>accentDim</code> (#D14A22): secondary highlight text.</li>
+<li><code>info</code> (#FF8A5B): informational values.</li>
+<li><code>success</code> (#2FBF71): success states.</li>
+<li><code>warn</code> (#FFB020): warnings, fallbacks, attention.</li>
+<li><code>error</code> (#E23D2D): errors, failures.</li>
+<li><code>muted</code> (#8B7F77): de-emphasis, metadata.</li>
+</ul>
+<p>Palette source of truth: <code>src/terminal/palette.ts</code> (aka “lobster seam”).</p>
+<h2>Command tree</h2>
+<pre><code>agdi [--dev] [--profile &lt;name&gt;] &lt;command&gt;
+  setup
+  onboard
+  configure
+  config
+    get
+    set
+    unset
+  doctor
+  security
+    audit
+  reset
+  uninstall
+  update
+  channels
+    list
+    status
+    logs
+    add
+    remove
+    login
+    logout
+  skills
+    list
+    info
+    check
+  plugins
+    list
+    info
+    install
+    enable
+    disable
+    doctor
+  memory
+    status
+    index
+    search
+  message
+  agent
+  agents
+    list
+    add
+    delete
+  acp
+  status
+  health
+  sessions
+  gateway
+    call
+    health
+    status
+    probe
+    discover
+    install
+    uninstall
+    start
+    stop
+    restart
+    run
+  logs
+  system
+    event
+    heartbeat last|enable|disable
+    presence
+  models
+    list
+    status
+    set
+    set-image
+    aliases list|add|remove
+    fallbacks list|add|remove|clear
+    image-fallbacks list|add|remove|clear
+    scan
+    auth add|setup-token|paste-token
+    auth order get|set|clear
+  sandbox
+    list
+    recreate
+    explain
+  cron
+    status
+    list
+    add
+    edit
+    rm
+    enable
+    disable
+    runs
+    run
+  nodes
+  devices
+  node
+    run
+    status
+    install
+    uninstall
+    start
+    stop
+    restart
+  approvals
+    get
+    set
+    allowlist add|remove
+  browser
+    status
+    start
+    stop
+    reset-profile
+    tabs
+    open
+    focus
+    close
+    profiles
+    create-profile
+    delete-profile
+    screenshot
+    snapshot
+    navigate
+    resize
+    click
+    type
+    press
+    hover
+    drag
+    select
+    upload
+    fill
+    dialog
+    wait
+    evaluate
+    console
+    pdf
+  hooks
+    list
+    info
+    check
+    enable
+    disable
+    install
+    update
+  webhooks
+    gmail setup|run
+  pairing
+    list
+    approve
+  docs
+  dns
+    setup
+  tui
+</code></pre>
+<p>Note: plugins can add additional top-level commands (for example <code>agdi voicecall</code>).</p>
+<h2>Security</h2>
+<ul>
+<li><code>agdi security audit</code> — audit config + local state for common security foot-guns.</li>
+<li><code>agdi security audit --deep</code> — best-effort live Gateway probe.</li>
+<li><code>agdi security audit --fix</code> — tighten safe defaults and chmod state/config.</li>
+</ul>
+<h2>Plugins</h2>
+<p>Manage extensions and their config:</p>
+<ul>
+<li><code>agdi plugins list</code> — discover plugins (use <code>--json</code> for machine output).</li>
+<li><code>agdi plugins info &lt;id&gt;</code> — show details for a plugin.</li>
+<li><code>agdi plugins install &lt;path|.tgz|npm-spec&gt;</code> — install a plugin (or add a plugin path to <code>plugins.load.paths</code>).</li>
+<li><code>agdi plugins enable &lt;id&gt;</code> / <code>disable &lt;id&gt;</code> — toggle <code>plugins.entries.&lt;id&gt;.enabled</code>.</li>
+<li><code>agdi plugins doctor</code> — report plugin load errors.</li>
+</ul>
+<p>Most plugin changes require a gateway restart. See <a href="/tools/plugin">/plugin</a>.</p>
+<h2>Memory</h2>
+<p>Vector search over <code>MEMORY.md</code> + <code>memory/*.md</code>:</p>
+<ul>
+<li><code>agdi memory status</code> — show index stats.</li>
+<li><code>agdi memory index</code> — reindex memory files.</li>
+<li><code>agdi memory search &quot;&lt;query&gt;&quot;</code> — semantic search over memory.</li>
+</ul>
+<h2>Chat slash commands</h2>
+<p>Chat messages support <code>/...</code> commands (text and native). See <a href="/tools/slash-commands">/tools/slash-commands</a>.</p>
+<p>Highlights:</p>
+<ul>
+<li><code>/status</code> for quick diagnostics.</li>
+<li><code>/config</code> for persisted config changes.</li>
+<li><code>/debug</code> for runtime-only config overrides (memory, not disk; requires <code>commands.debug: true</code>).</li>
+</ul>
+<h2>Setup + onboarding</h2>
+<h3><code>setup</code></h3>
+<p>Initialize config + workspace.</p>
+<p>Options:</p>
+<ul>
+<li><code>--workspace &lt;dir&gt;</code>: agent workspace path (default <code>~/.agdi/workspace</code>).</li>
+<li><code>--wizard</code>: run the onboarding wizard.</li>
+<li><code>--non-interactive</code>: run wizard without prompts.</li>
+<li><code>--mode &lt;local|remote&gt;</code>: wizard mode.</li>
+<li><code>--remote-url &lt;url&gt;</code>: remote Gateway URL.</li>
+<li><code>--remote-token &lt;token&gt;</code>: remote Gateway token.</li>
+</ul>
+<p>Wizard auto-runs when any wizard flags are present (<code>--non-interactive</code>, <code>--mode</code>, <code>--remote-url</code>, <code>--remote-token</code>).</p>
+<h3><code>onboard</code></h3>
+<p>Interactive wizard to set up gateway, workspace, and skills.</p>
+<p>Options:</p>
+<ul>
+<li><code>--workspace &lt;dir&gt;</code></li>
+<li><code>--reset</code> (reset config + credentials + sessions + workspace before wizard)</li>
+<li><code>--non-interactive</code></li>
+<li><code>--mode &lt;local|remote&gt;</code></li>
+<li><code>--flow &lt;quickstart|advanced|manual&gt;</code> (manual is an alias for advanced)</li>
+<li><code>--auth-choice &lt;setup-token|token|chutes|openai-codex|openai-api-key|openrouter-api-key|ai-gateway-api-key|moonshot-api-key|moonshot-api-key-cn|kimi-code-api-key|synthetic-api-key|venice-api-key|gemini-api-key|zai-api-key|apiKey|minimax-api|minimax-api-lightning|opencode-zen|custom-api-key|skip&gt;</code></li>
+<li><code>--token-provider &lt;id&gt;</code> (non-interactive; used with <code>--auth-choice token</code>)</li>
+<li><code>--token &lt;token&gt;</code> (non-interactive; used with <code>--auth-choice token</code>)</li>
+<li><code>--token-profile-id &lt;id&gt;</code> (non-interactive; default: <code>&lt;provider&gt;:manual</code>)</li>
+<li><code>--token-expires-in &lt;duration&gt;</code> (non-interactive; e.g. <code>365d</code>, <code>12h</code>)</li>
+<li><code>--anthropic-api-key &lt;key&gt;</code></li>
+<li><code>--openai-api-key &lt;key&gt;</code></li>
+<li><code>--openrouter-api-key &lt;key&gt;</code></li>
+<li><code>--ai-gateway-api-key &lt;key&gt;</code></li>
+<li><code>--moonshot-api-key &lt;key&gt;</code></li>
+<li><code>--kimi-code-api-key &lt;key&gt;</code></li>
+<li><code>--gemini-api-key &lt;key&gt;</code></li>
+<li><code>--zai-api-key &lt;key&gt;</code></li>
+<li><code>--minimax-api-key &lt;key&gt;</code></li>
+<li><code>--opencode-zen-api-key &lt;key&gt;</code></li>
+<li><code>--custom-base-url &lt;url&gt;</code> (non-interactive; used with <code>--auth-choice custom-api-key</code>)</li>
+<li><code>--custom-model-id &lt;id&gt;</code> (non-interactive; used with <code>--auth-choice custom-api-key</code>)</li>
+<li><code>--custom-api-key &lt;key&gt;</code> (non-interactive; optional; used with <code>--auth-choice custom-api-key</code>; falls back to <code>CUSTOM_API_KEY</code> when omitted)</li>
+<li><code>--custom-provider-id &lt;id&gt;</code> (non-interactive; optional custom provider id)</li>
+<li><code>--custom-compatibility &lt;openai|anthropic&gt;</code> (non-interactive; optional; default <code>openai</code>)</li>
+<li><code>--gateway-port &lt;port&gt;</code></li>
+<li><code>--gateway-bind &lt;loopback|lan|tailnet|auto|custom&gt;</code></li>
+<li><code>--gateway-auth &lt;token|password&gt;</code></li>
+<li><code>--gateway-token &lt;token&gt;</code></li>
+<li><code>--gateway-password &lt;password&gt;</code></li>
+<li><code>--remote-url &lt;url&gt;</code></li>
+<li><code>--remote-token &lt;token&gt;</code></li>
+<li><code>--tailscale &lt;off|serve|funnel&gt;</code></li>
+<li><code>--tailscale-reset-on-exit</code></li>
+<li><code>--install-daemon</code></li>
+<li><code>--no-install-daemon</code> (alias: <code>--skip-daemon</code>)</li>
+<li><code>--daemon-runtime &lt;node|bun&gt;</code></li>
+<li><code>--skip-channels</code></li>
+<li><code>--skip-skills</code></li>
+<li><code>--skip-health</code></li>
+<li><code>--skip-ui</code></li>
+<li><code>--node-manager &lt;npm|pnpm|bun&gt;</code> (pnpm recommended; bun not recommended for Gateway runtime)</li>
+<li><code>--json</code></li>
+</ul>
+<h3><code>configure</code></h3>
+<p>Interactive configuration wizard (models, channels, skills, gateway).</p>
+<h3><code>config</code></h3>
+<p>Non-interactive config helpers (get/set/unset). Running <code>agdi config</code> with no
+subcommand launches the wizard.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>config get &lt;path&gt;</code>: print a config value (dot/bracket path).</li>
+<li><code>config set &lt;path&gt; &lt;value&gt;</code>: set a value (JSON5 or raw string).</li>
+<li><code>config unset &lt;path&gt;</code>: remove a value.</li>
+</ul>
+<h3><code>doctor</code></h3>
+<p>Health checks + quick fixes (config + gateway + legacy services).</p>
+<p>Options:</p>
+<ul>
+<li><code>--no-workspace-suggestions</code>: disable workspace memory hints.</li>
+<li><code>--yes</code>: accept defaults without prompting (headless).</li>
+<li><code>--non-interactive</code>: skip prompts; apply safe migrations only.</li>
+<li><code>--deep</code>: scan system services for extra gateway installs.</li>
+</ul>
+<h2>Channel helpers</h2>
+<h3><code>channels</code></h3>
+<p>Manage chat channel accounts (WhatsApp/Telegram/Discord/Google Chat/Slack/Mattermost (plugin)/Signal/iMessage/MS Teams).</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>channels list</code>: show configured channels and auth profiles.</li>
+<li><code>channels status</code>: check gateway reachability and channel health (<code>--probe</code> runs extra checks; use <code>agdi health</code> or <code>agdi status --deep</code> for gateway health probes).</li>
+<li>Tip: <code>channels status</code> prints warnings with suggested fixes when it can detect common misconfigurations (then points you to <code>agdi doctor</code>).</li>
+<li><code>channels logs</code>: show recent channel logs from the gateway log file.</li>
+<li><code>channels add</code>: wizard-style setup when no flags are passed; flags switch to non-interactive mode.</li>
+<li><code>channels remove</code>: disable by default; pass <code>--delete</code> to remove config entries without prompts.</li>
+<li><code>channels login</code>: interactive channel login (WhatsApp Web only).</li>
+<li><code>channels logout</code>: log out of a channel session (if supported).</li>
+</ul>
+<p>Common options:</p>
+<ul>
+<li><code>--channel &lt;name&gt;</code>: <code>whatsapp|telegram|discord|googlechat|slack|mattermost|signal|imessage|msteams</code></li>
+<li><code>--account &lt;id&gt;</code>: channel account id (default <code>default</code>)</li>
+<li><code>--name &lt;label&gt;</code>: display name for the account</li>
+</ul>
+<p><code>channels login</code> options:</p>
+<ul>
+<li><code>--channel &lt;channel&gt;</code> (default <code>whatsapp</code>; supports <code>whatsapp</code>/<code>web</code>)</li>
+<li><code>--account &lt;id&gt;</code></li>
+<li><code>--verbose</code></li>
+</ul>
+<p><code>channels logout</code> options:</p>
+<ul>
+<li><code>--channel &lt;channel&gt;</code> (default <code>whatsapp</code>)</li>
+<li><code>--account &lt;id&gt;</code></li>
+</ul>
+<p><code>channels list</code> options:</p>
+<ul>
+<li><code>--no-usage</code>: skip model provider usage/quota snapshots (OAuth/API-backed only).</li>
+<li><code>--json</code>: output JSON (includes usage unless <code>--no-usage</code> is set).</li>
+</ul>
+<p><code>channels logs</code> options:</p>
+<ul>
+<li><code>--channel &lt;name|all&gt;</code> (default <code>all</code>)</li>
+<li><code>--lines &lt;n&gt;</code> (default <code>200</code>)</li>
+<li><code>--json</code></li>
+</ul>
+<p>More detail: <a href="/concepts/oauth">/concepts/oauth</a></p>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi channels add --channel telegram --account alerts --name &quot;Alerts Bot&quot; --token $TELEGRAM_BOT_TOKEN
+agdi channels add --channel discord --account work --name &quot;Work Bot&quot; --token $DISCORD_BOT_TOKEN
+agdi channels remove --channel discord --account work --delete
+agdi channels status --probe
+agdi status --deep
+</code></pre>
+<h3><code>skills</code></h3>
+<p>List and inspect available skills plus readiness info.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>skills list</code>: list skills (default when no subcommand).</li>
+<li><code>skills info &lt;name&gt;</code>: show details for one skill.</li>
+<li><code>skills check</code>: summary of ready vs missing requirements.</li>
+</ul>
+<p>Options:</p>
+<ul>
+<li><code>--eligible</code>: show only ready skills.</li>
+<li><code>--json</code>: output JSON (no styling).</li>
+<li><code>-v</code>, <code>--verbose</code>: include missing requirements detail.</li>
+</ul>
+<p>Tip: use <code>npx clawhub</code> to search, install, and sync skills.</p>
+<h3><code>pairing</code></h3>
+<p>Approve DM pairing requests across channels.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>pairing list &lt;channel&gt; [--json]</code></li>
+<li><code>pairing approve &lt;channel&gt; &lt;code&gt; [--notify]</code></li>
+</ul>
+<h3><code>webhooks gmail</code></h3>
+<p>Gmail Pub/Sub hook setup + runner. See <a href="/automation/gmail-pubsub">/automation/gmail-pubsub</a>.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>webhooks gmail setup</code> (requires <code>--account &lt;email&gt;</code>; supports <code>--project</code>, <code>--topic</code>, <code>--subscription</code>, <code>--label</code>, <code>--hook-url</code>, <code>--hook-token</code>, <code>--push-token</code>, <code>--bind</code>, <code>--port</code>, <code>--path</code>, <code>--include-body</code>, <code>--max-bytes</code>, <code>--renew-minutes</code>, <code>--tailscale</code>, <code>--tailscale-path</code>, <code>--tailscale-target</code>, <code>--push-endpoint</code>, <code>--json</code>)</li>
+<li><code>webhooks gmail run</code> (runtime overrides for the same flags)</li>
+</ul>
+<h3><code>dns setup</code></h3>
+<p>Wide-area discovery DNS helper (CoreDNS + Tailscale). See <a href="/gateway/discovery">/gateway/discovery</a>.</p>
+<p>Options:</p>
+<ul>
+<li><code>--apply</code>: install/update CoreDNS config (requires sudo; macOS only).</li>
+</ul>
+<h2>Messaging + agent</h2>
+<h3><code>message</code></h3>
+<p>Unified outbound messaging + channel actions.</p>
+<p>See: <a href="/cli/message">/cli/message</a></p>
+<p>Subcommands:</p>
+<ul>
+<li><code>message send|poll|react|reactions|read|edit|delete|pin|unpin|pins|permissions|search|timeout|kick|ban</code></li>
+<li><code>message thread &lt;create|list|reply&gt;</code></li>
+<li><code>message emoji &lt;list|upload&gt;</code></li>
+<li><code>message sticker &lt;send|upload&gt;</code></li>
+<li><code>message role &lt;info|add|remove&gt;</code></li>
+<li><code>message channel &lt;info|list&gt;</code></li>
+<li><code>message member info</code></li>
+<li><code>message voice status</code></li>
+<li><code>message event &lt;list|create&gt;</code></li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>agdi message send --target +15555550123 --message &quot;Hi&quot;</code></li>
+<li><code>agdi message poll --channel discord --target channel:123 --poll-question &quot;Snack?&quot; --poll-option Pizza --poll-option Sushi</code></li>
+</ul>
+<h3><code>agent</code></h3>
+<p>Run one agent turn via the Gateway (or <code>--local</code> embedded).</p>
+<p>Required:</p>
+<ul>
+<li><code>--message &lt;text&gt;</code></li>
+</ul>
+<p>Options:</p>
+<ul>
+<li><code>--to &lt;dest&gt;</code> (for session key and optional delivery)</li>
+<li><code>--session-id &lt;id&gt;</code></li>
+<li><code>--thinking &lt;off|minimal|low|medium|high|xhigh&gt;</code> (GPT-5.2 + Codex models only)</li>
+<li><code>--verbose &lt;on|full|off&gt;</code></li>
+<li><code>--channel &lt;whatsapp|telegram|discord|slack|mattermost|signal|imessage|msteams&gt;</code></li>
+<li><code>--local</code></li>
+<li><code>--deliver</code></li>
+<li><code>--json</code></li>
+<li><code>--timeout &lt;seconds&gt;</code></li>
+</ul>
+<h3><code>agents</code></h3>
+<p>Manage isolated agents (workspaces + auth + routing).</p>
+<h4><code>agents list</code></h4>
+<p>List configured agents.</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--bindings</code></li>
+</ul>
+<h4><code>agents add [name]</code></h4>
+<p>Add a new isolated agent. Runs the guided wizard unless flags (or <code>--non-interactive</code>) are passed; <code>--workspace</code> is required in non-interactive mode.</p>
+<p>Options:</p>
+<ul>
+<li><code>--workspace &lt;dir&gt;</code></li>
+<li><code>--model &lt;id&gt;</code></li>
+<li><code>--agent-dir &lt;dir&gt;</code></li>
+<li><code>--bind &lt;channel[:accountId]&gt;</code> (repeatable)</li>
+<li><code>--non-interactive</code></li>
+<li><code>--json</code></li>
+</ul>
+<p>Binding specs use <code>channel[:accountId]</code>. When <code>accountId</code> is omitted for WhatsApp, the default account id is used.</p>
+<h4><code>agents delete &lt;id&gt;</code></h4>
+<p>Delete an agent and prune its workspace + state.</p>
+<p>Options:</p>
+<ul>
+<li><code>--force</code></li>
+<li><code>--json</code></li>
+</ul>
+<h3><code>acp</code></h3>
+<p>Run the ACP bridge that connects IDEs to the Gateway.</p>
+<p>See <a href="/cli/acp"><code>acp</code></a> for full options and examples.</p>
+<h3><code>status</code></h3>
+<p>Show linked session health and recent recipients.</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--all</code> (full diagnosis; read-only, pasteable)</li>
+<li><code>--deep</code> (probe channels)</li>
+<li><code>--usage</code> (show model provider usage/quota)</li>
+<li><code>--timeout &lt;ms&gt;</code></li>
+<li><code>--verbose</code></li>
+<li><code>--debug</code> (alias for <code>--verbose</code>)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Overview includes Gateway + node host service status when available.</li>
+</ul>
+<h3>Usage tracking</h3>
+<p>AGDI can surface provider usage/quota when OAuth/API creds are available.</p>
+<p>Surfaces:</p>
+<ul>
+<li><code>/status</code> (adds a short provider usage line when available)</li>
+<li><code>agdi status --usage</code> (prints full provider breakdown)</li>
+<li>macOS menu bar (Usage section under Context)</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Data comes directly from provider usage endpoints (no estimates).</li>
+<li>Providers: Anthropic, GitHub Copilot, OpenAI Codex OAuth, plus Gemini CLI/Antigravity when those provider plugins are enabled.</li>
+<li>If no matching credentials exist, usage is hidden.</li>
+<li>Details: see <a href="/concepts/usage-tracking">Usage tracking</a>.</li>
+</ul>
+<h3><code>health</code></h3>
+<p>Fetch health from the running Gateway.</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--timeout &lt;ms&gt;</code></li>
+<li><code>--verbose</code></li>
+</ul>
+<h3><code>sessions</code></h3>
+<p>List stored conversation sessions.</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--verbose</code></li>
+<li><code>--store &lt;path&gt;</code></li>
+<li><code>--active &lt;minutes&gt;</code></li>
+</ul>
+<h2>Reset / Uninstall</h2>
+<h3><code>reset</code></h3>
+<p>Reset local config/state (keeps the CLI installed).</p>
+<p>Options:</p>
+<ul>
+<li><code>--scope &lt;config|config+creds+sessions|full&gt;</code></li>
+<li><code>--yes</code></li>
+<li><code>--non-interactive</code></li>
+<li><code>--dry-run</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>--non-interactive</code> requires <code>--scope</code> and <code>--yes</code>.</li>
+</ul>
+<h3><code>uninstall</code></h3>
+<p>Uninstall the gateway service + local data (CLI remains).</p>
+<p>Options:</p>
+<ul>
+<li><code>--service</code></li>
+<li><code>--state</code></li>
+<li><code>--workspace</code></li>
+<li><code>--app</code></li>
+<li><code>--all</code></li>
+<li><code>--yes</code></li>
+<li><code>--non-interactive</code></li>
+<li><code>--dry-run</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>--non-interactive</code> requires <code>--yes</code> and explicit scopes (or <code>--all</code>).</li>
+</ul>
+<h2>Gateway</h2>
+<h3><code>gateway</code></h3>
+<p>Run the WebSocket Gateway.</p>
+<p>Options:</p>
+<ul>
+<li><code>--port &lt;port&gt;</code></li>
+<li><code>--bind &lt;loopback|tailnet|lan|auto|custom&gt;</code></li>
+<li><code>--token &lt;token&gt;</code></li>
+<li><code>--auth &lt;token|password&gt;</code></li>
+<li><code>--password &lt;password&gt;</code></li>
+<li><code>--tailscale &lt;off|serve|funnel&gt;</code></li>
+<li><code>--tailscale-reset-on-exit</code></li>
+<li><code>--allow-unconfigured</code></li>
+<li><code>--dev</code></li>
+<li><code>--reset</code> (reset dev config + credentials + sessions + workspace)</li>
+<li><code>--force</code> (kill existing listener on port)</li>
+<li><code>--verbose</code></li>
+<li><code>--claude-cli-logs</code></li>
+<li><code>--ws-log &lt;auto|full|compact&gt;</code></li>
+<li><code>--compact</code> (alias for <code>--ws-log compact</code>)</li>
+<li><code>--raw-stream</code></li>
+<li><code>--raw-stream-path &lt;path&gt;</code></li>
+</ul>
+<h3><code>gateway service</code></h3>
+<p>Manage the Gateway service (launchd/systemd/schtasks).</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>gateway status</code> (probes the Gateway RPC by default)</li>
+<li><code>gateway install</code> (service install)</li>
+<li><code>gateway uninstall</code></li>
+<li><code>gateway start</code></li>
+<li><code>gateway stop</code></li>
+<li><code>gateway restart</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>gateway status</code> probes the Gateway RPC by default using the service’s resolved port/config (override with <code>--url/--token/--password</code>).</li>
+<li><code>gateway status</code> supports <code>--no-probe</code>, <code>--deep</code>, and <code>--json</code> for scripting.</li>
+<li><code>gateway status</code> also surfaces legacy or extra gateway services when it can detect them (<code>--deep</code> adds system-level scans). Profile-named AGDI services are treated as first-class and aren&#39;t flagged as &quot;extra&quot;.</li>
+<li><code>gateway status</code> prints which config path the CLI uses vs which config the service likely uses (service env), plus the resolved probe target URL.</li>
+<li><code>gateway install|uninstall|start|stop|restart</code> support <code>--json</code> for scripting (default output stays human-friendly).</li>
+<li><code>gateway install</code> defaults to Node runtime; bun is <strong>not recommended</strong> (WhatsApp/Telegram bugs).</li>
+<li><code>gateway install</code> options: <code>--port</code>, <code>--runtime</code>, <code>--token</code>, <code>--force</code>, <code>--json</code>.</li>
+</ul>
+<h3><code>logs</code></h3>
+<p>Tail Gateway file logs via RPC.</p>
+<p>Notes:</p>
+<ul>
+<li>TTY sessions render a colorized, structured view; non-TTY falls back to plain text.</li>
+<li><code>--json</code> emits line-delimited JSON (one log event per line).</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi logs --follow
+agdi logs --limit 200
+agdi logs --plain
+agdi logs --json
+agdi logs --no-color
+</code></pre>
+<h3><code>gateway &lt;subcommand&gt;</code></h3>
+<p>Gateway CLI helpers (use <code>--url</code>, <code>--token</code>, <code>--password</code>, <code>--timeout</code>, <code>--expect-final</code> for RPC subcommands).
+When you pass <code>--url</code>, the CLI does not auto-apply config or environment credentials.
+Include <code>--token</code> or <code>--password</code> explicitly. Missing explicit credentials is an error.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>gateway call &lt;method&gt; [--params &lt;json&gt;]</code></li>
+<li><code>gateway health</code></li>
+<li><code>gateway status</code></li>
+<li><code>gateway probe</code></li>
+<li><code>gateway discover</code></li>
+<li><code>gateway install|uninstall|start|stop|restart</code></li>
+<li><code>gateway run</code></li>
+</ul>
+<p>Common RPCs:</p>
+<ul>
+<li><code>config.apply</code> (validate + write config + restart + wake)</li>
+<li><code>config.patch</code> (merge a partial update + restart + wake)</li>
+<li><code>update.run</code> (run update + restart + wake)</li>
+</ul>
+<p>Tip: when calling <code>config.set</code>/<code>config.apply</code>/<code>config.patch</code> directly, pass <code>baseHash</code> from
+<code>config.get</code> if a config already exists.</p>
+<h2>Models</h2>
+<p>See <a href="/concepts/models">/concepts/models</a> for fallback behavior and scanning strategy.</p>
+<p>Preferred Anthropic auth (setup-token):</p>
+<pre><code class="language-bash">claude setup-token
+agdi models auth setup-token --provider anthropic
+agdi models status
+</code></pre>
+<h3><code>models</code> (root)</h3>
+<p><code>agdi models</code> is an alias for <code>models status</code>.</p>
+<p>Root options:</p>
+<ul>
+<li><code>--status-json</code> (alias for <code>models status --json</code>)</li>
+<li><code>--status-plain</code> (alias for <code>models status --plain</code>)</li>
+</ul>
+<h3><code>models list</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>--all</code></li>
+<li><code>--local</code></li>
+<li><code>--provider &lt;name&gt;</code></li>
+<li><code>--json</code></li>
+<li><code>--plain</code></li>
+</ul>
+<h3><code>models status</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--plain</code></li>
+<li><code>--check</code> (exit 1=expired/missing, 2=expiring)</li>
+<li><code>--probe</code> (live probe of configured auth profiles)</li>
+<li><code>--probe-provider &lt;name&gt;</code></li>
+<li><code>--probe-profile &lt;id&gt;</code> (repeat or comma-separated)</li>
+<li><code>--probe-timeout &lt;ms&gt;</code></li>
+<li><code>--probe-concurrency &lt;n&gt;</code></li>
+<li><code>--probe-max-tokens &lt;n&gt;</code></li>
+</ul>
+<p>Always includes the auth overview and OAuth expiry status for profiles in the auth store.
+<code>--probe</code> runs live requests (may consume tokens and trigger rate limits).</p>
+<h3><code>models set &lt;model&gt;</code></h3>
+<p>Set <code>agents.defaults.model.primary</code>.</p>
+<h3><code>models set-image &lt;model&gt;</code></h3>
+<p>Set <code>agents.defaults.imageModel.primary</code>.</p>
+<h3><code>models aliases list|add|remove</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>list</code>: <code>--json</code>, <code>--plain</code></li>
+<li><code>add &lt;alias&gt; &lt;model&gt;</code></li>
+<li><code>remove &lt;alias&gt;</code></li>
+</ul>
+<h3><code>models fallbacks list|add|remove|clear</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>list</code>: <code>--json</code>, <code>--plain</code></li>
+<li><code>add &lt;model&gt;</code></li>
+<li><code>remove &lt;model&gt;</code></li>
+<li><code>clear</code></li>
+</ul>
+<h3><code>models image-fallbacks list|add|remove|clear</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>list</code>: <code>--json</code>, <code>--plain</code></li>
+<li><code>add &lt;model&gt;</code></li>
+<li><code>remove &lt;model&gt;</code></li>
+<li><code>clear</code></li>
+</ul>
+<h3><code>models scan</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>--min-params &lt;b&gt;</code></li>
+<li><code>--max-age-days &lt;days&gt;</code></li>
+<li><code>--provider &lt;name&gt;</code></li>
+<li><code>--max-candidates &lt;n&gt;</code></li>
+<li><code>--timeout &lt;ms&gt;</code></li>
+<li><code>--concurrency &lt;n&gt;</code></li>
+<li><code>--no-probe</code></li>
+<li><code>--yes</code></li>
+<li><code>--no-input</code></li>
+<li><code>--set-default</code></li>
+<li><code>--set-image</code></li>
+<li><code>--json</code></li>
+</ul>
+<h3><code>models auth add|setup-token|paste-token</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>add</code>: interactive auth helper</li>
+<li><code>setup-token</code>: <code>--provider &lt;name&gt;</code> (default <code>anthropic</code>), <code>--yes</code></li>
+<li><code>paste-token</code>: <code>--provider &lt;name&gt;</code>, <code>--profile-id &lt;id&gt;</code>, <code>--expires-in &lt;duration&gt;</code></li>
+</ul>
+<h3><code>models auth order get|set|clear</code></h3>
+<p>Options:</p>
+<ul>
+<li><code>get</code>: <code>--provider &lt;name&gt;</code>, <code>--agent &lt;id&gt;</code>, <code>--json</code></li>
+<li><code>set</code>: <code>--provider &lt;name&gt;</code>, <code>--agent &lt;id&gt;</code>, <code>&lt;profileIds...&gt;</code></li>
+<li><code>clear</code>: <code>--provider &lt;name&gt;</code>, <code>--agent &lt;id&gt;</code></li>
+</ul>
+<h2>System</h2>
+<h3><code>system event</code></h3>
+<p>Enqueue a system event and optionally trigger a heartbeat (Gateway RPC).</p>
+<p>Required:</p>
+<ul>
+<li><code>--text &lt;text&gt;</code></li>
+</ul>
+<p>Options:</p>
+<ul>
+<li><code>--mode &lt;now|next-heartbeat&gt;</code></li>
+<li><code>--json</code></li>
+<li><code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--expect-final</code></li>
+</ul>
+<h3><code>system heartbeat last|enable|disable</code></h3>
+<p>Heartbeat controls (Gateway RPC).</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--expect-final</code></li>
+</ul>
+<h3><code>system presence</code></h3>
+<p>List system presence entries (Gateway RPC).</p>
+<p>Options:</p>
+<ul>
+<li><code>--json</code></li>
+<li><code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--expect-final</code></li>
+</ul>
+<h2>Cron</h2>
+<p>Manage scheduled jobs (Gateway RPC). See <a href="/automation/cron-jobs">/automation/cron-jobs</a>.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>cron status [--json]</code></li>
+<li><code>cron list [--all] [--json]</code> (table output by default; use <code>--json</code> for raw)</li>
+<li><code>cron add</code> (alias: <code>create</code>; requires <code>--name</code> and exactly one of <code>--at</code> | <code>--every</code> | <code>--cron</code>, and exactly one payload of <code>--system-event</code> | <code>--message</code>)</li>
+<li><code>cron edit &lt;id&gt;</code> (patch fields)</li>
+<li><code>cron rm &lt;id&gt;</code> (aliases: <code>remove</code>, <code>delete</code>)</li>
+<li><code>cron enable &lt;id&gt;</code></li>
+<li><code>cron disable &lt;id&gt;</code></li>
+<li><code>cron runs --id &lt;id&gt; [--limit &lt;n&gt;]</code></li>
+<li><code>cron run &lt;id&gt; [--force]</code></li>
+</ul>
+<p>All <code>cron</code> commands accept <code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--expect-final</code>.</p>
+<h2>Node host</h2>
+<p><code>node</code> runs a <strong>headless node host</strong> or manages it as a background service. See
+<a href="/cli/node"><code>agdi node</code></a>.</p>
+<p>Subcommands:</p>
+<ul>
+<li><code>node run --host &lt;gateway-host&gt; --port 18789</code></li>
+<li><code>node status</code></li>
+<li><code>node install [--host &lt;gateway-host&gt;] [--port &lt;port&gt;] [--tls] [--tls-fingerprint &lt;sha256&gt;] [--node-id &lt;id&gt;] [--display-name &lt;name&gt;] [--runtime &lt;node|bun&gt;] [--force]</code></li>
+<li><code>node uninstall</code></li>
+<li><code>node stop</code></li>
+<li><code>node restart</code></li>
+</ul>
+<h2>Nodes</h2>
+<p><code>nodes</code> talks to the Gateway and targets paired nodes. See <a href="/nodes">/nodes</a>.</p>
+<p>Common options:</p>
+<ul>
+<li><code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--json</code></li>
+</ul>
+<p>Subcommands:</p>
+<ul>
+<li><code>nodes status [--connected] [--last-connected &lt;duration&gt;]</code></li>
+<li><code>nodes describe --node &lt;id|name|ip&gt;</code></li>
+<li><code>nodes list [--connected] [--last-connected &lt;duration&gt;]</code></li>
+<li><code>nodes pending</code></li>
+<li><code>nodes approve &lt;requestId&gt;</code></li>
+<li><code>nodes reject &lt;requestId&gt;</code></li>
+<li><code>nodes rename --node &lt;id|name|ip&gt; --name &lt;displayName&gt;</code></li>
+<li><code>nodes invoke --node &lt;id|name|ip&gt; --command &lt;command&gt; [--params &lt;json&gt;] [--invoke-timeout &lt;ms&gt;] [--idempotency-key &lt;key&gt;]</code></li>
+<li><code>nodes run --node &lt;id|name|ip&gt; [--cwd &lt;path&gt;] [--env KEY=VAL] [--command-timeout &lt;ms&gt;] [--needs-screen-recording] [--invoke-timeout &lt;ms&gt;] &lt;command...&gt;</code> (mac node or headless node host)</li>
+<li><code>nodes notify --node &lt;id|name|ip&gt; [--title &lt;text&gt;] [--body &lt;text&gt;] [--sound &lt;name&gt;] [--priority &lt;passive|active|timeSensitive&gt;] [--delivery &lt;system|overlay|auto&gt;] [--invoke-timeout &lt;ms&gt;]</code> (mac only)</li>
+</ul>
+<p>Camera:</p>
+<ul>
+<li><code>nodes camera list --node &lt;id|name|ip&gt;</code></li>
+<li><code>nodes camera snap --node &lt;id|name|ip&gt; [--facing front|back|both] [--device-id &lt;id&gt;] [--max-width &lt;px&gt;] [--quality &lt;0-1&gt;] [--delay-ms &lt;ms&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes camera clip --node &lt;id|name|ip&gt; [--facing front|back] [--device-id &lt;id&gt;] [--duration &lt;ms|10s|1m&gt;] [--no-audio] [--invoke-timeout &lt;ms&gt;]</code></li>
+</ul>
+<p>Canvas + screen:</p>
+<ul>
+<li><code>nodes canvas snapshot --node &lt;id|name|ip&gt; [--format png|jpg|jpeg] [--max-width &lt;px&gt;] [--quality &lt;0-1&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas present --node &lt;id|name|ip&gt; [--target &lt;urlOrPath&gt;] [--x &lt;px&gt;] [--y &lt;px&gt;] [--width &lt;px&gt;] [--height &lt;px&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas hide --node &lt;id|name|ip&gt; [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas navigate &lt;url&gt; --node &lt;id|name|ip&gt; [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas eval [&lt;js&gt;] --node &lt;id|name|ip&gt; [--js &lt;code&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas a2ui push --node &lt;id|name|ip&gt; (--jsonl &lt;path&gt; | --text &lt;text&gt;) [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes canvas a2ui reset --node &lt;id|name|ip&gt; [--invoke-timeout &lt;ms&gt;]</code></li>
+<li><code>nodes screen record --node &lt;id|name|ip&gt; [--screen &lt;index&gt;] [--duration &lt;ms|10s&gt;] [--fps &lt;n&gt;] [--no-audio] [--out &lt;path&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+</ul>
+<p>Location:</p>
+<ul>
+<li><code>nodes location get --node &lt;id|name|ip&gt; [--max-age &lt;ms&gt;] [--accuracy &lt;coarse|balanced|precise&gt;] [--location-timeout &lt;ms&gt;] [--invoke-timeout &lt;ms&gt;]</code></li>
+</ul>
+<h2>Browser</h2>
+<p>Browser control CLI (dedicated Chrome/Brave/Edge/Chromium). See <a href="/cli/browser"><code>agdi browser</code></a> and the <a href="/tools/browser">Browser tool</a>.</p>
+<p>Common options:</p>
+<ul>
+<li><code>--url</code>, <code>--token</code>, <code>--timeout</code>, <code>--json</code></li>
+<li><code>--browser-profile &lt;name&gt;</code></li>
+</ul>
+<p>Manage:</p>
+<ul>
+<li><code>browser status</code></li>
+<li><code>browser start</code></li>
+<li><code>browser stop</code></li>
+<li><code>browser reset-profile</code></li>
+<li><code>browser tabs</code></li>
+<li><code>browser open &lt;url&gt;</code></li>
+<li><code>browser focus &lt;targetId&gt;</code></li>
+<li><code>browser close [targetId]</code></li>
+<li><code>browser profiles</code></li>
+<li><code>browser create-profile --name &lt;name&gt; [--color &lt;hex&gt;] [--cdp-url &lt;url&gt;]</code></li>
+<li><code>browser delete-profile --name &lt;name&gt;</code></li>
+</ul>
+<p>Inspect:</p>
+<ul>
+<li><code>browser screenshot [targetId] [--full-page] [--ref &lt;ref&gt;] [--element &lt;selector&gt;] [--type png|jpeg]</code></li>
+<li><code>browser snapshot [--format aria|ai] [--target-id &lt;id&gt;] [--limit &lt;n&gt;] [--interactive] [--compact] [--depth &lt;n&gt;] [--selector &lt;sel&gt;] [--out &lt;path&gt;]</code></li>
+</ul>
+<p>Actions:</p>
+<ul>
+<li><code>browser navigate &lt;url&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser resize &lt;width&gt; &lt;height&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser click &lt;ref&gt; [--double] [--button &lt;left|right|middle&gt;] [--modifiers &lt;csv&gt;] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser type &lt;ref&gt; &lt;text&gt; [--submit] [--slowly] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser press &lt;key&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser hover &lt;ref&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser drag &lt;startRef&gt; &lt;endRef&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser select &lt;ref&gt; &lt;values...&gt; [--target-id &lt;id&gt;]</code></li>
+<li><code>browser upload &lt;paths...&gt; [--ref &lt;ref&gt;] [--input-ref &lt;ref&gt;] [--element &lt;selector&gt;] [--target-id &lt;id&gt;] [--timeout-ms &lt;ms&gt;]</code></li>
+<li><code>browser fill [--fields &lt;json&gt;] [--fields-file &lt;path&gt;] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser dialog --accept|--dismiss [--prompt &lt;text&gt;] [--target-id &lt;id&gt;] [--timeout-ms &lt;ms&gt;]</code></li>
+<li><code>browser wait [--time &lt;ms&gt;] [--text &lt;value&gt;] [--text-gone &lt;value&gt;] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser evaluate --fn &lt;code&gt; [--ref &lt;ref&gt;] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser console [--level &lt;error|warn|info&gt;] [--target-id &lt;id&gt;]</code></li>
+<li><code>browser pdf [--target-id &lt;id&gt;]</code></li>
+</ul>
+<h2>Docs search</h2>
+<h3><code>docs [query...]</code></h3>
+<p>Search the live docs index.</p>
+<h2>TUI</h2>
+<h3><code>tui</code></h3>
+<p>Open the terminal UI connected to the Gateway.</p>
+<p>Options:</p>
+<ul>
+<li><code>--url &lt;url&gt;</code></li>
+<li><code>--token &lt;token&gt;</code></li>
+<li><code>--password &lt;password&gt;</code></li>
+<li><code>--session &lt;key&gt;</code></li>
+<li><code>--deliver</code></li>
+<li><code>--thinking &lt;level&gt;</code></li>
+<li><code>--message &lt;text&gt;</code></li>
+<li><code>--timeout-ms &lt;ms&gt;</code> (defaults to <code>agents.defaults.timeoutSeconds</code>)</li>
+<li><code>--history-limit &lt;n&gt;</code></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

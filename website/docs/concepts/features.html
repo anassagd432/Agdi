@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab active" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Home</h4><ul><li><a class="" href="/docs/index.html">AGDI</a></li></ul></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/start/showcase.html">Showcase</a></li></ul></div><div class="sidebar-group"><h4>Core concepts</h4><ul><li><a class="active" href="/docs/concepts/features.html">Features</a></li></ul></div><div class="sidebar-group"><h4>First steps</h4><ul><li><a class="" href="/docs/start/getting-started.html">Getting Started</a></li><li><a class="" href="/docs/start/onboarding-overview.html">Onboarding Overview</a></li><li><a class="" href="/docs/start/wizard.html">Onboarding Wizard (CLI)</a></li><li><a class="" href="/docs/start/onboarding.html">Onboarding (macOS App)</a></li></ul></div><div class="sidebar-group"><h4>Guides</h4><ul><li><a class="" href="/docs/start/openclaw.html">Personal Assistant Setup</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h2>Highlights</h2>
+  <Card title="Channels" icon="message-square">
+    WhatsApp, Telegram, Discord, and iMessage with a single Gateway.
+  </Card>
+  <Card title="Plugins" icon="plug">
+    Add Mattermost and more with extensions.
+  </Card>
+  <Card title="Routing" icon="route">
+    Multi-agent routing with isolated sessions.
+  </Card>
+  <Card title="Media" icon="image">
+    Images, audio, and documents in and out.
+  </Card>
+  <Card title="Apps and UI" icon="monitor">
+    Web Control UI and macOS companion app.
+  </Card>
+  <Card title="Mobile nodes" icon="smartphone">
+    iOS and Android nodes with Canvas support.
+  </Card>
+
+
+<h2>Full list</h2>
+<ul>
+<li>WhatsApp integration via WhatsApp Web (Baileys)</li>
+<li>Telegram bot support (grammY)</li>
+<li>Discord bot support (channels.discord.js)</li>
+<li>Mattermost bot support (plugin)</li>
+<li>iMessage integration via local imsg CLI (macOS)</li>
+<li>Agent bridge for Pi in RPC mode with tool streaming</li>
+<li>Streaming and chunking for long responses</li>
+<li>Multi-agent routing for isolated sessions per workspace or sender</li>
+<li>Subscription auth for Anthropic and OpenAI via OAuth</li>
+<li>Sessions: direct chats collapse into shared <code>main</code>; groups are isolated</li>
+<li>Group chat support with mention based activation</li>
+<li>Media support for images, audio, and documents</li>
+<li>Optional voice note transcription hook</li>
+<li>WebChat and macOS menu bar app</li>
+<li>iOS node with pairing and Canvas surface</li>
+<li>Android node with pairing, Canvas, chat, and camera</li>
+</ul>
+<p>Legacy Claude, Codex, Gemini, and Opencode paths have been removed. Pi is the only
+coding agent path.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

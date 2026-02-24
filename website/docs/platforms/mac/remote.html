@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remote Control — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="active" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Remote AGDI (macOS ⇄ remote host)</h1>
+<p>This flow lets the macOS app act as a full remote control for a AGDI gateway running on another host (desktop/server). It’s the app’s <strong>Remote over SSH</strong> (remote run) feature. All features—health checks, Voice Wake forwarding, and Web Chat—reuse the same remote SSH configuration from <em>Settings → General</em>.</p>
+<h2>Modes</h2>
+<ul>
+<li><strong>Local (this Mac)</strong>: Everything runs on the laptop. No SSH involved.</li>
+<li><strong>Remote over SSH (default)</strong>: AGDI commands are executed on the remote host. The mac app opens an SSH connection with <code>-o BatchMode</code> plus your chosen identity/key and a local port-forward.</li>
+<li><strong>Remote direct (ws/wss)</strong>: No SSH tunnel. The mac app connects to the gateway URL directly (for example, via Tailscale Serve or a public HTTPS reverse proxy).</li>
+</ul>
+<h2>Remote transports</h2>
+<p>Remote mode supports two transports:</p>
+<ul>
+<li><strong>SSH tunnel</strong> (default): Uses <code>ssh -N -L ...</code> to forward the gateway port to localhost. The gateway will see the node’s IP as <code>127.0.0.1</code> because the tunnel is loopback.</li>
+<li><strong>Direct (ws/wss)</strong>: Connects straight to the gateway URL. The gateway sees the real client IP.</li>
+</ul>
+<h2>Prereqs on the remote host</h2>
+<ol>
+<li>Install Node + pnpm and build/install the AGDI CLI (<code>pnpm install &amp;&amp; pnpm build &amp;&amp; pnpm link --global</code>).</li>
+<li>Ensure <code>agdi</code> is on PATH for non-interactive shells (symlink into <code>/usr/local/bin</code> or <code>/opt/homebrew/bin</code> if needed).</li>
+<li>Open SSH with key auth. We recommend <strong>Tailscale</strong> IPs for stable reachability off-LAN.</li>
+</ol>
+<h2>macOS app setup</h2>
+<ol>
+<li>Open <em>Settings → General</em>.</li>
+<li>Under <strong>AGDI runs</strong>, pick <strong>Remote over SSH</strong> and set:<ul>
+<li><strong>Transport</strong>: <strong>SSH tunnel</strong> or <strong>Direct (ws/wss)</strong>.</li>
+<li><strong>SSH target</strong>: <code>user@host</code> (optional <code>:port</code>).<ul>
+<li>If the gateway is on the same LAN and advertises Bonjour, pick it from the discovered list to auto-fill this field.</li>
+</ul>
+</li>
+<li><strong>Gateway URL</strong> (Direct only): <code>wss://gateway.example.ts.net</code> (or <code>ws://...</code> for local/LAN).</li>
+<li><strong>Identity file</strong> (advanced): path to your key.</li>
+<li><strong>Project root</strong> (advanced): remote checkout path used for commands.</li>
+<li><strong>CLI path</strong> (advanced): optional path to a runnable <code>agdi</code> entrypoint/binary (auto-filled when advertised).</li>
+</ul>
+</li>
+<li>Hit <strong>Test remote</strong>. Success indicates the remote <code>agdi status --json</code> runs correctly. Failures usually mean PATH/CLI issues; exit 127 means the CLI isn’t found remotely.</li>
+<li>Health checks and Web Chat will now run through this SSH tunnel automatically.</li>
+</ol>
+<h2>Web Chat</h2>
+<ul>
+<li><strong>SSH tunnel</strong>: Web Chat connects to the gateway over the forwarded WebSocket control port (default 18789).</li>
+<li><strong>Direct (ws/wss)</strong>: Web Chat connects straight to the configured gateway URL.</li>
+<li>There is no separate WebChat HTTP server anymore.</li>
+</ul>
+<h2>Permissions</h2>
+<ul>
+<li>The remote host needs the same TCC approvals as local (Automation, Accessibility, Screen Recording, Microphone, Speech Recognition, Notifications). Run onboarding on that machine to grant them once.</li>
+<li>Nodes advertise their permission state via <code>node.list</code> / <code>node.describe</code> so agents know what’s available.</li>
+</ul>
+<h2>Security notes</h2>
+<ul>
+<li>Prefer loopback binds on the remote host and connect via SSH or Tailscale.</li>
+<li>If you bind the Gateway to a non-loopback interface, require token/password auth.</li>
+<li>See <a href="/docs/gateway/security">Security</a> and <a href="/docs/gateway/tailscale">Tailscale</a>.</li>
+</ul>
+<h2>WhatsApp login flow (remote)</h2>
+<ul>
+<li>Run <code>agdi channels login --verbose</code> <strong>on the remote host</strong>. Scan the QR with WhatsApp on your phone.</li>
+<li>Re-run login on that host if auth expires. Health check will surface link problems.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>exit 127 / not found</strong>: <code>agdi</code> isn’t on PATH for non-login shells. Add it to <code>/etc/paths</code>, your shell rc, or symlink into <code>/usr/local/bin</code>/<code>/opt/homebrew/bin</code>.</li>
+<li><strong>Health probe failed</strong>: check SSH reachability, PATH, and that Baileys is logged in (<code>agdi status --json</code>).</li>
+<li><strong>Web Chat stuck</strong>: confirm the gateway is running on the remote host and the forwarded port matches the gateway WS port; the UI requires a healthy WS connection.</li>
+<li><strong>Node IP shows 127.0.0.1</strong>: expected with the SSH tunnel. Switch <strong>Transport</strong> to <strong>Direct (ws/wss)</strong> if you want the gateway to see the real client IP.</li>
+<li><strong>Voice Wake</strong>: trigger phrases are forwarded automatically in remote mode; no separate forwarder is needed.</li>
+</ul>
+<h2>Notification sounds</h2>
+<p>Pick sounds per notification from scripts with <code>agdi</code> and <code>node.invoke</code>, e.g.:</p>
+<pre><code class="language-bash">agdi nodes notify --node &lt;id&gt; --title &quot;Ping&quot; --body &quot;Remote gateway ready&quot; --sound Glass
+</code></pre>
+<p>There is no global “default sound” toggle in the app anymore; callers choose a sound (or none) per request.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

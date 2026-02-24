@@ -26,23 +26,19 @@ apps/android/.cxx/
 # Bun build artifacts
 *.bun-build
 apps/macos/.build/
-apps/shared/MoltbotKit/.build/
-apps/shared/OpenClawKit/.build/
-apps/shared/OpenClawKit/Package.resolved
+apps/shared/AgdiKit/.build/
+apps/shared/AgdiKit/Package.resolved
 **/ModuleCache/
 bin/
-bin/clawdbot-mac
 bin/docs-list
 apps/macos/.build-local/
 apps/macos/.swiftpm/
-apps/shared/MoltbotKit/.swiftpm/
 Core/
 apps/ios/*.xcodeproj/
 apps/ios/*.xcworkspace/
 apps/ios/.swiftpm/
 vendor/
-apps/ios/Clawdbot.xcodeproj/
-apps/ios/Clawdbot.xcodeproj/**
+
 apps/macos/.build/**
 **/*.bun-build
 apps/ios/*.xcfilelist
@@ -86,3 +82,8 @@ USER.md
 !.agent/workflows/
 /local/
 package-lock.json
+
+# Build logs (never commit)
+build-output*.txt
+build.log
+a2ui-bundle-output.txt

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gateway — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/docs/cli/index.html">CLI Reference</a></li><li><a class="" href="/docs/cli/agent.html">agent</a></li><li><a class="" href="/docs/cli/agents.html">agents</a></li><li><a class="" href="/docs/cli/approvals.html">approvals</a></li><li><a class="" href="/docs/cli/browser.html">browser</a></li><li><a class="" href="/docs/cli/channels.html">channels</a></li><li><a class="" href="/docs/cli/configure.html">configure</a></li><li><a class="" href="/docs/cli/cron.html">cron</a></li><li><a class="" href="/docs/cli/dashboard.html">dashboard</a></li><li><a class="" href="/docs/cli/directory.html">directory</a></li><li><a class="" href="/docs/cli/dns.html">dns</a></li><li><a class="" href="/docs/cli/docs.html">docs</a></li><li><a class="" href="/docs/cli/doctor.html">doctor</a></li><li><a class="active" href="/docs/cli/gateway.html">gateway</a></li><li><a class="" href="/docs/cli/health.html">health</a></li><li><a class="" href="/docs/cli/hooks.html">hooks</a></li><li><a class="" href="/docs/cli/logs.html">logs</a></li><li><a class="" href="/docs/cli/memory.html">memory</a></li><li><a class="" href="/docs/cli/message.html">message</a></li><li><a class="" href="/docs/cli/models.html">models</a></li><li><a class="" href="/docs/cli/nodes.html">nodes</a></li><li><a class="" href="/docs/cli/onboard.html">onboard</a></li><li><a class="" href="/docs/cli/pairing.html">pairing</a></li><li><a class="" href="/docs/cli/plugins.html">plugins</a></li><li><a class="" href="/docs/cli/reset.html">reset</a></li><li><a class="" href="/docs/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/docs/cli/security.html">security</a></li><li><a class="" href="/docs/cli/sessions.html">sessions</a></li><li><a class="" href="/docs/cli/setup.html">setup</a></li><li><a class="" href="/docs/cli/skills.html">skills</a></li><li><a class="" href="/docs/cli/status.html">status</a></li><li><a class="" href="/docs/cli/system.html">system</a></li><li><a class="" href="/docs/cli/tui.html">tui</a></li><li><a class="" href="/docs/cli/uninstall.html">uninstall</a></li><li><a class="" href="/docs/cli/update.html">update</a></li><li><a class="" href="/docs/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/docs/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/docs/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/docs/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/docs/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/docs/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/docs/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/docs/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/docs/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/docs/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/docs/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/docs/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/docs/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/docs/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/docs/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/docs/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/docs/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/docs/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/docs/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/docs/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/docs/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/docs/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/docs/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/docs/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/docs/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/docs/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway CLI</h1>
+<p>The Gateway is AGDI’s WebSocket server (channels, nodes, sessions, hooks).</p>
+<p>Subcommands in this page live under <code>agdi gateway …</code>.</p>
+<p>Related docs:</p>
+<ul>
+<li><a href="/docs/gateway/bonjour">/gateway/bonjour</a></li>
+<li><a href="/docs/gateway/discovery">/gateway/discovery</a></li>
+<li><a href="/docs/gateway/configuration">/gateway/configuration</a></li>
+</ul>
+<h2>Run the Gateway</h2>
+<p>Run a local Gateway process:</p>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<p>Foreground alias:</p>
+<pre><code class="language-bash">agdi gateway run
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>By default, the Gateway refuses to start unless <code>gateway.mode=local</code> is set in <code>~/.agdi/agdi.json</code>. Use <code>--allow-unconfigured</code> for ad-hoc/dev runs.</li>
+<li>Binding beyond loopback without auth is blocked (safety guardrail).</li>
+<li><code>SIGUSR1</code> triggers an in-process restart when authorized (enable <code>commands.restart</code> or use the gateway tool/config apply/update).</li>
+<li><code>SIGINT</code>/<code>SIGTERM</code> handlers stop the gateway process, but they don’t restore any custom terminal state. If you wrap the CLI with a TUI or raw-mode input, restore the terminal before exit.</li>
+</ul>
+<h3>Options</h3>
+<ul>
+<li><code>--port &lt;port&gt;</code>: WebSocket port (default comes from config/env; usually <code>18789</code>).</li>
+<li><code>--bind &lt;loopback|lan|tailnet|auto|custom&gt;</code>: listener bind mode.</li>
+<li><code>--auth &lt;token|password&gt;</code>: auth mode override.</li>
+<li><code>--token &lt;token&gt;</code>: token override (also sets <code>AGDI_GATEWAY_TOKEN</code> for the process).</li>
+<li><code>--password &lt;password&gt;</code>: password override (also sets <code>AGDI_GATEWAY_PASSWORD</code> for the process).</li>
+<li><code>--tailscale &lt;off|serve|funnel&gt;</code>: expose the Gateway via Tailscale.</li>
+<li><code>--tailscale-reset-on-exit</code>: reset Tailscale serve/funnel config on shutdown.</li>
+<li><code>--allow-unconfigured</code>: allow gateway start without <code>gateway.mode=local</code> in config.</li>
+<li><code>--dev</code>: create a dev config + workspace if missing (skips BOOTSTRAP.md).</li>
+<li><code>--reset</code>: reset dev config + credentials + sessions + workspace (requires <code>--dev</code>).</li>
+<li><code>--force</code>: kill any existing listener on the selected port before starting.</li>
+<li><code>--verbose</code>: verbose logs.</li>
+<li><code>--claude-cli-logs</code>: only show claude-cli logs in the console (and enable its stdout/stderr).</li>
+<li><code>--ws-log &lt;auto|full|compact&gt;</code>: websocket log style (default <code>auto</code>).</li>
+<li><code>--compact</code>: alias for <code>--ws-log compact</code>.</li>
+<li><code>--raw-stream</code>: log raw model stream events to jsonl.</li>
+<li><code>--raw-stream-path &lt;path&gt;</code>: raw stream jsonl path.</li>
+</ul>
+<h2>Query a running Gateway</h2>
+<p>All query commands use WebSocket RPC.</p>
+<p>Output modes:</p>
+<ul>
+<li>Default: human-readable (colored in TTY).</li>
+<li><code>--json</code>: machine-readable JSON (no styling/spinner).</li>
+<li><code>--no-color</code> (or <code>NO_COLOR=1</code>): disable ANSI while keeping human layout.</li>
+</ul>
+<p>Shared options (where supported):</p>
+<ul>
+<li><code>--url &lt;url&gt;</code>: Gateway WebSocket URL.</li>
+<li><code>--token &lt;token&gt;</code>: Gateway token.</li>
+<li><code>--password &lt;password&gt;</code>: Gateway password.</li>
+<li><code>--timeout &lt;ms&gt;</code>: timeout/budget (varies per command).</li>
+<li><code>--expect-final</code>: wait for a “final” response (agent calls).</li>
+</ul>
+<p>Note: when you set <code>--url</code>, the CLI does not fall back to config or environment credentials.
+Pass <code>--token</code> or <code>--password</code> explicitly. Missing explicit credentials is an error.</p>
+<h3><code>gateway health</code></h3>
+<pre><code class="language-bash">agdi gateway health --url ws://127.0.0.1:18789
+</code></pre>
+<h3><code>gateway status</code></h3>
+<p><code>gateway status</code> shows the Gateway service (launchd/systemd/schtasks) plus an optional RPC probe.</p>
+<pre><code class="language-bash">agdi gateway status
+agdi gateway status --json
+</code></pre>
+<p>Options:</p>
+<ul>
+<li><code>--url &lt;url&gt;</code>: override the probe URL.</li>
+<li><code>--token &lt;token&gt;</code>: token auth for the probe.</li>
+<li><code>--password &lt;password&gt;</code>: password auth for the probe.</li>
+<li><code>--timeout &lt;ms&gt;</code>: probe timeout (default <code>10000</code>).</li>
+<li><code>--no-probe</code>: skip the RPC probe (service-only view).</li>
+<li><code>--deep</code>: scan system-level services too.</li>
+</ul>
+<h3><code>gateway probe</code></h3>
+<p><code>gateway probe</code> is the “debug everything” command. It always probes:</p>
+<ul>
+<li>your configured remote gateway (if set), and</li>
+<li>localhost (loopback) <strong>even if remote is configured</strong>.</li>
+</ul>
+<p>If multiple gateways are reachable, it prints all of them. Multiple gateways are supported when you use isolated profiles/ports (e.g., a rescue bot), but most installs still run a single gateway.</p>
+<pre><code class="language-bash">agdi gateway probe
+agdi gateway probe --json
+</code></pre>
+<h4>Remote over SSH (Mac app parity)</h4>
+<p>The macOS app “Remote over SSH” mode uses a local port-forward so the remote gateway (which may be bound to loopback only) becomes reachable at <code>ws://127.0.0.1:&lt;port&gt;</code>.</p>
+<p>CLI equivalent:</p>
+<pre><code class="language-bash">agdi gateway probe --ssh user@gateway-host
+</code></pre>
+<p>Options:</p>
+<ul>
+<li><code>--ssh &lt;target&gt;</code>: <code>user@host</code> or <code>user@host:port</code> (port defaults to <code>22</code>).</li>
+<li><code>--ssh-identity &lt;path&gt;</code>: identity file.</li>
+<li><code>--ssh-auto</code>: pick the first discovered gateway host as SSH target (LAN/WAB only).</li>
+</ul>
+<p>Config (optional, used as defaults):</p>
+<ul>
+<li><code>gateway.remote.sshTarget</code></li>
+<li><code>gateway.remote.sshIdentity</code></li>
+</ul>
+<h3><code>gateway call &lt;method&gt;</code></h3>
+<p>Low-level RPC helper.</p>
+<pre><code class="language-bash">agdi gateway call status
+agdi gateway call logs.tail --params &#39;{&quot;sinceMs&quot;: 60000}&#39;
+</code></pre>
+<h2>Manage the Gateway service</h2>
+<pre><code class="language-bash">agdi gateway install
+agdi gateway start
+agdi gateway stop
+agdi gateway restart
+agdi gateway uninstall
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>gateway install</code> supports <code>--port</code>, <code>--runtime</code>, <code>--token</code>, <code>--force</code>, <code>--json</code>.</li>
+<li>Lifecycle commands accept <code>--json</code> for scripting.</li>
+</ul>
+<h2>Discover gateways (Bonjour)</h2>
+<p><code>gateway discover</code> scans for Gateway beacons (<code>_agdi-gw._tcp</code>).</p>
+<ul>
+<li>Multicast DNS-SD: <code>local.</code></li>
+<li>Unicast DNS-SD (Wide-Area Bonjour): choose a domain (example: <code>agdi.internal.</code>) and set up split DNS + a DNS server; see <a href="/docs/gateway/bonjour">/gateway/bonjour</a></li>
+</ul>
+<p>Only gateways with Bonjour discovery enabled (default) advertise the beacon.</p>
+<p>Wide-Area discovery records include (TXT):</p>
+<ul>
+<li><code>role</code> (gateway role hint)</li>
+<li><code>transport</code> (transport hint, e.g. <code>gateway</code>)</li>
+<li><code>gatewayPort</code> (WebSocket port, usually <code>18789</code>)</li>
+<li><code>sshPort</code> (SSH port; defaults to <code>22</code> if not present)</li>
+<li><code>tailnetDns</code> (MagicDNS hostname, when available)</li>
+<li><code>gatewayTls</code> / <code>gatewayTlsSha256</code> (TLS enabled + cert fingerprint)</li>
+<li><code>cliPath</code> (optional hint for remote installs)</li>
+</ul>
+<h3><code>gateway discover</code></h3>
+<pre><code class="language-bash">agdi gateway discover
+</code></pre>
+<p>Options:</p>
+<ul>
+<li><code>--timeout &lt;ms&gt;</code>: per-command timeout (browse/resolve); default <code>2000</code>.</li>
+<li><code>--json</code>: machine-readable output (also disables styling/spinner).</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi gateway discover --timeout 4000
+agdi gateway discover --json | jq &#39;.beacons[].wsUrl&#39;
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

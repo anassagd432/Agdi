@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS Signing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="active" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>mac signing (debug builds)</h1>
+<p>This app is usually built from <a href="https://github.com/agdi/agdi/blob/main/scripts/package-mac-app.sh"><code>scripts/package-mac-app.sh</code></a>, which now:</p>
+<ul>
+<li>sets a stable debug bundle identifier: <code>ai.agdi.mac.debug</code></li>
+<li>writes the Info.plist with that bundle id (override via <code>BUNDLE_ID=...</code>)</li>
+<li>calls <a href="https://github.com/agdi/agdi/blob/main/scripts/codesign-mac-app.sh"><code>scripts/codesign-mac-app.sh</code></a> to sign the main binary and app bundle so macOS treats each rebuild as the same signed bundle and keeps TCC permissions (notifications, accessibility, screen recording, mic, speech). For stable permissions, use a real signing identity; ad-hoc is opt-in and fragile (see <a href="/docs/platforms/mac/permissions">macOS permissions</a>).</li>
+<li>uses <code>CODESIGN_TIMESTAMP=auto</code> by default; it enables trusted timestamps for Developer ID signatures. Set <code>CODESIGN_TIMESTAMP=off</code> to skip timestamping (offline debug builds).</li>
+<li>inject build metadata into Info.plist: <code>AGDIBuildTimestamp</code> (UTC) and <code>AGDIGitCommit</code> (short hash) so the About pane can show build, git, and debug/release channel.</li>
+<li><strong>Packaging requires Node 22+</strong>: the script runs TS builds and the Control UI build.</li>
+<li>reads <code>SIGN_IDENTITY</code> from the environment. Add <code>export SIGN_IDENTITY=&quot;Apple Development: Your Name (TEAMID)&quot;</code> (or your Developer ID Application cert) to your shell rc to always sign with your cert. Ad-hoc signing requires explicit opt-in via <code>ALLOW_ADHOC_SIGNING=1</code> or <code>SIGN_IDENTITY=&quot;-&quot;</code> (not recommended for permission testing).</li>
+<li>runs a Team ID audit after signing and fails if any Mach-O inside the app bundle is signed by a different Team ID. Set <code>SKIP_TEAM_ID_CHECK=1</code> to bypass.</li>
+</ul>
+<h2>Usage</h2>
+<pre><code class="language-bash"># from repo root
+scripts/package-mac-app.sh               # auto-selects identity; errors if none found
+SIGN_IDENTITY=&quot;Developer ID Application: Your Name&quot; scripts/package-mac-app.sh   # real cert
+ALLOW_ADHOC_SIGNING=1 scripts/package-mac-app.sh    # ad-hoc (permissions will not stick)
+SIGN_IDENTITY=&quot;-&quot; scripts/package-mac-app.sh        # explicit ad-hoc (same caveat)
+DISABLE_LIBRARY_VALIDATION=1 scripts/package-mac-app.sh   # dev-only Sparkle Team ID mismatch workaround
+</code></pre>
+<h3>Ad-hoc Signing Note</h3>
+<p>When signing with <code>SIGN_IDENTITY=&quot;-&quot;</code> (ad-hoc), the script automatically disables the <strong>Hardened Runtime</strong> (<code>--options runtime</code>). This is necessary to prevent crashes when the app attempts to load embedded frameworks (like Sparkle) that do not share the same Team ID. Ad-hoc signatures also break TCC permission persistence; see <a href="/docs/platforms/mac/permissions">macOS permissions</a> for recovery steps.</p>
+<h2>Build metadata for About</h2>
+<p><code>package-mac-app.sh</code> stamps the bundle with:</p>
+<ul>
+<li><code>AGDIBuildTimestamp</code>: ISO8601 UTC at package time</li>
+<li><code>AGDIGitCommit</code>: short git hash (or <code>unknown</code> if unavailable)</li>
+</ul>
+<p>The About tab reads these keys to show version, build date, git commit, and whether it’s a debug build (via <code>#if DEBUG</code>). Run the packager to refresh these values after code changes.</p>
+<h2>Why</h2>
+<p>TCC permissions are tied to the bundle identifier <em>and</em> code signature. Unsigned debug builds with changing UUIDs were causing macOS to forget grants after each rebuild. Signing the binaries (ad‑hoc by default) and keeping a fixed bundle id/path (<code>dist/AGDI.app</code>) preserves the grants between builds, matching the VibeTunnel approach.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

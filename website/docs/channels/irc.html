@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRC — AGDI Docs</title>
+  <meta name="description" content="Connect AGDI to IRC channels and direct messages.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="active" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><p>Use IRC when you want AGDI in classic channels (<code>#room</code>) and direct messages.
+IRC ships as an extension plugin, but it is configured in the main config under <code>channels.irc</code>.</p>
+<h2>Quick start</h2>
+<ol>
+<li>Enable IRC config in <code>~/.agdi/agdi.json</code>.</li>
+<li>Set at least:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;irc&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;host&quot;: &quot;irc.libera.chat&quot;,
+      &quot;port&quot;: 6697,
+      &quot;tls&quot;: true,
+      &quot;nick&quot;: &quot;agdi-bot&quot;,
+      &quot;channels&quot;: [&quot;#agdi&quot;]
+    }
+  }
+}
+</code></pre>
+<ol start="3">
+<li>Start/restart gateway:</li>
+</ol>
+<pre><code class="language-bash">agdi gateway run
+</code></pre>
+<h2>Security defaults</h2>
+<ul>
+<li><code>channels.irc.dmPolicy</code> defaults to <code>&quot;pairing&quot;</code>.</li>
+<li><code>channels.irc.groupPolicy</code> defaults to <code>&quot;allowlist&quot;</code>.</li>
+<li>With <code>groupPolicy=&quot;allowlist&quot;</code>, set <code>channels.irc.groups</code> to define allowed channels.</li>
+<li>Use TLS (<code>channels.irc.tls=true</code>) unless you intentionally accept plaintext transport.</li>
+</ul>
+<h2>Access control</h2>
+<p>There are two separate “gates” for IRC channels:</p>
+<ol>
+<li><strong>Channel access</strong> (<code>groupPolicy</code> + <code>groups</code>): whether the bot accepts messages from a channel at all.</li>
+<li><strong>Sender access</strong> (<code>groupAllowFrom</code> / per-channel <code>groups[&quot;#channel&quot;].allowFrom</code>): who is allowed to trigger the bot inside that channel.</li>
+</ol>
+<p>Config keys:</p>
+<ul>
+<li>DM allowlist (DM sender access): <code>channels.irc.allowFrom</code></li>
+<li>Group sender allowlist (channel sender access): <code>channels.irc.groupAllowFrom</code></li>
+<li>Per-channel controls (channel + sender + mention rules): <code>channels.irc.groups[&quot;#channel&quot;]</code></li>
+<li><code>channels.irc.groupPolicy=&quot;open&quot;</code> allows unconfigured channels (<strong>still mention-gated by default</strong>)</li>
+</ul>
+<p>Allowlist entries can use nick or <code>nick!user@host</code> forms.</p>
+<h3>Common gotcha: <code>allowFrom</code> is for DMs, not channels</h3>
+<p>If you see logs like:</p>
+<ul>
+<li><code>irc: drop group sender alice!ident@host (policy=allowlist)</code></li>
+</ul>
+<p>…it means the sender wasn’t allowed for <strong>group/channel</strong> messages. Fix it by either:</p>
+<ul>
+<li>setting <code>channels.irc.groupAllowFrom</code> (global for all channels), or</li>
+<li>setting per-channel sender allowlists: <code>channels.irc.groups[&quot;#channel&quot;].allowFrom</code></li>
+</ul>
+<p>Example (allow anyone in <code>#tuirc-dev</code> to talk to the bot):</p>
+<pre><code class="language-json5">{
+  channels: {
+    irc: {
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;#tuirc-dev&quot;: { allowFrom: [&quot;*&quot;] },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Reply triggering (mentions)</h2>
+<p>Even if a channel is allowed (via <code>groupPolicy</code> + <code>groups</code>) and the sender is allowed, AGDI defaults to <strong>mention-gating</strong> in group contexts.</p>
+<p>That means you may see logs like <code>drop channel … (missing-mention)</code> unless the message includes a mention pattern that matches the bot.</p>
+<p>To make the bot reply in an IRC channel <strong>without needing a mention</strong>, disable mention gating for that channel:</p>
+<pre><code class="language-json5">{
+  channels: {
+    irc: {
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;#tuirc-dev&quot;: {
+          requireMention: false,
+          allowFrom: [&quot;*&quot;],
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Or to allow <strong>all</strong> IRC channels (no per-channel allowlist) and still reply without mentions:</p>
+<pre><code class="language-json5">{
+  channels: {
+    irc: {
+      groupPolicy: &quot;open&quot;,
+      groups: {
+        &quot;*&quot;: { requireMention: false, allowFrom: [&quot;*&quot;] },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Security note (recommended for public channels)</h2>
+<p>If you allow <code>allowFrom: [&quot;*&quot;]</code> in a public channel, anyone can prompt the bot.
+To reduce risk, restrict tools for that channel.</p>
+<h3>Same tools for everyone in the channel</h3>
+<pre><code class="language-json5">{
+  channels: {
+    irc: {
+      groups: {
+        &quot;#tuirc-dev&quot;: {
+          allowFrom: [&quot;*&quot;],
+          tools: {
+            deny: [&quot;group:runtime&quot;, &quot;group:fs&quot;, &quot;gateway&quot;, &quot;nodes&quot;, &quot;cron&quot;, &quot;browser&quot;],
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Different tools per sender (owner gets more power)</h3>
+<p>Use <code>toolsBySender</code> to apply a stricter policy to <code>&quot;*&quot;</code> and a looser one to your nick:</p>
+<pre><code class="language-json5">{
+  channels: {
+    irc: {
+      groups: {
+        &quot;#tuirc-dev&quot;: {
+          allowFrom: [&quot;*&quot;],
+          toolsBySender: {
+            &quot;*&quot;: {
+              deny: [&quot;group:runtime&quot;, &quot;group:fs&quot;, &quot;gateway&quot;, &quot;nodes&quot;, &quot;cron&quot;, &quot;browser&quot;],
+            },
+            eigen: {
+              deny: [&quot;gateway&quot;, &quot;nodes&quot;, &quot;cron&quot;],
+            },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>toolsBySender</code> keys can be a nick (e.g. <code>&quot;eigen&quot;</code>) or a full hostmask (<code>&quot;eigen!~eigen@174.127.248.171&quot;</code>) for stronger identity matching.</li>
+<li>The first matching sender policy wins; <code>&quot;*&quot;</code> is the wildcard fallback.</li>
+</ul>
+<p>For more on group access vs mention-gating (and how they interact), see: <a href="/docs/channels/groups">/channels/groups</a>.</p>
+<h2>NickServ</h2>
+<p>To identify with NickServ after connect:</p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;irc&quot;: {
+      &quot;nickserv&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;service&quot;: &quot;NickServ&quot;,
+        &quot;password&quot;: &quot;your-nickserv-password&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Optional one-time registration on connect:</p>
+<pre><code class="language-json">{
+  &quot;channels&quot;: {
+    &quot;irc&quot;: {
+      &quot;nickserv&quot;: {
+        &quot;register&quot;: true,
+        &quot;registerEmail&quot;: &quot;bot@example.com&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Disable <code>register</code> after the nick is registered to avoid repeated REGISTER attempts.</p>
+<h2>Environment variables</h2>
+<p>Default account supports:</p>
+<ul>
+<li><code>IRC_HOST</code></li>
+<li><code>IRC_PORT</code></li>
+<li><code>IRC_TLS</code></li>
+<li><code>IRC_NICK</code></li>
+<li><code>IRC_USERNAME</code></li>
+<li><code>IRC_REALNAME</code></li>
+<li><code>IRC_PASSWORD</code></li>
+<li><code>IRC_CHANNELS</code> (comma-separated)</li>
+<li><code>IRC_NICKSERV_PASSWORD</code></li>
+<li><code>IRC_NICKSERV_REGISTER_EMAIL</code></li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If the bot connects but never replies in channels, verify <code>channels.irc.groups</code> <strong>and</strong> whether mention-gating is dropping messages (<code>missing-mention</code>). If you want it to reply without pings, set <code>requireMention:false</code> for the channel.</li>
+<li>If login fails, verify nick availability and server password.</li>
+<li>If TLS fails on a custom network, verify host/port and certificate setup.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

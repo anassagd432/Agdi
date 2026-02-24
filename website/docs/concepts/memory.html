@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="active" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Memory</h1>
+<p>AGDI memory is <strong>plain Markdown in the agent workspace</strong>. The files are the
+source of truth; the model only &quot;remembers&quot; what gets written to disk.</p>
+<p>Memory search tools are provided by the active memory plugin (default:
+<code>memory-core</code>). Disable memory plugins with <code>plugins.slots.memory = &quot;none&quot;</code>.</p>
+<h2>Memory files (Markdown)</h2>
+<p>The default workspace layout uses two memory layers:</p>
+<ul>
+<li><code>memory/YYYY-MM-DD.md</code><ul>
+<li>Daily log (append-only).</li>
+<li>Read today + yesterday at session start.</li>
+</ul>
+</li>
+<li><code>MEMORY.md</code> (optional)<ul>
+<li>Curated long-term memory.</li>
+<li><strong>Only load in the main, private session</strong> (never in group contexts).</li>
+</ul>
+</li>
+</ul>
+<p>These files live under the workspace (<code>agents.defaults.workspace</code>, default
+<code>~/.agdi/workspace</code>). See <a href="/docs/concepts/agent-workspace">Agent workspace</a> for the full layout.</p>
+<h2>When to write memory</h2>
+<ul>
+<li>Decisions, preferences, and durable facts go to <code>MEMORY.md</code>.</li>
+<li>Day-to-day notes and running context go to <code>memory/YYYY-MM-DD.md</code>.</li>
+<li>If someone says &quot;remember this,&quot; write it down (do not keep it in RAM).</li>
+<li>This area is still evolving. It helps to remind the model to store memories; it will know what to do.</li>
+<li>If you want something to stick, <strong>ask the bot to write it</strong> into memory.</li>
+</ul>
+<h2>Automatic memory flush (pre-compaction ping)</h2>
+<p>When a session is <strong>close to auto-compaction</strong>, AGDI triggers a <strong>silent,
+agentic turn</strong> that reminds the model to write durable memory <strong>before</strong> the
+context is compacted. The default prompts explicitly say the model <em>may reply</em>,
+but usually <code>NO_REPLY</code> is the correct response so the user never sees this turn.</p>
+<p>This is controlled by <code>agents.defaults.compaction.memoryFlush</code>:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      compaction: {
+        reserveTokensFloor: 20000,
+        memoryFlush: {
+          enabled: true,
+          softThresholdTokens: 4000,
+          systemPrompt: &quot;Session nearing compaction. Store durable memories now.&quot;,
+          prompt: &quot;Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Details:</p>
+<ul>
+<li><strong>Soft threshold</strong>: flush triggers when the session token estimate crosses
+<code>contextWindow - reserveTokensFloor - softThresholdTokens</code>.</li>
+<li><strong>Silent</strong> by default: prompts include <code>NO_REPLY</code> so nothing is delivered.</li>
+<li><strong>Two prompts</strong>: a user prompt plus a system prompt append the reminder.</li>
+<li><strong>One flush per compaction cycle</strong> (tracked in <code>sessions.json</code>).</li>
+<li><strong>Workspace must be writable</strong>: if the session runs sandboxed with
+<code>workspaceAccess: &quot;ro&quot;</code> or <code>&quot;none&quot;</code>, the flush is skipped.</li>
+</ul>
+<p>For the full compaction lifecycle, see
+<a href="/docs/reference/session-management-compaction">Session management + compaction</a>.</p>
+<h2>Vector memory search</h2>
+<p>AGDI can build a small vector index over <code>MEMORY.md</code> and <code>memory/*.md</code> so
+semantic queries can find related notes even when wording differs.</p>
+<p>Defaults:</p>
+<ul>
+<li>Enabled by default.</li>
+<li>Watches memory files for changes (debounced).</li>
+<li>Configure memory search under <code>agents.defaults.memorySearch</code> (not top-level
+<code>memorySearch</code>).</li>
+<li>Uses remote embeddings by default. If <code>memorySearch.provider</code> is not set, AGDI auto-selects:<ol>
+<li><code>local</code> if a <code>memorySearch.local.modelPath</code> is configured and the file exists.</li>
+<li><code>openai</code> if an OpenAI key can be resolved.</li>
+<li><code>gemini</code> if a Gemini key can be resolved.</li>
+<li><code>voyage</code> if a Voyage key can be resolved.</li>
+<li>Otherwise memory search stays disabled until configured.</li>
+</ol>
+</li>
+<li>Local mode uses node-llama-cpp and may require <code>pnpm approve-builds</code>.</li>
+<li>Uses sqlite-vec (when available) to accelerate vector search inside SQLite.</li>
+</ul>
+<p>Remote embeddings <strong>require</strong> an API key for the embedding provider. AGDI
+resolves keys from auth profiles, <code>models.providers.*.apiKey</code>, or environment
+variables. Codex OAuth only covers chat/completions and does <strong>not</strong> satisfy
+embeddings for memory search. For Gemini, use <code>GEMINI_API_KEY</code> or
+<code>models.providers.google.apiKey</code>. For Voyage, use <code>VOYAGE_API_KEY</code> or
+<code>models.providers.voyage.apiKey</code>. When using a custom OpenAI-compatible endpoint,
+set <code>memorySearch.remote.apiKey</code> (and optional <code>memorySearch.remote.headers</code>).</p>
+<h3>QMD backend (experimental)</h3>
+<p>Set <code>memory.backend = &quot;qmd&quot;</code> to swap the built-in SQLite indexer for
+<a href="https://github.com/tobi/qmd">QMD</a>: a local-first search sidecar that combines
+BM25 + vectors + reranking. Markdown stays the source of truth; AGDI shells
+out to QMD for retrieval. Key points:</p>
+<p><strong>Prereqs</strong></p>
+<ul>
+<li>Disabled by default. Opt in per-config (<code>memory.backend = &quot;qmd&quot;</code>).</li>
+<li>Install the QMD CLI separately (<code>bun install -g https://github.com/tobi/qmd</code> or grab
+a release) and make sure the <code>qmd</code> binary is on the gateway’s <code>PATH</code>.</li>
+<li>QMD needs an SQLite build that allows extensions (<code>brew install sqlite</code> on
+macOS).</li>
+<li>QMD runs fully locally via Bun + <code>node-llama-cpp</code> and auto-downloads GGUF
+models from HuggingFace on first use (no separate Ollama daemon required).</li>
+<li>The gateway runs QMD in a self-contained XDG home under
+<code>~/.agdi/agents/&lt;agentId&gt;/qmd/</code> by setting <code>XDG_CONFIG_HOME</code> and
+<code>XDG_CACHE_HOME</code>.</li>
+<li>OS support: macOS and Linux work out of the box once Bun + SQLite are
+installed. Windows is best supported via WSL2.</li>
+</ul>
+<p><strong>How the sidecar runs</strong></p>
+<ul>
+<li>The gateway writes a self-contained QMD home under
+<code>~/.agdi/agents/&lt;agentId&gt;/qmd/</code> (config + cache + sqlite DB).</li>
+<li>Collections are created via <code>qmd collection add</code> from <code>memory.qmd.paths</code>
+(plus default workspace memory files), then <code>qmd update</code> + <code>qmd embed</code> run
+on boot and on a configurable interval (<code>memory.qmd.update.interval</code>,
+default 5 m).</li>
+<li>The gateway now initializes the QMD manager on startup, so periodic update
+timers are armed even before the first <code>memory_search</code> call.</li>
+<li>Boot refresh now runs in the background by default so chat startup is not
+blocked; set <code>memory.qmd.update.waitForBootSync = true</code> to keep the previous
+blocking behavior.</li>
+<li>Searches run via <code>memory.qmd.searchMode</code> (default <code>qmd search --json</code>; also
+supports <code>vsearch</code> and <code>query</code>). If the selected mode rejects flags on your
+QMD build, AGDI retries with <code>qmd query</code>. If QMD fails or the binary is
+missing, AGDI automatically falls back to the builtin SQLite manager so
+memory tools keep working.</li>
+<li>AGDI does not expose QMD embed batch-size tuning today; batch behavior is
+controlled by QMD itself.</li>
+<li><strong>First search may be slow</strong>: QMD may download local GGUF models (reranker/query
+expansion) on the first <code>qmd query</code> run.<ul>
+<li><p>AGDI sets <code>XDG_CONFIG_HOME</code>/<code>XDG_CACHE_HOME</code> automatically when it runs QMD.</p>
+</li>
+<li><p>If you want to pre-download models manually (and warm the same index AGDI
+uses), run a one-off query with the agent’s XDG dirs.</p>
+<p>AGDI’s QMD state lives under your <strong>state dir</strong> (defaults to <code>~/.agdi</code>).
+You can point <code>qmd</code> at the exact same index by exporting the same XDG vars
+AGDI uses:</p>
+<pre><code class="language-bash"># Pick the same state dir AGDI uses
+STATE_DIR=&quot;${AGDI_STATE_DIR:-$HOME/.agdi}&quot;
+
+export XDG_CONFIG_HOME=&quot;$STATE_DIR/agents/main/qmd/xdg-config&quot;
+export XDG_CACHE_HOME=&quot;$STATE_DIR/agents/main/qmd/xdg-cache&quot;
+
+# (Optional) force an index refresh + embeddings
+qmd update
+qmd embed
+
+# Warm up / trigger first-time model downloads
+qmd query &quot;test&quot; -c memory-root --json &gt;/dev/null 2&gt;&amp;1
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Config surface (<code>memory.qmd.*</code>)</strong></p>
+<ul>
+<li><code>command</code> (default <code>qmd</code>): override the executable path.</li>
+<li><code>searchMode</code> (default <code>search</code>): pick which QMD command backs
+<code>memory_search</code> (<code>search</code>, <code>vsearch</code>, <code>query</code>).</li>
+<li><code>includeDefaultMemory</code> (default <code>true</code>): auto-index <code>MEMORY.md</code> + <code>memory/**/*.md</code>.</li>
+<li><code>paths[]</code>: add extra directories/files (<code>path</code>, optional <code>pattern</code>, optional
+stable <code>name</code>).</li>
+<li><code>sessions</code>: opt into session JSONL indexing (<code>enabled</code>, <code>retentionDays</code>,
+<code>exportDir</code>).</li>
+<li><code>update</code>: controls refresh cadence and maintenance execution:
+(<code>interval</code>, <code>debounceMs</code>, <code>onBoot</code>, <code>waitForBootSync</code>, <code>embedInterval</code>,
+<code>commandTimeoutMs</code>, <code>updateTimeoutMs</code>, <code>embedTimeoutMs</code>).</li>
+<li><code>limits</code>: clamp recall payload (<code>maxResults</code>, <code>maxSnippetChars</code>,
+<code>maxInjectedChars</code>, <code>timeoutMs</code>).</li>
+<li><code>scope</code>: same schema as <a href="/docs/gateway/configuration#session"><code>session.sendPolicy</code></a>.
+Default is DM-only (<code>deny</code> all, <code>allow</code> direct chats); loosen it to surface QMD
+hits in groups/channels.<ul>
+<li><code>match.keyPrefix</code> matches the <strong>normalized</strong> session key (lowercased, with any
+leading <code>agent:&lt;id&gt;:</code> stripped). Example: <code>discord:channel:</code>.</li>
+<li><code>match.rawKeyPrefix</code> matches the <strong>raw</strong> session key (lowercased), including
+<code>agent:&lt;id&gt;:</code>. Example: <code>agent:main:discord:</code>.</li>
+<li>Legacy: <code>match.keyPrefix: &quot;agent:...&quot;</code> is still treated as a raw-key prefix,
+but prefer <code>rawKeyPrefix</code> for clarity.</li>
+</ul>
+</li>
+<li>When <code>scope</code> denies a search, AGDI logs a warning with the derived
+<code>channel</code>/<code>chatType</code> so empty results are easier to debug.</li>
+<li>Snippets sourced outside the workspace show up as
+<code>qmd/&lt;collection&gt;/&lt;relative-path&gt;</code> in <code>memory_search</code> results; <code>memory_get</code>
+understands that prefix and reads from the configured QMD collection root.</li>
+<li>When <code>memory.qmd.sessions.enabled = true</code>, AGDI exports sanitized session
+transcripts (User/Assistant turns) into a dedicated QMD collection under
+<code>~/.agdi/agents/&lt;id&gt;/qmd/sessions/</code>, so <code>memory_search</code> can recall recent
+conversations without touching the builtin SQLite index.</li>
+<li><code>memory_search</code> snippets now include a <code>Source: &lt;path#line&gt;</code> footer when
+<code>memory.citations</code> is <code>auto</code>/<code>on</code>; set <code>memory.citations = &quot;off&quot;</code> to keep
+the path metadata internal (the agent still receives the path for
+<code>memory_get</code>, but the snippet text omits the footer and the system prompt
+warns the agent not to cite it).</li>
+</ul>
+<p><strong>Example</strong></p>
+<pre><code class="language-json5">memory: {
+  backend: &quot;qmd&quot;,
+  citations: &quot;auto&quot;,
+  qmd: {
+    includeDefaultMemory: true,
+    update: { interval: &quot;5m&quot;, debounceMs: 15000 },
+    limits: { maxResults: 6, timeoutMs: 4000 },
+    scope: {
+      default: &quot;deny&quot;,
+      rules: [
+        { action: &quot;allow&quot;, match: { chatType: &quot;direct&quot; } },
+        // Normalized session-key prefix (strips `agent:&lt;id&gt;:`).
+        { action: &quot;deny&quot;, match: { keyPrefix: &quot;discord:channel:&quot; } },
+        // Raw session-key prefix (includes `agent:&lt;id&gt;:`).
+        { action: &quot;deny&quot;, match: { rawKeyPrefix: &quot;agent:main:discord:&quot; } },
+      ]
+    },
+    paths: [
+      { name: &quot;docs&quot;, path: &quot;~/notes&quot;, pattern: &quot;**/*.md&quot; }
+    ]
+  }
+}
+</code></pre>
+<p><strong>Citations &amp; fallback</strong></p>
+<ul>
+<li><code>memory.citations</code> applies regardless of backend (<code>auto</code>/<code>on</code>/<code>off</code>).</li>
+<li>When <code>qmd</code> runs, we tag <code>status().backend = &quot;qmd&quot;</code> so diagnostics show which
+engine served the results. If the QMD subprocess exits or JSON output can’t be
+parsed, the search manager logs a warning and returns the builtin provider
+(existing Markdown embeddings) until QMD recovers.</li>
+</ul>
+<h3>Additional memory paths</h3>
+<p>If you want to index Markdown files outside the default workspace layout, add
+explicit paths:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      extraPaths: [&quot;../team-docs&quot;, &quot;/srv/shared-notes/overview.md&quot;]
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Paths can be absolute or workspace-relative.</li>
+<li>Directories are scanned recursively for <code>.md</code> files.</li>
+<li>Only Markdown files are indexed.</li>
+<li>Symlinks are ignored (files or directories).</li>
+</ul>
+<h3>Gemini embeddings (native)</h3>
+<p>Set the provider to <code>gemini</code> to use the Gemini embeddings API directly:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      provider: &quot;gemini&quot;,
+      model: &quot;gemini-embedding-001&quot;,
+      remote: {
+        apiKey: &quot;YOUR_GEMINI_API_KEY&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>remote.baseUrl</code> is optional (defaults to the Gemini API base URL).</li>
+<li><code>remote.headers</code> lets you add extra headers if needed.</li>
+<li>Default model: <code>gemini-embedding-001</code>.</li>
+</ul>
+<p>If you want to use a <strong>custom OpenAI-compatible endpoint</strong> (OpenRouter, vLLM, or a proxy),
+you can use the <code>remote</code> configuration with the OpenAI provider:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      provider: &quot;openai&quot;,
+      model: &quot;text-embedding-3-small&quot;,
+      remote: {
+        baseUrl: &quot;https://api.example.com/v1/&quot;,
+        apiKey: &quot;YOUR_OPENAI_COMPAT_API_KEY&quot;,
+        headers: { &quot;X-Custom-Header&quot;: &quot;value&quot; }
+      }
+    }
+  }
+}
+</code></pre>
+<p>If you don&#39;t want to set an API key, use <code>memorySearch.provider = &quot;local&quot;</code> or set
+<code>memorySearch.fallback = &quot;none&quot;</code>.</p>
+<p>Fallbacks:</p>
+<ul>
+<li><code>memorySearch.fallback</code> can be <code>openai</code>, <code>gemini</code>, <code>local</code>, or <code>none</code>.</li>
+<li>The fallback provider is only used when the primary embedding provider fails.</li>
+</ul>
+<p>Batch indexing (OpenAI + Gemini + Voyage):</p>
+<ul>
+<li>Disabled by default. Set <code>agents.defaults.memorySearch.remote.batch.enabled = true</code> to enable for large-corpus indexing (OpenAI, Gemini, and Voyage).</li>
+<li>Default behavior waits for batch completion; tune <code>remote.batch.wait</code>, <code>remote.batch.pollIntervalMs</code>, and <code>remote.batch.timeoutMinutes</code> if needed.</li>
+<li>Set <code>remote.batch.concurrency</code> to control how many batch jobs we submit in parallel (default: 2).</li>
+<li>Batch mode applies when <code>memorySearch.provider = &quot;openai&quot;</code> or <code>&quot;gemini&quot;</code> and uses the corresponding API key.</li>
+<li>Gemini batch jobs use the async embeddings batch endpoint and require Gemini Batch API availability.</li>
+</ul>
+<p>Why OpenAI batch is fast + cheap:</p>
+<ul>
+<li>For large backfills, OpenAI is typically the fastest option we support because we can submit many embedding requests in a single batch job and let OpenAI process them asynchronously.</li>
+<li>OpenAI offers discounted pricing for Batch API workloads, so large indexing runs are usually cheaper than sending the same requests synchronously.</li>
+<li>See the OpenAI Batch API docs and pricing for details:<ul>
+<li><a href="https://platform.openai.com/docs/api-reference/batch">https://platform.openai.com/docs/api-reference/batch</a></li>
+<li><a href="https://platform.openai.com/pricing">https://platform.openai.com/pricing</a></li>
+</ul>
+</li>
+</ul>
+<p>Config example:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      provider: &quot;openai&quot;,
+      model: &quot;text-embedding-3-small&quot;,
+      fallback: &quot;openai&quot;,
+      remote: {
+        batch: { enabled: true, concurrency: 2 }
+      },
+      sync: { watch: true }
+    }
+  }
+}
+</code></pre>
+<p>Tools:</p>
+<ul>
+<li><code>memory_search</code> — returns snippets with file + line ranges.</li>
+<li><code>memory_get</code> — read memory file content by path.</li>
+</ul>
+<p>Local mode:</p>
+<ul>
+<li>Set <code>agents.defaults.memorySearch.provider = &quot;local&quot;</code>.</li>
+<li>Provide <code>agents.defaults.memorySearch.local.modelPath</code> (GGUF or <code>hf:</code> URI).</li>
+<li>Optional: set <code>agents.defaults.memorySearch.fallback = &quot;none&quot;</code> to avoid remote fallback.</li>
+</ul>
+<h3>How the memory tools work</h3>
+<ul>
+<li><code>memory_search</code> semantically searches Markdown chunks (~400 token target, 80-token overlap) from <code>MEMORY.md</code> + <code>memory/**/*.md</code>. It returns snippet text (capped ~700 chars), file path, line range, score, provider/model, and whether we fell back from local → remote embeddings. No full file payload is returned.</li>
+<li><code>memory_get</code> reads a specific memory Markdown file (workspace-relative), optionally from a starting line and for N lines. Paths outside <code>MEMORY.md</code> / <code>memory/</code> are rejected.</li>
+<li>Both tools are enabled only when <code>memorySearch.enabled</code> resolves true for the agent.</li>
+</ul>
+<h3>What gets indexed (and when)</h3>
+<ul>
+<li>File type: Markdown only (<code>MEMORY.md</code>, <code>memory/**/*.md</code>).</li>
+<li>Index storage: per-agent SQLite at <code>~/.agdi/memory/&lt;agentId&gt;.sqlite</code> (configurable via <code>agents.defaults.memorySearch.store.path</code>, supports <code>{agentId}</code> token).</li>
+<li>Freshness: watcher on <code>MEMORY.md</code> + <code>memory/</code> marks the index dirty (debounce 1.5s). Sync is scheduled on session start, on search, or on an interval and runs asynchronously. Session transcripts use delta thresholds to trigger background sync.</li>
+<li>Reindex triggers: the index stores the embedding <strong>provider/model + endpoint fingerprint + chunking params</strong>. If any of those change, AGDI automatically resets and reindexes the entire store.</li>
+</ul>
+<h3>Hybrid search (BM25 + vector)</h3>
+<p>When enabled, AGDI combines:</p>
+<ul>
+<li><strong>Vector similarity</strong> (semantic match, wording can differ)</li>
+<li><strong>BM25 keyword relevance</strong> (exact tokens like IDs, env vars, code symbols)</li>
+</ul>
+<p>If full-text search is unavailable on your platform, AGDI falls back to vector-only search.</p>
+<h4>Why hybrid?</h4>
+<p>Vector search is great at “this means the same thing”:</p>
+<ul>
+<li>“Mac Studio gateway host” vs “the machine running the gateway”</li>
+<li>“debounce file updates” vs “avoid indexing on every write”</li>
+</ul>
+<p>But it can be weak at exact, high-signal tokens:</p>
+<ul>
+<li>IDs (<code>a828e60</code>, <code>b3b9895a…</code>)</li>
+<li>code symbols (<code>memorySearch.query.hybrid</code>)</li>
+<li>error strings (“sqlite-vec unavailable”)</li>
+</ul>
+<p>BM25 (full-text) is the opposite: strong at exact tokens, weaker at paraphrases.
+Hybrid search is the pragmatic middle ground: <strong>use both retrieval signals</strong> so you get
+good results for both “natural language” queries and “needle in a haystack” queries.</p>
+<h4>How we merge results (the current design)</h4>
+<p>Implementation sketch:</p>
+<ol>
+<li>Retrieve a candidate pool from both sides:</li>
+</ol>
+<ul>
+<li><strong>Vector</strong>: top <code>maxResults * candidateMultiplier</code> by cosine similarity.</li>
+<li><strong>BM25</strong>: top <code>maxResults * candidateMultiplier</code> by FTS5 BM25 rank (lower is better).</li>
+</ul>
+<ol start="2">
+<li>Convert BM25 rank into a 0..1-ish score:</li>
+</ol>
+<ul>
+<li><code>textScore = 1 / (1 + max(0, bm25Rank))</code></li>
+</ul>
+<ol start="3">
+<li>Union candidates by chunk id and compute a weighted score:</li>
+</ol>
+<ul>
+<li><code>finalScore = vectorWeight * vectorScore + textWeight * textScore</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>vectorWeight</code> + <code>textWeight</code> is normalized to 1.0 in config resolution, so weights behave as percentages.</li>
+<li>If embeddings are unavailable (or the provider returns a zero-vector), we still run BM25 and return keyword matches.</li>
+<li>If FTS5 can’t be created, we keep vector-only search (no hard failure).</li>
+</ul>
+<p>This isn’t “IR-theory perfect”, but it’s simple, fast, and tends to improve recall/precision on real notes.
+If we want to get fancier later, common next steps are Reciprocal Rank Fusion (RRF) or score normalization
+(min/max or z-score) before mixing.</p>
+<p>Config:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      query: {
+        hybrid: {
+          enabled: true,
+          vectorWeight: 0.7,
+          textWeight: 0.3,
+          candidateMultiplier: 4
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Embedding cache</h3>
+<p>AGDI can cache <strong>chunk embeddings</strong> in SQLite so reindexing and frequent updates (especially session transcripts) don&#39;t re-embed unchanged text.</p>
+<p>Config:</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      cache: {
+        enabled: true,
+        maxEntries: 50000
+      }
+    }
+  }
+}
+</code></pre>
+<h3>Session memory search (experimental)</h3>
+<p>You can optionally index <strong>session transcripts</strong> and surface them via <code>memory_search</code>.
+This is gated behind an experimental flag.</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      experimental: { sessionMemory: true },
+      sources: [&quot;memory&quot;, &quot;sessions&quot;]
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Session indexing is <strong>opt-in</strong> (off by default).</li>
+<li>Session updates are debounced and <strong>indexed asynchronously</strong> once they cross delta thresholds (best-effort).</li>
+<li><code>memory_search</code> never blocks on indexing; results can be slightly stale until background sync finishes.</li>
+<li>Results still include snippets only; <code>memory_get</code> remains limited to memory files.</li>
+<li>Session indexing is isolated per agent (only that agent’s session logs are indexed).</li>
+<li>Session logs live on disk (<code>~/.agdi/agents/&lt;agentId&gt;/sessions/*.jsonl</code>). Any process/user with filesystem access can read them, so treat disk access as the trust boundary. For stricter isolation, run agents under separate OS users or hosts.</li>
+</ul>
+<p>Delta thresholds (defaults shown):</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      sync: {
+        sessions: {
+          deltaBytes: 100000,   // ~100 KB
+          deltaMessages: 50     // JSONL lines
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h3>SQLite vector acceleration (sqlite-vec)</h3>
+<p>When the sqlite-vec extension is available, AGDI stores embeddings in a
+SQLite virtual table (<code>vec0</code>) and performs vector distance queries in the
+database. This keeps search fast without loading every embedding into JS.</p>
+<p>Configuration (optional):</p>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      store: {
+        vector: {
+          enabled: true,
+          extensionPath: &quot;/path/to/sqlite-vec&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>enabled</code> defaults to true; when disabled, search falls back to in-process
+cosine similarity over stored embeddings.</li>
+<li>If the sqlite-vec extension is missing or fails to load, AGDI logs the
+error and continues with the JS fallback (no vector table).</li>
+<li><code>extensionPath</code> overrides the bundled sqlite-vec path (useful for custom builds
+or non-standard install locations).</li>
+</ul>
+<h3>Local embedding auto-download</h3>
+<ul>
+<li>Default local embedding model: <code>hf:ggml-org/embeddinggemma-300m-qat-q8_0-GGUF/embeddinggemma-300m-qat-Q8_0.gguf</code> (~0.6 GB).</li>
+<li>When <code>memorySearch.provider = &quot;local&quot;</code>, <code>node-llama-cpp</code> resolves <code>modelPath</code>; if the GGUF is missing it <strong>auto-downloads</strong> to the cache (or <code>local.modelCacheDir</code> if set), then loads it. Downloads resume on retry.</li>
+<li>Native build requirement: run <code>pnpm approve-builds</code>, pick <code>node-llama-cpp</code>, then <code>pnpm rebuild node-llama-cpp</code>.</li>
+<li>Fallback: if local setup fails and <code>memorySearch.fallback = &quot;openai&quot;</code>, we automatically switch to remote embeddings (<code>openai/text-embedding-3-small</code> unless overridden) and record the reason.</li>
+</ul>
+<h3>Custom OpenAI-compatible endpoint example</h3>
+<pre><code class="language-json5">agents: {
+  defaults: {
+    memorySearch: {
+      provider: &quot;openai&quot;,
+      model: &quot;text-embedding-3-small&quot;,
+      remote: {
+        baseUrl: &quot;https://api.example.com/v1/&quot;,
+        apiKey: &quot;YOUR_REMOTE_API_KEY&quot;,
+        headers: {
+          &quot;X-Organization&quot;: &quot;org-id&quot;,
+          &quot;X-Project&quot;: &quot;project-id&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>remote.*</code> takes precedence over <code>models.providers.openai.*</code>.</li>
+<li><code>remote.headers</code> merge with OpenAI headers; remote wins on key conflicts. Omit <code>remote.headers</code> to use the OpenAI defaults.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

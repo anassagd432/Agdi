@@ -1,28 +1,28 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "OpenClaw",
-  "description": "Self-hosted gateway that connects WhatsApp, Telegram, Discord, iMessage, and more to AI coding agents. Run a single Gateway process on your own machine and message your AI assistant from anywhere.",
+  "name": "AGDI",
+  "description": "AGDI is the first autonomous AI agent built to use computers just like you do. Voice control, native app interaction, and workflow automation.",
   "theme": "mint",
   "icons": {
     "library": "lucide"
   },
   "logo": {
-    "light": "/assets/pixel-lobster.svg",
-    "dark": "/assets/pixel-lobster.svg"
+    "light": "/assets/agdi-logo.svg",
+    "dark": "/assets/agdi-logo.svg"
   },
   "fonts": {
     "body": {
-      "family": "Fragment Mono"
+      "family": "Outfit"
     },
     "heading": {
-      "family": "DM Sans"
+      "family": "Outfit"
     }
   },
-  "favicon": "/assets/pixel-lobster.svg",
+  "favicon": "/assets/agdi-logo.svg",
   "colors": {
-    "primary": "#FF5A36",
-    "dark": "#FF5A36",
-    "light": "#FF8A6B"
+    "primary": "#00d4ff",
+    "dark": "#00d4ff",
+    "light": "#00d4ff"
   },
   "styling": {
     "codeblocks": {
@@ -36,12 +36,12 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/openclaw/openclaw",
+        "href": "https://github.com/agdi/agdi",
         "icon": "github"
       },
       {
         "label": "Releases",
-        "href": "https://github.com/openclaw/openclaw/releases",
+        "href": "https://github.com/agdi/agdi/releases",
         "icon": "package"
       }
     ]
@@ -954,6 +954,40 @@
                   "concepts/retry",
                   "concepts/queue"
                 ]
+              }
+            ]
+          },
+          {
+            "tab": "Autonomous",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": ["autonomous/index"]
+              },
+              {
+                "group": "Device Control",
+                "pages": ["autonomous/device-control"]
+              },
+              {
+                "group": "Security Suite",
+                "pages": [
+                  "autonomous/security/index",
+                  "autonomous/security/network-recon",
+                  "autonomous/security/web-scanner",
+                  "autonomous/security/wifi",
+                  "autonomous/security/crypto",
+                  "autonomous/security/exploits",
+                  "autonomous/security/packets",
+                  "autonomous/security/kali"
+                ]
+              },
+              {
+                "group": "Automation",
+                "pages": ["autonomous/workflows", "autonomous/delegation"]
+              },
+              {
+                "group": "Security Hardening",
+                "pages": ["autonomous/security-hardening"]
               }
             ]
           },

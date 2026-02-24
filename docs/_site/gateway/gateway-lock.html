@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Lock — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="active" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway lock</h1>
+<p>Last updated: 2025-12-11</p>
+<h2>Why</h2>
+<ul>
+<li>Ensure only one gateway instance runs per base port on the same host; additional gateways must use isolated profiles and unique ports.</li>
+<li>Survive crashes/SIGKILL without leaving stale lock files.</li>
+<li>Fail fast with a clear error when the control port is already occupied.</li>
+</ul>
+<h2>Mechanism</h2>
+<ul>
+<li>The gateway binds the WebSocket listener (default <code>ws://127.0.0.1:18789</code>) immediately on startup using an exclusive TCP listener.</li>
+<li>If the bind fails with <code>EADDRINUSE</code>, startup throws <code>GatewayLockError(&quot;another gateway instance is already listening on ws://127.0.0.1:&lt;port&gt;&quot;)</code>.</li>
+<li>The OS releases the listener automatically on any process exit, including crashes and SIGKILL—no separate lock file or cleanup step is needed.</li>
+<li>On shutdown the gateway closes the WebSocket server and underlying HTTP server to free the port promptly.</li>
+</ul>
+<h2>Error surface</h2>
+<ul>
+<li>If another process holds the port, startup throws <code>GatewayLockError(&quot;another gateway instance is already listening on ws://127.0.0.1:&lt;port&gt;&quot;)</code>.</li>
+<li>Other bind failures surface as <code>GatewayLockError(&quot;failed to bind gateway socket on ws://127.0.0.1:&lt;port&gt;: …&quot;)</code>.</li>
+</ul>
+<h2>Operational notes</h2>
+<ul>
+<li>If the port is occupied by <em>another</em> process, the error is the same; free the port or choose another with <code>agdi gateway --port &lt;port&gt;</code>.</li>
+<li>The macOS app still maintains its own lightweight PID guard before spawning the gateway; the runtime lock is enforced by the WebSocket bind.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

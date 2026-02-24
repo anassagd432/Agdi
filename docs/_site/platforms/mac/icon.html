@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Bar Icon — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="active" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Menu Bar Icon States</h1>
+<p>Author: steipete · Updated: 2025-12-06 · Scope: macOS app (<code>apps/macos</code>)</p>
+<ul>
+<li><strong>Idle:</strong> Normal icon animation (blink, occasional wiggle).</li>
+<li><strong>Paused:</strong> Status item uses <code>appearsDisabled</code>; no motion.</li>
+<li><strong>Voice trigger (big ears):</strong> Voice wake detector calls <code>AppState.triggerVoiceEars(ttl: nil)</code> when the wake word is heard, keeping <code>earBoostActive=true</code> while the utterance is captured. Ears scale up (1.9x), get circular ear holes for readability, then drop via <code>stopVoiceEars()</code> after 1s of silence. Only fired from the in-app voice pipeline.</li>
+<li><strong>Working (agent running):</strong> <code>AppState.isWorking=true</code> drives a “tail/leg scurry” micro-motion: faster leg wiggle and slight offset while work is in-flight. Currently toggled around WebChat agent runs; add the same toggle around other long tasks when you wire them.</li>
+</ul>
+<p>Wiring points</p>
+<ul>
+<li>Voice wake: runtime/tester call <code>AppState.triggerVoiceEars(ttl: nil)</code> on trigger and <code>stopVoiceEars()</code> after 1s of silence to match the capture window.</li>
+<li>Agent activity: set <code>AppStateStore.shared.setWorking(true/false)</code> around work spans (already done in WebChat agent call). Keep spans short and reset in <code>defer</code> blocks to avoid stuck animations.</li>
+</ul>
+<p>Shapes &amp; sizes</p>
+<ul>
+<li>Base icon drawn in <code>CritterIconRenderer.makeIcon(blink:legWiggle:earWiggle:earScale:earHoles:)</code>.</li>
+<li>Ear scale defaults to <code>1.0</code>; voice boost sets <code>earScale=1.9</code> and toggles <code>earHoles=true</code> without changing overall frame (18×18 pt template image rendered into a 36×36 px Retina backing store).</li>
+<li>Scurry uses leg wiggle up to ~1.0 with a small horizontal jiggle; it’s additive to any existing idle wiggle.</li>
+</ul>
+<p>Behavioral notes</p>
+<ul>
+<li>No external CLI/broker toggle for ears/working; keep it internal to the app’s own signals to avoid accidental flapping.</li>
+<li>Keep TTLs short (&lt;10s) so the icon returns to baseline quickly if a job hangs.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

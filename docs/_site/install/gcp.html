@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GCP — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="active" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>AGDI on GCP Compute Engine (Docker, Production VPS Guide)</h1>
+<h2>Goal</h2>
+<p>Run a persistent AGDI Gateway on a GCP Compute Engine VM using Docker, with durable state, baked-in binaries, and safe restart behavior.</p>
+<p>If you want &quot;AGDI 24/7 for ~$5-12/mo&quot;, this is a reliable setup on Google Cloud.
+Pricing varies by machine type and region; pick the smallest VM that fits your workload and scale up if you hit OOMs.</p>
+<h2>What are we doing (simple terms)?</h2>
+<ul>
+<li>Create a GCP project and enable billing</li>
+<li>Create a Compute Engine VM</li>
+<li>Install Docker (isolated app runtime)</li>
+<li>Start the AGDI Gateway in Docker</li>
+<li>Persist <code>~/.agdi</code> + <code>~/.agdi/workspace</code> on the host (survives restarts/rebuilds)</li>
+<li>Access the Control UI from your laptop via an SSH tunnel</li>
+</ul>
+<p>The Gateway can be accessed via:</p>
+<ul>
+<li>SSH port forwarding from your laptop</li>
+<li>Direct port exposure if you manage firewalling and tokens yourself</li>
+</ul>
+<p>This guide uses Debian on GCP Compute Engine.
+Ubuntu also works; map packages accordingly.
+For the generic Docker flow, see <a href="/install/docker">Docker</a>.</p>
+<hr>
+<h2>Quick path (experienced operators)</h2>
+<ol>
+<li>Create GCP project + enable Compute Engine API</li>
+<li>Create Compute Engine VM (e2-small, Debian 12, 20GB)</li>
+<li>SSH into the VM</li>
+<li>Install Docker</li>
+<li>Clone AGDI repository</li>
+<li>Create persistent host directories</li>
+<li>Configure <code>.env</code> and <code>docker-compose.yml</code></li>
+<li>Bake required binaries, build, and launch</li>
+</ol>
+<hr>
+<h2>What you need</h2>
+<ul>
+<li>GCP account (free tier eligible for e2-micro)</li>
+<li>gcloud CLI installed (or use Cloud Console)</li>
+<li>SSH access from your laptop</li>
+<li>Basic comfort with SSH + copy/paste</li>
+<li>~20-30 minutes</li>
+<li>Docker and Docker Compose</li>
+<li>Model auth credentials</li>
+<li>Optional provider credentials<ul>
+<li>WhatsApp QR</li>
+<li>Telegram bot token</li>
+<li>Gmail OAuth</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>1) Install gcloud CLI (or use Console)</h2>
+<p><strong>Option A: gcloud CLI</strong> (recommended for automation)</p>
+<p>Install from <a href="https://cloud.google.com/sdk/docs/install">https://cloud.google.com/sdk/docs/install</a></p>
+<p>Initialize and authenticate:</p>
+<pre><code class="language-bash">gcloud init
+gcloud auth login
+</code></pre>
+<p><strong>Option B: Cloud Console</strong></p>
+<p>All steps can be done via the web UI at <a href="https://console.cloud.google.com">https://console.cloud.google.com</a></p>
+<hr>
+<h2>2) Create a GCP project</h2>
+<p><strong>CLI:</strong></p>
+<pre><code class="language-bash">gcloud projects create my-agdi-project --name=&quot;AGDI Gateway&quot;
+gcloud config set project my-agdi-project
+</code></pre>
+<p>Enable billing at <a href="https://console.cloud.google.com/billing">https://console.cloud.google.com/billing</a> (required for Compute Engine).</p>
+<p>Enable the Compute Engine API:</p>
+<pre><code class="language-bash">gcloud services enable compute.googleapis.com
+</code></pre>
+<p><strong>Console:</strong></p>
+<ol>
+<li>Go to IAM &amp; Admin &gt; Create Project</li>
+<li>Name it and create</li>
+<li>Enable billing for the project</li>
+<li>Navigate to APIs &amp; Services &gt; Enable APIs &gt; search &quot;Compute Engine API&quot; &gt; Enable</li>
+</ol>
+<hr>
+<h2>3) Create the VM</h2>
+<p><strong>Machine types:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Specs</th>
+<th>Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e2-small</td>
+<td>2 vCPU, 2GB RAM</td>
+<td>~$12/mo</td>
+<td>Recommended</td>
+</tr>
+<tr>
+<td>e2-micro</td>
+<td>2 vCPU (shared), 1GB RAM</td>
+<td>Free tier eligible</td>
+<td>May OOM under load</td>
+</tr>
+</tbody></table>
+<p><strong>CLI:</strong></p>
+<pre><code class="language-bash">gcloud compute instances create agdi-gateway \
+  --zone=us-central1-a \
+  --machine-type=e2-small \
+  --boot-disk-size=20GB \
+  --image-family=debian-12 \
+  --image-project=debian-cloud
+</code></pre>
+<p><strong>Console:</strong></p>
+<ol>
+<li>Go to Compute Engine &gt; VM instances &gt; Create instance</li>
+<li>Name: <code>agdi-gateway</code></li>
+<li>Region: <code>us-central1</code>, Zone: <code>us-central1-a</code></li>
+<li>Machine type: <code>e2-small</code></li>
+<li>Boot disk: Debian 12, 20GB</li>
+<li>Create</li>
+</ol>
+<hr>
+<h2>4) SSH into the VM</h2>
+<p><strong>CLI:</strong></p>
+<pre><code class="language-bash">gcloud compute ssh agdi-gateway --zone=us-central1-a
+</code></pre>
+<p><strong>Console:</strong></p>
+<p>Click the &quot;SSH&quot; button next to your VM in the Compute Engine dashboard.</p>
+<p>Note: SSH key propagation can take 1-2 minutes after VM creation. If connection is refused, wait and retry.</p>
+<hr>
+<h2>5) Install Docker (on the VM)</h2>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install -y git curl ca-certificates
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+</code></pre>
+<p>Log out and back in for the group change to take effect:</p>
+<pre><code class="language-bash">exit
+</code></pre>
+<p>Then SSH back in:</p>
+<pre><code class="language-bash">gcloud compute ssh agdi-gateway --zone=us-central1-a
+</code></pre>
+<p>Verify:</p>
+<pre><code class="language-bash">docker --version
+docker compose version
+</code></pre>
+<hr>
+<h2>6) Clone the AGDI repository</h2>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+</code></pre>
+<p>This guide assumes you will build a custom image to guarantee binary persistence.</p>
+<hr>
+<h2>7) Create persistent host directories</h2>
+<p>Docker containers are ephemeral.
+All long-lived state must live on the host.</p>
+<pre><code class="language-bash">mkdir -p ~/.agdi
+mkdir -p ~/.agdi/workspace
+</code></pre>
+<hr>
+<h2>8) Configure environment variables</h2>
+<p>Create <code>.env</code> in the repository root.</p>
+<pre><code class="language-bash">AGDI_IMAGE=agdi:latest
+AGDI_GATEWAY_TOKEN=change-me-now
+AGDI_GATEWAY_BIND=lan
+AGDI_GATEWAY_PORT=18789
+
+AGDI_CONFIG_DIR=/home/$USER/.agdi
+AGDI_WORKSPACE_DIR=/home/$USER/.agdi/workspace
+
+GOG_KEYRING_PASSWORD=change-me-now
+XDG_CONFIG_HOME=/home/node/.agdi
+</code></pre>
+<p>Generate strong secrets:</p>
+<pre><code class="language-bash">openssl rand -hex 32
+</code></pre>
+<p><strong>Do not commit this file.</strong></p>
+<hr>
+<h2>9) Docker Compose configuration</h2>
+<p>Create or update <code>docker-compose.yml</code>.</p>
+<pre><code class="language-yaml">services:
+  agdi-gateway:
+    image: ${AGDI_IMAGE}
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - HOME=/home/node
+      - NODE_ENV=production
+      - TERM=xterm-256color
+      - AGDI_GATEWAY_BIND=${AGDI_GATEWAY_BIND}
+      - AGDI_GATEWAY_PORT=${AGDI_GATEWAY_PORT}
+      - AGDI_GATEWAY_TOKEN=${AGDI_GATEWAY_TOKEN}
+      - GOG_KEYRING_PASSWORD=${GOG_KEYRING_PASSWORD}
+      - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
+      - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - ${AGDI_CONFIG_DIR}:/home/node/.agdi
+      - ${AGDI_WORKSPACE_DIR}:/home/node/.agdi/workspace
+    ports:
+      # Recommended: keep the Gateway loopback-only on the VM; access via SSH tunnel.
+      # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
+      - &quot;127.0.0.1:${AGDI_GATEWAY_PORT}:18789&quot;
+    command:
+      [
+        &quot;node&quot;,
+        &quot;dist/index.js&quot;,
+        &quot;gateway&quot;,
+        &quot;--bind&quot;,
+        &quot;${AGDI_GATEWAY_BIND}&quot;,
+        &quot;--port&quot;,
+        &quot;${AGDI_GATEWAY_PORT}&quot;,
+      ]
+</code></pre>
+<hr>
+<h2>10) Bake required binaries into the image (critical)</h2>
+<p>Installing binaries inside a running container is a trap.
+Anything installed at runtime will be lost on restart.</p>
+<p>All external binaries required by skills must be installed at image build time.</p>
+<p>The examples below show three common binaries only:</p>
+<ul>
+<li><code>gog</code> for Gmail access</li>
+<li><code>goplaces</code> for Google Places</li>
+<li><code>wacli</code> for WhatsApp</li>
+</ul>
+<p>These are examples, not a complete list.
+You may install as many binaries as needed using the same pattern.</p>
+<p>If you add new skills later that depend on additional binaries, you must:</p>
+<ol>
+<li>Update the Dockerfile</li>
+<li>Rebuild the image</li>
+<li>Restart the containers</li>
+</ol>
+<p><strong>Example Dockerfile</strong></p>
+<pre><code class="language-dockerfile">FROM node:22-bookworm
+
+RUN apt-get update &amp;&amp; apt-get install -y socat &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Example binary 1: Gmail CLI
+RUN curl -L https://github.com/steipete/gog/releases/latest/download/gog_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/gog
+
+# Example binary 2: Google Places CLI
+RUN curl -L https://github.com/steipete/goplaces/releases/latest/download/goplaces_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/goplaces
+
+# Example binary 3: WhatsApp CLI
+RUN curl -L https://github.com/steipete/wacli/releases/latest/download/wacli_Linux_x86_64.tar.gz \
+  | tar -xz -C /usr/local/bin &amp;&amp; chmod +x /usr/local/bin/wacli
+
+# Add more binaries below using the same pattern
+
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY ui/package.json ./ui/package.json
+COPY scripts ./scripts
+
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm build
+RUN pnpm ui:install
+RUN pnpm ui:build
+
+ENV NODE_ENV=production
+
+CMD [&quot;node&quot;,&quot;dist/index.js&quot;]
+</code></pre>
+<hr>
+<h2>11) Build and launch</h2>
+<pre><code class="language-bash">docker compose build
+docker compose up -d agdi-gateway
+</code></pre>
+<p>Verify binaries:</p>
+<pre><code class="language-bash">docker compose exec agdi-gateway which gog
+docker compose exec agdi-gateway which goplaces
+docker compose exec agdi-gateway which wacli
+</code></pre>
+<p>Expected output:</p>
+<pre><code>/usr/local/bin/gog
+/usr/local/bin/goplaces
+/usr/local/bin/wacli
+</code></pre>
+<hr>
+<h2>12) Verify Gateway</h2>
+<pre><code class="language-bash">docker compose logs -f agdi-gateway
+</code></pre>
+<p>Success:</p>
+<pre><code>[gateway] listening on ws://0.0.0.0:18789
+</code></pre>
+<hr>
+<h2>13) Access from your laptop</h2>
+<p>Create an SSH tunnel to forward the Gateway port:</p>
+<pre><code class="language-bash">gcloud compute ssh agdi-gateway --zone=us-central1-a -- -L 18789:127.0.0.1:18789
+</code></pre>
+<p>Open in your browser:</p>
+<p><code>http://127.0.0.1:18789/</code></p>
+<p>Paste your gateway token.</p>
+<hr>
+<h2>What persists where (source of truth)</h2>
+<p>AGDI runs in Docker, but Docker is not the source of truth.
+All long-lived state must survive restarts, rebuilds, and reboots.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Location</th>
+<th>Persistence mechanism</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gateway config</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>Includes <code>agdi.json</code>, tokens</td>
+</tr>
+<tr>
+<td>Model auth profiles</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>OAuth tokens, API keys</td>
+</tr>
+<tr>
+<td>Skill configs</td>
+<td><code>/home/node/.agdi/skills/</code></td>
+<td>Host volume mount</td>
+<td>Skill-level state</td>
+</tr>
+<tr>
+<td>Agent workspace</td>
+<td><code>/home/node/.agdi/workspace/</code></td>
+<td>Host volume mount</td>
+<td>Code and agent artifacts</td>
+</tr>
+<tr>
+<td>WhatsApp session</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume mount</td>
+<td>Preserves QR login</td>
+</tr>
+<tr>
+<td>Gmail keyring</td>
+<td><code>/home/node/.agdi/</code></td>
+<td>Host volume + password</td>
+<td>Requires <code>GOG_KEYRING_PASSWORD</code></td>
+</tr>
+<tr>
+<td>External binaries</td>
+<td><code>/usr/local/bin/</code></td>
+<td>Docker image</td>
+<td>Must be baked at build time</td>
+</tr>
+<tr>
+<td>Node runtime</td>
+<td>Container filesystem</td>
+<td>Docker image</td>
+<td>Rebuilt every image build</td>
+</tr>
+<tr>
+<td>OS packages</td>
+<td>Container filesystem</td>
+<td>Docker image</td>
+<td>Do not install at runtime</td>
+</tr>
+<tr>
+<td>Docker container</td>
+<td>Ephemeral</td>
+<td>Restartable</td>
+<td>Safe to destroy</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Updates</h2>
+<p>To update AGDI on the VM:</p>
+<pre><code class="language-bash">cd ~/agdi
+git pull
+docker compose build
+docker compose up -d
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<p><strong>SSH connection refused</strong></p>
+<p>SSH key propagation can take 1-2 minutes after VM creation. Wait and retry.</p>
+<p><strong>OS Login issues</strong></p>
+<p>Check your OS Login profile:</p>
+<pre><code class="language-bash">gcloud compute os-login describe-profile
+</code></pre>
+<p>Ensure your account has the required IAM permissions (Compute OS Login or Compute OS Admin Login).</p>
+<p><strong>Out of memory (OOM)</strong></p>
+<p>If using e2-micro and hitting OOM, upgrade to e2-small or e2-medium:</p>
+<pre><code class="language-bash"># Stop the VM first
+gcloud compute instances stop agdi-gateway --zone=us-central1-a
+
+# Change machine type
+gcloud compute instances set-machine-type agdi-gateway \
+  --zone=us-central1-a \
+  --machine-type=e2-small
+
+# Start the VM
+gcloud compute instances start agdi-gateway --zone=us-central1-a
+</code></pre>
+<hr>
+<h2>Service accounts (security best practice)</h2>
+<p>For personal use, your default user account works fine.</p>
+<p>For automation or CI/CD pipelines, create a dedicated service account with minimal permissions:</p>
+<ol>
+<li><p>Create a service account:</p>
+<pre><code class="language-bash">gcloud iam service-accounts create agdi-deploy \
+  --display-name=&quot;AGDI Deployment&quot;
+</code></pre>
+</li>
+<li><p>Grant Compute Instance Admin role (or narrower custom role):</p>
+<pre><code class="language-bash">gcloud projects add-iam-policy-binding my-agdi-project \
+  --member=&quot;serviceAccount:agdi-deploy@my-agdi-project.iam.gserviceaccount.com&quot; \
+  --role=&quot;roles/compute.instanceAdmin.v1&quot;
+</code></pre>
+</li>
+</ol>
+<p>Avoid using the Owner role for automation. Use the principle of least privilege.</p>
+<p>See <a href="https://cloud.google.com/iam/docs/understanding-roles">https://cloud.google.com/iam/docs/understanding-roles</a> for IAM role details.</p>
+<hr>
+<h2>Next steps</h2>
+<ul>
+<li>Set up messaging channels: <a href="/channels">Channels</a></li>
+<li>Pair local devices as nodes: <a href="/nodes">Nodes</a></li>
+<li>Configure the Gateway: <a href="/gateway/configuration">Gateway configuration</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

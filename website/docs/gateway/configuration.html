@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="active" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Configuration</h1>
+<p>AGDI reads an optional <Tooltip tip="JSON5 supports comments and trailing commas"><strong>JSON5</strong></Tooltip> config from <code>~/.agdi/agdi.json</code>.</p>
+<p>If the file is missing, AGDI uses safe defaults. Common reasons to add a config:</p>
+<ul>
+<li>Connect channels and control who can message the bot</li>
+<li>Set models, tools, sandboxing, or automation (cron, hooks)</li>
+<li>Tune sessions, media, networking, or UI</li>
+</ul>
+<p>See the <a href="/docs/gateway/configuration-reference">full reference</a> for every available field.</p>
+<p><strong>New to configuration?</strong> Start with <code>agdi onboard</code> for interactive setup, or check out the <a href="/docs/gateway/configuration-examples">Configuration Examples</a> guide for complete copy-paste configs.</p>
+<h2>Minimal config</h2>
+<pre><code class="language-json5">// ~/.agdi/agdi.json
+{
+  agents: { defaults: { workspace: &quot;~/.agdi/workspace&quot; } },
+  channels: { whatsapp: { allowFrom: [&quot;+15555550123&quot;] } },
+}
+</code></pre>
+<h2>Editing config</h2>
+<pre><code>```bash
+agdi onboard       # full setup wizard
+agdi configure     # config wizard
+```
+
+
+```bash
+agdi config get agents.defaults.workspace
+agdi config set agents.defaults.heartbeat.every &quot;2h&quot;
+agdi config unset tools.web.search.apiKey
+```
+
+
+Open [http://127.0.0.1:18789](http://127.0.0.1:18789) and use the **Config** tab.
+The Control UI renders a form from the config schema, with a **Raw JSON** editor as an escape hatch.
+
+
+Edit `~/.agdi/agdi.json` directly. The Gateway watches the file and applies changes automatically (see [hot reload](#config-hot-reload)).
+</code></pre>
+<h2>Strict validation</h2>
+<p>AGDI only accepts configurations that fully match the schema. Unknown keys, malformed types, or invalid values cause the Gateway to <strong>refuse to start</strong>. The only root-level exception is <code>$schema</code> (string), so editors can attach JSON Schema metadata.</p>
+<p>When validation fails:</p>
+<ul>
+<li>The Gateway does not boot</li>
+<li>Only diagnostic commands work (<code>agdi doctor</code>, <code>agdi logs</code>, <code>agdi health</code>, <code>agdi status</code>)</li>
+<li>Run <code>agdi doctor</code> to see exact issues</li>
+<li>Run <code>agdi doctor --fix</code> (or <code>--yes</code>) to apply repairs</li>
+</ul>
+<h2>Common tasks</h2>
+<pre><code>Each channel has its own config section under `channels.&lt;provider&gt;`. See the dedicated channel page for setup steps:
+
+- [WhatsApp](/channels/whatsapp) — `channels.whatsapp`
+- [Telegram](/channels/telegram) — `channels.telegram`
+- [Discord](/channels/discord) — `channels.discord`
+- [Slack](/channels/slack) — `channels.slack`
+- [Signal](/channels/signal) — `channels.signal`
+- [iMessage](/channels/imessage) — `channels.imessage`
+- [Google Chat](/channels/googlechat) — `channels.googlechat`
+- [Mattermost](/channels/mattermost) — `channels.mattermost`
+- [MS Teams](/channels/msteams) — `channels.msteams`
+
+All channels share the same DM policy pattern:
+
+```json5
+{
+  channels: {
+    telegram: {
+      enabled: true,
+      botToken: &quot;123:abc&quot;,
+      dmPolicy: &quot;pairing&quot;,   // pairing | allowlist | open | disabled
+      allowFrom: [&quot;tg:123&quot;], // only for allowlist/open
+    },
+  },
+}
+```
+
+
+
+
+Set the primary model and optional fallbacks:
+
+```json5
+{
+  agents: {
+    defaults: {
+      model: {
+        primary: &quot;anthropic/claude-sonnet-4-5&quot;,
+        fallbacks: [&quot;openai/gpt-5.2&quot;],
+      },
+      models: {
+        &quot;anthropic/claude-sonnet-4-5&quot;: { alias: &quot;Sonnet&quot; },
+        &quot;openai/gpt-5.2&quot;: { alias: &quot;GPT&quot; },
+      },
+    },
+  },
+}
+```
+
+- `agents.defaults.models` defines the model catalog and acts as the allowlist for `/model`.
+- Model refs use `provider/model` format (e.g. `anthropic/claude-opus-4-6`).
+- See [Models CLI](/concepts/models) for switching models in chat and [Model Failover](/concepts/model-failover) for auth rotation and fallback behavior.
+- For custom/self-hosted providers, see [Custom providers](/gateway/configuration-reference#custom-providers-and-base-urls) in the reference.
+
+
+
+
+DM access is controlled per channel via `dmPolicy`:
+
+- `&quot;pairing&quot;` (default): unknown senders get a one-time pairing code to approve
+- `&quot;allowlist&quot;`: only senders in `allowFrom` (or the paired allow store)
+- `&quot;open&quot;`: allow all inbound DMs (requires `allowFrom: [&quot;*&quot;]`)
+- `&quot;disabled&quot;`: ignore all DMs
+
+For groups, use `groupPolicy` + `groupAllowFrom` or channel-specific allowlists.
+
+See the [full reference](/gateway/configuration-reference#dm-and-group-access) for per-channel details.
+
+
+
+
+Group messages default to **require mention**. Configure patterns per agent:
+
+```json5
+{
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        groupChat: {
+          mentionPatterns: [&quot;@agdi&quot;, &quot;agdi&quot;],
+        },
+      },
+    ],
+  },
+  channels: {
+    whatsapp: {
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+  },
+}
+```
+
+- **Metadata mentions**: native @-mentions (WhatsApp tap-to-mention, Telegram @bot, etc.)
+- **Text patterns**: regex patterns in `mentionPatterns`
+- See [full reference](/gateway/configuration-reference#group-chat-mention-gating) for per-channel overrides and self-chat mode.
+
+
+
+
+Sessions control conversation continuity and isolation:
+
+```json5
+{
+  session: {
+    dmScope: &quot;per-channel-peer&quot;,  // recommended for multi-user
+    reset: {
+      mode: &quot;daily&quot;,
+      atHour: 4,
+      idleMinutes: 120,
+    },
+  },
+}
+```
+
+- `dmScope`: `main` (shared) | `per-peer` | `per-channel-peer` | `per-account-channel-peer`
+- See [Session Management](/concepts/session) for scoping, identity links, and send policy.
+- See [full reference](/gateway/configuration-reference#session) for all fields.
+
+
+
+
+Run agent sessions in isolated Docker containers:
+
+```json5
+{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;,  // off | non-main | all
+        scope: &quot;agent&quot;,    // session | agent | shared
+      },
+    },
+  },
+}
+```
+
+Build the image first: `scripts/sandbox-setup.sh`
+
+See [Sandboxing](/gateway/sandboxing) for the full guide and [full reference](/gateway/configuration-reference#sandbox) for all options.
+
+
+
+
+```json5
+{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;,
+        target: &quot;last&quot;,
+      },
+    },
+  },
+}
+```
+
+- `every`: duration string (`30m`, `2h`). Set `0m` to disable.
+- `target`: `last` | `whatsapp` | `telegram` | `discord` | `none`
+- See [Heartbeat](/gateway/heartbeat) for the full guide.
+
+
+
+
+```json5
+{
+  cron: {
+    enabled: true,
+    maxConcurrentRuns: 2,
+    sessionRetention: &quot;24h&quot;,
+  },
+}
+```
+
+See [Cron jobs](/automation/cron-jobs) for the feature overview and CLI examples.
+
+
+
+
+Enable HTTP webhook endpoints on the Gateway:
+
+```json5
+{
+  hooks: {
+    enabled: true,
+    token: &quot;shared-secret&quot;,
+    path: &quot;/hooks&quot;,
+    defaultSessionKey: &quot;hook:ingress&quot;,
+    allowRequestSessionKey: false,
+    allowedSessionKeyPrefixes: [&quot;hook:&quot;],
+    mappings: [
+      {
+        match: { path: &quot;gmail&quot; },
+        action: &quot;agent&quot;,
+        agentId: &quot;main&quot;,
+        deliver: true,
+      },
+    ],
+  },
+}
+```
+
+See [full reference](/gateway/configuration-reference#hooks) for all mapping options and Gmail integration.
+
+
+
+
+Run multiple isolated agents with separate workspaces and sessions:
+
+```json5
+{
+  agents: {
+    list: [
+      { id: &quot;home&quot;, default: true, workspace: &quot;~/.agdi/workspace-home&quot; },
+      { id: &quot;work&quot;, workspace: &quot;~/.agdi/workspace-work&quot; },
+    ],
+  },
+  bindings: [
+    { agentId: &quot;home&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;personal&quot; } },
+    { agentId: &quot;work&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;biz&quot; } },
+  ],
+}
+```
+
+See [Multi-Agent](/concepts/multi-agent) and [full reference](/gateway/configuration-reference#multi-agent-routing) for binding rules and per-agent access profiles.
+
+
+
+
+Use `$include` to organize large configs:
+
+```json5
+// ~/.agdi/agdi.json
+{
+  gateway: { port: 18789 },
+  agents: { $include: &quot;./agents.json5&quot; },
+  broadcast: {
+    $include: [&quot;./clients/a.json5&quot;, &quot;./clients/b.json5&quot;],
+  },
+}
+```
+
+- **Single file**: replaces the containing object
+- **Array of files**: deep-merged in order (later wins)
+- **Sibling keys**: merged after includes (override included values)
+- **Nested includes**: supported up to 10 levels deep
+- **Relative paths**: resolved relative to the including file
+- **Error handling**: clear errors for missing files, parse errors, and circular includes
+</code></pre>
+<h2>Config hot reload</h2>
+<p>The Gateway watches <code>~/.agdi/agdi.json</code> and applies changes automatically — no manual restart needed for most settings.</p>
+<h3>Reload modes</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>hybrid</code></strong> (default)</td>
+<td>Hot-applies safe changes instantly. Automatically restarts for critical ones.</td>
+</tr>
+<tr>
+<td><strong><code>hot</code></strong></td>
+<td>Hot-applies safe changes only. Logs a warning when a restart is needed — you handle it.</td>
+</tr>
+<tr>
+<td><strong><code>restart</code></strong></td>
+<td>Restarts the Gateway on any config change, safe or not.</td>
+</tr>
+<tr>
+<td><strong><code>off</code></strong></td>
+<td>Disables file watching. Changes take effect on the next manual restart.</td>
+</tr>
+</tbody></table>
+<pre><code class="language-json5">{
+  gateway: {
+    reload: { mode: &quot;hybrid&quot;, debounceMs: 300 },
+  },
+}
+</code></pre>
+<h3>What hot-applies vs what needs a restart</h3>
+<p>Most fields hot-apply without downtime. In <code>hybrid</code> mode, restart-required changes are handled automatically.</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Fields</th>
+<th>Restart needed?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Channels</td>
+<td><code>channels.*</code>, <code>web</code> (WhatsApp) — all built-in and extension channels</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Agent &amp; models</td>
+<td><code>agent</code>, <code>agents</code>, <code>models</code>, <code>routing</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Automation</td>
+<td><code>hooks</code>, <code>cron</code>, <code>agent.heartbeat</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Sessions &amp; messages</td>
+<td><code>session</code>, <code>messages</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Tools &amp; media</td>
+<td><code>tools</code>, <code>browser</code>, <code>skills</code>, <code>audio</code>, <code>talk</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>UI &amp; misc</td>
+<td><code>ui</code>, <code>logging</code>, <code>identity</code>, <code>bindings</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Gateway server</td>
+<td><code>gateway.*</code> (port, bind, auth, tailscale, TLS, HTTP)</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td><code>discovery</code>, <code>canvasHost</code>, <code>plugins</code></td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody></table>
+<p><code>gateway.reload</code> and <code>gateway.remote</code> are exceptions — changing them does <strong>not</strong> trigger a restart.</p>
+<h2>Config RPC (programmatic updates)</h2>
+<pre><code>Validates + writes the full config and restarts the Gateway in one step.
+
+
+`config.apply` replaces the **entire config**. Use `config.patch` for partial updates, or `agdi config set` for single keys.
+
+
+Params:
+
+- `raw` (string) — JSON5 payload for the entire config
+- `baseHash` (optional) — config hash from `config.get` (required when config exists)
+- `sessionKey` (optional) — session key for the post-restart wake-up ping
+- `note` (optional) — note for the restart sentinel
+- `restartDelayMs` (optional) — delay before restart (default 2000)
+
+```bash
+agdi gateway call config.get --params &#39;{}&#39;  # capture payload.hash
+agdi gateway call config.apply --params &#39;{
+  &quot;raw&quot;: &quot;{ agents: { defaults: { workspace: \&quot;~/.agdi/workspace\&quot; } } }&quot;,
+  &quot;baseHash&quot;: &quot;&lt;hash&gt;&quot;,
+  &quot;sessionKey&quot;: &quot;agent:main:whatsapp:dm:+15555550123&quot;
+}&#39;
+```
+
+
+
+
+Merges a partial update into the existing config (JSON merge patch semantics):
+
+- Objects merge recursively
+- `null` deletes a key
+- Arrays replace
+
+Params:
+
+- `raw` (string) — JSON5 with just the keys to change
+- `baseHash` (required) — config hash from `config.get`
+- `sessionKey`, `note`, `restartDelayMs` — same as `config.apply`
+
+```bash
+agdi gateway call config.patch --params &#39;{
+  &quot;raw&quot;: &quot;{ channels: { telegram: { groups: { \&quot;*\&quot;: { requireMention: false } } } } }&quot;,
+  &quot;baseHash&quot;: &quot;&lt;hash&gt;&quot;
+}&#39;
+```
+</code></pre>
+<h2>Environment variables</h2>
+<p>AGDI reads env vars from the parent process plus:</p>
+<ul>
+<li><code>.env</code> from the current working directory (if present)</li>
+<li><code>~/.agdi/.env</code> (global fallback)</li>
+</ul>
+<p>Neither file overrides existing env vars. You can also set inline env vars in config:</p>
+<pre><code class="language-json5">{
+  env: {
+    OPENROUTER_API_KEY: &quot;sk-or-...&quot;,
+    vars: { GROQ_API_KEY: &quot;gsk-...&quot; },
+  },
+}
+</code></pre>
+<p>  If enabled and expected keys aren&#39;t set, AGDI runs your login shell and imports only the missing keys:</p>
+<pre><code class="language-json5">{
+  env: {
+    shellEnv: { enabled: true, timeoutMs: 15000 },
+  },
+}
+</code></pre>
+<p>Env var equivalent: <code>AGDI_LOAD_SHELL_ENV=1</code></p>
+<p>  Reference env vars in any config string value with <code>${VAR_NAME}</code>:</p>
+<pre><code class="language-json5">{
+  gateway: { auth: { token: &quot;${AGDI_GATEWAY_TOKEN}&quot; } },
+  models: { providers: { custom: { apiKey: &quot;${CUSTOM_API_KEY}&quot; } } },
+}
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Only uppercase names matched: <code>[A-Z_][A-Z0-9_]*</code></li>
+<li>Missing/empty vars throw an error at load time</li>
+<li>Escape with <code>$${VAR}</code> for literal output</li>
+<li>Works inside <code>$include</code> files</li>
+<li>Inline substitution: <code>&quot;${BASE}/v1&quot;</code> → <code>&quot;https://api.example.com/v1&quot;</code></li>
+</ul>
+<p>See <a href="/docs/help/environment">Environment</a> for full precedence and sources.</p>
+<h2>Full reference</h2>
+<p>For the complete field-by-field reference, see <strong><a href="/docs/gateway/configuration-reference">Configuration Reference</a></strong>.</p>
+<hr>
+<p><em>Related: <a href="/docs/gateway/configuration-examples">Configuration Examples</a> · <a href="/docs/gateway/configuration-reference">Configuration Reference</a> · <a href="/docs/gateway/doctor">Doctor</a></em></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

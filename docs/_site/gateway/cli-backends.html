@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLI Backends — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="active" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>CLI backends (fallback runtime)</h1>
+<p>AGDI can run <strong>local AI CLIs</strong> as a <strong>text-only fallback</strong> when API providers are down,
+rate-limited, or temporarily misbehaving. This is intentionally conservative:</p>
+<ul>
+<li><strong>Tools are disabled</strong> (no tool calls).</li>
+<li><strong>Text in → text out</strong> (reliable).</li>
+<li><strong>Sessions are supported</strong> (so follow-up turns stay coherent).</li>
+<li><strong>Images can be passed through</strong> if the CLI accepts image paths.</li>
+</ul>
+<p>This is designed as a <strong>safety net</strong> rather than a primary path. Use it when you
+want “always works” text responses without relying on external APIs.</p>
+<h2>Beginner-friendly quick start</h2>
+<p>You can use Claude Code CLI <strong>without any config</strong> (AGDI ships a built-in default):</p>
+<pre><code class="language-bash">agdi agent --message &quot;hi&quot; --model claude-cli/opus-4.6
+</code></pre>
+<p>Codex CLI also works out of the box:</p>
+<pre><code class="language-bash">agdi agent --message &quot;hi&quot; --model codex-cli/gpt-5.3-codex
+</code></pre>
+<p>If your gateway runs under launchd/systemd and PATH is minimal, add just the
+command path:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      cliBackends: {
+        &quot;claude-cli&quot;: {
+          command: &quot;/opt/homebrew/bin/claude&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>That’s it. No keys, no extra auth config needed beyond the CLI itself.</p>
+<h2>Using it as a fallback</h2>
+<p>Add a CLI backend to your fallback list so it only runs when primary models fail:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: {
+        primary: &quot;anthropic/claude-opus-4-6&quot;,
+        fallbacks: [&quot;claude-cli/opus-4.6&quot;, &quot;claude-cli/opus-4.5&quot;],
+      },
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;Opus&quot; },
+        &quot;claude-cli/opus-4.6&quot;: {},
+        &quot;claude-cli/opus-4.5&quot;: {},
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If you use <code>agents.defaults.models</code> (allowlist), you must include <code>claude-cli/...</code>.</li>
+<li>If the primary provider fails (auth, rate limits, timeouts), AGDI will
+try the CLI backend next.</li>
+</ul>
+<h2>Configuration overview</h2>
+<p>All CLI backends live under:</p>
+<pre><code>agents.defaults.cliBackends
+</code></pre>
+<p>Each entry is keyed by a <strong>provider id</strong> (e.g. <code>claude-cli</code>, <code>my-cli</code>).
+The provider id becomes the left side of your model ref:</p>
+<pre><code>&lt;provider&gt;/&lt;model&gt;
+</code></pre>
+<h3>Example configuration</h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      cliBackends: {
+        &quot;claude-cli&quot;: {
+          command: &quot;/opt/homebrew/bin/claude&quot;,
+        },
+        &quot;my-cli&quot;: {
+          command: &quot;my-cli&quot;,
+          args: [&quot;--json&quot;],
+          output: &quot;json&quot;,
+          input: &quot;arg&quot;,
+          modelArg: &quot;--model&quot;,
+          modelAliases: {
+            &quot;claude-opus-4-6&quot;: &quot;opus&quot;,
+            &quot;claude-opus-4-5&quot;: &quot;opus&quot;,
+            &quot;claude-sonnet-4-5&quot;: &quot;sonnet&quot;,
+          },
+          sessionArg: &quot;--session&quot;,
+          sessionMode: &quot;existing&quot;,
+          sessionIdFields: [&quot;session_id&quot;, &quot;conversation_id&quot;],
+          systemPromptArg: &quot;--system&quot;,
+          systemPromptWhen: &quot;first&quot;,
+          imageArg: &quot;--image&quot;,
+          imageMode: &quot;repeat&quot;,
+          serialize: true,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>How it works</h2>
+<ol>
+<li><strong>Selects a backend</strong> based on the provider prefix (<code>claude-cli/...</code>).</li>
+<li><strong>Builds a system prompt</strong> using the same AGDI prompt + workspace context.</li>
+<li><strong>Executes the CLI</strong> with a session id (if supported) so history stays consistent.</li>
+<li><strong>Parses output</strong> (JSON or plain text) and returns the final text.</li>
+<li><strong>Persists session ids</strong> per backend, so follow-ups reuse the same CLI session.</li>
+</ol>
+<h2>Sessions</h2>
+<ul>
+<li>If the CLI supports sessions, set <code>sessionArg</code> (e.g. <code>--session-id</code>) or
+<code>sessionArgs</code> (placeholder <code>{sessionId}</code>) when the ID needs to be inserted
+into multiple flags.</li>
+<li>If the CLI uses a <strong>resume subcommand</strong> with different flags, set
+<code>resumeArgs</code> (replaces <code>args</code> when resuming) and optionally <code>resumeOutput</code>
+(for non-JSON resumes).</li>
+<li><code>sessionMode</code>:<ul>
+<li><code>always</code>: always send a session id (new UUID if none stored).</li>
+<li><code>existing</code>: only send a session id if one was stored before.</li>
+<li><code>none</code>: never send a session id.</li>
+</ul>
+</li>
+</ul>
+<h2>Images (pass-through)</h2>
+<p>If your CLI accepts image paths, set <code>imageArg</code>:</p>
+<pre><code class="language-json5">imageArg: &quot;--image&quot;,
+imageMode: &quot;repeat&quot;
+</code></pre>
+<p>AGDI will write base64 images to temp files. If <code>imageArg</code> is set, those
+paths are passed as CLI args. If <code>imageArg</code> is missing, AGDI appends the
+file paths to the prompt (path injection), which is enough for CLIs that auto-
+load local files from plain paths (Claude Code CLI behavior).</p>
+<h2>Inputs / outputs</h2>
+<ul>
+<li><code>output: &quot;json&quot;</code> (default) tries to parse JSON and extract text + session id.</li>
+<li><code>output: &quot;jsonl&quot;</code> parses JSONL streams (Codex CLI <code>--json</code>) and extracts the
+last agent message plus <code>thread_id</code> when present.</li>
+<li><code>output: &quot;text&quot;</code> treats stdout as the final response.</li>
+</ul>
+<p>Input modes:</p>
+<ul>
+<li><code>input: &quot;arg&quot;</code> (default) passes the prompt as the last CLI arg.</li>
+<li><code>input: &quot;stdin&quot;</code> sends the prompt via stdin.</li>
+<li>If the prompt is very long and <code>maxPromptArgChars</code> is set, stdin is used.</li>
+</ul>
+<h2>Defaults (built-in)</h2>
+<p>AGDI ships a default for <code>claude-cli</code>:</p>
+<ul>
+<li><code>command: &quot;claude&quot;</code></li>
+<li><code>args: [&quot;-p&quot;, &quot;--output-format&quot;, &quot;json&quot;, &quot;--dangerously-skip-permissions&quot;]</code></li>
+<li><code>resumeArgs: [&quot;-p&quot;, &quot;--output-format&quot;, &quot;json&quot;, &quot;--dangerously-skip-permissions&quot;, &quot;--resume&quot;, &quot;{sessionId}&quot;]</code></li>
+<li><code>modelArg: &quot;--model&quot;</code></li>
+<li><code>systemPromptArg: &quot;--append-system-prompt&quot;</code></li>
+<li><code>sessionArg: &quot;--session-id&quot;</code></li>
+<li><code>systemPromptWhen: &quot;first&quot;</code></li>
+<li><code>sessionMode: &quot;always&quot;</code></li>
+</ul>
+<p>AGDI also ships a default for <code>codex-cli</code>:</p>
+<ul>
+<li><code>command: &quot;codex&quot;</code></li>
+<li><code>args: [&quot;exec&quot;,&quot;--json&quot;,&quot;--color&quot;,&quot;never&quot;,&quot;--sandbox&quot;,&quot;read-only&quot;,&quot;--skip-git-repo-check&quot;]</code></li>
+<li><code>resumeArgs: [&quot;exec&quot;,&quot;resume&quot;,&quot;{sessionId}&quot;,&quot;--color&quot;,&quot;never&quot;,&quot;--sandbox&quot;,&quot;read-only&quot;,&quot;--skip-git-repo-check&quot;]</code></li>
+<li><code>output: &quot;jsonl&quot;</code></li>
+<li><code>resumeOutput: &quot;text&quot;</code></li>
+<li><code>modelArg: &quot;--model&quot;</code></li>
+<li><code>imageArg: &quot;--image&quot;</code></li>
+<li><code>sessionMode: &quot;existing&quot;</code></li>
+</ul>
+<p>Override only if needed (common: absolute <code>command</code> path).</p>
+<h2>Limitations</h2>
+<ul>
+<li><strong>No AGDI tools</strong> (the CLI backend never receives tool calls). Some CLIs
+may still run their own agent tooling.</li>
+<li><strong>No streaming</strong> (CLI output is collected then returned).</li>
+<li><strong>Structured outputs</strong> depend on the CLI’s JSON format.</li>
+<li><strong>Codex CLI sessions</strong> resume via text output (no JSONL), which is less
+structured than the initial <code>--json</code> run. AGDI sessions still work
+normally.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>CLI not found</strong>: set <code>command</code> to a full path.</li>
+<li><strong>Wrong model name</strong>: use <code>modelAliases</code> to map <code>provider/model</code> → CLI model.</li>
+<li><strong>No session continuity</strong>: ensure <code>sessionArg</code> is set and <code>sessionMode</code> is not
+<code>none</code> (Codex CLI currently cannot resume with JSON output).</li>
+<li><strong>Images ignored</strong>: set <code>imageArg</code> (and verify CLI supports file paths).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

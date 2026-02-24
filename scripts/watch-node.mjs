@@ -7,10 +7,10 @@ const env = { ...process.env };
 const cwd = process.cwd();
 const compiler = "tsdown";
 const watchSession = `${Date.now()}-${process.pid}`;
-env.OPENCLAW_WATCH_MODE = "1";
-env.OPENCLAW_WATCH_SESSION = watchSession;
+env.AGDI_WATCH_MODE = "1";
+env.AGDI_WATCH_SESSION = watchSession;
 if (args.length > 0) {
-  env.OPENCLAW_WATCH_COMMAND = args.join(" ");
+  env.AGDI_WATCH_COMMAND = args.join(" ");
 }
 
 const initialBuild = spawnSync("pnpm", ["exec", compiler], {
@@ -29,7 +29,7 @@ const compilerProcess = spawn("pnpm", ["exec", compiler, "--watch"], {
   stdio: "inherit",
 });
 
-const nodeProcess = spawn(process.execPath, ["--watch", "openclaw.mjs", ...args], {
+const nodeProcess = spawn(process.execPath, ["--watch", "agdi.mjs", ...args], {
   cwd,
   env,
   stdio: "inherit",

@@ -18,7 +18,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
 });
 
 import "./test-helpers/fast-core-tools.js";
-import { createOpenClawTools } from "./openclaw-tools.js";
+import { createAGDITools } from "./agdi-tools.js";
 
 describe("sessions tools visibility", () => {
   it("defaults to tree visibility (self + spawned) for sessions_history", async () => {
@@ -42,7 +42,7 @@ describe("sessions tools visibility", () => {
       return {};
     });
 
-    const tool = createOpenClawTools({ agentSessionKey: "main" }).find(
+    const tool = createAGDITools({ agentSessionKey: "main" }).find(
       (candidate) => candidate.name === "sessions_history",
     );
     expect(tool).toBeDefined();
@@ -75,7 +75,7 @@ describe("sessions tools visibility", () => {
       return {};
     });
 
-    const tool = createOpenClawTools({ agentSessionKey: "main" }).find(
+    const tool = createAGDITools({ agentSessionKey: "main" }).find(
       (candidate) => candidate.name === "sessions_history",
     );
     expect(tool).toBeDefined();
@@ -109,7 +109,7 @@ describe("sessions tools visibility", () => {
       return {};
     });
 
-    const tool = createOpenClawTools({ agentSessionKey: "main", sandboxed: true }).find(
+    const tool = createAGDITools({ agentSessionKey: "main", sandboxed: true }).find(
       (candidate) => candidate.name === "sessions_history",
     );
     expect(tool).toBeDefined();

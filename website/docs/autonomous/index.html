@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Agent — AGDI Docs</title>
+  <meta name="description" content="AGDI's autonomous agent framework — device control, cybersecurity, workflow automation, and AI-to-AI delegation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab active" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="active" href="/docs/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/docs/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/docs/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/docs/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/docs/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/docs/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/docs/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/docs/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/docs/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/docs/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/docs/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/docs/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Autonomous Agent</h1>
+<p>AGDI ships with a full autonomous agent framework that gives AI direct control over physical devices, security tools, and workflows — no APIs or browser extensions required.</p>
+<h2>Architecture</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Natural Language Command&quot;] --&gt; B[&quot;Autonomous Loop&quot;]
+    B --&gt; C[&quot;Decision Engine&quot;]
+    C --&gt; D[&quot;Device Controller&quot;]
+    C --&gt; E[&quot;Security Suite&quot;]
+    C --&gt; F[&quot;Workflow Engine&quot;]
+    C --&gt; G[&quot;AI Delegation&quot;]
+    D --&gt; D1[&quot;Linux / macOS / Windows&quot;]
+    D --&gt; D2[&quot;Android (ADB)&quot;]
+    D --&gt; D3[&quot;iOS (WDA)&quot;]
+    E --&gt; E1[&quot;Network Recon&quot;]
+    E --&gt; E2[&quot;Web Scanner&quot;]
+    E --&gt; E3[&quot;WiFi Security&quot;]
+    E --&gt; E4[&quot;Exploit Engine&quot;]
+    E --&gt; E5[&quot;Kali Tools (100+)&quot;]
+</code></pre>
+<h2>Core Modules</h2>
+<ul>
+<li><strong><a href="/docs/autonomous/device-control.html">Device Control</a></strong> — Native mouse, keyboard, and screen control across 5 platforms.</li>
+<li><strong><a href="/docs/autonomous/security.html">Security Suite</a></strong> — Network recon, web scanning, WiFi attacks, exploit engine, and 100+ Kali tools.</li>
+<li><strong><a href="/docs/autonomous/workflows.html">Workflow Automation</a></strong> — Record, replay, and schedule complex multi-step workflows.</li>
+<li><strong><a href="/docs/autonomous/delegation.html">AI-to-AI Delegation</a></strong> — Spawn parallel sub-agents to divide and conquer complex tasks.</li>
+</ul>
+<h2>Quick Start</h2>
+<pre><code class="language-bash"># Start the autonomous agent
+agdi agent --start
+
+# Give it a command
+agdi agent --command &quot;Open Firefox and take a screenshot&quot;
+
+# Start the REST API for remote control
+agdi agent --rest-api --port 7778
+</code></pre>
+<h2>Features at a Glance</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Native Device Control</strong></td>
+<td>Mouse, keyboard, screen capture via OS-level APIs</td>
+</tr>
+<tr>
+<td><strong>5-Platform Support</strong></td>
+<td>Linux (X11), macOS (osascript), Windows (P/Invoke), Android (ADB), iOS (WDA)</td>
+</tr>
+<tr>
+<td><strong>Screen OCR</strong></td>
+<td>Read text from the screen with Tesseract — zero API costs</td>
+</tr>
+<tr>
+<td><strong>Natural Language Commands</strong></td>
+<td>Plain English → device actions without LLM overhead</td>
+</tr>
+<tr>
+<td><strong>Security Suite</strong></td>
+<td>Full offensive security toolkit with 100+ Kali tools</td>
+</tr>
+<tr>
+<td><strong>Workflow Record/Replay</strong></td>
+<td>Capture workflows and replay them on demand</td>
+</tr>
+<tr>
+<td><strong>Task Scheduler</strong></td>
+<td>Cron-like scheduling for automated tasks</td>
+</tr>
+<tr>
+<td><strong>File Watcher</strong></td>
+<td>Trigger actions when files change</td>
+</tr>
+<tr>
+<td><strong>Smart Clipboard</strong></td>
+<td>AI-powered clipboard with history and semantic search</td>
+</tr>
+<tr>
+<td><strong>AI-to-AI Delegation</strong></td>
+<td>Parallel sub-agents for complex multi-part tasks</td>
+</tr>
+<tr>
+<td><strong>REST API</strong></td>
+<td>Control the agent remotely via HTTP</td>
+</tr>
+<tr>
+<td><strong>Live Stream</strong></td>
+<td>Real-time screen streaming to the dashboard</td>
+</tr>
+<tr>
+<td><strong>Persistent Memory</strong></td>
+<td>Learns your environment and preferences over time</td>
+</tr>
+<tr>
+<td><strong>Trust &amp; Safety Gate</strong></td>
+<td>Risk-based action approval system</td>
+</tr>
+</tbody></table>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="active" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Authentication</h1>
+<p>AGDI supports OAuth and API keys for model providers. For Anthropic
+accounts, we recommend using an <strong>API key</strong>. For Claude subscription access,
+use the long‑lived token created by <code>claude setup-token</code>.</p>
+<p>See <a href="/docs/concepts/oauth">/concepts/oauth</a> for the full OAuth flow and storage
+layout.</p>
+<h2>Recommended Anthropic setup (API key)</h2>
+<p>If you’re using Anthropic directly, use an API key.</p>
+<ol>
+<li>Create an API key in the Anthropic Console.</li>
+<li>Put it on the <strong>gateway host</strong> (the machine running <code>agdi gateway</code>).</li>
+</ol>
+<pre><code class="language-bash">export ANTHROPIC_API_KEY=&quot;...&quot;
+agdi models status
+</code></pre>
+<ol start="3">
+<li>If the Gateway runs under systemd/launchd, prefer putting the key in
+<code>~/.agdi/.env</code> so the daemon can read it:</li>
+</ol>
+<pre><code class="language-bash">cat &gt;&gt; ~/.agdi/.env &lt;&lt;&#39;EOF&#39;
+ANTHROPIC_API_KEY=...
+EOF
+</code></pre>
+<p>Then restart the daemon (or restart your Gateway process) and re-check:</p>
+<pre><code class="language-bash">agdi models status
+agdi doctor
+</code></pre>
+<p>If you’d rather not manage env vars yourself, the onboarding wizard can store
+API keys for daemon use: <code>agdi onboard</code>.</p>
+<p>See <a href="/docs/help">Help</a> for details on env inheritance (<code>env.shellEnv</code>,
+<code>~/.agdi/.env</code>, systemd/launchd).</p>
+<h2>Anthropic: setup-token (subscription auth)</h2>
+<p>For Anthropic, the recommended path is an <strong>API key</strong>. If you’re using a Claude
+subscription, the setup-token flow is also supported. Run it on the <strong>gateway host</strong>:</p>
+<pre><code class="language-bash">claude setup-token
+</code></pre>
+<p>Then paste it into AGDI:</p>
+<pre><code class="language-bash">agdi models auth setup-token --provider anthropic
+</code></pre>
+<p>If the token was created on another machine, paste it manually:</p>
+<pre><code class="language-bash">agdi models auth paste-token --provider anthropic
+</code></pre>
+<p>If you see an Anthropic error like:</p>
+<pre><code>This credential is only authorized for use with Claude Code and cannot be used for other API requests.
+</code></pre>
+<p>…use an Anthropic API key instead.</p>
+<p>Manual token entry (any provider; writes <code>auth-profiles.json</code> + updates config):</p>
+<pre><code class="language-bash">agdi models auth paste-token --provider anthropic
+agdi models auth paste-token --provider openrouter
+</code></pre>
+<p>Automation-friendly check (exit <code>1</code> when expired/missing, <code>2</code> when expiring):</p>
+<pre><code class="language-bash">agdi models status --check
+</code></pre>
+<p>Optional ops scripts (systemd/Termux) are documented here:
+<a href="/docs/automation/auth-monitoring">/automation/auth-monitoring</a></p>
+<blockquote>
+<p><code>claude setup-token</code> requires an interactive TTY.</p>
+</blockquote>
+<h2>Checking model auth status</h2>
+<pre><code class="language-bash">agdi models status
+agdi doctor
+</code></pre>
+<h2>Controlling which credential is used</h2>
+<h3>Per-session (chat command)</h3>
+<p>Use <code>/model &lt;alias-or-id&gt;@&lt;profileId&gt;</code> to pin a specific provider credential for the current session (example profile ids: <code>anthropic:default</code>, <code>anthropic:work</code>).</p>
+<p>Use <code>/model</code> (or <code>/model list</code>) for a compact picker; use <code>/model status</code> for the full view (candidates + next auth profile, plus provider endpoint details when configured).</p>
+<h3>Per-agent (CLI override)</h3>
+<p>Set an explicit auth profile order override for an agent (stored in that agent’s <code>auth-profiles.json</code>):</p>
+<pre><code class="language-bash">agdi models auth order get --provider anthropic
+agdi models auth order set --provider anthropic anthropic:default
+agdi models auth order clear --provider anthropic
+</code></pre>
+<p>Use <code>--agent &lt;id&gt;</code> to target a specific agent; omit it to use the configured default agent.</p>
+<h2>Troubleshooting</h2>
+<h3>“No credentials found”</h3>
+<p>If the Anthropic token profile is missing, run <code>claude setup-token</code> on the
+<strong>gateway host</strong>, then re-check:</p>
+<pre><code class="language-bash">agdi models status
+</code></pre>
+<h3>Token expiring/expired</h3>
+<p>Run <code>agdi models status</code> to confirm which profile is expiring. If the profile
+is missing, rerun <code>claude setup-token</code> and paste the token again.</p>
+<h2>Requirements</h2>
+<ul>
+<li>Claude Max or Pro subscription (for <code>claude setup-token</code>)</li>
+<li>Claude Code CLI installed (<code>claude</code> command available)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

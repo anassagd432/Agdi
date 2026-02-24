@@ -1,0 +1,4 @@
+src/autonomous/approval.ts(46,7): error TS2741: Property 'device_click_image' is missing in type '{ device_click: "auto"; device_double_click: "auto"; device_right_click: "auto"; device_type: "auto"; device_press_key: "auto"; device_hotkey: "auto"; device_scroll: "auto"; device_drag: "auto"; ... 7 more ...; device_maximize_window: "auto"; }' but required in type 'Record<DeviceActionType, ApprovalLevel>'.
+src/autonomous/security/network-recon.ts(316,25): error TS2488: Type 'string[] | string[][] | CaaRecord[] | MxRecord[] | NaptrRecord[] | SoaRecord | SrvRecord[] | TlsaRecord[] | AnyRecord[]' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/config/redact-snapshot.ts(1,15): error TS2305: Module '"./types.autonomous.js"' has no exported member 'ConfigFileSnapshot'.
+src/gateway/server-methods/config.ts(1,15): error TS2305: Module '"../../config/types.autonomous.js"' has no exported member 'AGDIConfig'.

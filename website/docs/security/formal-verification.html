@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formal Verification (Security Models) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="active" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Formal Verification (Security Models)</h1>
+<p>This page tracks AGDI’s <strong>formal security models</strong> (TLA+/TLC today; more as needed).</p>
+<blockquote>
+<p>Note: some older links may refer to the previous project name.</p>
+</blockquote>
+<p><strong>Goal (north star):</strong> provide a machine-checked argument that AGDI enforces its
+intended security policy (authorization, session isolation, tool gating, and
+misconfiguration safety), under explicit assumptions.</p>
+<p><strong>What this is (today):</strong> an executable, attacker-driven <strong>security regression suite</strong>:</p>
+<ul>
+<li>Each claim has a runnable model-check over a finite state space.</li>
+<li>Many claims have a paired <strong>negative model</strong> that produces a counterexample trace for a realistic bug class.</li>
+</ul>
+<p><strong>What this is not (yet):</strong> a proof that “AGDI is secure in all respects” or that the full TypeScript implementation is correct.</p>
+<h2>Where the models live</h2>
+<p>Models are maintained in a separate repo: <a href="https://github.com/vignesh07/agdi-formal-models">vignesh07/agdi-formal-models</a>.</p>
+<h2>Important caveats</h2>
+<ul>
+<li>These are <strong>models</strong>, not the full TypeScript implementation. Drift between model and code is possible.</li>
+<li>Results are bounded by the state space explored by TLC; “green” does not imply security beyond the modeled assumptions and bounds.</li>
+<li>Some claims rely on explicit environmental assumptions (e.g., correct deployment, correct configuration inputs).</li>
+</ul>
+<h2>Reproducing results</h2>
+<p>Today, results are reproduced by cloning the models repo locally and running TLC (see below). A future iteration could offer:</p>
+<ul>
+<li>CI-run models with public artifacts (counterexample traces, run logs)</li>
+<li>a hosted “run this model” workflow for small, bounded checks</li>
+</ul>
+<p>Getting started:</p>
+<pre><code class="language-bash">git clone https://github.com/vignesh07/agdi-formal-models
+cd agdi-formal-models
+
+# Java 11+ required (TLC runs on the JVM).
+# The repo vendors a pinned `tla2tools.jar` (TLA+ tools) and provides `bin/tlc` + Make targets.
+
+make &lt;target&gt;
+</code></pre>
+<h3>Gateway exposure and open gateway misconfiguration</h3>
+<p><strong>Claim:</strong> binding beyond loopback without auth can make remote compromise possible / increases exposure; token/password blocks unauth attackers (per the model assumptions).</p>
+<ul>
+<li>Green runs:<ul>
+<li><code>make gateway-exposure-v2</code></li>
+<li><code>make gateway-exposure-v2-protected</code></li>
+</ul>
+</li>
+<li>Red (expected):<ul>
+<li><code>make gateway-exposure-v2-negative</code></li>
+</ul>
+</li>
+</ul>
+<p>See also: <code>docs/gateway-exposure-matrix.md</code> in the models repo.</p>
+<h3>Nodes.run pipeline (highest-risk capability)</h3>
+<p><strong>Claim:</strong> <code>nodes.run</code> requires (a) node command allowlist plus declared commands and (b) live approval when configured; approvals are tokenized to prevent replay (in the model).</p>
+<ul>
+<li>Green runs:<ul>
+<li><code>make nodes-pipeline</code></li>
+<li><code>make approvals-token</code></li>
+</ul>
+</li>
+<li>Red (expected):<ul>
+<li><code>make nodes-pipeline-negative</code></li>
+<li><code>make approvals-token-negative</code></li>
+</ul>
+</li>
+</ul>
+<h3>Pairing store (DM gating)</h3>
+<p><strong>Claim:</strong> pairing requests respect TTL and pending-request caps.</p>
+<ul>
+<li>Green runs:<ul>
+<li><code>make pairing</code></li>
+<li><code>make pairing-cap</code></li>
+</ul>
+</li>
+<li>Red (expected):<ul>
+<li><code>make pairing-negative</code></li>
+<li><code>make pairing-cap-negative</code></li>
+</ul>
+</li>
+</ul>
+<h3>Ingress gating (mentions + control-command bypass)</h3>
+<p><strong>Claim:</strong> in group contexts requiring mention, an unauthorized “control command” cannot bypass mention gating.</p>
+<ul>
+<li>Green:<ul>
+<li><code>make ingress-gating</code></li>
+</ul>
+</li>
+<li>Red (expected):<ul>
+<li><code>make ingress-gating-negative</code></li>
+</ul>
+</li>
+</ul>
+<h3>Routing/session-key isolation</h3>
+<p><strong>Claim:</strong> DMs from distinct peers do not collapse into the same session unless explicitly linked/configured.</p>
+<ul>
+<li>Green:<ul>
+<li><code>make routing-isolation</code></li>
+</ul>
+</li>
+<li>Red (expected):<ul>
+<li><code>make routing-isolation-negative</code></li>
+</ul>
+</li>
+</ul>
+<h2>v1++: additional bounded models (concurrency, retries, trace correctness)</h2>
+<p>These are follow-on models that tighten fidelity around real-world failure modes (non-atomic updates, retries, and message fan-out).</p>
+<h3>Pairing store concurrency / idempotency</h3>
+<p><strong>Claim:</strong> a pairing store should enforce <code>MaxPending</code> and idempotency even under interleavings (i.e., “check-then-write” must be atomic / locked; refresh shouldn’t create duplicates).</p>
+<p>What it means:</p>
+<ul>
+<li><p>Under concurrent requests, you can’t exceed <code>MaxPending</code> for a channel.</p>
+</li>
+<li><p>Repeated requests/refreshes for the same <code>(channel, sender)</code> should not create duplicate live pending rows.</p>
+</li>
+<li><p>Green runs:</p>
+<ul>
+<li><code>make pairing-race</code> (atomic/locked cap check)</li>
+<li><code>make pairing-idempotency</code></li>
+<li><code>make pairing-refresh</code></li>
+<li><code>make pairing-refresh-race</code></li>
+</ul>
+</li>
+<li><p>Red (expected):</p>
+<ul>
+<li><code>make pairing-race-negative</code> (non-atomic begin/commit cap race)</li>
+<li><code>make pairing-idempotency-negative</code></li>
+<li><code>make pairing-refresh-negative</code></li>
+<li><code>make pairing-refresh-race-negative</code></li>
+</ul>
+</li>
+</ul>
+<h3>Ingress trace correlation / idempotency</h3>
+<p><strong>Claim:</strong> ingestion should preserve trace correlation across fan-out and be idempotent under provider retries.</p>
+<p>What it means:</p>
+<ul>
+<li><p>When one external event becomes multiple internal messages, every part keeps the same trace/event identity.</p>
+</li>
+<li><p>Retries do not result in double-processing.</p>
+</li>
+<li><p>If provider event IDs are missing, dedupe falls back to a safe key (e.g., trace ID) to avoid dropping distinct events.</p>
+</li>
+<li><p>Green:</p>
+<ul>
+<li><code>make ingress-trace</code></li>
+<li><code>make ingress-trace2</code></li>
+<li><code>make ingress-idempotency</code></li>
+<li><code>make ingress-dedupe-fallback</code></li>
+</ul>
+</li>
+<li><p>Red (expected):</p>
+<ul>
+<li><code>make ingress-trace-negative</code></li>
+<li><code>make ingress-trace2-negative</code></li>
+<li><code>make ingress-idempotency-negative</code></li>
+<li><code>make ingress-dedupe-fallback-negative</code></li>
+</ul>
+</li>
+</ul>
+<h3>Routing dmScope precedence + identityLinks</h3>
+<p><strong>Claim:</strong> routing must keep DM sessions isolated by default, and only collapse sessions when explicitly configured (channel precedence + identity links).</p>
+<p>What it means:</p>
+<ul>
+<li><p>Channel-specific dmScope overrides must win over global defaults.</p>
+</li>
+<li><p>identityLinks should collapse only within explicit linked groups, not across unrelated peers.</p>
+</li>
+<li><p>Green:</p>
+<ul>
+<li><code>make routing-precedence</code></li>
+<li><code>make routing-identitylinks</code></li>
+</ul>
+</li>
+<li><p>Red (expected):</p>
+<ul>
+<li><code>make routing-precedence-negative</code></li>
+<li><code>make routing-identitylinks-negative</code></li>
+</ul>
+</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

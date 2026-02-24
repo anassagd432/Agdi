@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser (AGDI-managed) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="active" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Browser (agdi-managed)</h1>
+<p>AGDI can run a <strong>dedicated Chrome/Brave/Edge/Chromium profile</strong> that the agent controls.
+It is isolated from your personal browser and is managed through a small local
+control service inside the Gateway (loopback only).</p>
+<p>Beginner view:</p>
+<ul>
+<li>Think of it as a <strong>separate, agent-only browser</strong>.</li>
+<li>The <code>agdi</code> profile does <strong>not</strong> touch your personal browser profile.</li>
+<li>The agent can <strong>open tabs, read pages, click, and type</strong> in a safe lane.</li>
+<li>The default <code>chrome</code> profile uses the <strong>system default Chromium browser</strong> via the
+extension relay; switch to <code>agdi</code> for the isolated managed browser.</li>
+</ul>
+<h2>What you get</h2>
+<ul>
+<li>A separate browser profile named <strong>agdi</strong> (orange accent by default).</li>
+<li>Deterministic tab control (list/open/focus/close).</li>
+<li>Agent actions (click/type/drag/select), snapshots, screenshots, PDFs.</li>
+<li>Optional multi-profile support (<code>agdi</code>, <code>work</code>, <code>remote</code>, ...).</li>
+</ul>
+<p>This browser is <strong>not</strong> your daily driver. It is a safe, isolated surface for
+agent automation and verification.</p>
+<h2>Quick start</h2>
+<pre><code class="language-bash">agdi browser --browser-profile agdi status
+agdi browser --browser-profile agdi start
+agdi browser --browser-profile agdi open https://example.com
+agdi browser --browser-profile agdi snapshot
+</code></pre>
+<p>If you get “Browser disabled”, enable it in config (see below) and restart the
+Gateway.</p>
+<h2>Profiles: <code>agdi</code> vs <code>chrome</code></h2>
+<ul>
+<li><code>agdi</code>: managed, isolated browser (no extension required).</li>
+<li><code>chrome</code>: extension relay to your <strong>system browser</strong> (requires the AGDI
+extension to be attached to a tab).</li>
+</ul>
+<p>Set <code>browser.defaultProfile: &quot;agdi&quot;</code> if you want managed mode by default.</p>
+<h2>Configuration</h2>
+<p>Browser settings live in <code>~/.agdi/agdi.json</code>.</p>
+<pre><code class="language-json5">{
+  browser: {
+    enabled: true, // default: true
+    // cdpUrl: &quot;http://127.0.0.1:18792&quot;, // legacy single-profile override
+    remoteCdpTimeoutMs: 1500, // remote CDP HTTP timeout (ms)
+    remoteCdpHandshakeTimeoutMs: 3000, // remote CDP WebSocket handshake timeout (ms)
+    defaultProfile: &quot;chrome&quot;,
+    color: &quot;#FF4500&quot;,
+    headless: false,
+    noSandbox: false,
+    attachOnly: false,
+    executablePath: &quot;/Applications/Brave Browser.app/Contents/MacOS/Brave Browser&quot;,
+    profiles: {
+      agdi: { cdpPort: 18800, color: &quot;#FF4500&quot; },
+      work: { cdpPort: 18801, color: &quot;#0066CC&quot; },
+      remote: { cdpUrl: &quot;http://10.0.0.42:9222&quot;, color: &quot;#00AA00&quot; },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>The browser control service binds to loopback on a port derived from <code>gateway.port</code>
+(default: <code>18791</code>, which is gateway + 2). The relay uses the next port (<code>18792</code>).</li>
+<li>If you override the Gateway port (<code>gateway.port</code> or <code>AGDI_GATEWAY_PORT</code>),
+the derived browser ports shift to stay in the same “family”.</li>
+<li><code>cdpUrl</code> defaults to the relay port when unset.</li>
+<li><code>remoteCdpTimeoutMs</code> applies to remote (non-loopback) CDP reachability checks.</li>
+<li><code>remoteCdpHandshakeTimeoutMs</code> applies to remote CDP WebSocket reachability checks.</li>
+<li><code>attachOnly: true</code> means “never launch a local browser; only attach if it is already running.”</li>
+<li><code>color</code> + per-profile <code>color</code> tint the browser UI so you can see which profile is active.</li>
+<li>Default profile is <code>chrome</code> (extension relay). Use <code>defaultProfile: &quot;agdi&quot;</code> for the managed browser.</li>
+<li>Auto-detect order: system default browser if Chromium-based; otherwise Chrome → Brave → Edge → Chromium → Chrome Canary.</li>
+<li>Local <code>agdi</code> profiles auto-assign <code>cdpPort</code>/<code>cdpUrl</code> — set those only for remote CDP.</li>
+</ul>
+<h2>Use Brave (or another Chromium-based browser)</h2>
+<p>If your <strong>system default</strong> browser is Chromium-based (Chrome/Brave/Edge/etc),
+AGDI uses it automatically. Set <code>browser.executablePath</code> to override
+auto-detection:</p>
+<p>CLI example:</p>
+<pre><code class="language-bash">agdi config set browser.executablePath &quot;/usr/bin/google-chrome&quot;
+</code></pre>
+<pre><code class="language-json5">// macOS
+{
+  browser: {
+    executablePath: &quot;/Applications/Brave Browser.app/Contents/MacOS/Brave Browser&quot;
+  }
+}
+
+// Windows
+{
+  browser: {
+    executablePath: &quot;C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe&quot;
+  }
+}
+
+// Linux
+{
+  browser: {
+    executablePath: &quot;/usr/bin/brave-browser&quot;
+  }
+}
+</code></pre>
+<h2>Local vs remote control</h2>
+<ul>
+<li><strong>Local control (default):</strong> the Gateway starts the loopback control service and can launch a local browser.</li>
+<li><strong>Remote control (node host):</strong> run a node host on the machine that has the browser; the Gateway proxies browser actions to it.</li>
+<li><strong>Remote CDP:</strong> set <code>browser.profiles.&lt;name&gt;.cdpUrl</code> (or <code>browser.cdpUrl</code>) to
+attach to a remote Chromium-based browser. In this case, AGDI will not launch a local browser.</li>
+</ul>
+<p>Remote CDP URLs can include auth:</p>
+<ul>
+<li>Query tokens (e.g., <code>https://provider.example?token=&lt;token&gt;</code>)</li>
+<li>HTTP Basic auth (e.g., <code>https://user:pass@provider.example</code>)</li>
+</ul>
+<p>AGDI preserves the auth when calling <code>/json/*</code> endpoints and when connecting
+to the CDP WebSocket. Prefer environment variables or secrets managers for
+tokens instead of committing them to config files.</p>
+<h2>Node browser proxy (zero-config default)</h2>
+<p>If you run a <strong>node host</strong> on the machine that has your browser, AGDI can
+auto-route browser tool calls to that node without any extra browser config.
+This is the default path for remote gateways.</p>
+<p>Notes:</p>
+<ul>
+<li>The node host exposes its local browser control server via a <strong>proxy command</strong>.</li>
+<li>Profiles come from the node’s own <code>browser.profiles</code> config (same as local).</li>
+<li>Disable if you don’t want it:<ul>
+<li>On the node: <code>nodeHost.browserProxy.enabled=false</code></li>
+<li>On the gateway: <code>gateway.nodes.browser.mode=&quot;off&quot;</code></li>
+</ul>
+</li>
+</ul>
+<h2>Browserless (hosted remote CDP)</h2>
+<p><a href="https://browserless.io">Browserless</a> is a hosted Chromium service that exposes
+CDP endpoints over HTTPS. You can point a AGDI browser profile at a
+Browserless region endpoint and authenticate with your API key.</p>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  browser: {
+    enabled: true,
+    defaultProfile: &quot;browserless&quot;,
+    remoteCdpTimeoutMs: 2000,
+    remoteCdpHandshakeTimeoutMs: 4000,
+    profiles: {
+      browserless: {
+        cdpUrl: &quot;https://production-sfo.browserless.io?token=&lt;BROWSERLESS_API_KEY&gt;&quot;,
+        color: &quot;#00AA00&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Replace <code>&lt;BROWSERLESS_API_KEY&gt;</code> with your real Browserless token.</li>
+<li>Choose the region endpoint that matches your Browserless account (see their docs).</li>
+</ul>
+<h2>Security</h2>
+<p>Key ideas:</p>
+<ul>
+<li>Browser control is loopback-only; access flows through the Gateway’s auth or node pairing.</li>
+<li>If browser control is enabled and no auth is configured, AGDI auto-generates <code>gateway.auth.token</code> on startup and persists it to config.</li>
+<li>Keep the Gateway and any node hosts on a private network (Tailscale); avoid public exposure.</li>
+<li>Treat remote CDP URLs/tokens as secrets; prefer env vars or a secrets manager.</li>
+</ul>
+<p>Remote CDP tips:</p>
+<ul>
+<li>Prefer HTTPS endpoints and short-lived tokens where possible.</li>
+<li>Avoid embedding long-lived tokens directly in config files.</li>
+</ul>
+<h2>Profiles (multi-browser)</h2>
+<p>AGDI supports multiple named profiles (routing configs). Profiles can be:</p>
+<ul>
+<li><strong>agdi-managed</strong>: a dedicated Chromium-based browser instance with its own user data directory + CDP port</li>
+<li><strong>remote</strong>: an explicit CDP URL (Chromium-based browser running elsewhere)</li>
+<li><strong>extension relay</strong>: your existing Chrome tab(s) via the local relay + Chrome extension</li>
+</ul>
+<p>Defaults:</p>
+<ul>
+<li>The <code>agdi</code> profile is auto-created if missing.</li>
+<li>The <code>chrome</code> profile is built-in for the Chrome extension relay (points at <code>http://127.0.0.1:18792</code> by default).</li>
+<li>Local CDP ports allocate from <strong>18800–18899</strong> by default.</li>
+<li>Deleting a profile moves its local data directory to Trash.</li>
+</ul>
+<p>All control endpoints accept <code>?profile=&lt;name&gt;</code>; the CLI uses <code>--browser-profile</code>.</p>
+<h2>Chrome extension relay (use your existing Chrome)</h2>
+<p>AGDI can also drive <strong>your existing Chrome tabs</strong> (no separate “agdi” Chrome instance) via a local CDP relay + a Chrome extension.</p>
+<p>Full guide: <a href="/docs/tools/chrome-extension">Chrome extension</a></p>
+<p>Flow:</p>
+<ul>
+<li>The Gateway runs locally (same machine) or a node host runs on the browser machine.</li>
+<li>A local <strong>relay server</strong> listens at a loopback <code>cdpUrl</code> (default: <code>http://127.0.0.1:18792</code>).</li>
+<li>You click the <strong>AGDI Browser Relay</strong> extension icon on a tab to attach (it does not auto-attach).</li>
+<li>The agent controls that tab via the normal <code>browser</code> tool, by selecting the right profile.</li>
+</ul>
+<p>If the Gateway runs elsewhere, run a node host on the browser machine so the Gateway can proxy browser actions.</p>
+<h3>Sandboxed sessions</h3>
+<p>If the agent session is sandboxed, the <code>browser</code> tool may default to <code>target=&quot;sandbox&quot;</code> (sandbox browser).
+Chrome extension relay takeover requires host browser control, so either:</p>
+<ul>
+<li>run the session unsandboxed, or</li>
+<li>set <code>agents.defaults.sandbox.browser.allowHostControl: true</code> and use <code>target=&quot;host&quot;</code> when calling the tool.</li>
+</ul>
+<h3>Setup</h3>
+<ol>
+<li>Load the extension (dev/unpacked):</li>
+</ol>
+<pre><code class="language-bash">agdi browser extension install
+</code></pre>
+<ul>
+<li>Chrome → <code>chrome://extensions</code> → enable “Developer mode”</li>
+<li>“Load unpacked” → select the directory printed by <code>agdi browser extension path</code></li>
+<li>Pin the extension, then click it on the tab you want to control (badge shows <code>ON</code>).</li>
+</ul>
+<ol start="2">
+<li>Use it:</li>
+</ol>
+<ul>
+<li>CLI: <code>agdi browser --browser-profile chrome tabs</code></li>
+<li>Agent tool: <code>browser</code> with <code>profile=&quot;chrome&quot;</code></li>
+</ul>
+<p>Optional: if you want a different name or relay port, create your own profile:</p>
+<pre><code class="language-bash">agdi browser create-profile \
+  --name my-chrome \
+  --driver extension \
+  --cdp-url http://127.0.0.1:18792 \
+  --color &quot;#00AA00&quot;
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>This mode relies on Playwright-on-CDP for most operations (screenshots/snapshots/actions).</li>
+<li>Detach by clicking the extension icon again.</li>
+</ul>
+<h2>Isolation guarantees</h2>
+<ul>
+<li><strong>Dedicated user data dir</strong>: never touches your personal browser profile.</li>
+<li><strong>Dedicated ports</strong>: avoids <code>9222</code> to prevent collisions with dev workflows.</li>
+<li><strong>Deterministic tab control</strong>: target tabs by <code>targetId</code>, not “last tab”.</li>
+</ul>
+<h2>Browser selection</h2>
+<p>When launching locally, AGDI picks the first available:</p>
+<ol>
+<li>Chrome</li>
+<li>Brave</li>
+<li>Edge</li>
+<li>Chromium</li>
+<li>Chrome Canary</li>
+</ol>
+<p>You can override with <code>browser.executablePath</code>.</p>
+<p>Platforms:</p>
+<ul>
+<li>macOS: checks <code>/Applications</code> and <code>~/Applications</code>.</li>
+<li>Linux: looks for <code>google-chrome</code>, <code>brave</code>, <code>microsoft-edge</code>, <code>chromium</code>, etc.</li>
+<li>Windows: checks common install locations.</li>
+</ul>
+<h2>Control API (optional)</h2>
+<p>For local integrations only, the Gateway exposes a small loopback HTTP API:</p>
+<ul>
+<li>Status/start/stop: <code>GET /</code>, <code>POST /start</code>, <code>POST /stop</code></li>
+<li>Tabs: <code>GET /tabs</code>, <code>POST /tabs/open</code>, <code>POST /tabs/focus</code>, <code>DELETE /tabs/:targetId</code></li>
+<li>Snapshot/screenshot: <code>GET /snapshot</code>, <code>POST /screenshot</code></li>
+<li>Actions: <code>POST /navigate</code>, <code>POST /act</code></li>
+<li>Hooks: <code>POST /hooks/file-chooser</code>, <code>POST /hooks/dialog</code></li>
+<li>Downloads: <code>POST /download</code>, <code>POST /wait/download</code></li>
+<li>Debugging: <code>GET /console</code>, <code>POST /pdf</code></li>
+<li>Debugging: <code>GET /errors</code>, <code>GET /requests</code>, <code>POST /trace/start</code>, <code>POST /trace/stop</code>, <code>POST /highlight</code></li>
+<li>Network: <code>POST /response/body</code></li>
+<li>State: <code>GET /cookies</code>, <code>POST /cookies/set</code>, <code>POST /cookies/clear</code></li>
+<li>State: <code>GET /storage/:kind</code>, <code>POST /storage/:kind/set</code>, <code>POST /storage/:kind/clear</code></li>
+<li>Settings: <code>POST /set/offline</code>, <code>POST /set/headers</code>, <code>POST /set/credentials</code>, <code>POST /set/geolocation</code>, <code>POST /set/media</code>, <code>POST /set/timezone</code>, <code>POST /set/locale</code>, <code>POST /set/device</code></li>
+</ul>
+<p>All endpoints accept <code>?profile=&lt;name&gt;</code>.</p>
+<p>If gateway auth is configured, browser HTTP routes require auth too:</p>
+<ul>
+<li><code>Authorization: Bearer &lt;gateway token&gt;</code></li>
+<li><code>x-agdi-password: &lt;gateway password&gt;</code> or HTTP Basic auth with that password</li>
+</ul>
+<h3>Playwright requirement</h3>
+<p>Some features (navigate/act/AI snapshot/role snapshot, element screenshots, PDF) require
+Playwright. If Playwright isn’t installed, those endpoints return a clear 501
+error. ARIA snapshots and basic screenshots still work for agdi-managed Chrome.
+For the Chrome extension relay driver, ARIA snapshots and screenshots require Playwright.</p>
+<p>If you see <code>Playwright is not available in this gateway build</code>, install the full
+Playwright package (not <code>playwright-core</code>) and restart the gateway, or reinstall
+AGDI with browser support.</p>
+<h4>Docker Playwright install</h4>
+<p>If your Gateway runs in Docker, avoid <code>npx playwright</code> (npm override conflicts).
+Use the bundled CLI instead:</p>
+<pre><code class="language-bash">docker compose run --rm agdi-cli \
+  node /app/node_modules/playwright-core/cli.js install chromium
+</code></pre>
+<p>To persist browser downloads, set <code>PLAYWRIGHT_BROWSERS_PATH</code> (for example,
+<code>/home/node/.cache/ms-playwright</code>) and make sure <code>/home/node</code> is persisted via
+<code>AGDI_HOME_VOLUME</code> or a bind mount. See <a href="/docs/install/docker">Docker</a>.</p>
+<h2>How it works (internal)</h2>
+<p>High-level flow:</p>
+<ul>
+<li>A small <strong>control server</strong> accepts HTTP requests.</li>
+<li>It connects to Chromium-based browsers (Chrome/Brave/Edge/Chromium) via <strong>CDP</strong>.</li>
+<li>For advanced actions (click/type/snapshot/PDF), it uses <strong>Playwright</strong> on top
+of CDP.</li>
+<li>When Playwright is missing, only non-Playwright operations are available.</li>
+</ul>
+<p>This design keeps the agent on a stable, deterministic interface while letting
+you swap local/remote browsers and profiles.</p>
+<h2>CLI quick reference</h2>
+<p>All commands accept <code>--browser-profile &lt;name&gt;</code> to target a specific profile.
+All commands also accept <code>--json</code> for machine-readable output (stable payloads).</p>
+<p>Basics:</p>
+<ul>
+<li><code>agdi browser status</code></li>
+<li><code>agdi browser start</code></li>
+<li><code>agdi browser stop</code></li>
+<li><code>agdi browser tabs</code></li>
+<li><code>agdi browser tab</code></li>
+<li><code>agdi browser tab new</code></li>
+<li><code>agdi browser tab select 2</code></li>
+<li><code>agdi browser tab close 2</code></li>
+<li><code>agdi browser open https://example.com</code></li>
+<li><code>agdi browser focus abcd1234</code></li>
+<li><code>agdi browser close abcd1234</code></li>
+</ul>
+<p>Inspection:</p>
+<ul>
+<li><code>agdi browser screenshot</code></li>
+<li><code>agdi browser screenshot --full-page</code></li>
+<li><code>agdi browser screenshot --ref 12</code></li>
+<li><code>agdi browser screenshot --ref e12</code></li>
+<li><code>agdi browser snapshot</code></li>
+<li><code>agdi browser snapshot --format aria --limit 200</code></li>
+<li><code>agdi browser snapshot --interactive --compact --depth 6</code></li>
+<li><code>agdi browser snapshot --efficient</code></li>
+<li><code>agdi browser snapshot --labels</code></li>
+<li><code>agdi browser snapshot --selector &quot;#main&quot; --interactive</code></li>
+<li><code>agdi browser snapshot --frame &quot;iframe#main&quot; --interactive</code></li>
+<li><code>agdi browser console --level error</code></li>
+<li><code>agdi browser errors --clear</code></li>
+<li><code>agdi browser requests --filter api --clear</code></li>
+<li><code>agdi browser pdf</code></li>
+<li><code>agdi browser responsebody &quot;**/api&quot; --max-chars 5000</code></li>
+</ul>
+<p>Actions:</p>
+<ul>
+<li><code>agdi browser navigate https://example.com</code></li>
+<li><code>agdi browser resize 1280 720</code></li>
+<li><code>agdi browser click 12 --double</code></li>
+<li><code>agdi browser click e12 --double</code></li>
+<li><code>agdi browser type 23 &quot;hello&quot; --submit</code></li>
+<li><code>agdi browser press Enter</code></li>
+<li><code>agdi browser hover 44</code></li>
+<li><code>agdi browser scrollintoview e12</code></li>
+<li><code>agdi browser drag 10 11</code></li>
+<li><code>agdi browser select 9 OptionA OptionB</code></li>
+<li><code>agdi browser download e12 report.pdf</code></li>
+<li><code>agdi browser waitfordownload report.pdf</code></li>
+<li><code>agdi browser upload /tmp/agdi/uploads/file.pdf</code></li>
+<li><code>agdi browser fill --fields &#39;[{&quot;ref&quot;:&quot;1&quot;,&quot;type&quot;:&quot;text&quot;,&quot;value&quot;:&quot;Ada&quot;}]&#39;</code></li>
+<li><code>agdi browser dialog --accept</code></li>
+<li><code>agdi browser wait --text &quot;Done&quot;</code></li>
+<li><code>agdi browser wait &quot;#main&quot; --url &quot;**/dash&quot; --load networkidle --fn &quot;window.ready===true&quot;</code></li>
+<li><code>agdi browser evaluate --fn &#39;(el) =&gt; el.textContent&#39; --ref 7</code></li>
+<li><code>agdi browser highlight e12</code></li>
+<li><code>agdi browser trace start</code></li>
+<li><code>agdi browser trace stop</code></li>
+</ul>
+<p>State:</p>
+<ul>
+<li><code>agdi browser cookies</code></li>
+<li><code>agdi browser cookies set session abc123 --url &quot;https://example.com&quot;</code></li>
+<li><code>agdi browser cookies clear</code></li>
+<li><code>agdi browser storage local get</code></li>
+<li><code>agdi browser storage local set theme dark</code></li>
+<li><code>agdi browser storage session clear</code></li>
+<li><code>agdi browser set offline on</code></li>
+<li><code>agdi browser set headers --json &#39;{&quot;X-Debug&quot;:&quot;1&quot;}&#39;</code></li>
+<li><code>agdi browser set credentials user pass</code></li>
+<li><code>agdi browser set credentials --clear</code></li>
+<li><code>agdi browser set geo 37.7749 -122.4194 --origin &quot;https://example.com&quot;</code></li>
+<li><code>agdi browser set geo --clear</code></li>
+<li><code>agdi browser set media dark</code></li>
+<li><code>agdi browser set timezone America/New_York</code></li>
+<li><code>agdi browser set locale en-US</code></li>
+<li><code>agdi browser set device &quot;iPhone 14&quot;</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>upload</code> and <code>dialog</code> are <strong>arming</strong> calls; run them before the click/press
+that triggers the chooser/dialog.</li>
+<li>Download and trace output paths are constrained to AGDI temp roots:<ul>
+<li>traces: <code>/tmp/agdi</code> (fallback: <code>${os.tmpdir()}/agdi</code>)</li>
+<li>downloads: <code>/tmp/agdi/downloads</code> (fallback: <code>${os.tmpdir()}/agdi/downloads</code>)</li>
+</ul>
+</li>
+<li>Upload paths are constrained to an AGDI temp uploads root:<ul>
+<li>uploads: <code>/tmp/agdi/uploads</code> (fallback: <code>${os.tmpdir()}/agdi/uploads</code>)</li>
+</ul>
+</li>
+<li><code>upload</code> can also set file inputs directly via <code>--input-ref</code> or <code>--element</code>.</li>
+<li><code>snapshot</code>:<ul>
+<li><code>--format ai</code> (default when Playwright is installed): returns an AI snapshot with numeric refs (<code>aria-ref=&quot;&lt;n&gt;&quot;</code>).</li>
+<li><code>--format aria</code>: returns the accessibility tree (no refs; inspection only).</li>
+<li><code>--efficient</code> (or <code>--mode efficient</code>): compact role snapshot preset (interactive + compact + depth + lower maxChars).</li>
+<li>Config default (tool/CLI only): set <code>browser.snapshotDefaults.mode: &quot;efficient&quot;</code> to use efficient snapshots when the caller does not pass a mode (see <a href="/docs/gateway/configuration#browser-agdi-managed-browser">Gateway configuration</a>).</li>
+<li>Role snapshot options (<code>--interactive</code>, <code>--compact</code>, <code>--depth</code>, <code>--selector</code>) force a role-based snapshot with refs like <code>ref=e12</code>.</li>
+<li><code>--frame &quot;&lt;iframe selector&gt;&quot;</code> scopes role snapshots to an iframe (pairs with role refs like <code>e12</code>).</li>
+<li><code>--interactive</code> outputs a flat, easy-to-pick list of interactive elements (best for driving actions).</li>
+<li><code>--labels</code> adds a viewport-only screenshot with overlayed ref labels (prints <code>MEDIA:&lt;path&gt;</code>).</li>
+</ul>
+</li>
+<li><code>click</code>/<code>type</code>/etc require a <code>ref</code> from <code>snapshot</code> (either numeric <code>12</code> or role ref <code>e12</code>).
+CSS selectors are intentionally not supported for actions.</li>
+</ul>
+<h2>Snapshots and refs</h2>
+<p>AGDI supports two “snapshot” styles:</p>
+<ul>
+<li><p><strong>AI snapshot (numeric refs)</strong>: <code>agdi browser snapshot</code> (default; <code>--format ai</code>)</p>
+<ul>
+<li>Output: a text snapshot that includes numeric refs.</li>
+<li>Actions: <code>agdi browser click 12</code>, <code>agdi browser type 23 &quot;hello&quot;</code>.</li>
+<li>Internally, the ref is resolved via Playwright’s <code>aria-ref</code>.</li>
+</ul>
+</li>
+<li><p><strong>Role snapshot (role refs like <code>e12</code>)</strong>: <code>agdi browser snapshot --interactive</code> (or <code>--compact</code>, <code>--depth</code>, <code>--selector</code>, <code>--frame</code>)</p>
+<ul>
+<li>Output: a role-based list/tree with <code>[ref=e12]</code> (and optional <code>[nth=1]</code>).</li>
+<li>Actions: <code>agdi browser click e12</code>, <code>agdi browser highlight e12</code>.</li>
+<li>Internally, the ref is resolved via <code>getByRole(...)</code> (plus <code>nth()</code> for duplicates).</li>
+<li>Add <code>--labels</code> to include a viewport screenshot with overlayed <code>e12</code> labels.</li>
+</ul>
+</li>
+</ul>
+<p>Ref behavior:</p>
+<ul>
+<li>Refs are <strong>not stable across navigations</strong>; if something fails, re-run <code>snapshot</code> and use a fresh ref.</li>
+<li>If the role snapshot was taken with <code>--frame</code>, role refs are scoped to that iframe until the next role snapshot.</li>
+</ul>
+<h2>Wait power-ups</h2>
+<p>You can wait on more than just time/text:</p>
+<ul>
+<li>Wait for URL (globs supported by Playwright):<ul>
+<li><code>agdi browser wait --url &quot;**/dash&quot;</code></li>
+</ul>
+</li>
+<li>Wait for load state:<ul>
+<li><code>agdi browser wait --load networkidle</code></li>
+</ul>
+</li>
+<li>Wait for a JS predicate:<ul>
+<li><code>agdi browser wait --fn &quot;window.ready===true&quot;</code></li>
+</ul>
+</li>
+<li>Wait for a selector to become visible:<ul>
+<li><code>agdi browser wait &quot;#main&quot;</code></li>
+</ul>
+</li>
+</ul>
+<p>These can be combined:</p>
+<pre><code class="language-bash">agdi browser wait &quot;#main&quot; \
+  --url &quot;**/dash&quot; \
+  --load networkidle \
+  --fn &quot;window.ready===true&quot; \
+  --timeout-ms 15000
+</code></pre>
+<h2>Debug workflows</h2>
+<p>When an action fails (e.g. “not visible”, “strict mode violation”, “covered”):</p>
+<ol>
+<li><code>agdi browser snapshot --interactive</code></li>
+<li>Use <code>click &lt;ref&gt;</code> / <code>type &lt;ref&gt;</code> (prefer role refs in interactive mode)</li>
+<li>If it still fails: <code>agdi browser highlight &lt;ref&gt;</code> to see what Playwright is targeting</li>
+<li>If the page behaves oddly:<ul>
+<li><code>agdi browser errors --clear</code></li>
+<li><code>agdi browser requests --filter api --clear</code></li>
+</ul>
+</li>
+<li>For deep debugging: record a trace:<ul>
+<li><code>agdi browser trace start</code></li>
+<li>reproduce the issue</li>
+<li><code>agdi browser trace stop</code> (prints <code>TRACE:&lt;path&gt;</code>)</li>
+</ul>
+</li>
+</ol>
+<h2>JSON output</h2>
+<p><code>--json</code> is for scripting and structured tooling.</p>
+<p>Examples:</p>
+<pre><code class="language-bash">agdi browser status --json
+agdi browser snapshot --interactive --json
+agdi browser requests --filter api --json
+agdi browser cookies --json
+</code></pre>
+<p>Role snapshots in JSON include <code>refs</code> plus a small <code>stats</code> block (lines/chars/refs/interactive) so tools can reason about payload size and density.</p>
+<h2>State and environment knobs</h2>
+<p>These are useful for “make the site behave like X” workflows:</p>
+<ul>
+<li>Cookies: <code>cookies</code>, <code>cookies set</code>, <code>cookies clear</code></li>
+<li>Storage: <code>storage local|session get|set|clear</code></li>
+<li>Offline: <code>set offline on|off</code></li>
+<li>Headers: <code>set headers --json &#39;{&quot;X-Debug&quot;:&quot;1&quot;}&#39;</code> (or <code>--clear</code>)</li>
+<li>HTTP basic auth: <code>set credentials user pass</code> (or <code>--clear</code>)</li>
+<li>Geolocation: <code>set geo &lt;lat&gt; &lt;lon&gt; --origin &quot;https://example.com&quot;</code> (or <code>--clear</code>)</li>
+<li>Media: <code>set media dark|light|no-preference|none</code></li>
+<li>Timezone / locale: <code>set timezone ...</code>, <code>set locale ...</code></li>
+<li>Device / viewport:<ul>
+<li><code>set device &quot;iPhone 14&quot;</code> (Playwright device presets)</li>
+<li><code>set viewport 1280 720</code></li>
+</ul>
+</li>
+</ul>
+<h2>Security &amp; privacy</h2>
+<ul>
+<li>The agdi browser profile may contain logged-in sessions; treat it as sensitive.</li>
+<li><code>browser act kind=evaluate</code> / <code>agdi browser evaluate</code> and <code>wait --fn</code>
+execute arbitrary JavaScript in the page context. Prompt injection can steer
+this. Disable it with <code>browser.evaluateEnabled=false</code> if you do not need it.</li>
+<li>For logins and anti-bot notes (X/Twitter, etc.), see <a href="/docs/tools/browser-login">Browser login + X/Twitter posting</a>.</li>
+<li>Keep the Gateway/node host private (loopback or tailnet-only).</li>
+<li>Remote CDP endpoints are powerful; tunnel and protect them.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<p>For Linux-specific issues (especially snap Chromium), see
+<a href="/docs/tools/browser-linux-troubleshooting">Browser troubleshooting</a>.</p>
+<h2>Agent tools + how control works</h2>
+<p>The agent gets <strong>one tool</strong> for browser automation:</p>
+<ul>
+<li><code>browser</code> — status/start/stop/tabs/open/focus/close/snapshot/screenshot/navigate/act</li>
+</ul>
+<p>How it maps:</p>
+<ul>
+<li><code>browser snapshot</code> returns a stable UI tree (AI or ARIA).</li>
+<li><code>browser act</code> uses the snapshot <code>ref</code> IDs to click/type/drag/select.</li>
+<li><code>browser screenshot</code> captures pixels (full page or element).</li>
+<li><code>browser</code> accepts:<ul>
+<li><code>profile</code> to choose a named browser profile (agdi, chrome, or remote CDP).</li>
+<li><code>target</code> (<code>sandbox</code> | <code>host</code> | <code>node</code>) to select where the browser lives.</li>
+<li>In sandboxed sessions, <code>target: &quot;host&quot;</code> requires <code>agents.defaults.sandbox.browser.allowHostControl=true</code>.</li>
+<li>If <code>target</code> is omitted: sandboxed sessions default to <code>sandbox</code>, non-sandbox sessions default to <code>host</code>.</li>
+<li>If a browser-capable node is connected, the tool may auto-route to it unless you pin <code>target=&quot;host&quot;</code> or <code>target=&quot;node&quot;</code>.</li>
+</ul>
+</li>
+</ul>
+<p>This keeps the agent deterministic and avoids brittle selectors.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

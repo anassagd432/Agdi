@@ -2,12 +2,12 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { captureEnv } from "../test-utils/env.js";
-import { resolveOpenClawAgentDir } from "./agent-paths.js";
+import { resolveAGDIAgentDir } from "./agent-paths.js";
 import {
   installModelsConfigTestHooks,
   withModelsTempHome as withTempHome,
 } from "./models-config.e2e-harness.js";
-import { ensureOpenClawModelsJson } from "./models-config.js";
+import { ensureAGDIModelsJson } from "./models-config.js";
 
 installModelsConfigTestHooks({ restoreFetch: true });
 
@@ -55,7 +55,7 @@ describe("models-config", () => {
           ),
         );
 
-        await ensureOpenClawModelsJson({ models: { providers: {} } }, agentDir);
+        await ensureAGDIModelsJson({ models: { providers: {} } }, agentDir);
 
         const [, opts] = fetchMock.mock.calls[0] as [string, { headers?: Record<string, string> }];
         expect(opts?.headers?.Authorization).toBe("Bearer alpha-token");
@@ -80,7 +80,7 @@ describe("models-config", () => {
       globalThis.fetch = fetchMock as unknown as typeof fetch;
 
       try {
-        await ensureOpenClawModelsJson({
+        await ensureAGDIModelsJson({
           models: {
             providers: {
               "github-copilot": {
@@ -92,7 +92,7 @@ describe("models-config", () => {
           },
         });
 
-        const agentDir = resolveOpenClawAgentDir();
+        const agentDir = resolveAGDIAgentDir();
         const raw = await fs.readFile(path.join(agentDir, "models.json"), "utf8");
         const parsed = JSON.parse(raw) as {
           providers: Record<string, { baseUrl?: string }>;

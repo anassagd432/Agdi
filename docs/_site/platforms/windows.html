@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows (WSL2) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="active" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Windows (WSL2)</h1>
+<p>AGDI on Windows is recommended <strong>via WSL2</strong> (Ubuntu recommended). The
+CLI + Gateway run inside Linux, which keeps the runtime consistent and makes
+tooling far more compatible (Node/Bun/pnpm, Linux binaries, skills). Native
+Windows might be trickier. WSL2 gives you the full Linux experience — one command
+to install: <code>wsl --install</code>.</p>
+<p>Native Windows companion apps are planned.</p>
+<h2>Install (WSL2)</h2>
+<ul>
+<li><a href="/start/getting-started">Getting Started</a> (use inside WSL)</li>
+<li><a href="/install/updating">Install &amp; updates</a></li>
+<li>Official WSL2 guide (Microsoft): <a href="https://learn.microsoft.com/windows/wsl/install">https://learn.microsoft.com/windows/wsl/install</a></li>
+</ul>
+<h2>Gateway</h2>
+<ul>
+<li><a href="/gateway">Gateway runbook</a></li>
+<li><a href="/gateway/configuration">Configuration</a></li>
+</ul>
+<h2>Gateway service install (CLI)</h2>
+<p>Inside WSL2:</p>
+<pre><code>agdi onboard --install-daemon
+</code></pre>
+<p>Or:</p>
+<pre><code>agdi gateway install
+</code></pre>
+<p>Or:</p>
+<pre><code>agdi configure
+</code></pre>
+<p>Select <strong>Gateway service</strong> when prompted.</p>
+<p>Repair/migrate:</p>
+<pre><code>agdi doctor
+</code></pre>
+<h2>Advanced: expose WSL services over LAN (portproxy)</h2>
+<p>WSL has its own virtual network. If another machine needs to reach a service
+running <strong>inside WSL</strong> (SSH, a local TTS server, or the Gateway), you must
+forward a Windows port to the current WSL IP. The WSL IP changes after restarts,
+so you may need to refresh the forwarding rule.</p>
+<p>Example (PowerShell <strong>as Administrator</strong>):</p>
+<pre><code class="language-powershell">$Distro = &quot;Ubuntu-24.04&quot;
+$ListenPort = 2222
+$TargetPort = 22
+
+$WslIp = (wsl -d $Distro -- hostname -I).Trim().Split(&quot; &quot;)[0]
+if (-not $WslIp) { throw &quot;WSL IP not found.&quot; }
+
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=$ListenPort `
+  connectaddress=$WslIp connectport=$TargetPort
+</code></pre>
+<p>Allow the port through Windows Firewall (one-time):</p>
+<pre><code class="language-powershell">New-NetFirewallRule -DisplayName &quot;WSL SSH $ListenPort&quot; -Direction Inbound `
+  -Protocol TCP -LocalPort $ListenPort -Action Allow
+</code></pre>
+<p>Refresh the portproxy after WSL restarts:</p>
+<pre><code class="language-powershell">netsh interface portproxy delete v4tov4 listenport=$ListenPort listenaddress=0.0.0.0 | Out-Null
+netsh interface portproxy add v4tov4 listenport=$ListenPort listenaddress=0.0.0.0 `
+  connectaddress=$WslIp connectport=$TargetPort | Out-Null
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>SSH from another machine targets the <strong>Windows host IP</strong> (example: <code>ssh user@windows-host -p 2222</code>).</li>
+<li>Remote nodes must point at a <strong>reachable</strong> Gateway URL (not <code>127.0.0.1</code>); use
+<code>agdi status --all</code> to confirm.</li>
+<li>Use <code>listenaddress=0.0.0.0</code> for LAN access; <code>127.0.0.1</code> keeps it local only.</li>
+<li>If you want this automatic, register a Scheduled Task to run the refresh
+step at login.</li>
+</ul>
+<h2>Step-by-step WSL2 install</h2>
+<h3>1) Install WSL2 + Ubuntu</h3>
+<p>Open PowerShell (Admin):</p>
+<pre><code class="language-powershell">wsl --install
+# Or pick a distro explicitly:
+wsl --list --online
+wsl --install -d Ubuntu-24.04
+</code></pre>
+<p>Reboot if Windows asks.</p>
+<h3>2) Enable systemd (required for gateway install)</h3>
+<p>In your WSL terminal:</p>
+<pre><code class="language-bash">sudo tee /etc/wsl.conf &gt;/dev/null &lt;&lt;&#39;EOF&#39;
+[boot]
+systemd=true
+EOF
+</code></pre>
+<p>Then from PowerShell:</p>
+<pre><code class="language-powershell">wsl --shutdown
+</code></pre>
+<p>Re-open Ubuntu, then verify:</p>
+<pre><code class="language-bash">systemctl --user status
+</code></pre>
+<h3>3) Install AGDI (inside WSL)</h3>
+<p>Follow the Linux Getting Started flow inside WSL:</p>
+<pre><code class="language-bash">git clone https://github.com/agdi/agdi.git
+cd agdi
+pnpm install
+pnpm ui:build # auto-installs UI deps on first run
+pnpm build
+agdi onboard
+</code></pre>
+<p>Full guide: <a href="/start/getting-started">Getting Started</a></p>
+<h2>Windows companion app</h2>
+<p>We do not have a Windows companion app yet. Contributions are welcome if you want
+contributions to make it happen.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

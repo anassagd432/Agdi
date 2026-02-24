@@ -245,13 +245,13 @@ importers:
 
   extensions/bluebubbles:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/copilot-proxy:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -291,13 +291,13 @@ importers:
         specifier: ^1.39.0
         version: 1.39.0
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/discord:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -313,19 +313,19 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/google-antigravity-auth:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/google-gemini-cli-auth:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -335,37 +335,37 @@ importers:
         specifier: ^10.5.0
         version: 10.5.0
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/imessage:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/irc:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/line:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/llm-task:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/lobster:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -387,19 +387,19 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/mattermost:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/memory-core:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -415,13 +415,13 @@ importers:
         specifier: ^6.22.0
         version: 6.22.0(ws@8.19.0)(zod@4.3.6)
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/minimax-portal-auth:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -440,13 +440,13 @@ importers:
         specifier: ^5.2.1
         version: 5.2.1
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/nextcloud-talk:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -459,31 +459,31 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/open-prose:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/signal:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/slack:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/telegram:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -493,7 +493,7 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -512,7 +512,7 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -528,13 +528,13 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   extensions/whatsapp:
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -544,7 +544,7 @@ importers:
         specifier: 7.22.0
         version: 7.22.0
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
@@ -554,19 +554,19 @@ importers:
         specifier: 0.34.48
         version: 0.34.48
     devDependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   packages/clawdbot:
     dependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 
   packages/moltbot:
     dependencies:
-      openclaw:
+      agdi:
         specifier: workspace:*
         version: link:../..
 

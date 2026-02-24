@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pairing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="active" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Pairing</h1>
+<p>“Pairing” is AGDI’s explicit <strong>owner approval</strong> step.
+It is used in two places:</p>
+<ol>
+<li><strong>DM pairing</strong> (who is allowed to talk to the bot)</li>
+<li><strong>Node pairing</strong> (which devices/nodes are allowed to join the gateway network)</li>
+</ol>
+<p>Security context: <a href="/gateway/security">Security</a></p>
+<h2>1) DM pairing (inbound chat access)</h2>
+<p>When a channel is configured with DM policy <code>pairing</code>, unknown senders get a short code and their message is <strong>not processed</strong> until you approve.</p>
+<p>Default DM policies are documented in: <a href="/gateway/security">Security</a></p>
+<p>Pairing codes:</p>
+<ul>
+<li>8 characters, uppercase, no ambiguous chars (<code>0O1I</code>).</li>
+<li><strong>Expire after 1 hour</strong>. The bot only sends the pairing message when a new request is created (roughly once per hour per sender).</li>
+<li>Pending DM pairing requests are capped at <strong>3 per channel</strong> by default; additional requests are ignored until one expires or is approved.</li>
+</ul>
+<h3>Approve a sender</h3>
+<pre><code class="language-bash">agdi pairing list telegram
+agdi pairing approve telegram &lt;CODE&gt;
+</code></pre>
+<p>Supported channels: <code>telegram</code>, <code>whatsapp</code>, <code>signal</code>, <code>imessage</code>, <code>discord</code>, <code>slack</code>, <code>feishu</code>.</p>
+<h3>Where the state lives</h3>
+<p>Stored under <code>~/.agdi/credentials/</code>:</p>
+<ul>
+<li>Pending requests: <code>&lt;channel&gt;-pairing.json</code></li>
+<li>Approved allowlist store: <code>&lt;channel&gt;-allowFrom.json</code></li>
+</ul>
+<p>Treat these as sensitive (they gate access to your assistant).</p>
+<h2>2) Node device pairing (iOS/Android/macOS/headless nodes)</h2>
+<p>Nodes connect to the Gateway as <strong>devices</strong> with <code>role: node</code>. The Gateway
+creates a device pairing request that must be approved.</p>
+<h3>Pair via Telegram (recommended for iOS)</h3>
+<p>If you use the <code>device-pair</code> plugin, you can do first-time device pairing entirely from Telegram:</p>
+<ol>
+<li>In Telegram, message your bot: <code>/pair</code></li>
+<li>The bot replies with two messages: an instruction message and a separate <strong>setup code</strong> message (easy to copy/paste in Telegram).</li>
+<li>On your phone, open the AGDI iOS app → Settings → Gateway.</li>
+<li>Paste the setup code and connect.</li>
+<li>Back in Telegram: <code>/pair approve</code></li>
+</ol>
+<p>The setup code is a base64-encoded JSON payload that contains:</p>
+<ul>
+<li><code>url</code>: the Gateway WebSocket URL (<code>ws://...</code> or <code>wss://...</code>)</li>
+<li><code>token</code>: a short-lived pairing token</li>
+</ul>
+<p>Treat the setup code like a password while it is valid.</p>
+<h3>Approve a node device</h3>
+<pre><code class="language-bash">agdi devices list
+agdi devices approve &lt;requestId&gt;
+agdi devices reject &lt;requestId&gt;
+</code></pre>
+<h3>Node pairing state storage</h3>
+<p>Stored under <code>~/.agdi/devices/</code>:</p>
+<ul>
+<li><code>pending.json</code> (short-lived; pending requests expire)</li>
+<li><code>paired.json</code> (paired devices + tokens)</li>
+</ul>
+<h3>Notes</h3>
+<ul>
+<li>The legacy <code>node.pair.*</code> API (CLI: <code>agdi nodes pending/approve</code>) is a
+separate gateway-owned pairing store. WS nodes still require device pairing.</li>
+</ul>
+<h2>Related docs</h2>
+<ul>
+<li>Security model + prompt injection: <a href="/gateway/security">Security</a></li>
+<li>Updating safely (run doctor): <a href="/install/updating">Updating</a></li>
+<li>Channel configs:<ul>
+<li>Telegram: <a href="/channels/telegram">Telegram</a></li>
+<li>WhatsApp: <a href="/channels/whatsapp">WhatsApp</a></li>
+<li>Signal: <a href="/channels/signal">Signal</a></li>
+<li>BlueBubbles (iMessage): <a href="/channels/bluebubbles">BlueBubbles</a></li>
+<li>iMessage (legacy): <a href="/channels/imessage">iMessage</a></li>
+<li>Discord: <a href="/channels/discord">Discord</a></li>
+<li>Slack: <a href="/channels/slack">Slack</a></li>
+</ul>
+</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

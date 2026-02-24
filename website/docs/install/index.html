@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Install — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab active" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="active" href="/docs/install/index.html">Install</a></li><li><a class="" href="/docs/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/docs/install/docker.html">Docker</a></li><li><a class="" href="/docs/install/podman.html">Podman</a></li><li><a class="" href="/docs/install/nix.html">Nix</a></li><li><a class="" href="/docs/install/ansible.html">Ansible</a></li><li><a class="" href="/docs/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/docs/install/updating.html">Updating</a></li><li><a class="" href="/docs/install/migrating.html">Migration Guide</a></li><li><a class="" href="/docs/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/docs/install/fly.html">Fly.io</a></li><li><a class="" href="/docs/install/hetzner.html">Hetzner</a></li><li><a class="" href="/docs/install/gcp.html">GCP</a></li><li><a class="" href="/docs/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/docs/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/docs/install/railway.html">railway</a></li><li><a class="" href="/docs/install/render.html">render</a></li><li><a class="" href="/docs/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/docs/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Install</h1>
+<p>Already followed <a href="/docs/start/getting-started">Getting Started</a>? You&#39;re all set — this page is for alternative install methods, platform-specific instructions, and maintenance.</p>
+<h2>System requirements</h2>
+<ul>
+<li><strong><a href="/docs/install/node">Node 22+</a></strong> (the <a href="#install-methods">installer script</a> will install it if missing)</li>
+<li>macOS, Linux, or Windows</li>
+<li><code>pnpm</code> only if you build from source</li>
+</ul>
+<p>On Windows, we strongly recommend running AGDI under <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL2</a>.</p>
+<h2>Install methods</h2>
+<p>The <strong>installer script</strong> is the recommended way to install AGDI. It handles Node detection, installation, and onboarding in one step.</p>
+<pre><code>Downloads the CLI, installs it globally via npm, and launches the onboarding wizard.
+
+
+  
+    ```bash
+    curl -fsSL https://agdi.ai/install.sh | bash
+    ```
+  
+  
+    ```powershell
+    iwr -useb https://agdi.ai/install.ps1 | iex
+    ```
+  
+
+
+That&#39;s it — the script handles Node detection, installation, and onboarding.
+
+To skip onboarding and just install the binary:
+
+
+  
+    ```bash
+    curl -fsSL https://agdi.ai/install.sh | bash -s -- --no-onboard
+    ```
+  
+  
+    ```powershell
+    &amp; ([scriptblock]::Create((iwr -useb https://agdi.ai/install.ps1))) -NoOnboard
+    ```
+  
+
+
+For all flags, env vars, and CI/automation options, see [Installer internals](/install/installer).
+
+
+
+
+If you already have Node 22+ and prefer to manage the install yourself:
+
+
+  
+    ```bash
+    npm install -g agdi@latest
+    agdi onboard --install-daemon
+    ```
+
+    
+      If you have libvips installed globally (common on macOS via Homebrew) and `sharp` fails, force prebuilt binaries:
+
+      ```bash
+      SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm install -g agdi@latest
+      ```
+
+      If you see `sharp: Please add node-gyp to your dependencies`, either install build tooling (macOS: Xcode CLT + `npm install -g node-gyp`) or use the env var above.
+    
+  
+  
+    ```bash
+    pnpm add -g agdi@latest
+    pnpm approve-builds -g        # approve agdi, node-llama-cpp, sharp, etc.
+    agdi onboard --install-daemon
+    ```
+
+    
+    pnpm requires explicit approval for packages with build scripts. After the first install shows the &quot;Ignored build scripts&quot; warning, run `pnpm approve-builds -g` and select the listed packages.
+    
+  
+
+
+
+
+
+For contributors or anyone who wants to run from a local checkout.
+
+
+  
+    Clone the [AGDI repo](https://github.com/agdi/agdi) and build:
+
+    ```bash
+    git clone https://github.com/agdi/agdi.git
+    cd agdi
+    pnpm install
+    pnpm ui:build
+    pnpm build
+    ```
+  
+  
+    Make the `agdi` command available globally:
+
+    ```bash
+    pnpm link --global
+    ```
+
+    Alternatively, skip the link and run commands via `pnpm agdi ...` from inside the repo.
+  
+  
+    ```bash
+    agdi onboard --install-daemon
+    ```
+  
+
+
+For deeper development workflows, see [Setup](/start/setup).
+</code></pre>
+<h2>Other install methods</h2>
+<CardGroup cols={2}>
+  - **[Docker](/install/docker.html)** — Containerized or headless deployments.
+  - **[Podman](/install/podman.html)** — Rootless container: run `setup-podman.sh` once, then the launch script.
+  - **[Nix](/install/nix.html)** — Declarative install via Nix.
+  - **[Ansible](/install/ansible.html)** — Automated fleet provisioning.
+  - **[Bun](/install/bun.html)** — CLI-only usage via the Bun runtime.
+</CardGroup>
+
+<h2>After install</h2>
+<p>Verify everything is working:</p>
+<pre><code class="language-bash">agdi doctor         # check for config issues
+agdi status         # gateway status
+agdi dashboard      # open the browser UI
+</code></pre>
+<p>If you need custom runtime paths, use:</p>
+<ul>
+<li><code>AGDI_HOME</code> for home-directory based internal paths</li>
+<li><code>AGDI_STATE_DIR</code> for mutable state location</li>
+<li><code>AGDI_CONFIG_PATH</code> for config file location</li>
+</ul>
+<p>See <a href="/docs/help/environment">Environment vars</a> for precedence and full details.</p>
+<h2>Troubleshooting: <code>agdi</code> not found</h2>
+<p>  Quick diagnosis:</p>
+<pre><code class="language-bash">node -v
+npm -v
+npm prefix -g
+echo &quot;$PATH&quot;
+</code></pre>
+<p>If <code>$(npm prefix -g)/bin</code> (macOS/Linux) or <code>$(npm prefix -g)</code> (Windows) is <strong>not</strong> in your <code>$PATH</code>, your shell can&#39;t find global npm binaries (including <code>agdi</code>).</p>
+<p>Fix — add it to your shell startup file (<code>~/.zshrc</code> or <code>~/.bashrc</code>):</p>
+<pre><code class="language-bash">export PATH=&quot;$(npm prefix -g)/bin:$PATH&quot;
+</code></pre>
+<p>On Windows, add the output of <code>npm prefix -g</code> to your PATH.</p>
+<p>Then open a new terminal (or <code>rehash</code> in zsh / <code>hash -r</code> in bash).</p>
+<h2>Update / uninstall</h2>
+<CardGroup cols={3}>
+  - **[Updating](/install/updating.html)** — Keep AGDI up to date.
+  - **[Migrating](/install/migrating.html)** — Move to a new machine.
+  - **[Uninstall](/install/uninstall.html)** — Remove AGDI completely.
+</CardGroup></article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

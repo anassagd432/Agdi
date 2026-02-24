@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway on macOS — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="active" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway on macOS (external launchd)</h1>
+<p>AGDI.app no longer bundles Node/Bun or the Gateway runtime. The macOS app
+expects an <strong>external</strong> <code>agdi</code> CLI install, does not spawn the Gateway as a
+child process, and manages a per‑user launchd service to keep the Gateway
+running (or attaches to an existing local Gateway if one is already running).</p>
+<h2>Install the CLI (required for local mode)</h2>
+<p>You need Node 22+ on the Mac, then install <code>agdi</code> globally:</p>
+<pre><code class="language-bash">npm install -g agdi@&lt;version&gt;
+</code></pre>
+<p>The macOS app’s <strong>Install CLI</strong> button runs the same flow via npm/pnpm (bun not recommended for Gateway runtime).</p>
+<h2>Launchd (Gateway as LaunchAgent)</h2>
+<p>Label:</p>
+<ul>
+<li><code>bot.molt.gateway</code> (or <code>bot.molt.&lt;profile&gt;</code>; legacy <code>com.agdi.*</code> may remain)</li>
+</ul>
+<p>Plist location (per‑user):</p>
+<ul>
+<li><code>~/Library/LaunchAgents/bot.molt.gateway.plist</code>
+(or <code>~/Library/LaunchAgents/bot.molt.&lt;profile&gt;.plist</code>)</li>
+</ul>
+<p>Manager:</p>
+<ul>
+<li>The macOS app owns LaunchAgent install/update in Local mode.</li>
+<li>The CLI can also install it: <code>agdi gateway install</code>.</li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li>“AGDI Active” enables/disables the LaunchAgent.</li>
+<li>App quit does <strong>not</strong> stop the gateway (launchd keeps it alive).</li>
+<li>If a Gateway is already running on the configured port, the app attaches to
+it instead of starting a new one.</li>
+</ul>
+<p>Logging:</p>
+<ul>
+<li>launchd stdout/err: <code>/tmp/agdi/agdi-gateway.log</code></li>
+</ul>
+<h2>Version compatibility</h2>
+<p>The macOS app checks the gateway version against its own version. If they’re
+incompatible, update the global CLI to match the app version.</p>
+<h2>Smoke check</h2>
+<pre><code class="language-bash">agdi --version
+
+AGDI_SKIP_CHANNELS=1 \
+AGDI_SKIP_CANVAS_HOST=1 \
+agdi gateway --port 18999 --bind loopback
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-bash">agdi gateway call health --url ws://127.0.0.1:18999 --timeout 3000
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

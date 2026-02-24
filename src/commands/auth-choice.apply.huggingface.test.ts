@@ -12,7 +12,7 @@ const noop = () => {};
 const authProfilePathFor = (agentDir: string) => path.join(agentDir, "auth-profiles.json");
 
 describe("applyAuthChoiceHuggingface", () => {
-  const envSnapshot = captureEnv(["OPENCLAW_AGENT_DIR", "HF_TOKEN", "HUGGINGFACE_HUB_TOKEN"]);
+  const envSnapshot = captureEnv(["AGDI_AGENT_DIR", "HF_TOKEN", "HUGGINGFACE_HUB_TOKEN"]);
   let tempStateDir: string | null = null;
 
   afterEach(async () => {
@@ -35,9 +35,9 @@ describe("applyAuthChoiceHuggingface", () => {
   });
 
   it("prompts for key and model, then writes config and auth profile", async () => {
-    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hf-"));
+    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-hf-"));
     const agentDir = path.join(tempStateDir, "agent");
-    process.env.OPENCLAW_AGENT_DIR = agentDir;
+    process.env.AGDI_AGENT_DIR = agentDir;
     await fs.mkdir(agentDir, { recursive: true });
 
     const text = vi.fn().mockResolvedValue("hf-test-token");
@@ -92,9 +92,9 @@ describe("applyAuthChoiceHuggingface", () => {
   });
 
   it("does not prompt to reuse env token when opts.token already provided", async () => {
-    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-hf-"));
+    tempStateDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-hf-"));
     const agentDir = path.join(tempStateDir, "agent");
-    process.env.OPENCLAW_AGENT_DIR = agentDir;
+    process.env.AGDI_AGENT_DIR = agentDir;
     process.env.HF_TOKEN = "hf-env-token";
     delete process.env.HUGGINGFACE_HUB_TOKEN;
     await fs.mkdir(agentDir, { recursive: true });

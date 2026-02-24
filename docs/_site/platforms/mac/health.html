@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Checks — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="active" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Health Checks on macOS</h1>
+<p>How to see whether the linked channel is healthy from the menu bar app.</p>
+<h2>Menu bar</h2>
+<ul>
+<li>Status dot now reflects Baileys health:<ul>
+<li>Green: linked + socket opened recently.</li>
+<li>Orange: connecting/retrying.</li>
+<li>Red: logged out or probe failed.</li>
+</ul>
+</li>
+<li>Secondary line reads &quot;linked · auth 12m&quot; or shows the failure reason.</li>
+<li>&quot;Run Health Check&quot; menu item triggers an on-demand probe.</li>
+</ul>
+<h2>Settings</h2>
+<ul>
+<li>General tab gains a Health card showing: linked auth age, session-store path/count, last check time, last error/status code, and buttons for Run Health Check / Reveal Logs.</li>
+<li>Uses a cached snapshot so the UI loads instantly and falls back gracefully when offline.</li>
+<li><strong>Channels tab</strong> surfaces channel status + controls for WhatsApp/Telegram (login QR, logout, probe, last disconnect/error).</li>
+</ul>
+<h2>How the probe works</h2>
+<ul>
+<li>App runs <code>agdi health --json</code> via <code>ShellExecutor</code> every ~60s and on demand. The probe loads creds and reports status without sending messages.</li>
+<li>Cache the last good snapshot and the last error separately to avoid flicker; show the timestamp of each.</li>
+</ul>
+<h2>When in doubt</h2>
+<ul>
+<li>You can still use the CLI flow in <a href="/gateway/health">Gateway health</a> (<code>agdi status</code>, <code>agdi status --deep</code>, <code>agdi health --json</code>) and tail <code>/tmp/agdi/agdi-*.log</code> for <code>web-heartbeat</code> / <code>web-reconnect</code>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

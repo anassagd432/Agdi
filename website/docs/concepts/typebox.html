@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeBox — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/docs/cli/index.html">CLI Reference</a></li><li><a class="" href="/docs/cli/agent.html">agent</a></li><li><a class="" href="/docs/cli/agents.html">agents</a></li><li><a class="" href="/docs/cli/approvals.html">approvals</a></li><li><a class="" href="/docs/cli/browser.html">browser</a></li><li><a class="" href="/docs/cli/channels.html">channels</a></li><li><a class="" href="/docs/cli/configure.html">configure</a></li><li><a class="" href="/docs/cli/cron.html">cron</a></li><li><a class="" href="/docs/cli/dashboard.html">dashboard</a></li><li><a class="" href="/docs/cli/directory.html">directory</a></li><li><a class="" href="/docs/cli/dns.html">dns</a></li><li><a class="" href="/docs/cli/docs.html">docs</a></li><li><a class="" href="/docs/cli/doctor.html">doctor</a></li><li><a class="" href="/docs/cli/gateway.html">gateway</a></li><li><a class="" href="/docs/cli/health.html">health</a></li><li><a class="" href="/docs/cli/hooks.html">hooks</a></li><li><a class="" href="/docs/cli/logs.html">logs</a></li><li><a class="" href="/docs/cli/memory.html">memory</a></li><li><a class="" href="/docs/cli/message.html">message</a></li><li><a class="" href="/docs/cli/models.html">models</a></li><li><a class="" href="/docs/cli/nodes.html">nodes</a></li><li><a class="" href="/docs/cli/onboard.html">onboard</a></li><li><a class="" href="/docs/cli/pairing.html">pairing</a></li><li><a class="" href="/docs/cli/plugins.html">plugins</a></li><li><a class="" href="/docs/cli/reset.html">reset</a></li><li><a class="" href="/docs/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/docs/cli/security.html">security</a></li><li><a class="" href="/docs/cli/sessions.html">sessions</a></li><li><a class="" href="/docs/cli/setup.html">setup</a></li><li><a class="" href="/docs/cli/skills.html">skills</a></li><li><a class="" href="/docs/cli/status.html">status</a></li><li><a class="" href="/docs/cli/system.html">system</a></li><li><a class="" href="/docs/cli/tui.html">tui</a></li><li><a class="" href="/docs/cli/uninstall.html">uninstall</a></li><li><a class="" href="/docs/cli/update.html">update</a></li><li><a class="" href="/docs/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/docs/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/docs/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/docs/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/docs/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/docs/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/docs/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/docs/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/docs/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/docs/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/docs/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/docs/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/docs/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="active" href="/docs/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/docs/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/docs/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/docs/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/docs/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/docs/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/docs/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/docs/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/docs/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/docs/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/docs/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/docs/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/docs/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>TypeBox as protocol source of truth</h1>
+<p>Last updated: 2026-01-10</p>
+<p>TypeBox is a TypeScript-first schema library. We use it to define the <strong>Gateway
+WebSocket protocol</strong> (handshake, request/response, server events). Those schemas
+drive <strong>runtime validation</strong>, <strong>JSON Schema export</strong>, and <strong>Swift codegen</strong> for
+the macOS app. One source of truth; everything else is generated.</p>
+<p>If you want the higher-level protocol context, start with
+<a href="/docs/concepts/architecture">Gateway architecture</a>.</p>
+<h2>Mental model (30 seconds)</h2>
+<p>Every Gateway WS message is one of three frames:</p>
+<ul>
+<li><strong>Request</strong>: <code>{ type: &quot;req&quot;, id, method, params }</code></li>
+<li><strong>Response</strong>: <code>{ type: &quot;res&quot;, id, ok, payload | error }</code></li>
+<li><strong>Event</strong>: <code>{ type: &quot;event&quot;, event, payload, seq?, stateVersion? }</code></li>
+</ul>
+<p>The first frame <strong>must</strong> be a <code>connect</code> request. After that, clients can call
+methods (e.g. <code>health</code>, <code>send</code>, <code>chat.send</code>) and subscribe to events (e.g.
+<code>presence</code>, <code>tick</code>, <code>agent</code>).</p>
+<p>Connection flow (minimal):</p>
+<pre><code>Client                    Gateway
+  |---- req:connect --------&gt;|
+  |&lt;---- res:hello-ok --------|
+  |&lt;---- event:tick ----------|
+  |---- req:health ----------&gt;|
+  |&lt;---- res:health ----------|
+</code></pre>
+<p>Common methods + events:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Core</td>
+<td><code>connect</code>, <code>health</code>, <code>status</code></td>
+<td><code>connect</code> must be first</td>
+</tr>
+<tr>
+<td>Messaging</td>
+<td><code>send</code>, <code>poll</code>, <code>agent</code>, <code>agent.wait</code></td>
+<td>side-effects need <code>idempotencyKey</code></td>
+</tr>
+<tr>
+<td>Chat</td>
+<td><code>chat.history</code>, <code>chat.send</code>, <code>chat.abort</code>, <code>chat.inject</code></td>
+<td>WebChat uses these</td>
+</tr>
+<tr>
+<td>Sessions</td>
+<td><code>sessions.list</code>, <code>sessions.patch</code>, <code>sessions.delete</code></td>
+<td>session admin</td>
+</tr>
+<tr>
+<td>Nodes</td>
+<td><code>node.list</code>, <code>node.invoke</code>, <code>node.pair.*</code></td>
+<td>Gateway WS + node actions</td>
+</tr>
+<tr>
+<td>Events</td>
+<td><code>tick</code>, <code>presence</code>, <code>agent</code>, <code>chat</code>, <code>health</code>, <code>shutdown</code></td>
+<td>server push</td>
+</tr>
+</tbody></table>
+<p>Authoritative list lives in <code>src/gateway/server.ts</code> (<code>METHODS</code>, <code>EVENTS</code>).</p>
+<h2>Where the schemas live</h2>
+<ul>
+<li>Source: <code>src/gateway/protocol/schema.ts</code></li>
+<li>Runtime validators (AJV): <code>src/gateway/protocol/index.ts</code></li>
+<li>Server handshake + method dispatch: <code>src/gateway/server.ts</code></li>
+<li>Node client: <code>src/gateway/client.ts</code></li>
+<li>Generated JSON Schema: <code>dist/protocol.schema.json</code></li>
+<li>Generated Swift models: <code>apps/macos/Sources/AGDIProtocol/GatewayModels.swift</code></li>
+</ul>
+<h2>Current pipeline</h2>
+<ul>
+<li><code>pnpm protocol:gen</code><ul>
+<li>writes JSON Schema (draft‑07) to <code>dist/protocol.schema.json</code></li>
+</ul>
+</li>
+<li><code>pnpm protocol:gen:swift</code><ul>
+<li>generates Swift gateway models</li>
+</ul>
+</li>
+<li><code>pnpm protocol:check</code><ul>
+<li>runs both generators and verifies the output is committed</li>
+</ul>
+</li>
+</ul>
+<h2>How the schemas are used at runtime</h2>
+<ul>
+<li><strong>Server side</strong>: every inbound frame is validated with AJV. The handshake only
+accepts a <code>connect</code> request whose params match <code>ConnectParams</code>.</li>
+<li><strong>Client side</strong>: the JS client validates event and response frames before
+using them.</li>
+<li><strong>Method surface</strong>: the Gateway advertises the supported <code>methods</code> and
+<code>events</code> in <code>hello-ok</code>.</li>
+</ul>
+<h2>Example frames</h2>
+<p>Connect (first message):</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;req&quot;,
+  &quot;id&quot;: &quot;c1&quot;,
+  &quot;method&quot;: &quot;connect&quot;,
+  &quot;params&quot;: {
+    &quot;minProtocol&quot;: 2,
+    &quot;maxProtocol&quot;: 2,
+    &quot;client&quot;: {
+      &quot;id&quot;: &quot;agdi-macos&quot;,
+      &quot;displayName&quot;: &quot;macos&quot;,
+      &quot;version&quot;: &quot;1.0.0&quot;,
+      &quot;platform&quot;: &quot;macos 15.1&quot;,
+      &quot;mode&quot;: &quot;ui&quot;,
+      &quot;instanceId&quot;: &quot;A1B2&quot;
+    }
+  }
+}
+</code></pre>
+<p>Hello-ok response:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;res&quot;,
+  &quot;id&quot;: &quot;c1&quot;,
+  &quot;ok&quot;: true,
+  &quot;payload&quot;: {
+    &quot;type&quot;: &quot;hello-ok&quot;,
+    &quot;protocol&quot;: 2,
+    &quot;server&quot;: { &quot;version&quot;: &quot;dev&quot;, &quot;connId&quot;: &quot;ws-1&quot; },
+    &quot;features&quot;: { &quot;methods&quot;: [&quot;health&quot;], &quot;events&quot;: [&quot;tick&quot;] },
+    &quot;snapshot&quot;: {
+      &quot;presence&quot;: [],
+      &quot;health&quot;: {},
+      &quot;stateVersion&quot;: { &quot;presence&quot;: 0, &quot;health&quot;: 0 },
+      &quot;uptimeMs&quot;: 0
+    },
+    &quot;policy&quot;: { &quot;maxPayload&quot;: 1048576, &quot;maxBufferedBytes&quot;: 1048576, &quot;tickIntervalMs&quot;: 30000 }
+  }
+}
+</code></pre>
+<p>Request + response:</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;req&quot;, &quot;id&quot;: &quot;r1&quot;, &quot;method&quot;: &quot;health&quot; }
+</code></pre>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;res&quot;, &quot;id&quot;: &quot;r1&quot;, &quot;ok&quot;: true, &quot;payload&quot;: { &quot;ok&quot;: true } }
+</code></pre>
+<p>Event:</p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;event&quot;, &quot;event&quot;: &quot;tick&quot;, &quot;payload&quot;: { &quot;ts&quot;: 1730000000 }, &quot;seq&quot;: 12 }
+</code></pre>
+<h2>Minimal client (Node.js)</h2>
+<p>Smallest useful flow: connect + health.</p>
+<pre><code class="language-ts">import { WebSocket } from &quot;ws&quot;;
+
+const ws = new WebSocket(&quot;ws://127.0.0.1:18789&quot;);
+
+ws.on(&quot;open&quot;, () =&gt; {
+  ws.send(
+    JSON.stringify({
+      type: &quot;req&quot;,
+      id: &quot;c1&quot;,
+      method: &quot;connect&quot;,
+      params: {
+        minProtocol: 3,
+        maxProtocol: 3,
+        client: {
+          id: &quot;cli&quot;,
+          displayName: &quot;example&quot;,
+          version: &quot;dev&quot;,
+          platform: &quot;node&quot;,
+          mode: &quot;cli&quot;,
+        },
+      },
+    }),
+  );
+});
+
+ws.on(&quot;message&quot;, (data) =&gt; {
+  const msg = JSON.parse(String(data));
+  if (msg.type === &quot;res&quot; &amp;&amp; msg.id === &quot;c1&quot; &amp;&amp; msg.ok) {
+    ws.send(JSON.stringify({ type: &quot;req&quot;, id: &quot;h1&quot;, method: &quot;health&quot; }));
+  }
+  if (msg.type === &quot;res&quot; &amp;&amp; msg.id === &quot;h1&quot;) {
+    console.log(&quot;health:&quot;, msg.payload);
+    ws.close();
+  }
+});
+</code></pre>
+<h2>Worked example: add a method end‑to‑end</h2>
+<p>Example: add a new <code>system.echo</code> request that returns <code>{ ok: true, text }</code>.</p>
+<ol>
+<li><strong>Schema (source of truth)</strong></li>
+</ol>
+<p>Add to <code>src/gateway/protocol/schema.ts</code>:</p>
+<pre><code class="language-ts">export const SystemEchoParamsSchema = Type.Object(
+  { text: NonEmptyString },
+  { additionalProperties: false },
+);
+
+export const SystemEchoResultSchema = Type.Object(
+  { ok: Type.Boolean(), text: NonEmptyString },
+  { additionalProperties: false },
+);
+</code></pre>
+<p>Add both to <code>ProtocolSchemas</code> and export types:</p>
+<pre><code class="language-ts">  SystemEchoParams: SystemEchoParamsSchema,
+  SystemEchoResult: SystemEchoResultSchema,
+</code></pre>
+<pre><code class="language-ts">export type SystemEchoParams = Static&lt;typeof SystemEchoParamsSchema&gt;;
+export type SystemEchoResult = Static&lt;typeof SystemEchoResultSchema&gt;;
+</code></pre>
+<ol start="2">
+<li><strong>Validation</strong></li>
+</ol>
+<p>In <code>src/gateway/protocol/index.ts</code>, export an AJV validator:</p>
+<pre><code class="language-ts">export const validateSystemEchoParams = ajv.compile&lt;SystemEchoParams&gt;(SystemEchoParamsSchema);
+</code></pre>
+<ol start="3">
+<li><strong>Server behavior</strong></li>
+</ol>
+<p>Add a handler in <code>src/gateway/server-methods/system.ts</code>:</p>
+<pre><code class="language-ts">export const systemHandlers: GatewayRequestHandlers = {
+  &quot;system.echo&quot;: ({ params, respond }) =&gt; {
+    const text = String(params.text ?? &quot;&quot;);
+    respond(true, { ok: true, text });
+  },
+};
+</code></pre>
+<p>Register it in <code>src/gateway/server-methods.ts</code> (already merges <code>systemHandlers</code>),
+then add <code>&quot;system.echo&quot;</code> to <code>METHODS</code> in <code>src/gateway/server.ts</code>.</p>
+<ol start="4">
+<li><strong>Regenerate</strong></li>
+</ol>
+<pre><code class="language-bash">pnpm protocol:check
+</code></pre>
+<ol start="5">
+<li><strong>Tests + docs</strong></li>
+</ol>
+<p>Add a server test in <code>src/gateway/server.*.test.ts</code> and note the method in docs.</p>
+<h2>Swift codegen behavior</h2>
+<p>The Swift generator emits:</p>
+<ul>
+<li><code>GatewayFrame</code> enum with <code>req</code>, <code>res</code>, <code>event</code>, and <code>unknown</code> cases</li>
+<li>Strongly typed payload structs/enums</li>
+<li><code>ErrorCode</code> values and <code>GATEWAY_PROTOCOL_VERSION</code></li>
+</ul>
+<p>Unknown frame types are preserved as raw payloads for forward compatibility.</p>
+<h2>Versioning + compatibility</h2>
+<ul>
+<li><code>PROTOCOL_VERSION</code> lives in <code>src/gateway/protocol/schema.ts</code>.</li>
+<li>Clients send <code>minProtocol</code> + <code>maxProtocol</code>; the server rejects mismatches.</li>
+<li>The Swift models keep unknown frame types to avoid breaking older clients.</li>
+</ul>
+<h2>Schema patterns and conventions</h2>
+<ul>
+<li>Most objects use <code>additionalProperties: false</code> for strict payloads.</li>
+<li><code>NonEmptyString</code> is the default for IDs and method/event names.</li>
+<li>The top-level <code>GatewayFrame</code> uses a <strong>discriminator</strong> on <code>type</code>.</li>
+<li>Methods with side effects usually require an <code>idempotencyKey</code> in params
+(example: <code>send</code>, <code>poll</code>, <code>agent</code>, <code>chat.send</code>).</li>
+</ul>
+<h2>Live schema JSON</h2>
+<p>Generated JSON Schema is in the repo at <code>dist/protocol.schema.json</code>. The
+published raw file is typically available at:</p>
+<ul>
+<li><a href="https://raw.githubusercontent.com/agdi/agdi/main/dist/protocol.schema.json">https://raw.githubusercontent.com/agdi/agdi/main/dist/protocol.schema.json</a></li>
+</ul>
+<h2>When you change schemas</h2>
+<ol>
+<li>Update the TypeBox schemas.</li>
+<li>Run <code>pnpm protocol:check</code>.</li>
+<li>Commit the regenerated schema + Swift models.</li>
+</ol>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Updating — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="active" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Updating</h1>
+<p>AGDI is moving fast (pre “1.0”). Treat updates like shipping infra: update → run checks → restart (or use <code>agdi update</code>, which restarts) → verify.</p>
+<h2>Recommended: re-run the website installer (upgrade in place)</h2>
+<p>The <strong>preferred</strong> update path is to re-run the installer from the website. It
+detects existing installs, upgrades in place, and runs <code>agdi doctor</code> when
+needed.</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><p>Add <code>--no-onboard</code> if you don’t want the onboarding wizard to run again.</p>
+</li>
+<li><p>For <strong>source installs</strong>, use:</p>
+<pre><code class="language-bash">curl -fsSL https://agdi.ai/install.sh | bash -s -- --install-method git --no-onboard
+</code></pre>
+<p>The installer will <code>git pull --rebase</code> <strong>only</strong> if the repo is clean.</p>
+</li>
+<li><p>For <strong>global installs</strong>, the script uses <code>npm install -g agdi@latest</code> under the hood.</p>
+</li>
+<li><p>Legacy note: <code>clawdbot</code> remains available as a compatibility shim.</p>
+</li>
+</ul>
+<h2>Before you update</h2>
+<ul>
+<li>Know how you installed: <strong>global</strong> (npm/pnpm) vs <strong>from source</strong> (git clone).</li>
+<li>Know how your Gateway is running: <strong>foreground terminal</strong> vs <strong>supervised service</strong> (launchd/systemd).</li>
+<li>Snapshot your tailoring:<ul>
+<li>Config: <code>~/.agdi/agdi.json</code></li>
+<li>Credentials: <code>~/.agdi/credentials/</code></li>
+<li>Workspace: <code>~/.agdi/workspace</code></li>
+</ul>
+</li>
+</ul>
+<h2>Update (global install)</h2>
+<p>Global install (pick one):</p>
+<pre><code class="language-bash">npm i -g agdi@latest
+</code></pre>
+<pre><code class="language-bash">pnpm add -g agdi@latest
+</code></pre>
+<p>We do <strong>not</strong> recommend Bun for the Gateway runtime (WhatsApp/Telegram bugs).</p>
+<p>To switch update channels (git + npm installs):</p>
+<pre><code class="language-bash">agdi update --channel beta
+agdi update --channel dev
+agdi update --channel stable
+</code></pre>
+<p>Use <code>--tag &lt;dist-tag|version&gt;</code> for a one-off install tag/version.</p>
+<p>See <a href="/install/development-channels">Development channels</a> for channel semantics and release notes.</p>
+<p>Note: on npm installs, the gateway logs an update hint on startup (checks the current channel tag). Disable via <code>update.checkOnStart: false</code>.</p>
+<p>Then:</p>
+<pre><code class="language-bash">agdi doctor
+agdi gateway restart
+agdi health
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If your Gateway runs as a service, <code>agdi gateway restart</code> is preferred over killing PIDs.</li>
+<li>If you’re pinned to a specific version, see “Rollback / pinning” below.</li>
+</ul>
+<h2>Update (<code>agdi update</code>)</h2>
+<p>For <strong>source installs</strong> (git checkout), prefer:</p>
+<pre><code class="language-bash">agdi update
+</code></pre>
+<p>It runs a safe-ish update flow:</p>
+<ul>
+<li>Requires a clean worktree.</li>
+<li>Switches to the selected channel (tag or branch).</li>
+<li>Fetches + rebases against the configured upstream (dev channel).</li>
+<li>Installs deps, builds, builds the Control UI, and runs <code>agdi doctor</code>.</li>
+<li>Restarts the gateway by default (use <code>--no-restart</code> to skip).</li>
+</ul>
+<p>If you installed via <strong>npm/pnpm</strong> (no git metadata), <code>agdi update</code> will try to update via your package manager. If it can’t detect the install, use “Update (global install)” instead.</p>
+<h2>Update (Control UI / RPC)</h2>
+<p>The Control UI has <strong>Update &amp; Restart</strong> (RPC: <code>update.run</code>). It:</p>
+<ol>
+<li>Runs the same source-update flow as <code>agdi update</code> (git checkout only).</li>
+<li>Writes a restart sentinel with a structured report (stdout/stderr tail).</li>
+<li>Restarts the gateway and pings the last active session with the report.</li>
+</ol>
+<p>If the rebase fails, the gateway aborts and restarts without applying the update.</p>
+<h2>Update (from source)</h2>
+<p>From the repo checkout:</p>
+<p>Preferred:</p>
+<pre><code class="language-bash">agdi update
+</code></pre>
+<p>Manual (equivalent-ish):</p>
+<pre><code class="language-bash">git pull
+pnpm install
+pnpm build
+pnpm ui:build # auto-installs UI deps on first run
+agdi doctor
+agdi health
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>pnpm build</code> matters when you run the packaged <code>agdi</code> binary (<a href="https://github.com/agdi/agdi/blob/main/agdi.mjs"><code>agdi.mjs</code></a>) or use Node to run <code>dist/</code>.</li>
+<li>If you run from a repo checkout without a global install, use <code>pnpm agdi ...</code> for CLI commands.</li>
+<li>If you run directly from TypeScript (<code>pnpm agdi ...</code>), a rebuild is usually unnecessary, but <strong>config migrations still apply</strong> → run doctor.</li>
+<li>Switching between global and git installs is easy: install the other flavor, then run <code>agdi doctor</code> so the gateway service entrypoint is rewritten to the current install.</li>
+</ul>
+<h2>Always Run: <code>agdi doctor</code></h2>
+<p>Doctor is the “safe update” command. It’s intentionally boring: repair + migrate + warn.</p>
+<p>Note: if you’re on a <strong>source install</strong> (git checkout), <code>agdi doctor</code> will offer to run <code>agdi update</code> first.</p>
+<p>Typical things it does:</p>
+<ul>
+<li>Migrate deprecated config keys / legacy config file locations.</li>
+<li>Audit DM policies and warn on risky “open” settings.</li>
+<li>Check Gateway health and can offer to restart.</li>
+<li>Detect and migrate older gateway services (launchd/systemd; legacy schtasks) to current AGDI services.</li>
+<li>On Linux, ensure systemd user lingering (so the Gateway survives logout).</li>
+</ul>
+<p>Details: <a href="/gateway/doctor">Doctor</a></p>
+<h2>Start / stop / restart the Gateway</h2>
+<p>CLI (works regardless of OS):</p>
+<pre><code class="language-bash">agdi gateway status
+agdi gateway stop
+agdi gateway restart
+agdi gateway --port 18789
+agdi logs --follow
+</code></pre>
+<p>If you’re supervised:</p>
+<ul>
+<li>macOS launchd (app-bundled LaunchAgent): <code>launchctl kickstart -k gui/$UID/bot.molt.gateway</code> (use <code>bot.molt.&lt;profile&gt;</code>; legacy <code>com.agdi.*</code> still works)</li>
+<li>Linux systemd user service: <code>systemctl --user restart agdi-gateway[-&lt;profile&gt;].service</code></li>
+<li>Windows (WSL2): <code>systemctl --user restart agdi-gateway[-&lt;profile&gt;].service</code><ul>
+<li><code>launchctl</code>/<code>systemctl</code> only work if the service is installed; otherwise run <code>agdi gateway install</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Runbook + exact service labels: <a href="/gateway">Gateway runbook</a></p>
+<h2>Rollback / pinning (when something breaks)</h2>
+<h3>Pin (global install)</h3>
+<p>Install a known-good version (replace <code>&lt;version&gt;</code> with the last working one):</p>
+<pre><code class="language-bash">npm i -g agdi@&lt;version&gt;
+</code></pre>
+<pre><code class="language-bash">pnpm add -g agdi@&lt;version&gt;
+</code></pre>
+<p>Tip: to see the current published version, run <code>npm view agdi version</code>.</p>
+<p>Then restart + re-run doctor:</p>
+<pre><code class="language-bash">agdi doctor
+agdi gateway restart
+</code></pre>
+<h3>Pin (source) by date</h3>
+<p>Pick a commit from a date (example: “state of main as of 2026-01-01”):</p>
+<pre><code class="language-bash">git fetch origin
+git checkout &quot;$(git rev-list -n 1 --before=\&quot;2026-01-01\&quot; origin/main)&quot;
+</code></pre>
+<p>Then reinstall deps + restart:</p>
+<pre><code class="language-bash">pnpm install
+pnpm build
+agdi gateway restart
+</code></pre>
+<p>If you want to go back to latest later:</p>
+<pre><code class="language-bash">git checkout main
+git pull
+</code></pre>
+<h2>If you’re stuck</h2>
+<ul>
+<li>Run <code>agdi doctor</code> again and read the output carefully (it often tells you the fix).</li>
+<li>Check: <a href="/gateway/troubleshooting">Troubleshooting</a></li>
+<li>Ask in Discord: <a href="https://discord.gg/clawd">https://discord.gg/clawd</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

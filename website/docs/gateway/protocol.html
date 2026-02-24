@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Protocol — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="active" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway protocol (WebSocket)</h1>
+<p>The Gateway WS protocol is the <strong>single control plane + node transport</strong> for
+AGDI. All clients (CLI, web UI, macOS app, iOS/Android nodes, headless
+nodes) connect over WebSocket and declare their <strong>role</strong> + <strong>scope</strong> at
+handshake time.</p>
+<h2>Transport</h2>
+<ul>
+<li>WebSocket, text frames with JSON payloads.</li>
+<li>First frame <strong>must</strong> be a <code>connect</code> request.</li>
+</ul>
+<h2>Handshake (connect)</h2>
+<p>Gateway → Client (pre-connect challenge):</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;event&quot;,
+  &quot;event&quot;: &quot;connect.challenge&quot;,
+  &quot;payload&quot;: { &quot;nonce&quot;: &quot;…&quot;, &quot;ts&quot;: 1737264000000 }
+}
+</code></pre>
+<p>Client → Gateway:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;req&quot;,
+  &quot;id&quot;: &quot;…&quot;,
+  &quot;method&quot;: &quot;connect&quot;,
+  &quot;params&quot;: {
+    &quot;minProtocol&quot;: 3,
+    &quot;maxProtocol&quot;: 3,
+    &quot;client&quot;: {
+      &quot;id&quot;: &quot;cli&quot;,
+      &quot;version&quot;: &quot;1.2.3&quot;,
+      &quot;platform&quot;: &quot;macos&quot;,
+      &quot;mode&quot;: &quot;operator&quot;
+    },
+    &quot;role&quot;: &quot;operator&quot;,
+    &quot;scopes&quot;: [&quot;operator.read&quot;, &quot;operator.write&quot;],
+    &quot;caps&quot;: [],
+    &quot;commands&quot;: [],
+    &quot;permissions&quot;: {},
+    &quot;auth&quot;: { &quot;token&quot;: &quot;…&quot; },
+    &quot;locale&quot;: &quot;en-US&quot;,
+    &quot;userAgent&quot;: &quot;agdi-cli/1.2.3&quot;,
+    &quot;device&quot;: {
+      &quot;id&quot;: &quot;device_fingerprint&quot;,
+      &quot;publicKey&quot;: &quot;…&quot;,
+      &quot;signature&quot;: &quot;…&quot;,
+      &quot;signedAt&quot;: 1737264000000,
+      &quot;nonce&quot;: &quot;…&quot;
+    }
+  }
+}
+</code></pre>
+<p>Gateway → Client:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;res&quot;,
+  &quot;id&quot;: &quot;…&quot;,
+  &quot;ok&quot;: true,
+  &quot;payload&quot;: { &quot;type&quot;: &quot;hello-ok&quot;, &quot;protocol&quot;: 3, &quot;policy&quot;: { &quot;tickIntervalMs&quot;: 15000 } }
+}
+</code></pre>
+<p>When a device token is issued, <code>hello-ok</code> also includes:</p>
+<pre><code class="language-json">{
+  &quot;auth&quot;: {
+    &quot;deviceToken&quot;: &quot;…&quot;,
+    &quot;role&quot;: &quot;operator&quot;,
+    &quot;scopes&quot;: [&quot;operator.read&quot;, &quot;operator.write&quot;]
+  }
+}
+</code></pre>
+<h3>Node example</h3>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;req&quot;,
+  &quot;id&quot;: &quot;…&quot;,
+  &quot;method&quot;: &quot;connect&quot;,
+  &quot;params&quot;: {
+    &quot;minProtocol&quot;: 3,
+    &quot;maxProtocol&quot;: 3,
+    &quot;client&quot;: {
+      &quot;id&quot;: &quot;ios-node&quot;,
+      &quot;version&quot;: &quot;1.2.3&quot;,
+      &quot;platform&quot;: &quot;ios&quot;,
+      &quot;mode&quot;: &quot;node&quot;
+    },
+    &quot;role&quot;: &quot;node&quot;,
+    &quot;scopes&quot;: [],
+    &quot;caps&quot;: [&quot;camera&quot;, &quot;canvas&quot;, &quot;screen&quot;, &quot;location&quot;, &quot;voice&quot;],
+    &quot;commands&quot;: [&quot;camera.snap&quot;, &quot;canvas.navigate&quot;, &quot;screen.record&quot;, &quot;location.get&quot;],
+    &quot;permissions&quot;: { &quot;camera.capture&quot;: true, &quot;screen.record&quot;: false },
+    &quot;auth&quot;: { &quot;token&quot;: &quot;…&quot; },
+    &quot;locale&quot;: &quot;en-US&quot;,
+    &quot;userAgent&quot;: &quot;agdi-ios/1.2.3&quot;,
+    &quot;device&quot;: {
+      &quot;id&quot;: &quot;device_fingerprint&quot;,
+      &quot;publicKey&quot;: &quot;…&quot;,
+      &quot;signature&quot;: &quot;…&quot;,
+      &quot;signedAt&quot;: 1737264000000,
+      &quot;nonce&quot;: &quot;…&quot;
+    }
+  }
+}
+</code></pre>
+<h2>Framing</h2>
+<ul>
+<li><strong>Request</strong>: <code>{type:&quot;req&quot;, id, method, params}</code></li>
+<li><strong>Response</strong>: <code>{type:&quot;res&quot;, id, ok, payload|error}</code></li>
+<li><strong>Event</strong>: <code>{type:&quot;event&quot;, event, payload, seq?, stateVersion?}</code></li>
+</ul>
+<p>Side-effecting methods require <strong>idempotency keys</strong> (see schema).</p>
+<h2>Roles + scopes</h2>
+<h3>Roles</h3>
+<ul>
+<li><code>operator</code> = control plane client (CLI/UI/automation).</li>
+<li><code>node</code> = capability host (camera/screen/canvas/system.run).</li>
+</ul>
+<h3>Scopes (operator)</h3>
+<p>Common scopes:</p>
+<ul>
+<li><code>operator.read</code></li>
+<li><code>operator.write</code></li>
+<li><code>operator.admin</code></li>
+<li><code>operator.approvals</code></li>
+<li><code>operator.pairing</code></li>
+</ul>
+<h3>Caps/commands/permissions (node)</h3>
+<p>Nodes declare capability claims at connect time:</p>
+<ul>
+<li><code>caps</code>: high-level capability categories.</li>
+<li><code>commands</code>: command allowlist for invoke.</li>
+<li><code>permissions</code>: granular toggles (e.g. <code>screen.record</code>, <code>camera.capture</code>).</li>
+</ul>
+<p>The Gateway treats these as <strong>claims</strong> and enforces server-side allowlists.</p>
+<h2>Presence</h2>
+<ul>
+<li><code>system-presence</code> returns entries keyed by device identity.</li>
+<li>Presence entries include <code>deviceId</code>, <code>roles</code>, and <code>scopes</code> so UIs can show a single row per device
+even when it connects as both <strong>operator</strong> and <strong>node</strong>.</li>
+</ul>
+<h3>Node helper methods</h3>
+<ul>
+<li>Nodes may call <code>skills.bins</code> to fetch the current list of skill executables
+for auto-allow checks.</li>
+</ul>
+<h2>Exec approvals</h2>
+<ul>
+<li>When an exec request needs approval, the gateway broadcasts <code>exec.approval.requested</code>.</li>
+<li>Operator clients resolve by calling <code>exec.approval.resolve</code> (requires <code>operator.approvals</code> scope).</li>
+</ul>
+<h2>Versioning</h2>
+<ul>
+<li><code>PROTOCOL_VERSION</code> lives in <code>src/gateway/protocol/schema.ts</code>.</li>
+<li>Clients send <code>minProtocol</code> + <code>maxProtocol</code>; the server rejects mismatches.</li>
+<li>Schemas + models are generated from TypeBox definitions:<ul>
+<li><code>pnpm protocol:gen</code></li>
+<li><code>pnpm protocol:gen:swift</code></li>
+<li><code>pnpm protocol:check</code></li>
+</ul>
+</li>
+</ul>
+<h2>Auth</h2>
+<ul>
+<li>If <code>AGDI_GATEWAY_TOKEN</code> (or <code>--token</code>) is set, <code>connect.params.auth.token</code>
+must match or the socket is closed.</li>
+<li>After pairing, the Gateway issues a <strong>device token</strong> scoped to the connection
+role + scopes. It is returned in <code>hello-ok.auth.deviceToken</code> and should be
+persisted by the client for future connects.</li>
+<li>Device tokens can be rotated/revoked via <code>device.token.rotate</code> and
+<code>device.token.revoke</code> (requires <code>operator.pairing</code> scope).</li>
+</ul>
+<h2>Device identity + pairing</h2>
+<ul>
+<li>Nodes should include a stable device identity (<code>device.id</code>) derived from a
+keypair fingerprint.</li>
+<li>Gateways issue tokens per device + role.</li>
+<li>Pairing approvals are required for new device IDs unless local auto-approval
+is enabled.</li>
+<li><strong>Local</strong> connects include loopback and the gateway host’s own tailnet address
+(so same‑host tailnet binds can still auto‑approve).</li>
+<li>All WS clients must include <code>device</code> identity during <code>connect</code> (operator + node).
+Control UI can omit it <strong>only</strong> when <code>gateway.controlUi.allowInsecureAuth</code> is enabled
+(or <code>gateway.controlUi.dangerouslyDisableDeviceAuth</code> for break-glass use).</li>
+<li>Non-local connections must sign the server-provided <code>connect.challenge</code> nonce.</li>
+</ul>
+<h2>TLS + pinning</h2>
+<ul>
+<li>TLS is supported for WS connections.</li>
+<li>Clients may optionally pin the gateway cert fingerprint (see <code>gateway.tls</code>
+config plus <code>gateway.remote.tlsFingerprint</code> or CLI <code>--tls-fingerprint</code>).</li>
+</ul>
+<h2>Scope</h2>
+<p>This protocol exposes the <strong>full gateway API</strong> (status, channels, models, chat,
+agent, sessions, nodes, approvals, etc.). The exact surface is defined by the
+TypeBox schemas in <code>src/gateway/protocol/schema.ts</code>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

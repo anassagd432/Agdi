@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandbox vs Tool Policy vs Elevated — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="active" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Sandbox vs Tool Policy vs Elevated</h1>
+<p>AGDI has three related (but different) controls:</p>
+<ol>
+<li><strong>Sandbox</strong> (<code>agents.defaults.sandbox.*</code> / <code>agents.list[].sandbox.*</code>) decides <strong>where tools run</strong> (Docker vs host).</li>
+<li><strong>Tool policy</strong> (<code>tools.*</code>, <code>tools.sandbox.tools.*</code>, <code>agents.list[].tools.*</code>) decides <strong>which tools are available/allowed</strong>.</li>
+<li><strong>Elevated</strong> (<code>tools.elevated.*</code>, <code>agents.list[].tools.elevated.*</code>) is an <strong>exec-only escape hatch</strong> to run on the host when you’re sandboxed.</li>
+</ol>
+<h2>Quick debug</h2>
+<p>Use the inspector to see what AGDI is <em>actually</em> doing:</p>
+<pre><code class="language-bash">agdi sandbox explain
+agdi sandbox explain --session agent:main:main
+agdi sandbox explain --agent work
+agdi sandbox explain --json
+</code></pre>
+<p>It prints:</p>
+<ul>
+<li>effective sandbox mode/scope/workspace access</li>
+<li>whether the session is currently sandboxed (main vs non-main)</li>
+<li>effective sandbox tool allow/deny (and whether it came from agent/global/default)</li>
+<li>elevated gates and fix-it key paths</li>
+</ul>
+<h2>Sandbox: where tools run</h2>
+<p>Sandboxing is controlled by <code>agents.defaults.sandbox.mode</code>:</p>
+<ul>
+<li><code>&quot;off&quot;</code>: everything runs on the host.</li>
+<li><code>&quot;non-main&quot;</code>: only non-main sessions are sandboxed (common “surprise” for groups/channels).</li>
+<li><code>&quot;all&quot;</code>: everything is sandboxed.</li>
+</ul>
+<p>See <a href="/docs/gateway/sandboxing">Sandboxing</a> for the full matrix (scope, workspace mounts, images).</p>
+<h3>Bind mounts (security quick check)</h3>
+<ul>
+<li><code>docker.binds</code> <em>pierces</em> the sandbox filesystem: whatever you mount is visible inside the container with the mode you set (<code>:ro</code> or <code>:rw</code>).</li>
+<li>Default is read-write if you omit the mode; prefer <code>:ro</code> for source/secrets.</li>
+<li><code>scope: &quot;shared&quot;</code> ignores per-agent binds (only global binds apply).</li>
+<li>Binding <code>/var/run/docker.sock</code> effectively hands host control to the sandbox; only do this intentionally.</li>
+<li>Workspace access (<code>workspaceAccess: &quot;ro&quot;</code>/<code>&quot;rw&quot;</code>) is independent of bind modes.</li>
+</ul>
+<h2>Tool policy: which tools exist/are callable</h2>
+<p>Two layers matter:</p>
+<ul>
+<li><strong>Tool profile</strong>: <code>tools.profile</code> and <code>agents.list[].tools.profile</code> (base allowlist)</li>
+<li><strong>Provider tool profile</strong>: <code>tools.byProvider[provider].profile</code> and <code>agents.list[].tools.byProvider[provider].profile</code></li>
+<li><strong>Global/per-agent tool policy</strong>: <code>tools.allow</code>/<code>tools.deny</code> and <code>agents.list[].tools.allow</code>/<code>agents.list[].tools.deny</code></li>
+<li><strong>Provider tool policy</strong>: <code>tools.byProvider[provider].allow/deny</code> and <code>agents.list[].tools.byProvider[provider].allow/deny</code></li>
+<li><strong>Sandbox tool policy</strong> (only applies when sandboxed): <code>tools.sandbox.tools.allow</code>/<code>tools.sandbox.tools.deny</code> and <code>agents.list[].tools.sandbox.tools.*</code></li>
+</ul>
+<p>Rules of thumb:</p>
+<ul>
+<li><code>deny</code> always wins.</li>
+<li>If <code>allow</code> is non-empty, everything else is treated as blocked.</li>
+<li>Tool policy is the hard stop: <code>/exec</code> cannot override a denied <code>exec</code> tool.</li>
+<li><code>/exec</code> only changes session defaults for authorized senders; it does not grant tool access.
+Provider tool keys accept either <code>provider</code> (e.g. <code>google-antigravity</code>) or <code>provider/model</code> (e.g. <code>openai/gpt-5.2</code>).</li>
+</ul>
+<h3>Tool groups (shorthands)</h3>
+<p>Tool policies (global, agent, sandbox) support <code>group:*</code> entries that expand to multiple tools:</p>
+<pre><code class="language-json5">{
+  tools: {
+    sandbox: {
+      tools: {
+        allow: [&quot;group:runtime&quot;, &quot;group:fs&quot;, &quot;group:sessions&quot;, &quot;group:memory&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Available groups:</p>
+<ul>
+<li><code>group:runtime</code>: <code>exec</code>, <code>bash</code>, <code>process</code></li>
+<li><code>group:fs</code>: <code>read</code>, <code>write</code>, <code>edit</code>, <code>apply_patch</code></li>
+<li><code>group:sessions</code>: <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>sessions_spawn</code>, <code>session_status</code></li>
+<li><code>group:memory</code>: <code>memory_search</code>, <code>memory_get</code></li>
+<li><code>group:ui</code>: <code>browser</code>, <code>canvas</code></li>
+<li><code>group:automation</code>: <code>cron</code>, <code>gateway</code></li>
+<li><code>group:messaging</code>: <code>message</code></li>
+<li><code>group:nodes</code>: <code>nodes</code></li>
+<li><code>group:agdi</code>: all built-in AGDI tools (excludes provider plugins)</li>
+</ul>
+<h2>Elevated: exec-only “run on host”</h2>
+<p>Elevated does <strong>not</strong> grant extra tools; it only affects <code>exec</code>.</p>
+<ul>
+<li>If you’re sandboxed, <code>/elevated on</code> (or <code>exec</code> with <code>elevated: true</code>) runs on the host (approvals may still apply).</li>
+<li>Use <code>/elevated full</code> to skip exec approvals for the session.</li>
+<li>If you’re already running direct, elevated is effectively a no-op (still gated).</li>
+<li>Elevated is <strong>not</strong> skill-scoped and does <strong>not</strong> override tool allow/deny.</li>
+<li><code>/exec</code> is separate from elevated. It only adjusts per-session exec defaults for authorized senders.</li>
+</ul>
+<p>Gates:</p>
+<ul>
+<li>Enablement: <code>tools.elevated.enabled</code> (and optionally <code>agents.list[].tools.elevated.enabled</code>)</li>
+<li>Sender allowlists: <code>tools.elevated.allowFrom.&lt;provider&gt;</code> (and optionally <code>agents.list[].tools.elevated.allowFrom.&lt;provider&gt;</code>)</li>
+</ul>
+<p>See <a href="/docs/tools/elevated">Elevated Mode</a>.</p>
+<h2>Common “sandbox jail” fixes</h2>
+<h3>“Tool X blocked by sandbox tool policy”</h3>
+<p>Fix-it keys (pick one):</p>
+<ul>
+<li>Disable sandbox: <code>agents.defaults.sandbox.mode=off</code> (or per-agent <code>agents.list[].sandbox.mode=off</code>)</li>
+<li>Allow the tool inside sandbox:<ul>
+<li>remove it from <code>tools.sandbox.tools.deny</code> (or per-agent <code>agents.list[].tools.sandbox.tools.deny</code>)</li>
+<li>or add it to <code>tools.sandbox.tools.allow</code> (or per-agent allow)</li>
+</ul>
+</li>
+</ul>
+<h3>“I thought this was main, why is it sandboxed?”</h3>
+<p>In <code>&quot;non-main&quot;</code> mode, group/channel keys are <em>not</em> main. Use the main session key (shown by <code>sandbox explain</code>) or switch mode to <code>&quot;off&quot;</code>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

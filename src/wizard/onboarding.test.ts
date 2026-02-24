@@ -123,7 +123,7 @@ vi.mock("../config/config.js", () => ({
 }));
 
 vi.mock("../commands/onboard-helpers.js", () => ({
-  DEFAULT_WORKSPACE: "/tmp/openclaw-workspace",
+  DEFAULT_WORKSPACE: "/tmp/agdi-workspace",
   applyWizardMetadata: (cfg: unknown) => cfg,
   summarizeExistingConfig: () => "summary",
   handleReset: async () => {},
@@ -220,7 +220,7 @@ describe("runOnboardingWizard", () => {
   let suiteCase = 0;
 
   beforeAll(async () => {
-    suiteRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-onboard-suite-"));
+    suiteRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-onboard-suite-"));
   });
 
   afterAll(async () => {
@@ -237,7 +237,7 @@ describe("runOnboardingWizard", () => {
 
   it("exits when config is invalid", async () => {
     readConfigFileSnapshot.mockResolvedValueOnce({
-      path: "/tmp/.openclaw/openclaw.json",
+      path: "/tmp/.agdi/agdi.json",
       exists: true,
       raw: "{}",
       parsed: {},

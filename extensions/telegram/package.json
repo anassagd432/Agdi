@@ -2,12 +2,12 @@
   "name": "@openclaw/telegram",
   "version": "2026.2.16",
   "private": true,
-  "description": "OpenClaw Telegram channel plugin",
+  "description": "AGDI Telegram channel plugin",
   "type": "module",
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "agdi": "workspace:*"
   },
-  "openclaw": {
+  "agdi": {
     "extensions": [
       "./index.ts"
     ]

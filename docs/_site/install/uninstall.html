@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uninstall — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="active" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Uninstall</h1>
+<p>Two paths:</p>
+<ul>
+<li><strong>Easy path</strong> if <code>agdi</code> is still installed.</li>
+<li><strong>Manual service removal</strong> if the CLI is gone but the service is still running.</li>
+</ul>
+<h2>Easy path (CLI still installed)</h2>
+<p>Recommended: use the built-in uninstaller:</p>
+<pre><code class="language-bash">agdi uninstall
+</code></pre>
+<p>Non-interactive (automation / npx):</p>
+<pre><code class="language-bash">agdi uninstall --all --yes --non-interactive
+npx -y agdi uninstall --all --yes --non-interactive
+</code></pre>
+<p>Manual steps (same result):</p>
+<ol>
+<li>Stop the gateway service:</li>
+</ol>
+<pre><code class="language-bash">agdi gateway stop
+</code></pre>
+<ol start="2">
+<li>Uninstall the gateway service (launchd/systemd/schtasks):</li>
+</ol>
+<pre><code class="language-bash">agdi gateway uninstall
+</code></pre>
+<ol start="3">
+<li>Delete state + config:</li>
+</ol>
+<pre><code class="language-bash">rm -rf &quot;${AGDI_STATE_DIR:-$HOME/.agdi}&quot;
+</code></pre>
+<p>If you set <code>AGDI_CONFIG_PATH</code> to a custom location outside the state dir, delete that file too.</p>
+<ol start="4">
+<li>Delete your workspace (optional, removes agent files):</li>
+</ol>
+<pre><code class="language-bash">rm -rf ~/.agdi/workspace
+</code></pre>
+<ol start="5">
+<li>Remove the CLI install (pick the one you used):</li>
+</ol>
+<pre><code class="language-bash">npm rm -g agdi
+pnpm remove -g agdi
+bun remove -g agdi
+</code></pre>
+<ol start="6">
+<li>If you installed the macOS app:</li>
+</ol>
+<pre><code class="language-bash">rm -rf /Applications/AGDI.app
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If you used profiles (<code>--profile</code> / <code>AGDI_PROFILE</code>), repeat step 3 for each state dir (defaults are <code>~/.agdi-&lt;profile&gt;</code>).</li>
+<li>In remote mode, the state dir lives on the <strong>gateway host</strong>, so run steps 1-4 there too.</li>
+</ul>
+<h2>Manual service removal (CLI not installed)</h2>
+<p>Use this if the gateway service keeps running but <code>agdi</code> is missing.</p>
+<h3>macOS (launchd)</h3>
+<p>Default label is <code>bot.molt.gateway</code> (or <code>bot.molt.&lt;profile&gt;</code>; legacy <code>com.agdi.*</code> may still exist):</p>
+<pre><code class="language-bash">launchctl bootout gui/$UID/bot.molt.gateway
+rm -f ~/Library/LaunchAgents/bot.molt.gateway.plist
+</code></pre>
+<p>If you used a profile, replace the label and plist name with <code>bot.molt.&lt;profile&gt;</code>. Remove any legacy <code>com.agdi.*</code> plists if present.</p>
+<h3>Linux (systemd user unit)</h3>
+<p>Default unit name is <code>agdi-gateway.service</code> (or <code>agdi-gateway-&lt;profile&gt;.service</code>):</p>
+<pre><code class="language-bash">systemctl --user disable --now agdi-gateway.service
+rm -f ~/.config/systemd/user/agdi-gateway.service
+systemctl --user daemon-reload
+</code></pre>
+<h3>Windows (Scheduled Task)</h3>
+<p>Default task name is <code>AGDI Gateway</code> (or <code>AGDI Gateway (&lt;profile&gt;)</code>).
+The task script lives under your state dir.</p>
+<pre><code class="language-powershell">schtasks /Delete /F /TN &quot;AGDI Gateway&quot;
+Remove-Item -Force &quot;$env:USERPROFILE\.agdi\gateway.cmd&quot;
+</code></pre>
+<p>If you used a profile, delete the matching task name and <code>~\.agdi-&lt;profile&gt;\gateway.cmd</code>.</p>
+<h2>Normal install vs source checkout</h2>
+<h3>Normal install (install.sh / npm / pnpm / bun)</h3>
+<p>If you used <code>https://agdi.ai/install.sh</code> or <code>install.ps1</code>, the CLI was installed with <code>npm install -g agdi@latest</code>.
+Remove it with <code>npm rm -g agdi</code> (or <code>pnpm remove -g</code> / <code>bun remove -g</code> if you installed that way).</p>
+<h3>Source checkout (git clone)</h3>
+<p>If you run from a repo checkout (<code>git clone</code> + <code>agdi ...</code> / <code>bun run agdi ...</code>):</p>
+<ol>
+<li>Uninstall the gateway service <strong>before</strong> deleting the repo (use the easy path above or manual service removal).</li>
+<li>Delete the repo directory.</li>
+<li>Remove state + workspace as shown above.</li>
+</ol>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUI — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="active" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>TUI (Terminal UI)</h1>
+<h2>Quick start</h2>
+<ol>
+<li>Start the Gateway.</li>
+</ol>
+<pre><code class="language-bash">agdi gateway
+</code></pre>
+<ol start="2">
+<li>Open the TUI.</li>
+</ol>
+<pre><code class="language-bash">agdi tui
+</code></pre>
+<ol start="3">
+<li>Type a message and press Enter.</li>
+</ol>
+<p>Remote Gateway:</p>
+<pre><code class="language-bash">agdi tui --url ws://&lt;host&gt;:&lt;port&gt; --token &lt;gateway-token&gt;
+</code></pre>
+<p>Use <code>--password</code> if your Gateway uses password auth.</p>
+<h2>What you see</h2>
+<ul>
+<li>Header: connection URL, current agent, current session.</li>
+<li>Chat log: user messages, assistant replies, system notices, tool cards.</li>
+<li>Status line: connection/run state (connecting, running, streaming, idle, error).</li>
+<li>Footer: connection state + agent + session + model + think/verbose/reasoning + token counts + deliver.</li>
+<li>Input: text editor with autocomplete.</li>
+</ul>
+<h2>Mental model: agents + sessions</h2>
+<ul>
+<li>Agents are unique slugs (e.g. <code>main</code>, <code>research</code>). The Gateway exposes the list.</li>
+<li>Sessions belong to the current agent.</li>
+<li>Session keys are stored as <code>agent:&lt;agentId&gt;:&lt;sessionKey&gt;</code>.<ul>
+<li>If you type <code>/session main</code>, the TUI expands it to <code>agent:&lt;currentAgent&gt;:main</code>.</li>
+<li>If you type <code>/session agent:other:main</code>, you switch to that agent session explicitly.</li>
+</ul>
+</li>
+<li>Session scope:<ul>
+<li><code>per-sender</code> (default): each agent has many sessions.</li>
+<li><code>global</code>: the TUI always uses the <code>global</code> session (the picker may be empty).</li>
+</ul>
+</li>
+<li>The current agent + session are always visible in the footer.</li>
+</ul>
+<h2>Sending + delivery</h2>
+<ul>
+<li>Messages are sent to the Gateway; delivery to providers is off by default.</li>
+<li>Turn delivery on:<ul>
+<li><code>/deliver on</code></li>
+<li>or the Settings panel</li>
+<li>or start with <code>agdi tui --deliver</code></li>
+</ul>
+</li>
+</ul>
+<h2>Pickers + overlays</h2>
+<ul>
+<li>Model picker: list available models and set the session override.</li>
+<li>Agent picker: choose a different agent.</li>
+<li>Session picker: shows only sessions for the current agent.</li>
+<li>Settings: toggle deliver, tool output expansion, and thinking visibility.</li>
+</ul>
+<h2>Keyboard shortcuts</h2>
+<ul>
+<li>Enter: send message</li>
+<li>Esc: abort active run</li>
+<li>Ctrl+C: clear input (press twice to exit)</li>
+<li>Ctrl+D: exit</li>
+<li>Ctrl+L: model picker</li>
+<li>Ctrl+G: agent picker</li>
+<li>Ctrl+P: session picker</li>
+<li>Ctrl+O: toggle tool output expansion</li>
+<li>Ctrl+T: toggle thinking visibility (reloads history)</li>
+</ul>
+<h2>Slash commands</h2>
+<p>Core:</p>
+<ul>
+<li><code>/help</code></li>
+<li><code>/status</code></li>
+<li><code>/agent &lt;id&gt;</code> (or <code>/agents</code>)</li>
+<li><code>/session &lt;key&gt;</code> (or <code>/sessions</code>)</li>
+<li><code>/model &lt;provider/model&gt;</code> (or <code>/models</code>)</li>
+</ul>
+<p>Session controls:</p>
+<ul>
+<li><code>/think &lt;off|minimal|low|medium|high&gt;</code></li>
+<li><code>/verbose &lt;on|full|off&gt;</code></li>
+<li><code>/reasoning &lt;on|off|stream&gt;</code></li>
+<li><code>/usage &lt;off|tokens|full&gt;</code></li>
+<li><code>/elevated &lt;on|off|ask|full&gt;</code> (alias: <code>/elev</code>)</li>
+<li><code>/activation &lt;mention|always&gt;</code></li>
+<li><code>/deliver &lt;on|off&gt;</code></li>
+</ul>
+<p>Session lifecycle:</p>
+<ul>
+<li><code>/new</code> or <code>/reset</code> (reset the session)</li>
+<li><code>/abort</code> (abort the active run)</li>
+<li><code>/settings</code></li>
+<li><code>/exit</code></li>
+</ul>
+<p>Other Gateway slash commands (for example, <code>/context</code>) are forwarded to the Gateway and shown as system output. See <a href="/docs/tools/slash-commands">Slash commands</a>.</p>
+<h2>Local shell commands</h2>
+<ul>
+<li>Prefix a line with <code>!</code> to run a local shell command on the TUI host.</li>
+<li>The TUI prompts once per session to allow local execution; declining keeps <code>!</code> disabled for the session.</li>
+<li>Commands run in a fresh, non-interactive shell in the TUI working directory (no persistent <code>cd</code>/env).</li>
+<li>A lone <code>!</code> is sent as a normal message; leading spaces do not trigger local exec.</li>
+</ul>
+<h2>Tool output</h2>
+<ul>
+<li>Tool calls show as cards with args + results.</li>
+<li>Ctrl+O toggles between collapsed/expanded views.</li>
+<li>While tools run, partial updates stream into the same card.</li>
+</ul>
+<h2>History + streaming</h2>
+<ul>
+<li>On connect, the TUI loads the latest history (default 200 messages).</li>
+<li>Streaming responses update in place until finalized.</li>
+<li>The TUI also listens to agent tool events for richer tool cards.</li>
+</ul>
+<h2>Connection details</h2>
+<ul>
+<li>The TUI registers with the Gateway as <code>mode: &quot;tui&quot;</code>.</li>
+<li>Reconnects show a system message; event gaps are surfaced in the log.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><code>--url &lt;url&gt;</code>: Gateway WebSocket URL (defaults to config or <code>ws://127.0.0.1:&lt;port&gt;</code>)</li>
+<li><code>--token &lt;token&gt;</code>: Gateway token (if required)</li>
+<li><code>--password &lt;password&gt;</code>: Gateway password (if required)</li>
+<li><code>--session &lt;key&gt;</code>: Session key (default: <code>main</code>, or <code>global</code> when scope is global)</li>
+<li><code>--deliver</code>: Deliver assistant replies to the provider (default off)</li>
+<li><code>--thinking &lt;level&gt;</code>: Override thinking level for sends</li>
+<li><code>--timeout-ms &lt;ms&gt;</code>: Agent timeout in ms (defaults to <code>agents.defaults.timeoutSeconds</code>)</li>
+</ul>
+<p>Note: when you set <code>--url</code>, the TUI does not fall back to config or environment credentials.
+Pass <code>--token</code> or <code>--password</code> explicitly. Missing explicit credentials is an error.</p>
+<h2>Troubleshooting</h2>
+<p>No output after sending a message:</p>
+<ul>
+<li>Run <code>/status</code> in the TUI to confirm the Gateway is connected and idle/busy.</li>
+<li>Check the Gateway logs: <code>agdi logs --follow</code>.</li>
+<li>Confirm the agent can run: <code>agdi status</code> and <code>agdi models status</code>.</li>
+<li>If you expect messages in a chat channel, enable delivery (<code>/deliver on</code> or <code>--deliver</code>).</li>
+<li><code>--history-limit &lt;n&gt;</code>: History entries to load (default 200)</li>
+</ul>
+<h2>Connection troubleshooting</h2>
+<ul>
+<li><code>disconnected</code>: ensure the Gateway is running and your <code>--url/--token/--password</code> are correct.</li>
+<li>No agents in picker: check <code>agdi agents list</code> and your routing config.</li>
+<li>Empty session picker: you might be in global scope or have no sessions yet.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

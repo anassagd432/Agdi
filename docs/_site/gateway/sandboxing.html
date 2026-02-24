@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandboxing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="active" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Sandboxing</h1>
+<p>AGDI can run <strong>tools inside Docker containers</strong> to reduce blast radius.
+This is <strong>optional</strong> and controlled by configuration (<code>agents.defaults.sandbox</code> or
+<code>agents.list[].sandbox</code>). If sandboxing is off, tools run on the host.
+The Gateway stays on the host; tool execution runs in an isolated sandbox
+when enabled.</p>
+<p>This is not a perfect security boundary, but it materially limits filesystem
+and process access when the model does something dumb.</p>
+<h2>What gets sandboxed</h2>
+<ul>
+<li>Tool execution (<code>exec</code>, <code>read</code>, <code>write</code>, <code>edit</code>, <code>apply_patch</code>, <code>process</code>, etc.).</li>
+<li>Optional sandboxed browser (<code>agents.defaults.sandbox.browser</code>).<ul>
+<li>By default, the sandbox browser auto-starts (ensures CDP is reachable) when the browser tool needs it.
+Configure via <code>agents.defaults.sandbox.browser.autoStart</code> and <code>agents.defaults.sandbox.browser.autoStartTimeoutMs</code>.</li>
+<li><code>agents.defaults.sandbox.browser.allowHostControl</code> lets sandboxed sessions target the host browser explicitly.</li>
+<li>Optional allowlists gate <code>target: &quot;custom&quot;</code>: <code>allowedControlUrls</code>, <code>allowedControlHosts</code>, <code>allowedControlPorts</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Not sandboxed:</p>
+<ul>
+<li>The Gateway process itself.</li>
+<li>Any tool explicitly allowed to run on the host (e.g. <code>tools.elevated</code>).<ul>
+<li><strong>Elevated exec runs on the host and bypasses sandboxing.</strong></li>
+<li>If sandboxing is off, <code>tools.elevated</code> does not change execution (already on host). See <a href="/tools/elevated">Elevated Mode</a>.</li>
+</ul>
+</li>
+</ul>
+<h2>Modes</h2>
+<p><code>agents.defaults.sandbox.mode</code> controls <strong>when</strong> sandboxing is used:</p>
+<ul>
+<li><code>&quot;off&quot;</code>: no sandboxing.</li>
+<li><code>&quot;non-main&quot;</code>: sandbox only <strong>non-main</strong> sessions (default if you want normal chats on host).</li>
+<li><code>&quot;all&quot;</code>: every session runs in a sandbox.
+Note: <code>&quot;non-main&quot;</code> is based on <code>session.mainKey</code> (default <code>&quot;main&quot;</code>), not agent id.
+Group/channel sessions use their own keys, so they count as non-main and will be sandboxed.</li>
+</ul>
+<h2>Scope</h2>
+<p><code>agents.defaults.sandbox.scope</code> controls <strong>how many containers</strong> are created:</p>
+<ul>
+<li><code>&quot;session&quot;</code> (default): one container per session.</li>
+<li><code>&quot;agent&quot;</code>: one container per agent.</li>
+<li><code>&quot;shared&quot;</code>: one container shared by all sandboxed sessions.</li>
+</ul>
+<h2>Workspace access</h2>
+<p><code>agents.defaults.sandbox.workspaceAccess</code> controls <strong>what the sandbox can see</strong>:</p>
+<ul>
+<li><code>&quot;none&quot;</code> (default): tools see a sandbox workspace under <code>~/.agdi/sandboxes</code>.</li>
+<li><code>&quot;ro&quot;</code>: mounts the agent workspace read-only at <code>/agent</code> (disables <code>write</code>/<code>edit</code>/<code>apply_patch</code>).</li>
+<li><code>&quot;rw&quot;</code>: mounts the agent workspace read/write at <code>/workspace</code>.</li>
+</ul>
+<p>Inbound media is copied into the active sandbox workspace (<code>media/inbound/*</code>).
+Skills note: the <code>read</code> tool is sandbox-rooted. With <code>workspaceAccess: &quot;none&quot;</code>,
+AGDI mirrors eligible skills into the sandbox workspace (<code>.../skills</code>) so
+they can be read. With <code>&quot;rw&quot;</code>, workspace skills are readable from
+<code>/workspace/skills</code>.</p>
+<h2>Custom bind mounts</h2>
+<p><code>agents.defaults.sandbox.docker.binds</code> mounts additional host directories into the container.
+Format: <code>host:container:mode</code> (e.g., <code>&quot;/home/user/source:/source:rw&quot;</code>).</p>
+<p>Global and per-agent binds are <strong>merged</strong> (not replaced). Under <code>scope: &quot;shared&quot;</code>, per-agent binds are ignored.</p>
+<p><code>agents.defaults.sandbox.browser.binds</code> mounts additional host directories into the <strong>sandbox browser</strong> container only.</p>
+<ul>
+<li>When set (including <code>[]</code>), it replaces <code>agents.defaults.sandbox.docker.binds</code> for the browser container.</li>
+<li>When omitted, the browser container falls back to <code>agents.defaults.sandbox.docker.binds</code> (backwards compatible).</li>
+</ul>
+<p>Example (read-only source + an extra data directory):</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        docker: {
+          binds: [&quot;/home/user/source:/source:ro&quot;, &quot;/var/data/myapp:/data:ro&quot;],
+        },
+      },
+    },
+    list: [
+      {
+        id: &quot;build&quot;,
+        sandbox: {
+          docker: {
+            binds: [&quot;/mnt/cache:/cache:rw&quot;],
+          },
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Security notes:</p>
+<ul>
+<li>Binds bypass the sandbox filesystem: they expose host paths with whatever mode you set (<code>:ro</code> or <code>:rw</code>).</li>
+<li>AGDI blocks dangerous bind sources (for example: <code>docker.sock</code>, <code>/etc</code>, <code>/proc</code>, <code>/sys</code>, <code>/dev</code>, and parent mounts that would expose them).</li>
+<li>Sensitive mounts (secrets, SSH keys, service credentials) should be <code>:ro</code> unless absolutely required.</li>
+<li>Combine with <code>workspaceAccess: &quot;ro&quot;</code> if you only need read access to the workspace; bind modes stay independent.</li>
+<li>See <a href="/gateway/sandbox-vs-tool-policy-vs-elevated">Sandbox vs Tool Policy vs Elevated</a> for how binds interact with tool policy and elevated exec.</li>
+</ul>
+<h2>Images + setup</h2>
+<p>Default image: <code>agdi-sandbox:bookworm-slim</code></p>
+<p>Build it once:</p>
+<pre><code class="language-bash">scripts/sandbox-setup.sh
+</code></pre>
+<p>Note: the default image does <strong>not</strong> include Node. If a skill needs Node (or
+other runtimes), either bake a custom image or install via
+<code>sandbox.docker.setupCommand</code> (requires network egress + writable root +
+root user).</p>
+<p>Sandboxed browser image:</p>
+<pre><code class="language-bash">scripts/sandbox-browser-setup.sh
+</code></pre>
+<p>By default, sandbox containers run with <strong>no network</strong>.
+Override with <code>agents.defaults.sandbox.docker.network</code>.</p>
+<p>Docker installs and the containerized gateway live here:
+<a href="/install/docker">Docker</a></p>
+<h2>setupCommand (one-time container setup)</h2>
+<p><code>setupCommand</code> runs <strong>once</strong> after the sandbox container is created (not on every run).
+It executes inside the container via <code>sh -lc</code>.</p>
+<p>Paths:</p>
+<ul>
+<li>Global: <code>agents.defaults.sandbox.docker.setupCommand</code></li>
+<li>Per-agent: <code>agents.list[].sandbox.docker.setupCommand</code></li>
+</ul>
+<p>Common pitfalls:</p>
+<ul>
+<li>Default <code>docker.network</code> is <code>&quot;none&quot;</code> (no egress), so package installs will fail.</li>
+<li><code>readOnlyRoot: true</code> prevents writes; set <code>readOnlyRoot: false</code> or bake a custom image.</li>
+<li><code>user</code> must be root for package installs (omit <code>user</code> or set <code>user: &quot;0:0&quot;</code>).</li>
+<li>Sandbox exec does <strong>not</strong> inherit host <code>process.env</code>. Use
+<code>agents.defaults.sandbox.docker.env</code> (or a custom image) for skill API keys.</li>
+</ul>
+<h2>Tool policy + escape hatches</h2>
+<p>Tool allow/deny policies still apply before sandbox rules. If a tool is denied
+globally or per-agent, sandboxing doesn’t bring it back.</p>
+<p><code>tools.elevated</code> is an explicit escape hatch that runs <code>exec</code> on the host.
+<code>/exec</code> directives only apply for authorized senders and persist per session; to hard-disable
+<code>exec</code>, use tool policy deny (see <a href="/gateway/sandbox-vs-tool-policy-vs-elevated">Sandbox vs Tool Policy vs Elevated</a>).</p>
+<p>Debugging:</p>
+<ul>
+<li>Use <code>agdi sandbox explain</code> to inspect effective sandbox mode, tool policy, and fix-it config keys.</li>
+<li>See <a href="/gateway/sandbox-vs-tool-policy-vs-elevated">Sandbox vs Tool Policy vs Elevated</a> for the “why is this blocked?” mental model.
+Keep it locked down.</li>
+</ul>
+<h2>Multi-agent overrides</h2>
+<p>Each agent can override sandbox + tools:
+<code>agents.list[].sandbox</code> and <code>agents.list[].tools</code> (plus <code>agents.list[].tools.sandbox.tools</code> for sandbox tool policy).
+See <a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> for precedence.</p>
+<h2>Minimal enable example</h2>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;,
+        scope: &quot;session&quot;,
+        workspaceAccess: &quot;none&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Related docs</h2>
+<ul>
+<li><a href="/gateway/configuration#agentsdefaults-sandbox">Sandbox Configuration</a></li>
+<li><a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a></li>
+<li><a href="/gateway/security">Security</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

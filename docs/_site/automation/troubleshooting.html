@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="active" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Automation troubleshooting</h1>
+<p>Use this page for scheduler and delivery issues (<code>cron</code> + <code>heartbeat</code>).</p>
+<h2>Command ladder</h2>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Then run automation checks:</p>
+<pre><code class="language-bash">agdi cron status
+agdi cron list
+agdi system heartbeat last
+</code></pre>
+<h2>Cron not firing</h2>
+<pre><code class="language-bash">agdi cron status
+agdi cron list
+agdi cron runs --id &lt;jobId&gt; --limit 20
+agdi logs --follow
+</code></pre>
+<p>Good output looks like:</p>
+<ul>
+<li><code>cron status</code> reports enabled and a future <code>nextWakeAtMs</code>.</li>
+<li>Job is enabled and has a valid schedule/timezone.</li>
+<li><code>cron runs</code> shows <code>ok</code> or explicit skip reason.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>cron: scheduler disabled; jobs will not run automatically</code> → cron disabled in config/env.</li>
+<li><code>cron: timer tick failed</code> → scheduler tick crashed; inspect surrounding stack/log context.</li>
+<li><code>reason: not-due</code> in run output → manual run called without <code>--force</code> and job not due yet.</li>
+</ul>
+<h2>Cron fired but no delivery</h2>
+<pre><code class="language-bash">agdi cron runs --id &lt;jobId&gt; --limit 20
+agdi cron list
+agdi channels status --probe
+agdi logs --follow
+</code></pre>
+<p>Good output looks like:</p>
+<ul>
+<li>Run status is <code>ok</code>.</li>
+<li>Delivery mode/target are set for isolated jobs.</li>
+<li>Channel probe reports target channel connected.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li>Run succeeded but delivery mode is <code>none</code> → no external message is expected.</li>
+<li>Delivery target missing/invalid (<code>channel</code>/<code>to</code>) → run may succeed internally but skip outbound.</li>
+<li>Channel auth errors (<code>unauthorized</code>, <code>missing_scope</code>, <code>Forbidden</code>) → delivery blocked by channel credentials/permissions.</li>
+</ul>
+<h2>Heartbeat suppressed or skipped</h2>
+<pre><code class="language-bash">agdi system heartbeat last
+agdi logs --follow
+agdi config get agents.defaults.heartbeat
+agdi channels status --probe
+</code></pre>
+<p>Good output looks like:</p>
+<ul>
+<li>Heartbeat enabled with non-zero interval.</li>
+<li>Last heartbeat result is <code>ran</code> (or skip reason is understood).</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>heartbeat skipped</code> with <code>reason=quiet-hours</code> → outside <code>activeHours</code>.</li>
+<li><code>requests-in-flight</code> → main lane busy; heartbeat deferred.</li>
+<li><code>empty-heartbeat-file</code> → <code>HEARTBEAT.md</code> exists but has no actionable content.</li>
+<li><code>alerts-disabled</code> → visibility settings suppress outbound heartbeat messages.</li>
+</ul>
+<h2>Timezone and activeHours gotchas</h2>
+<pre><code class="language-bash">agdi config get agents.defaults.heartbeat.activeHours
+agdi config get agents.defaults.heartbeat.activeHours.timezone
+agdi config get agents.defaults.userTimezone || echo &quot;agents.defaults.userTimezone not set&quot;
+agdi cron list
+agdi logs --follow
+</code></pre>
+<p>Quick rules:</p>
+<ul>
+<li><code>Config path not found: agents.defaults.userTimezone</code> means the key is unset; heartbeat falls back to host timezone (or <code>activeHours.timezone</code> if set).</li>
+<li>Cron without <code>--tz</code> uses gateway host timezone.</li>
+<li>Heartbeat <code>activeHours</code> uses configured timezone resolution (<code>user</code>, <code>local</code>, or explicit IANA tz).</li>
+<li>ISO timestamps without timezone are treated as UTC for cron <code>at</code> schedules.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li>Jobs run at the wrong wall-clock time after host timezone changes.</li>
+<li>Heartbeat always skipped during your daytime because <code>activeHours.timezone</code> is wrong.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/automation/cron-jobs">/automation/cron-jobs</a></li>
+<li><a href="/gateway/heartbeat">/gateway/heartbeat</a></li>
+<li><a href="/automation/cron-vs-heartbeat">/automation/cron-vs-heartbeat</a></li>
+<li><a href="/concepts/timezone">/concepts/timezone</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

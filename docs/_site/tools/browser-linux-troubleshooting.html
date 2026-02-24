@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="active" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Browser Troubleshooting (Linux)</h1>
+<h2>Problem: &quot;Failed to start Chrome CDP on port 18800&quot;</h2>
+<p>AGDI&#39;s browser control server fails to launch Chrome/Brave/Edge/Chromium with the error:</p>
+<pre><code>{&quot;error&quot;:&quot;Error: Failed to start Chrome CDP on port 18800 for profile \&quot;agdi\&quot;.&quot;}
+</code></pre>
+<h3>Root Cause</h3>
+<p>On Ubuntu (and many Linux distros), the default Chromium installation is a <strong>snap package</strong>. Snap&#39;s AppArmor confinement interferes with how AGDI spawns and monitors the browser process.</p>
+<p>The <code>apt install chromium</code> command installs a stub package that redirects to snap:</p>
+<pre><code>Note, selecting &#39;chromium-browser&#39; instead of &#39;chromium&#39;
+chromium-browser is already the newest version (2:1snap1-0ubuntu2).
+</code></pre>
+<p>This is NOT a real browser — it&#39;s just a wrapper.</p>
+<h3>Solution 1: Install Google Chrome (Recommended)</h3>
+<p>Install the official Google Chrome <code>.deb</code> package, which is not sandboxed by snap:</p>
+<pre><code class="language-bash">wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+sudo apt --fix-broken install -y  # if there are dependency errors
+</code></pre>
+<p>Then update your AGDI config (<code>~/.agdi/agdi.json</code>):</p>
+<pre><code class="language-json">{
+  &quot;browser&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;executablePath&quot;: &quot;/usr/bin/google-chrome-stable&quot;,
+    &quot;headless&quot;: true,
+    &quot;noSandbox&quot;: true
+  }
+}
+</code></pre>
+<h3>Solution 2: Use Snap Chromium with Attach-Only Mode</h3>
+<p>If you must use snap Chromium, configure AGDI to attach to a manually-started browser:</p>
+<ol>
+<li>Update config:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;browser&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;attachOnly&quot;: true,
+    &quot;headless&quot;: true,
+    &quot;noSandbox&quot;: true
+  }
+}
+</code></pre>
+<ol start="2">
+<li>Start Chromium manually:</li>
+</ol>
+<pre><code class="language-bash">chromium-browser --headless --no-sandbox --disable-gpu \
+  --remote-debugging-port=18800 \
+  --user-data-dir=$HOME/.agdi/browser/agdi/user-data \
+  about:blank &amp;
+</code></pre>
+<ol start="3">
+<li>Optionally create a systemd user service to auto-start Chrome:</li>
+</ol>
+<pre><code class="language-ini"># ~/.config/systemd/user/agdi-browser.service
+[Unit]
+Description=AGDI Browser (Chrome CDP)
+After=network.target
+
+[Service]
+ExecStart=/snap/bin/chromium --headless --no-sandbox --disable-gpu --remote-debugging-port=18800 --user-data-dir=%h/.agdi/browser/agdi/user-data about:blank
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+</code></pre>
+<p>Enable with: <code>systemctl --user enable --now agdi-browser.service</code></p>
+<h3>Verifying the Browser Works</h3>
+<p>Check status:</p>
+<pre><code class="language-bash">curl -s http://127.0.0.1:18791/ | jq &#39;{running, pid, chosenBrowser}&#39;
+</code></pre>
+<p>Test browsing:</p>
+<pre><code class="language-bash">curl -s -X POST http://127.0.0.1:18791/start
+curl -s http://127.0.0.1:18791/tabs
+</code></pre>
+<h3>Config Reference</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>browser.enabled</code></td>
+<td>Enable browser control</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>browser.executablePath</code></td>
+<td>Path to a Chromium-based browser binary (Chrome/Brave/Edge/Chromium)</td>
+<td>auto-detected (prefers default browser when Chromium-based)</td>
+</tr>
+<tr>
+<td><code>browser.headless</code></td>
+<td>Run without GUI</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>browser.noSandbox</code></td>
+<td>Add <code>--no-sandbox</code> flag (needed for some Linux setups)</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>browser.attachOnly</code></td>
+<td>Don&#39;t launch browser, only attach to existing</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>browser.cdpPort</code></td>
+<td>Chrome DevTools Protocol port</td>
+<td><code>18800</code></td>
+</tr>
+</tbody></table>
+<h3>Problem: &quot;Chrome extension relay is running, but no tab is connected&quot;</h3>
+<p>You’re using the <code>chrome</code> profile (extension relay). It expects the AGDI
+browser extension to be attached to a live tab.</p>
+<p>Fix options:</p>
+<ol>
+<li><strong>Use the managed browser:</strong> <code>agdi browser start --browser-profile agdi</code>
+(or set <code>browser.defaultProfile: &quot;agdi&quot;</code>).</li>
+<li><strong>Use the extension relay:</strong> install the extension, open a tab, and click the
+AGDI extension icon to attach it.</li>
+</ol>
+<p>Notes:</p>
+<ul>
+<li>The <code>chrome</code> profile uses your <strong>system default Chromium browser</strong> when possible.</li>
+<li>Local <code>agdi</code> profiles auto-assign <code>cdpPort</code>/<code>cdpUrl</code>; only set those for remote CDP.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

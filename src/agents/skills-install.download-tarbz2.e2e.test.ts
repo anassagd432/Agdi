@@ -8,13 +8,13 @@ const runCommandWithTimeoutMock = vi.fn();
 const scanDirectoryWithSummaryMock = vi.fn();
 const fetchWithSsrFGuardMock = vi.fn();
 
-const originalOpenClawStateDir = process.env.OPENCLAW_STATE_DIR;
+const originalAGDIStateDir = process.env.AGDI_STATE_DIR;
 
 afterEach(() => {
-  if (originalOpenClawStateDir === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+  if (originalAGDIStateDir === undefined) {
+    delete process.env.AGDI_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = originalOpenClawStateDir;
+    process.env.AGDI_STATE_DIR = originalAGDIStateDir;
   }
 });
 
@@ -45,7 +45,7 @@ async function writeDownloadSkill(params: {
   const skillDir = path.join(params.workspaceDir, "skills", params.name);
   await fs.mkdir(skillDir, { recursive: true });
   const meta = {
-    openclaw: {
+    agdi: {
       install: [
         {
           id: params.installId,
@@ -77,7 +77,7 @@ metadata: ${JSON.stringify(meta)}
 
 function setTempStateDir(workspaceDir: string): string {
   const stateDir = path.join(workspaceDir, "state");
-  process.env.OPENCLAW_STATE_DIR = stateDir;
+  process.env.AGDI_STATE_DIR = stateDir;
   return stateDir;
 }
 
@@ -96,7 +96,7 @@ describe("installSkill download extraction safety (tar.bz2)", () => {
   });
 
   it("rejects tar.bz2 traversal before extraction", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "tbz2-slip", "target");
@@ -146,7 +146,7 @@ describe("installSkill download extraction safety (tar.bz2)", () => {
   });
 
   it("rejects tar.bz2 archives containing symlinks", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "tbz2-symlink", "target");
@@ -204,7 +204,7 @@ describe("installSkill download extraction safety (tar.bz2)", () => {
   });
 
   it("extracts tar.bz2 with stripComponents safely (preflight only)", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "tbz2-ok", "target");
@@ -261,7 +261,7 @@ describe("installSkill download extraction safety (tar.bz2)", () => {
   });
 
   it("rejects tar.bz2 stripComponents escape", async () => {
-    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-skills-install-"));
+    const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-skills-install-"));
     try {
       const stateDir = setTempStateDir(workspaceDir);
       const targetDir = path.join(stateDir, "tools", "tbz2-strip-escape", "target");

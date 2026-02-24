@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Command — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab active" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/docs/tools/lobster.html">Lobster</a></li><li><a class="" href="/docs/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/docs/tools/exec.html">Exec Tool</a></li><li><a class="" href="/docs/tools/web.html">Web Tools</a></li><li><a class="" href="/docs/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/docs/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/docs/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/docs/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/docs/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/docs/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/docs/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/docs/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/docs/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/docs/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/docs/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/docs/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/docs/tools/skills.html">Skills</a></li><li><a class="" href="/docs/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/docs/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/docs/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/docs/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/docs/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/automation/hooks.html">Hooks</a></li><li><a class="" href="/docs/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/docs/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/docs/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/docs/automation/webhook.html">Webhooks</a></li><li><a class="" href="/docs/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/docs/automation/poll.html">Polls</a></li><li><a class="" href="/docs/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/docs/nodes/index.html">Nodes</a></li><li><a class="" href="/docs/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/docs/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/docs/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/docs/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/docs/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/docs/nodes/voicewake.html">Voice Wake</a></li><li><a class="active" href="/docs/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Location command (nodes)</h1>
+<h2>TL;DR</h2>
+<ul>
+<li><code>location.get</code> is a node command (via <code>node.invoke</code>).</li>
+<li>Off by default.</li>
+<li>Settings use a selector: Off / While Using / Always.</li>
+<li>Separate toggle: Precise Location.</li>
+</ul>
+<h2>Why a selector (not just a switch)</h2>
+<p>OS permissions are multi-level. We can expose a selector in-app, but the OS still decides the actual grant.</p>
+<ul>
+<li>iOS/macOS: user can choose <strong>While Using</strong> or <strong>Always</strong> in system prompts/Settings. App can request upgrade, but OS may require Settings.</li>
+<li>Android: background location is a separate permission; on Android 10+ it often requires a Settings flow.</li>
+<li>Precise location is a separate grant (iOS 14+ “Precise”, Android “fine” vs “coarse”).</li>
+</ul>
+<p>Selector in UI drives our requested mode; actual grant lives in OS settings.</p>
+<h2>Settings model</h2>
+<p>Per node device:</p>
+<ul>
+<li><code>location.enabledMode</code>: <code>off | whileUsing | always</code></li>
+<li><code>location.preciseEnabled</code>: bool</li>
+</ul>
+<p>UI behavior:</p>
+<ul>
+<li>Selecting <code>whileUsing</code> requests foreground permission.</li>
+<li>Selecting <code>always</code> first ensures <code>whileUsing</code>, then requests background (or sends user to Settings if required).</li>
+<li>If OS denies requested level, revert to the highest granted level and show status.</li>
+</ul>
+<h2>Permissions mapping (node.permissions)</h2>
+<p>Optional. macOS node reports <code>location</code> via the permissions map; iOS/Android may omit it.</p>
+<h2>Command: <code>location.get</code></h2>
+<p>Called via <code>node.invoke</code>.</p>
+<p>Params (suggested):</p>
+<pre><code class="language-json">{
+  &quot;timeoutMs&quot;: 10000,
+  &quot;maxAgeMs&quot;: 15000,
+  &quot;desiredAccuracy&quot;: &quot;coarse|balanced|precise&quot;
+}
+</code></pre>
+<p>Response payload:</p>
+<pre><code class="language-json">{
+  &quot;lat&quot;: 48.20849,
+  &quot;lon&quot;: 16.37208,
+  &quot;accuracyMeters&quot;: 12.5,
+  &quot;altitudeMeters&quot;: 182.0,
+  &quot;speedMps&quot;: 0.0,
+  &quot;headingDeg&quot;: 270.0,
+  &quot;timestamp&quot;: &quot;2026-01-03T12:34:56.000Z&quot;,
+  &quot;isPrecise&quot;: true,
+  &quot;source&quot;: &quot;gps|wifi|cell|unknown&quot;
+}
+</code></pre>
+<p>Errors (stable codes):</p>
+<ul>
+<li><code>LOCATION_DISABLED</code>: selector is off.</li>
+<li><code>LOCATION_PERMISSION_REQUIRED</code>: permission missing for requested mode.</li>
+<li><code>LOCATION_BACKGROUND_UNAVAILABLE</code>: app is backgrounded but only While Using allowed.</li>
+<li><code>LOCATION_TIMEOUT</code>: no fix in time.</li>
+<li><code>LOCATION_UNAVAILABLE</code>: system failure / no providers.</li>
+</ul>
+<h2>Background behavior (future)</h2>
+<p>Goal: model can request location even when node is backgrounded, but only when:</p>
+<ul>
+<li>User selected <strong>Always</strong>.</li>
+<li>OS grants background location.</li>
+<li>App is allowed to run in background for location (iOS background mode / Android foreground service or special allowance).</li>
+</ul>
+<p>Push-triggered flow (future):</p>
+<ol>
+<li>Gateway sends a push to the node (silent push or FCM data).</li>
+<li>Node wakes briefly and requests location from the device.</li>
+<li>Node forwards payload to Gateway.</li>
+</ol>
+<p>Notes:</p>
+<ul>
+<li>iOS: Always permission + background location mode required. Silent push may be throttled; expect intermittent failures.</li>
+<li>Android: background location may require a foreground service; otherwise, expect denial.</li>
+</ul>
+<h2>Model/tooling integration</h2>
+<ul>
+<li>Tool surface: <code>nodes</code> tool adds <code>location_get</code> action (node required).</li>
+<li>CLI: <code>agdi nodes location get --node &lt;id&gt;</code>.</li>
+<li>Agent guidelines: only call when user enabled location and understands the scope.</li>
+</ul>
+<h2>UX copy (suggested)</h2>
+<ul>
+<li>Off: “Location sharing is disabled.”</li>
+<li>While Using: “Only when AGDI is open.”</li>
+<li>Always: “Allow background location. Requires system permission.”</li>
+<li>Precise: “Use precise GPS location. Toggle off to share approximate location.”</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

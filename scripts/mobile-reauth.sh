@@ -32,7 +32,7 @@ case "$AUTH_STATUS" in
         "$SCRIPT_DIR/claude-auth-status.sh" full
         exit 0
         ;;
-    CLAUDE_EXPIRING|OPENCLAW_EXPIRING|CLAWDBOT_EXPIRING)
+    CLAUDE_EXPIRING|AGDI_EXPIRING|AGDI_EXPIRING)
         echo -e "${YELLOW}Auth is expiring soon.${NC}"
         echo ""
         ;;
@@ -69,11 +69,11 @@ if claude setup-token; then
     echo ""
     "$SCRIPT_DIR/claude-auth-status.sh" full
 
-    # Restart openclaw service if running
-    if systemctl --user is-active openclaw >/dev/null 2>&1; then
+    # Restart agdi service if running
+    if systemctl --user is-active agdi >/dev/null 2>&1; then
         echo ""
-        echo "Restarting openclaw service..."
-        systemctl --user restart openclaw
+        echo "Restarting agdi service..."
+        systemctl --user restart agdi
         echo -e "${GREEN}Service restarted.${NC}"
     fi
 else

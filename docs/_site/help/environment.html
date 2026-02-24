@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environment Variables — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="active" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Environment variables</h1>
+<p>AGDI pulls environment variables from multiple sources. The rule is <strong>never override existing values</strong>.</p>
+<h2>Precedence (highest → lowest)</h2>
+<ol>
+<li><strong>Process environment</strong> (what the Gateway process already has from the parent shell/daemon).</li>
+<li><strong><code>.env</code> in the current working directory</strong> (dotenv default; does not override).</li>
+<li><strong>Global <code>.env</code></strong> at <code>~/.agdi/.env</code> (aka <code>$AGDI_STATE_DIR/.env</code>; does not override).</li>
+<li><strong>Config <code>env</code> block</strong> in <code>~/.agdi/agdi.json</code> (applied only if missing).</li>
+<li><strong>Optional login-shell import</strong> (<code>env.shellEnv.enabled</code> or <code>AGDI_LOAD_SHELL_ENV=1</code>), applied only for missing expected keys.</li>
+</ol>
+<p>If the config file is missing entirely, step 4 is skipped; shell import still runs if enabled.</p>
+<h2>Config <code>env</code> block</h2>
+<p>Two equivalent ways to set inline env vars (both are non-overriding):</p>
+<pre><code class="language-json5">{
+  env: {
+    OPENROUTER_API_KEY: &quot;sk-or-...&quot;,
+    vars: {
+      GROQ_API_KEY: &quot;gsk-...&quot;,
+    },
+  },
+}
+</code></pre>
+<h2>Shell env import</h2>
+<p><code>env.shellEnv</code> runs your login shell and imports only <strong>missing</strong> expected keys:</p>
+<pre><code class="language-json5">{
+  env: {
+    shellEnv: {
+      enabled: true,
+      timeoutMs: 15000,
+    },
+  },
+}
+</code></pre>
+<p>Env var equivalents:</p>
+<ul>
+<li><code>AGDI_LOAD_SHELL_ENV=1</code></li>
+<li><code>AGDI_SHELL_ENV_TIMEOUT_MS=15000</code></li>
+</ul>
+<h2>Env var substitution in config</h2>
+<p>You can reference env vars directly in config string values using <code>${VAR_NAME}</code> syntax:</p>
+<pre><code class="language-json5">{
+  models: {
+    providers: {
+      &quot;vercel-gateway&quot;: {
+        apiKey: &quot;${VERCEL_GATEWAY_API_KEY}&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<p>See <a href="/gateway/configuration#env-var-substitution-in-config">Configuration: Env var substitution</a> for full details.</p>
+<h2>Path-related env vars</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AGDI_HOME</code></td>
+<td>Override the home directory used for all internal path resolution (<code>~/.agdi/</code>, agent dirs, sessions, credentials). Useful when running AGDI as a dedicated service user.</td>
+</tr>
+<tr>
+<td><code>AGDI_STATE_DIR</code></td>
+<td>Override the state directory (default <code>~/.agdi</code>).</td>
+</tr>
+<tr>
+<td><code>AGDI_CONFIG_PATH</code></td>
+<td>Override the config file path (default <code>~/.agdi/agdi.json</code>).</td>
+</tr>
+</tbody></table>
+<h3><code>AGDI_HOME</code></h3>
+<p>When set, <code>AGDI_HOME</code> replaces the system home directory (<code>$HOME</code> / <code>os.homedir()</code>) for all internal path resolution. This enables full filesystem isolation for headless service accounts.</p>
+<p><strong>Precedence:</strong> <code>AGDI_HOME</code> &gt; <code>$HOME</code> &gt; <code>USERPROFILE</code> &gt; <code>os.homedir()</code></p>
+<p><strong>Example</strong> (macOS LaunchDaemon):</p>
+<pre><code class="language-xml">&lt;key&gt;EnvironmentVariables&lt;/key&gt;
+&lt;dict&gt;
+  &lt;key&gt;AGDI_HOME&lt;/key&gt;
+  &lt;string&gt;/Users/kira&lt;/string&gt;
+&lt;/dict&gt;
+</code></pre>
+<p><code>AGDI_HOME</code> can also be set to a tilde path (e.g. <code>~/svc</code>), which gets expanded using <code>$HOME</code> before use.</p>
+<h2>Related</h2>
+<ul>
+<li><a href="/gateway/configuration">Gateway configuration</a></li>
+<li><a href="/help/faq#env-vars-and-env-loading">FAQ: env vars and .env loading</a></li>
+<li><a href="/concepts/models">Models overview</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

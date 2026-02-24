@@ -5,7 +5,7 @@ import { sleep } from "../utils.js";
 import {
   getCallGatewayMock,
   resetSessionsSpawnConfigOverride,
-} from "./openclaw-tools.subagents.sessions-spawn.test-harness.js";
+} from "./agdi-tools.subagents.sessions-spawn.test-harness.js";
 import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 
 vi.mock("./pi-embedded.js", () => ({
@@ -17,13 +17,13 @@ vi.mock("./pi-embedded.js", () => ({
 
 const callGatewayMock = getCallGatewayMock();
 
-type CreateOpenClawTools = (typeof import("./openclaw-tools.js"))["createOpenClawTools"];
-type CreateOpenClawToolsOpts = Parameters<CreateOpenClawTools>[0];
+type CreateAGDITools = (typeof import("./agdi-tools.js"))["createAGDITools"];
+type CreateAGDIToolsOpts = Parameters<CreateAGDITools>[0];
 
-async function getSessionsSpawnTool(opts: CreateOpenClawToolsOpts) {
+async function getSessionsSpawnTool(opts: CreateAGDIToolsOpts) {
   // Dynamic import: ensure harness mocks are installed before tool modules load.
-  const { createOpenClawTools } = await import("./openclaw-tools.js");
-  const tool = createOpenClawTools(opts).find((candidate) => candidate.name === "sessions_spawn");
+  const { createAGDITools } = await import("./agdi-tools.js");
+  const tool = createAGDITools(opts).find((candidate) => candidate.name === "sessions_spawn");
   if (!tool) {
     throw new Error("missing sessions_spawn tool");
   }
@@ -135,7 +135,7 @@ const waitFor = async (predicate: () => boolean, timeoutMs = 2000) => {
   }
 };
 
-describe("openclaw-tools: subagents (sessions_spawn lifecycle)", () => {
+describe("agdi-tools: subagents (sessions_spawn lifecycle)", () => {
   beforeEach(() => {
     resetSessionsSpawnConfigOverride();
   });

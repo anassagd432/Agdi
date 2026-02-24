@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { OpenClawApp } from "./app.ts";
+import { AgdiApp } from "./app.ts";
 import "../styles.css";
 
 // oxlint-disable-next-line typescript/unbound-method
-const originalConnect = OpenClawApp.prototype.connect;
+const originalConnect = AgdiApp.prototype.connect;
 
 function mountApp(pathname: string) {
   window.history.replaceState({}, "", pathname);
-  const app = document.createElement("openclaw-app") as OpenClawApp;
+  const app = document.createElement("agdi-app") as AgdiApp;
   document.body.append(app);
   return app;
 }
@@ -19,17 +19,17 @@ function nextFrame() {
 }
 
 beforeEach(() => {
-  OpenClawApp.prototype.connect = () => {
+  AgdiApp.prototype.connect = () => {
     // no-op: avoid real gateway WS connections in browser tests
   };
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  window.__AGDI_CONTROL_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });
 
 afterEach(() => {
-  OpenClawApp.prototype.connect = originalConnect;
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  AgdiApp.prototype.connect = originalConnect;
+  window.__AGDI_CONTROL_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });
@@ -62,7 +62,7 @@ describe("control UI routing", () => {
   });
 
   it("honors explicit base path overrides", async () => {
-    window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = "/openclaw";
+    window.__AGDI_CONTROL_UI_BASE_PATH__ = "/openclaw";
     const app = mountApp("/openclaw/sessions");
     await app.updateComplete;
 

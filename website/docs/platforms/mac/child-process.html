@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway Lifecycle — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab active" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/docs/platforms/index.html">Platforms</a></li><li><a class="" href="/docs/platforms/macos.html">macOS App</a></li><li><a class="" href="/docs/platforms/linux.html">Linux App</a></li><li><a class="" href="/docs/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/docs/platforms/android.html">Android App</a></li><li><a class="" href="/docs/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/docs/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/docs/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/docs/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/docs/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/docs/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/docs/platforms/mac/canvas.html">Canvas</a></li><li><a class="active" href="/docs/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/docs/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/docs/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="" href="/docs/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/docs/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/docs/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/docs/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/docs/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/docs/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/docs/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/docs/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/docs/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway lifecycle on macOS</h1>
+<p>The macOS app <strong>manages the Gateway via launchd</strong> by default and does not spawn
+the Gateway as a child process. It first tries to attach to an already‑running
+Gateway on the configured port; if none is reachable, it enables the launchd
+service via the external <code>agdi</code> CLI (no embedded runtime). This gives you
+reliable auto‑start at login and restart on crashes.</p>
+<p>Child‑process mode (Gateway spawned directly by the app) is <strong>not in use</strong> today.
+If you need tighter coupling to the UI, run the Gateway manually in a terminal.</p>
+<h2>Default behavior (launchd)</h2>
+<ul>
+<li>The app installs a per‑user LaunchAgent labeled <code>bot.molt.gateway</code>
+(or <code>bot.molt.&lt;profile&gt;</code> when using <code>--profile</code>/<code>AGDI_PROFILE</code>; legacy <code>com.agdi.*</code> is supported).</li>
+<li>When Local mode is enabled, the app ensures the LaunchAgent is loaded and
+starts the Gateway if needed.</li>
+<li>Logs are written to the launchd gateway log path (visible in Debug Settings).</li>
+</ul>
+<p>Common commands:</p>
+<pre><code class="language-bash">launchctl kickstart -k gui/$UID/bot.molt.gateway
+launchctl bootout gui/$UID/bot.molt.gateway
+</code></pre>
+<p>Replace the label with <code>bot.molt.&lt;profile&gt;</code> when running a named profile.</p>
+<h2>Unsigned dev builds</h2>
+<p><code>scripts/restart-mac.sh --no-sign</code> is for fast local builds when you don’t have
+signing keys. To prevent launchd from pointing at an unsigned relay binary, it:</p>
+<ul>
+<li>Writes <code>~/.agdi/disable-launchagent</code>.</li>
+</ul>
+<p>Signed runs of <code>scripts/restart-mac.sh</code> clear this override if the marker is
+present. To reset manually:</p>
+<pre><code class="language-bash">rm ~/.agdi/disable-launchagent
+</code></pre>
+<h2>Attach-only mode</h2>
+<p>To force the macOS app to <strong>never install or manage launchd</strong>, launch it with
+<code>--attach-only</code> (or <code>--no-launchd</code>). This sets <code>~/.agdi/disable-launchagent</code>,
+so the app only attaches to an already running Gateway. You can toggle the same
+behavior in Debug Settings.</p>
+<h2>Remote mode</h2>
+<p>Remote mode never starts a local Gateway. The app uses an SSH tunnel to the
+remote host and connects over that tunnel.</p>
+<h2>Why we prefer launchd</h2>
+<ul>
+<li>Auto‑start at login.</li>
+<li>Built‑in restart/KeepAlive semantics.</li>
+<li>Predictable logs and supervision.</li>
+</ul>
+<p>If a true child‑process mode is ever needed again, it should be documented as a
+separate, explicit dev‑only mode.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

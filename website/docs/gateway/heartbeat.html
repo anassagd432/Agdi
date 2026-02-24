@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heartbeat — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab active" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/docs/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/docs/gateway/configuration.html">Configuration</a></li><li><a class="" href="/docs/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/docs/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/docs/gateway/authentication.html">Authentication</a></li><li><a class="" href="/docs/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/docs/gateway/health.html">Health Checks</a></li><li><a class="active" href="/docs/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/docs/gateway/doctor.html">Doctor</a></li><li><a class="" href="/docs/gateway/logging.html">Logging</a></li><li><a class="" href="/docs/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/docs/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/docs/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/docs/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/docs/gateway/security/index.html">Security</a></li><li><a class="" href="/docs/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/docs/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/docs/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/docs/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/docs/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/docs/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/docs/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/docs/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/docs/gateway/network-model.html">Network model</a></li><li><a class="" href="/docs/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/docs/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/docs/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/docs/gateway/remote.html">Remote Access</a></li><li><a class="" href="/docs/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/docs/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/docs/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/docs/web/index.html">Web</a></li><li><a class="" href="/docs/web/control-ui.html">Control UI</a></li><li><a class="" href="/docs/web/dashboard.html">Dashboard</a></li><li><a class="" href="/docs/web/webchat.html">WebChat</a></li><li><a class="" href="/docs/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Heartbeat (Gateway)</h1>
+<blockquote>
+<p><strong>Heartbeat vs Cron?</strong> See <a href="/docs/automation/cron-vs-heartbeat">Cron vs Heartbeat</a> for guidance on when to use each.</p>
+</blockquote>
+<p>Heartbeat runs <strong>periodic agent turns</strong> in the main session so the model can
+surface anything that needs attention without spamming you.</p>
+<p>Troubleshooting: <a href="/docs/automation/troubleshooting">/automation/troubleshooting</a></p>
+<h2>Quick start (beginner)</h2>
+<ol>
+<li>Leave heartbeats enabled (default is <code>30m</code>, or <code>1h</code> for Anthropic OAuth/setup-token) or set your own cadence.</li>
+<li>Create a tiny <code>HEARTBEAT.md</code> checklist in the agent workspace (optional but recommended).</li>
+<li>Decide where heartbeat messages should go (<code>target: &quot;last&quot;</code> is the default).</li>
+<li>Optional: enable heartbeat reasoning delivery for transparency.</li>
+<li>Optional: restrict heartbeats to active hours (local time).</li>
+</ol>
+<p>Example config:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;,
+        target: &quot;last&quot;,
+        // activeHours: { start: &quot;08:00&quot;, end: &quot;24:00&quot; },
+        // includeReasoning: true, // optional: send separate `Reasoning:` message too
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Defaults</h2>
+<ul>
+<li>Interval: <code>30m</code> (or <code>1h</code> when Anthropic OAuth/setup-token is the detected auth mode). Set <code>agents.defaults.heartbeat.every</code> or per-agent <code>agents.list[].heartbeat.every</code>; use <code>0m</code> to disable.</li>
+<li>Prompt body (configurable via <code>agents.defaults.heartbeat.prompt</code>):
+<code>Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.</code></li>
+<li>The heartbeat prompt is sent <strong>verbatim</strong> as the user message. The system
+prompt includes a “Heartbeat” section and the run is flagged internally.</li>
+<li>Active hours (<code>heartbeat.activeHours</code>) are checked in the configured timezone.
+Outside the window, heartbeats are skipped until the next tick inside the window.</li>
+</ul>
+<h2>What the heartbeat prompt is for</h2>
+<p>The default prompt is intentionally broad:</p>
+<ul>
+<li><strong>Background tasks</strong>: “Consider outstanding tasks” nudges the agent to review
+follow-ups (inbox, calendar, reminders, queued work) and surface anything urgent.</li>
+<li><strong>Human check-in</strong>: “Checkup sometimes on your human during day time” nudges an
+occasional lightweight “anything you need?” message, but avoids night-time spam
+by using your configured local timezone (see <a href="/docs/concepts/timezone">/concepts/timezone</a>).</li>
+</ul>
+<p>If you want a heartbeat to do something very specific (e.g. “check Gmail PubSub
+stats” or “verify gateway health”), set <code>agents.defaults.heartbeat.prompt</code> (or
+<code>agents.list[].heartbeat.prompt</code>) to a custom body (sent verbatim).</p>
+<h2>Response contract</h2>
+<ul>
+<li>If nothing needs attention, reply with <strong><code>HEARTBEAT_OK</code></strong>.</li>
+<li>During heartbeat runs, AGDI treats <code>HEARTBEAT_OK</code> as an ack when it appears
+at the <strong>start or end</strong> of the reply. The token is stripped and the reply is
+dropped if the remaining content is <strong>≤ <code>ackMaxChars</code></strong> (default: 300).</li>
+<li>If <code>HEARTBEAT_OK</code> appears in the <strong>middle</strong> of a reply, it is not treated
+specially.</li>
+<li>For alerts, <strong>do not</strong> include <code>HEARTBEAT_OK</code>; return only the alert text.</li>
+</ul>
+<p>Outside heartbeats, stray <code>HEARTBEAT_OK</code> at the start/end of a message is stripped
+and logged; a message that is only <code>HEARTBEAT_OK</code> is dropped.</p>
+<h2>Config</h2>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;, // default: 30m (0m disables)
+        model: &quot;anthropic/claude-opus-4-6&quot;,
+        includeReasoning: false, // default: false (deliver separate Reasoning: message when available)
+        target: &quot;last&quot;, // last | none | &lt;channel id&gt; (core or plugin, e.g. &quot;bluebubbles&quot;)
+        to: &quot;+15551234567&quot;, // optional channel-specific override
+        accountId: &quot;ops-bot&quot;, // optional multi-account channel id
+        prompt: &quot;Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.&quot;,
+        ackMaxChars: 300, // max chars allowed after HEARTBEAT_OK
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Scope and precedence</h3>
+<ul>
+<li><code>agents.defaults.heartbeat</code> sets global heartbeat behavior.</li>
+<li><code>agents.list[].heartbeat</code> merges on top; if any agent has a <code>heartbeat</code> block, <strong>only those agents</strong> run heartbeats.</li>
+<li><code>channels.defaults.heartbeat</code> sets visibility defaults for all channels.</li>
+<li><code>channels.&lt;channel&gt;.heartbeat</code> overrides channel defaults.</li>
+<li><code>channels.&lt;channel&gt;.accounts.&lt;id&gt;.heartbeat</code> (multi-account channels) overrides per-channel settings.</li>
+</ul>
+<h3>Per-agent heartbeats</h3>
+<p>If any <code>agents.list[]</code> entry includes a <code>heartbeat</code> block, <strong>only those agents</strong>
+run heartbeats. The per-agent block merges on top of <code>agents.defaults.heartbeat</code>
+(so you can set shared defaults once and override per agent).</p>
+<p>Example: two agents, only the second agent runs heartbeats.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;,
+        target: &quot;last&quot;,
+      },
+    },
+    list: [
+      { id: &quot;main&quot;, default: true },
+      {
+        id: &quot;ops&quot;,
+        heartbeat: {
+          every: &quot;1h&quot;,
+          target: &quot;whatsapp&quot;,
+          to: &quot;+15551234567&quot;,
+          prompt: &quot;Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.&quot;,
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<h3>Active hours example</h3>
+<p>Restrict heartbeats to business hours in a specific timezone:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;,
+        target: &quot;last&quot;,
+        activeHours: {
+          start: &quot;09:00&quot;,
+          end: &quot;22:00&quot;,
+          timezone: &quot;America/New_York&quot;, // optional; uses your userTimezone if set, otherwise host tz
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Outside this window (before 9am or after 10pm Eastern), heartbeats are skipped. The next scheduled tick inside the window will run normally.</p>
+<h3>Multi account example</h3>
+<p>Use <code>accountId</code> to target a specific account on multi-account channels like Telegram:</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;ops&quot;,
+        heartbeat: {
+          every: &quot;1h&quot;,
+          target: &quot;telegram&quot;,
+          to: &quot;12345678&quot;,
+          accountId: &quot;ops-bot&quot;,
+        },
+      },
+    ],
+  },
+  channels: {
+    telegram: {
+      accounts: {
+        &quot;ops-bot&quot;: { botToken: &quot;YOUR_TELEGRAM_BOT_TOKEN&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Field notes</h3>
+<ul>
+<li><code>every</code>: heartbeat interval (duration string; default unit = minutes).</li>
+<li><code>model</code>: optional model override for heartbeat runs (<code>provider/model</code>).</li>
+<li><code>includeReasoning</code>: when enabled, also deliver the separate <code>Reasoning:</code> message when available (same shape as <code>/reasoning on</code>).</li>
+<li><code>session</code>: optional session key for heartbeat runs.<ul>
+<li><code>main</code> (default): agent main session.</li>
+<li>Explicit session key (copy from <code>agdi sessions --json</code> or the <a href="/docs/cli/sessions">sessions CLI</a>).</li>
+<li>Session key formats: see <a href="/docs/concepts/session">Sessions</a> and <a href="/docs/channels/groups">Groups</a>.</li>
+</ul>
+</li>
+<li><code>target</code>:<ul>
+<li><code>last</code> (default): deliver to the last used external channel.</li>
+<li>explicit channel: <code>whatsapp</code> / <code>telegram</code> / <code>discord</code> / <code>googlechat</code> / <code>slack</code> / <code>msteams</code> / <code>signal</code> / <code>imessage</code>.</li>
+<li><code>none</code>: run the heartbeat but <strong>do not deliver</strong> externally.</li>
+</ul>
+</li>
+<li><code>to</code>: optional recipient override (channel-specific id, e.g. E.164 for WhatsApp or a Telegram chat id).</li>
+<li><code>accountId</code>: optional account id for multi-account channels. When <code>target: &quot;last&quot;</code>, the account id applies to the resolved last channel if it supports accounts; otherwise it is ignored. If the account id does not match a configured account for the resolved channel, delivery is skipped.</li>
+<li><code>prompt</code>: overrides the default prompt body (not merged).</li>
+<li><code>ackMaxChars</code>: max chars allowed after <code>HEARTBEAT_OK</code> before delivery.</li>
+<li><code>activeHours</code>: restricts heartbeat runs to a time window. Object with <code>start</code> (HH:MM, inclusive), <code>end</code> (HH:MM exclusive; <code>24:00</code> allowed for end-of-day), and optional <code>timezone</code>.<ul>
+<li>Omitted or <code>&quot;user&quot;</code>: uses your <code>agents.defaults.userTimezone</code> if set, otherwise falls back to the host system timezone.</li>
+<li><code>&quot;local&quot;</code>: always uses the host system timezone.</li>
+<li>Any IANA identifier (e.g. <code>America/New_York</code>): used directly; if invalid, falls back to the <code>&quot;user&quot;</code> behavior above.</li>
+<li>Outside the active window, heartbeats are skipped until the next tick inside the window.</li>
+</ul>
+</li>
+</ul>
+<h2>Delivery behavior</h2>
+<ul>
+<li>Heartbeats run in the agent’s main session by default (<code>agent:&lt;id&gt;:&lt;mainKey&gt;</code>),
+or <code>global</code> when <code>session.scope = &quot;global&quot;</code>. Set <code>session</code> to override to a
+specific channel session (Discord/WhatsApp/etc.).</li>
+<li><code>session</code> only affects the run context; delivery is controlled by <code>target</code> and <code>to</code>.</li>
+<li>To deliver to a specific channel/recipient, set <code>target</code> + <code>to</code>. With
+<code>target: &quot;last&quot;</code>, delivery uses the last external channel for that session.</li>
+<li>If the main queue is busy, the heartbeat is skipped and retried later.</li>
+<li>If <code>target</code> resolves to no external destination, the run still happens but no
+outbound message is sent.</li>
+<li>Heartbeat-only replies do <strong>not</strong> keep the session alive; the last <code>updatedAt</code>
+is restored so idle expiry behaves normally.</li>
+</ul>
+<h2>Visibility controls</h2>
+<p>By default, <code>HEARTBEAT_OK</code> acknowledgments are suppressed while alert content is
+delivered. You can adjust this per channel or per account:</p>
+<pre><code class="language-yaml">channels:
+  defaults:
+    heartbeat:
+      showOk: false # Hide HEARTBEAT_OK (default)
+      showAlerts: true # Show alert messages (default)
+      useIndicator: true # Emit indicator events (default)
+  telegram:
+    heartbeat:
+      showOk: true # Show OK acknowledgments on Telegram
+  whatsapp:
+    accounts:
+      work:
+        heartbeat:
+          showAlerts: false # Suppress alert delivery for this account
+</code></pre>
+<p>Precedence: per-account → per-channel → channel defaults → built-in defaults.</p>
+<h3>What each flag does</h3>
+<ul>
+<li><code>showOk</code>: sends a <code>HEARTBEAT_OK</code> acknowledgment when the model returns an OK-only reply.</li>
+<li><code>showAlerts</code>: sends the alert content when the model returns a non-OK reply.</li>
+<li><code>useIndicator</code>: emits indicator events for UI status surfaces.</li>
+</ul>
+<p>If <strong>all three</strong> are false, AGDI skips the heartbeat run entirely (no model call).</p>
+<h3>Per-channel vs per-account examples</h3>
+<pre><code class="language-yaml">channels:
+  defaults:
+    heartbeat:
+      showOk: false
+      showAlerts: true
+      useIndicator: true
+  slack:
+    heartbeat:
+      showOk: true # all Slack accounts
+    accounts:
+      ops:
+        heartbeat:
+          showAlerts: false # suppress alerts for the ops account only
+  telegram:
+    heartbeat:
+      showOk: true
+</code></pre>
+<h3>Common patterns</h3>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Config</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Default behavior (silent OKs, alerts on)</td>
+<td><em>(no config needed)</em></td>
+</tr>
+<tr>
+<td>Fully silent (no messages, no indicator)</td>
+<td><code>channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: false }</code></td>
+</tr>
+<tr>
+<td>Indicator-only (no messages)</td>
+<td><code>channels.defaults.heartbeat: { showOk: false, showAlerts: false, useIndicator: true }</code></td>
+</tr>
+<tr>
+<td>OKs in one channel only</td>
+<td><code>channels.telegram.heartbeat: { showOk: true }</code></td>
+</tr>
+</tbody></table>
+<h2>HEARTBEAT.md (optional)</h2>
+<p>If a <code>HEARTBEAT.md</code> file exists in the workspace, the default prompt tells the
+agent to read it. Think of it as your “heartbeat checklist”: small, stable, and
+safe to include every 30 minutes.</p>
+<p>If <code>HEARTBEAT.md</code> exists but is effectively empty (only blank lines and markdown
+headers like <code># Heading</code>), AGDI skips the heartbeat run to save API calls.
+If the file is missing, the heartbeat still runs and the model decides what to do.</p>
+<p>Keep it tiny (short checklist or reminders) to avoid prompt bloat.</p>
+<p>Example <code>HEARTBEAT.md</code>:</p>
+<pre><code class="language-md"># Heartbeat checklist
+
+- Quick scan: anything urgent in inboxes?
+- If it’s daytime, do a lightweight check-in if nothing else is pending.
+- If a task is blocked, write down _what is missing_ and ask Peter next time.
+</code></pre>
+<h3>Can the agent update HEARTBEAT.md?</h3>
+<p>Yes — if you ask it to.</p>
+<p><code>HEARTBEAT.md</code> is just a normal file in the agent workspace, so you can tell the
+agent (in a normal chat) something like:</p>
+<ul>
+<li>“Update <code>HEARTBEAT.md</code> to add a daily calendar check.”</li>
+<li>“Rewrite <code>HEARTBEAT.md</code> so it’s shorter and focused on inbox follow-ups.”</li>
+</ul>
+<p>If you want this to happen proactively, you can also include an explicit line in
+your heartbeat prompt like: “If the checklist becomes stale, update HEARTBEAT.md
+with a better one.”</p>
+<p>Safety note: don’t put secrets (API keys, phone numbers, private tokens) into
+<code>HEARTBEAT.md</code> — it becomes part of the prompt context.</p>
+<h2>Manual wake (on-demand)</h2>
+<p>You can enqueue a system event and trigger an immediate heartbeat with:</p>
+<pre><code class="language-bash">agdi system event --text &quot;Check for urgent follow-ups&quot; --mode now
+</code></pre>
+<p>If multiple agents have <code>heartbeat</code> configured, a manual wake runs each of those
+agent heartbeats immediately.</p>
+<p>Use <code>--mode next-heartbeat</code> to wait for the next scheduled tick.</p>
+<h2>Reasoning delivery (optional)</h2>
+<p>By default, heartbeats deliver only the final “answer” payload.</p>
+<p>If you want transparency, enable:</p>
+<ul>
+<li><code>agents.defaults.heartbeat.includeReasoning: true</code></li>
+</ul>
+<p>When enabled, heartbeats will also deliver a separate message prefixed
+<code>Reasoning:</code> (same shape as <code>/reasoning on</code>). This can be useful when the agent
+is managing multiple sessions/codexes and you want to see why it decided to ping
+you — but it can also leak more internal detail than you want. Prefer keeping it
+off in group chats.</p>
+<h2>Cost awareness</h2>
+<p>Heartbeats run full agent turns. Shorter intervals burn more tokens. Keep
+<code>HEARTBEAT.md</code> small and consider a cheaper <code>model</code> or <code>target: &quot;none&quot;</code> if you
+only want internal state updates.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

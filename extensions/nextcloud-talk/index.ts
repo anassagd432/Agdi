@@ -1,5 +1,5 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
+import { emptyPluginConfigSchema } from "agdi/plugin-sdk";
 import { nextcloudTalkPlugin } from "./src/channel.js";
 import { setNextcloudTalkRuntime } from "./src/runtime.js";
 
@@ -8,7 +8,7 @@ const plugin = {
   name: "Nextcloud Talk",
   description: "Nextcloud Talk channel plugin",
   configSchema: emptyPluginConfigSchema(),
-  register(api: OpenClawPluginApi) {
+  register(api: AGDIPluginApi) {
     setNextcloudTalkRuntime(api.runtime);
     api.registerChannel({ plugin: nextcloudTalkPlugin });
   },

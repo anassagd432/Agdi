@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Podman — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="active" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Podman</h1>
+<p>Run the AGDI gateway in a <strong>rootless</strong> Podman container. Uses the same image as Docker (build from the repo <a href="https://github.com/agdi/agdi/blob/main/Dockerfile">Dockerfile</a>).</p>
+<h2>Requirements</h2>
+<ul>
+<li>Podman (rootless)</li>
+<li>Sudo for one-time setup (create user, build image)</li>
+</ul>
+<h2>Quick start</h2>
+<p><strong>1. One-time setup</strong> (from repo root; creates user, builds image, installs launch script):</p>
+<pre><code class="language-bash">./setup-podman.sh
+</code></pre>
+<p>This also creates a minimal <code>~agdi/.agdi/agdi.json</code> (sets <code>gateway.mode=&quot;local&quot;</code>) so the gateway can start without running the wizard.</p>
+<p>By default the container is <strong>not</strong> installed as a systemd service, you start it manually (see below). For a production-style setup with auto-start and restarts, install it as a systemd Quadlet user service instead:</p>
+<pre><code class="language-bash">./setup-podman.sh --quadlet
+</code></pre>
+<p>(Or set <code>AGDI_PODMAN_QUADLET=1</code>; use <code>--container</code> to install only the container and launch script.)</p>
+<p><strong>2. Start gateway</strong> (manual, for quick smoke testing):</p>
+<pre><code class="language-bash">./scripts/run-agdi-podman.sh launch
+</code></pre>
+<p><strong>3. Onboarding wizard</strong> (e.g. to add channels or providers):</p>
+<pre><code class="language-bash">./scripts/run-agdi-podman.sh launch setup
+</code></pre>
+<p>Then open <code>http://127.0.0.1:18789/</code> and use the token from <code>~agdi/.agdi/.env</code> (or the value printed by setup).</p>
+<h2>Systemd (Quadlet, optional)</h2>
+<p>If you ran <code>./setup-podman.sh --quadlet</code> (or <code>AGDI_PODMAN_QUADLET=1</code>), a <a href="https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html">Podman Quadlet</a> unit is installed so the gateway runs as a systemd user service for the agdi user. The service is enabled and started at the end of setup.</p>
+<ul>
+<li><strong>Start:</strong> <code>sudo systemctl --machine agdi@ --user start agdi.service</code></li>
+<li><strong>Stop:</strong> <code>sudo systemctl --machine agdi@ --user stop agdi.service</code></li>
+<li><strong>Status:</strong> <code>sudo systemctl --machine agdi@ --user status agdi.service</code></li>
+<li><strong>Logs:</strong> <code>sudo journalctl --machine agdi@ --user -u agdi.service -f</code></li>
+</ul>
+<p>The quadlet file lives at <code>~agdi/.config/containers/systemd/agdi.container</code>. To change ports or env, edit that file (or the <code>.env</code> it sources), then <code>sudo systemctl --machine agdi@ --user daemon-reload</code> and restart the service. On boot, the service starts automatically if lingering is enabled for agdi (setup does this when loginctl is available).</p>
+<p>To add quadlet <strong>after</strong> an initial setup that did not use it, re-run: <code>./setup-podman.sh --quadlet</code>.</p>
+<h2>The agdi user (non-login)</h2>
+<p><code>setup-podman.sh</code> creates a dedicated system user <code>agdi</code>:</p>
+<ul>
+<li><p><strong>Shell:</strong> <code>nologin</code> — no interactive login; reduces attack surface.</p>
+</li>
+<li><p><strong>Home:</strong> e.g. <code>/home/agdi</code> — holds <code>~/.agdi</code> (config, workspace) and the launch script <code>run-agdi-podman.sh</code>.</p>
+</li>
+<li><p><strong>Rootless Podman:</strong> The user must have a <strong>subuid</strong> and <strong>subgid</strong> range. Many distros assign these automatically when the user is created. If setup prints a warning, add lines to <code>/etc/subuid</code> and <code>/etc/subgid</code>:</p>
+<pre><code class="language-text">agdi:100000:65536
+</code></pre>
+<p>Then start the gateway as that user (e.g. from cron or systemd):</p>
+<pre><code class="language-bash">sudo -u agdi /home/agdi/run-agdi-podman.sh
+sudo -u agdi /home/agdi/run-agdi-podman.sh setup
+</code></pre>
+</li>
+<li><p><strong>Config:</strong> Only <code>agdi</code> and root can access <code>/home/agdi/.agdi</code>. To edit config: use the Control UI once the gateway is running, or <code>sudo -u agdi $EDITOR /home/agdi/.agdi/agdi.json</code>.</p>
+</li>
+</ul>
+<h2>Environment and config</h2>
+<ul>
+<li><strong>Token:</strong> Stored in <code>~agdi/.agdi/.env</code> as <code>AGDI_GATEWAY_TOKEN</code>. <code>setup-podman.sh</code> and <code>run-agdi-podman.sh</code> generate it if missing (uses <code>openssl</code>, <code>python3</code>, or <code>od</code>).</li>
+<li><strong>Optional:</strong> In that <code>.env</code> you can set provider keys (e.g. <code>GROQ_API_KEY</code>, <code>OLLAMA_API_KEY</code>) and other AGDI env vars.</li>
+<li><strong>Host ports:</strong> By default the script maps <code>18789</code> (gateway) and <code>18790</code> (bridge). Override the <strong>host</strong> port mapping with <code>AGDI_PODMAN_GATEWAY_HOST_PORT</code> and <code>AGDI_PODMAN_BRIDGE_HOST_PORT</code> when launching.</li>
+<li><strong>Paths:</strong> Host config and workspace default to <code>~agdi/.agdi</code> and <code>~agdi/.agdi/workspace</code>. Override the host paths used by the launch script with <code>AGDI_CONFIG_DIR</code> and <code>AGDI_WORKSPACE_DIR</code>.</li>
+</ul>
+<h2>Useful commands</h2>
+<ul>
+<li><strong>Logs:</strong> With quadlet: <code>sudo journalctl --machine agdi@ --user -u agdi.service -f</code>. With script: <code>sudo -u agdi podman logs -f agdi</code></li>
+<li><strong>Stop:</strong> With quadlet: <code>sudo systemctl --machine agdi@ --user stop agdi.service</code>. With script: <code>sudo -u agdi podman stop agdi</code></li>
+<li><strong>Start again:</strong> With quadlet: <code>sudo systemctl --machine agdi@ --user start agdi.service</code>. With script: re-run the launch script or <code>podman start agdi</code></li>
+<li><strong>Remove container:</strong> <code>sudo -u agdi podman rm -f agdi</code> — config and workspace on the host are kept</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Permission denied (EACCES) on config or auth-profiles:</strong> The container defaults to <code>--userns=keep-id</code> and runs as the same uid/gid as the host user running the script. Ensure your host <code>AGDI_CONFIG_DIR</code> and <code>AGDI_WORKSPACE_DIR</code> are owned by that user.</li>
+<li><strong>Gateway start blocked (missing <code>gateway.mode=local</code>):</strong> Ensure <code>~agdi/.agdi/agdi.json</code> exists and sets <code>gateway.mode=&quot;local&quot;</code>. <code>setup-podman.sh</code> creates this file if missing.</li>
+<li><strong>Rootless Podman fails for user agdi:</strong> Check <code>/etc/subuid</code> and <code>/etc/subgid</code> contain a line for <code>agdi</code> (e.g. <code>agdi:100000:65536</code>). Add it if missing and restart.</li>
+<li><strong>Container name in use:</strong> The launch script uses <code>podman run --replace</code>, so the existing container is replaced when you start again. To clean up manually: <code>podman rm -f agdi</code>.</li>
+<li><strong>Script not found when running as agdi:</strong> Ensure <code>setup-podman.sh</code> was run so that <code>run-agdi-podman.sh</code> is copied to agdi’s home (e.g. <code>/home/agdi/run-agdi-podman.sh</code>).</li>
+<li><strong>Quadlet service not found or fails to start:</strong> Run <code>sudo systemctl --machine agdi@ --user daemon-reload</code> after editing the <code>.container</code> file. Quadlet requires cgroups v2: <code>podman info --format &#39;{{.Host.CgroupsVersion}}&#39;</code> should show <code>2</code>.</li>
+</ul>
+<h2>Optional: run as your own user</h2>
+<p>To run the gateway as your normal user (no dedicated agdi user): build the image, create <code>~/.agdi/.env</code> with <code>AGDI_GATEWAY_TOKEN</code>, and run the container with <code>--userns=keep-id</code> and mounts to your <code>~/.agdi</code>. The launch script is designed for the agdi-user flow; for a single-user setup you can instead run the <code>podman run</code> command from the script manually, pointing config and workspace to your home. Recommended for most users: use <code>setup-podman.sh</code> and run as the agdi user so config and process are isolated.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

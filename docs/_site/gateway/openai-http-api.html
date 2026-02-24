@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAI Chat Completions — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="active" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>OpenAI Chat Completions (HTTP)</h1>
+<p>AGDI’s Gateway can serve a small OpenAI-compatible Chat Completions endpoint.</p>
+<p>This endpoint is <strong>disabled by default</strong>. Enable it in config first.</p>
+<ul>
+<li><code>POST /v1/chat/completions</code></li>
+<li>Same port as the Gateway (WS + HTTP multiplex): <code>http://&lt;gateway-host&gt;:&lt;port&gt;/v1/chat/completions</code></li>
+</ul>
+<p>Under the hood, requests are executed as a normal Gateway agent run (same codepath as <code>agdi agent</code>), so routing/permissions/config match your Gateway.</p>
+<h2>Authentication</h2>
+<p>Uses the Gateway auth configuration. Send a bearer token:</p>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>When <code>gateway.auth.mode=&quot;token&quot;</code>, use <code>gateway.auth.token</code> (or <code>AGDI_GATEWAY_TOKEN</code>).</li>
+<li>When <code>gateway.auth.mode=&quot;password&quot;</code>, use <code>gateway.auth.password</code> (or <code>AGDI_GATEWAY_PASSWORD</code>).</li>
+<li>If <code>gateway.auth.rateLimit</code> is configured and too many auth failures occur, the endpoint returns <code>429</code> with <code>Retry-After</code>.</li>
+</ul>
+<h2>Choosing an agent</h2>
+<p>No custom headers required: encode the agent id in the OpenAI <code>model</code> field:</p>
+<ul>
+<li><code>model: &quot;agdi:&lt;agentId&gt;&quot;</code> (example: <code>&quot;agdi:main&quot;</code>, <code>&quot;agdi:beta&quot;</code>)</li>
+<li><code>model: &quot;agent:&lt;agentId&gt;&quot;</code> (alias)</li>
+</ul>
+<p>Or target a specific AGDI agent by header:</p>
+<ul>
+<li><code>x-agdi-agent-id: &lt;agentId&gt;</code> (default: <code>main</code>)</li>
+</ul>
+<p>Advanced:</p>
+<ul>
+<li><code>x-agdi-session-key: &lt;sessionKey&gt;</code> to fully control session routing.</li>
+</ul>
+<h2>Enabling the endpoint</h2>
+<p>Set <code>gateway.http.endpoints.chatCompletions.enabled</code> to <code>true</code>:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    http: {
+      endpoints: {
+        chatCompletions: { enabled: true },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Disabling the endpoint</h2>
+<p>Set <code>gateway.http.endpoints.chatCompletions.enabled</code> to <code>false</code>:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    http: {
+      endpoints: {
+        chatCompletions: { enabled: false },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Session behavior</h2>
+<p>By default the endpoint is <strong>stateless per request</strong> (a new session key is generated each call).</p>
+<p>If the request includes an OpenAI <code>user</code> string, the Gateway derives a stable session key from it, so repeated calls can share an agent session.</p>
+<h2>Streaming (SSE)</h2>
+<p>Set <code>stream: true</code> to receive Server-Sent Events (SSE):</p>
+<ul>
+<li><code>Content-Type: text/event-stream</code></li>
+<li>Each event line is <code>data: &lt;json&gt;</code></li>
+<li>Stream ends with <code>data: [DONE]</code></li>
+</ul>
+<h2>Examples</h2>
+<p>Non-streaming:</p>
+<pre><code class="language-bash">curl -sS http://127.0.0.1:18789/v1/chat/completions \
+  -H &#39;Authorization: Bearer YOUR_TOKEN&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -H &#39;x-agdi-agent-id: main&#39; \
+  -d &#39;{
+    &quot;model&quot;: &quot;agdi&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;hi&quot;}]
+  }&#39;
+</code></pre>
+<p>Streaming:</p>
+<pre><code class="language-bash">curl -N http://127.0.0.1:18789/v1/chat/completions \
+  -H &#39;Authorization: Bearer YOUR_TOKEN&#39; \
+  -H &#39;Content-Type: application/json&#39; \
+  -H &#39;x-agdi-agent-id: main&#39; \
+  -d &#39;{
+    &quot;model&quot;: &quot;agdi&quot;,
+    &quot;stream&quot;: true,
+    &quot;messages&quot;: [{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;hi&quot;}]
+  }&#39;
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -25,7 +25,7 @@ export const confirm = vi.fn().mockResolvedValue(true) as unknown as MockFn;
 export const select = vi.fn().mockResolvedValue("node") as unknown as MockFn;
 export const note = vi.fn() as unknown as MockFn;
 export const writeConfigFile = vi.fn().mockResolvedValue(undefined) as unknown as MockFn;
-export const resolveOpenClawPackageRoot = vi.fn().mockResolvedValue(null) as unknown as MockFn;
+export const resolveAGDIPackageRoot = vi.fn().mockResolvedValue(null) as unknown as MockFn;
 export const runGatewayUpdate = vi.fn().mockResolvedValue({
   status: "skipped",
   mode: "unknown",
@@ -54,7 +54,7 @@ export const ensureAuthProfileStore = vi
   .mockReturnValue({ version: 1, profiles: {} }) as unknown as MockFn;
 
 export const legacyReadConfigFileSnapshot = vi.fn().mockResolvedValue({
-  path: "/tmp/openclaw.json",
+  path: "/tmp/agdi.json",
   exists: false,
   raw: null,
   parsed: {},
@@ -142,14 +142,14 @@ vi.mock("../agents/skills-status.js", () => ({
 }));
 
 vi.mock("../plugins/loader.js", () => ({
-  loadOpenClawPlugins: () => ({ plugins: [], diagnostics: [] }),
+  loadAGDIPlugins: () => ({ plugins: [], diagnostics: [] }),
 }));
 
 vi.mock("../config/config.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../config/config.js")>();
   return {
     ...actual,
-    CONFIG_PATH: "/tmp/openclaw.json",
+    CONFIG_PATH: "/tmp/agdi.json",
     createConfigIO,
     readConfigFileSnapshot,
     writeConfigFile,
@@ -184,8 +184,8 @@ vi.mock("../process/exec.js", () => ({
   runCommandWithTimeout,
 }));
 
-vi.mock("../infra/openclaw-root.js", () => ({
-  resolveOpenClawPackageRoot,
+vi.mock("../infra/agdi-root.js", () => ({
+  resolveAGDIPackageRoot,
 }));
 
 vi.mock("../infra/update-runner.js", () => ({
@@ -268,7 +268,7 @@ export async function arrangeLegacyStateMigrationTest(): Promise<{
   runLegacyStateMigrations: MockFn;
 }> {
   readConfigFileSnapshot.mockResolvedValue({
-    path: "/tmp/openclaw.json",
+    path: "/tmp/agdi.json",
     exists: true,
     raw: "{}",
     parsed: {},
@@ -340,7 +340,7 @@ beforeEach(() => {
 
   readConfigFileSnapshot.mockReset();
   writeConfigFile.mockReset().mockResolvedValue(undefined);
-  resolveOpenClawPackageRoot.mockReset().mockResolvedValue(null);
+  resolveAGDIPackageRoot.mockReset().mockResolvedValue(null);
   runGatewayUpdate.mockReset().mockResolvedValue({
     status: "skipped",
     mode: "unknown",
@@ -348,7 +348,7 @@ beforeEach(() => {
     durationMs: 0,
   });
   legacyReadConfigFileSnapshot.mockReset().mockResolvedValue({
-    path: "/tmp/openclaw.json",
+    path: "/tmp/agdi.json",
     exists: false,
     raw: null,
     parsed: {},
@@ -389,11 +389,11 @@ beforeEach(() => {
 
   originalIsTTY = process.stdin.isTTY;
   setStdinTty(true);
-  originalStateDir = process.env.OPENCLAW_STATE_DIR;
-  originalUpdateInProgress = process.env.OPENCLAW_UPDATE_IN_PROGRESS;
-  process.env.OPENCLAW_UPDATE_IN_PROGRESS = "1";
-  tempStateDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-doctor-state-"));
-  process.env.OPENCLAW_STATE_DIR = tempStateDir;
+  originalStateDir = process.env.AGDI_STATE_DIR;
+  originalUpdateInProgress = process.env.AGDI_UPDATE_IN_PROGRESS;
+  process.env.AGDI_UPDATE_IN_PROGRESS = "1";
+  tempStateDir = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-doctor-state-"));
+  process.env.AGDI_STATE_DIR = tempStateDir;
   fs.mkdirSync(path.join(tempStateDir, "agents", "main", "sessions"), {
     recursive: true,
   });
@@ -403,14 +403,14 @@ beforeEach(() => {
 afterEach(() => {
   setStdinTty(originalIsTTY);
   if (originalStateDir === undefined) {
-    delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.AGDI_STATE_DIR;
   } else {
-    process.env.OPENCLAW_STATE_DIR = originalStateDir;
+    process.env.AGDI_STATE_DIR = originalStateDir;
   }
   if (originalUpdateInProgress === undefined) {
-    delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
+    delete process.env.AGDI_UPDATE_IN_PROGRESS;
   } else {
-    process.env.OPENCLAW_UPDATE_IN_PROGRESS = originalUpdateInProgress;
+    process.env.AGDI_UPDATE_IN_PROGRESS = originalUpdateInProgress;
   }
   if (tempStateDir) {
     fs.rmSync(tempStateDir, { recursive: true, force: true });

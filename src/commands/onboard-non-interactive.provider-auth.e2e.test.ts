@@ -40,32 +40,32 @@ async function withOnboardEnv(
 ): Promise<void> {
   const prev = captureEnv([
     "HOME",
-    "OPENCLAW_STATE_DIR",
-    "OPENCLAW_CONFIG_PATH",
-    "OPENCLAW_SKIP_CHANNELS",
-    "OPENCLAW_SKIP_GMAIL_WATCHER",
-    "OPENCLAW_SKIP_CRON",
-    "OPENCLAW_SKIP_CANVAS_HOST",
-    "OPENCLAW_GATEWAY_TOKEN",
-    "OPENCLAW_GATEWAY_PASSWORD",
+    "AGDI_STATE_DIR",
+    "AGDI_CONFIG_PATH",
+    "AGDI_SKIP_CHANNELS",
+    "AGDI_SKIP_GMAIL_WATCHER",
+    "AGDI_SKIP_CRON",
+    "AGDI_SKIP_CANVAS_HOST",
+    "AGDI_GATEWAY_TOKEN",
+    "AGDI_GATEWAY_PASSWORD",
     "CUSTOM_API_KEY",
-    "OPENCLAW_DISABLE_CONFIG_CACHE",
+    "AGDI_DISABLE_CONFIG_CACHE",
   ]);
 
-  process.env.OPENCLAW_SKIP_CHANNELS = "1";
-  process.env.OPENCLAW_SKIP_GMAIL_WATCHER = "1";
-  process.env.OPENCLAW_SKIP_CRON = "1";
-  process.env.OPENCLAW_SKIP_CANVAS_HOST = "1";
-  process.env.OPENCLAW_DISABLE_CONFIG_CACHE = "1";
-  delete process.env.OPENCLAW_GATEWAY_TOKEN;
-  delete process.env.OPENCLAW_GATEWAY_PASSWORD;
+  process.env.AGDI_SKIP_CHANNELS = "1";
+  process.env.AGDI_SKIP_GMAIL_WATCHER = "1";
+  process.env.AGDI_SKIP_CRON = "1";
+  process.env.AGDI_SKIP_CANVAS_HOST = "1";
+  process.env.AGDI_DISABLE_CONFIG_CACHE = "1";
+  delete process.env.AGDI_GATEWAY_TOKEN;
+  delete process.env.AGDI_GATEWAY_PASSWORD;
   delete process.env.CUSTOM_API_KEY;
 
   const tempHome = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
-  const configPath = path.join(tempHome, "openclaw.json");
+  const configPath = path.join(tempHome, "agdi.json");
   process.env.HOME = tempHome;
-  process.env.OPENCLAW_STATE_DIR = tempHome;
-  process.env.OPENCLAW_CONFIG_PATH = configPath;
+  process.env.AGDI_STATE_DIR = tempHome;
+  process.env.AGDI_CONFIG_PATH = configPath;
 
   const runtime: RuntimeMock = {
     log: () => {},
@@ -118,7 +118,7 @@ async function expectApiKeyProfile(params: {
 
 describe("onboard (non-interactive): provider auth", () => {
   it("stores MiniMax API key and uses global baseUrl by default", async () => {
-    await withOnboardEnv("openclaw-onboard-minimax-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-minimax-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -151,7 +151,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("supports MiniMax CN API endpoint auth choice", async () => {
-    await withOnboardEnv("openclaw-onboard-minimax-cn-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-minimax-cn-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -184,7 +184,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores Z.AI API key and uses global baseUrl by default", async () => {
-    await withOnboardEnv("openclaw-onboard-zai-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-zai-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -213,7 +213,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("supports Z.AI CN coding endpoint auth choice", async () => {
-    await withOnboardEnv("openclaw-onboard-zai-cn-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-zai-cn-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -238,7 +238,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores xAI API key and sets default model", async () => {
-    await withOnboardEnv("openclaw-onboard-xai-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-xai-", async ({ configPath, runtime }) => {
       const rawKey = "xai-test-\r\nkey";
       await runNonInteractive(
         {
@@ -266,7 +266,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores Vercel AI Gateway API key and sets default model", async () => {
-    await withOnboardEnv("openclaw-onboard-ai-gateway-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-ai-gateway-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -299,7 +299,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores token auth profile", async () => {
-    await withOnboardEnv("openclaw-onboard-token-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-token-", async ({ configPath, runtime }) => {
       const cleanToken = `sk-ant-oat01-${"a".repeat(80)}`;
       const token = `${cleanToken.slice(0, 30)}\r${cleanToken.slice(30)}`;
 
@@ -336,7 +336,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores OpenAI API key and sets OpenAI default model", async () => {
-    await withOnboardEnv("openclaw-onboard-openai-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-openai-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -359,7 +359,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("rejects vLLM auth choice in non-interactive mode", async () => {
-    await withOnboardEnv("openclaw-onboard-vllm-non-interactive-", async ({ runtime }) => {
+    await withOnboardEnv("agdi-onboard-vllm-non-interactive-", async ({ runtime }) => {
       await expect(
         runNonInteractive(
           {
@@ -377,7 +377,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("stores LiteLLM API key and sets default model", async () => {
-    await withOnboardEnv("openclaw-onboard-litellm-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-litellm-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -410,14 +410,14 @@ describe("onboard (non-interactive): provider auth", () => {
   it.each([
     {
       name: "stores Cloudflare AI Gateway API key and metadata",
-      prefix: "openclaw-onboard-cf-gateway-",
+      prefix: "agdi-onboard-cf-gateway-",
       options: {
         authChoice: "cloudflare-ai-gateway-api-key",
       },
     },
     {
       name: "infers Cloudflare auth choice from API key flags",
-      prefix: "openclaw-onboard-cf-gateway-infer-",
+      prefix: "agdi-onboard-cf-gateway-infer-",
       options: {},
     },
   ])(
@@ -463,7 +463,7 @@ describe("onboard (non-interactive): provider auth", () => {
   );
 
   it("infers Together auth choice from --together-api-key and sets default model", async () => {
-    await withOnboardEnv("openclaw-onboard-together-infer-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-together-infer-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -493,7 +493,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("infers QIANFAN auth choice from --qianfan-api-key and sets default model", async () => {
-    await withOnboardEnv("openclaw-onboard-qianfan-infer-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-qianfan-infer-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -523,7 +523,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("configures a custom provider from non-interactive flags", async () => {
-    await withOnboardEnv("openclaw-onboard-custom-provider-", async ({ configPath, runtime }) => {
+    await withOnboardEnv("agdi-onboard-custom-provider-", async ({ configPath, runtime }) => {
       await runNonInteractive(
         {
           nonInteractive: true,
@@ -566,7 +566,7 @@ describe("onboard (non-interactive): provider auth", () => {
 
   it("infers custom provider auth choice from custom flags", async () => {
     await withOnboardEnv(
-      "openclaw-onboard-custom-provider-infer-",
+      "agdi-onboard-custom-provider-infer-",
       async ({ configPath, runtime }) => {
         await runNonInteractive(
           {
@@ -608,7 +608,7 @@ describe("onboard (non-interactive): provider auth", () => {
 
   it("uses CUSTOM_API_KEY env fallback for non-interactive custom provider auth", async () => {
     await withOnboardEnv(
-      "openclaw-onboard-custom-provider-env-fallback-",
+      "agdi-onboard-custom-provider-env-fallback-",
       async ({ configPath, runtime }) => {
         process.env.CUSTOM_API_KEY = "custom-env-key";
 
@@ -646,7 +646,7 @@ describe("onboard (non-interactive): provider auth", () => {
 
   it("uses matching profile fallback for non-interactive custom provider auth", async () => {
     await withOnboardEnv(
-      "openclaw-onboard-custom-provider-profile-fallback-",
+      "agdi-onboard-custom-provider-profile-fallback-",
       async ({ configPath, runtime }) => {
         const { upsertAuthProfile } = await import("../agents/auth-profiles.js");
         upsertAuthProfile({
@@ -692,7 +692,7 @@ describe("onboard (non-interactive): provider auth", () => {
 
   it("fails custom provider auth when compatibility is invalid", async () => {
     await withOnboardEnv(
-      "openclaw-onboard-custom-provider-invalid-compat-",
+      "agdi-onboard-custom-provider-invalid-compat-",
       async ({ runtime }) => {
         await expect(
           runNonInteractive(
@@ -715,7 +715,7 @@ describe("onboard (non-interactive): provider auth", () => {
   }, 60_000);
 
   it("fails custom provider auth when explicit provider id is invalid", async () => {
-    await withOnboardEnv("openclaw-onboard-custom-provider-invalid-id-", async ({ runtime }) => {
+    await withOnboardEnv("agdi-onboard-custom-provider-invalid-id-", async ({ runtime }) => {
       await expect(
         runNonInteractive(
           {
@@ -739,7 +739,7 @@ describe("onboard (non-interactive): provider auth", () => {
 
   it("fails inferred custom auth when required flags are incomplete", async () => {
     await withOnboardEnv(
-      "openclaw-onboard-custom-provider-missing-required-",
+      "agdi-onboard-custom-provider-missing-required-",
       async ({ runtime }) => {
         await expect(
           runNonInteractive(

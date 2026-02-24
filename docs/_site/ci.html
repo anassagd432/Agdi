@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI Pipeline — AGDI Docs</title>
+  <meta name="description" content="How the AGDI CI pipeline works">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="active" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>CI Pipeline</h1>
+<p>The CI runs on every push to <code>main</code> and every pull request. It uses smart scoping to skip expensive jobs when only docs or native code changed.</p>
+<h2>Job Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Purpose</th>
+<th>When it runs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docs-scope</code></td>
+<td>Detect docs-only changes</td>
+<td>Always</td>
+</tr>
+<tr>
+<td><code>changed-scope</code></td>
+<td>Detect which areas changed (node/macos/android)</td>
+<td>Non-docs PRs</td>
+</tr>
+<tr>
+<td><code>check</code></td>
+<td>TypeScript types, lint, format</td>
+<td>Non-docs changes</td>
+</tr>
+<tr>
+<td><code>check-docs</code></td>
+<td>Markdown lint + broken link check</td>
+<td>Docs changed</td>
+</tr>
+<tr>
+<td><code>code-analysis</code></td>
+<td>LOC threshold check (1000 lines)</td>
+<td>PRs only</td>
+</tr>
+<tr>
+<td><code>secrets</code></td>
+<td>Detect leaked secrets</td>
+<td>Always</td>
+</tr>
+<tr>
+<td><code>build-artifacts</code></td>
+<td>Build dist once, share with other jobs</td>
+<td>Non-docs, node changes</td>
+</tr>
+<tr>
+<td><code>release-check</code></td>
+<td>Validate npm pack contents</td>
+<td>After build</td>
+</tr>
+<tr>
+<td><code>checks</code></td>
+<td>Node/Bun tests + protocol check</td>
+<td>Non-docs, node changes</td>
+</tr>
+<tr>
+<td><code>checks-windows</code></td>
+<td>Windows-specific tests</td>
+<td>Non-docs, node changes</td>
+</tr>
+<tr>
+<td><code>macos</code></td>
+<td>Swift lint/build/test + TS tests</td>
+<td>PRs with macos changes</td>
+</tr>
+<tr>
+<td><code>android</code></td>
+<td>Gradle build + tests</td>
+<td>Non-docs, android changes</td>
+</tr>
+</tbody></table>
+<h2>Fail-Fast Order</h2>
+<p>Jobs are ordered so cheap checks fail before expensive ones run:</p>
+<ol>
+<li><code>docs-scope</code> + <code>code-analysis</code> + <code>check</code> (parallel, ~1-2 min)</li>
+<li><code>build-artifacts</code> (blocked on above)</li>
+<li><code>checks</code>, <code>checks-windows</code>, <code>macos</code>, <code>android</code> (blocked on build)</li>
+</ol>
+<h2>Runners</h2>
+<table>
+<thead>
+<tr>
+<th>Runner</th>
+<th>Jobs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>blacksmith-4vcpu-ubuntu-2404</code></td>
+<td>Most Linux jobs</td>
+</tr>
+<tr>
+<td><code>blacksmith-4vcpu-windows-2025</code></td>
+<td><code>checks-windows</code></td>
+</tr>
+<tr>
+<td><code>macos-latest</code></td>
+<td><code>macos</code>, <code>ios</code></td>
+</tr>
+<tr>
+<td><code>ubuntu-latest</code></td>
+<td>Scope detection (lightweight)</td>
+</tr>
+</tbody></table>
+<h2>Local Equivalents</h2>
+<pre><code class="language-bash">pnpm check          # types + lint + format
+pnpm test           # vitest tests
+pnpm check:docs     # docs format + lint + broken links
+pnpm release:check  # validate npm pack
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

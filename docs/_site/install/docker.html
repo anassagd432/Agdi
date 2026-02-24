@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="active" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Docker (optional)</h1>
+<p>Docker is <strong>optional</strong>. Use it only if you want a containerized gateway or to validate the Docker flow.</p>
+<h2>Is Docker right for me?</h2>
+<ul>
+<li><strong>Yes</strong>: you want an isolated, throwaway gateway environment or to run AGDI on a host without local installs.</li>
+<li><strong>No</strong>: you’re running on your own machine and just want the fastest dev loop. Use the normal install flow instead.</li>
+<li><strong>Sandboxing note</strong>: agent sandboxing uses Docker too, but it does <strong>not</strong> require the full gateway to run in Docker. See <a href="/gateway/sandboxing">Sandboxing</a>.</li>
+</ul>
+<p>This guide covers:</p>
+<ul>
+<li>Containerized Gateway (full AGDI in Docker)</li>
+<li>Per-session Agent Sandbox (host gateway + Docker-isolated agent tools)</li>
+</ul>
+<p>Sandboxing details: <a href="/gateway/sandboxing">Sandboxing</a></p>
+<h2>Requirements</h2>
+<ul>
+<li>Docker Desktop (or Docker Engine) + Docker Compose v2</li>
+<li>Enough disk for images + logs</li>
+</ul>
+<h2>Containerized Gateway (Docker Compose)</h2>
+<h3>Quick start (recommended)</h3>
+<p>From repo root:</p>
+<pre><code class="language-bash">./docker-setup.sh
+</code></pre>
+<p>This script:</p>
+<ul>
+<li>builds the gateway image</li>
+<li>runs the onboarding wizard</li>
+<li>prints optional provider setup hints</li>
+<li>starts the gateway via Docker Compose</li>
+<li>generates a gateway token and writes it to <code>.env</code></li>
+</ul>
+<p>Optional env vars:</p>
+<ul>
+<li><code>AGDI_DOCKER_APT_PACKAGES</code> — install extra apt packages during build</li>
+<li><code>AGDI_EXTRA_MOUNTS</code> — add extra host bind mounts</li>
+<li><code>AGDI_HOME_VOLUME</code> — persist <code>/home/node</code> in a named volume</li>
+</ul>
+<p>After it finishes:</p>
+<ul>
+<li>Open <code>http://127.0.0.1:18789/</code> in your browser.</li>
+<li>Paste the token into the Control UI (Settings → token).</li>
+<li>Need the URL again? Run <code>docker compose run --rm agdi-cli dashboard --no-open</code>.</li>
+</ul>
+<p>It writes config/workspace on the host:</p>
+<ul>
+<li><code>~/.agdi/</code></li>
+<li><code>~/.agdi/workspace</code></li>
+</ul>
+<p>Running on a VPS? See <a href="/install/hetzner">Hetzner (Docker VPS)</a>.</p>
+<h3>Shell Helpers (optional)</h3>
+<p>For easier day-to-day Docker management, install <code>ClawDock</code>:</p>
+<pre><code class="language-bash">mkdir -p ~/.clawdock &amp;&amp; curl -sL https://raw.githubusercontent.com/agdi/agdi/main/scripts/shell-helpers/clawdock-helpers.sh -o ~/.clawdock/clawdock-helpers.sh
+</code></pre>
+<p><strong>Add to your shell config (zsh):</strong></p>
+<pre><code class="language-bash">echo &#39;source ~/.clawdock/clawdock-helpers.sh&#39; &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc
+</code></pre>
+<p>Then use <code>clawdock-start</code>, <code>clawdock-stop</code>, <code>clawdock-dashboard</code>, etc. Run <code>clawdock-help</code> for all commands.</p>
+<p>See <a href="https://github.com/agdi/agdi/blob/main/scripts/shell-helpers/README.md"><code>ClawDock</code> Helper README</a> for details.</p>
+<h3>Manual flow (compose)</h3>
+<pre><code class="language-bash">docker build -t agdi:local -f Dockerfile .
+docker compose run --rm agdi-cli onboard
+docker compose up -d agdi-gateway
+</code></pre>
+<p>Note: run <code>docker compose ...</code> from the repo root. If you enabled
+<code>AGDI_EXTRA_MOUNTS</code> or <code>AGDI_HOME_VOLUME</code>, the setup script writes
+<code>docker-compose.extra.yml</code>; include it when running Compose elsewhere:</p>
+<pre><code class="language-bash">docker compose -f docker-compose.yml -f docker-compose.extra.yml &lt;command&gt;
+</code></pre>
+<h3>Control UI token + pairing (Docker)</h3>
+<p>If you see “unauthorized” or “disconnected (1008): pairing required”, fetch a
+fresh dashboard link and approve the browser device:</p>
+<pre><code class="language-bash">docker compose run --rm agdi-cli dashboard --no-open
+docker compose run --rm agdi-cli devices list
+docker compose run --rm agdi-cli devices approve &lt;requestId&gt;
+</code></pre>
+<p>More detail: <a href="/web/dashboard">Dashboard</a>, <a href="/cli/devices">Devices</a>.</p>
+<h3>Extra mounts (optional)</h3>
+<p>If you want to mount additional host directories into the containers, set
+<code>AGDI_EXTRA_MOUNTS</code> before running <code>docker-setup.sh</code>. This accepts a
+comma-separated list of Docker bind mounts and applies them to both
+<code>agdi-gateway</code> and <code>agdi-cli</code> by generating <code>docker-compose.extra.yml</code>.</p>
+<p>Example:</p>
+<pre><code class="language-bash">export AGDI_EXTRA_MOUNTS=&quot;$HOME/.codex:/home/node/.codex:ro,$HOME/github:/home/node/github:rw&quot;
+./docker-setup.sh
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Paths must be shared with Docker Desktop on macOS/Windows.</li>
+<li>If you edit <code>AGDI_EXTRA_MOUNTS</code>, rerun <code>docker-setup.sh</code> to regenerate the
+extra compose file.</li>
+<li><code>docker-compose.extra.yml</code> is generated. Don’t hand-edit it.</li>
+</ul>
+<h3>Persist the entire container home (optional)</h3>
+<p>If you want <code>/home/node</code> to persist across container recreation, set a named
+volume via <code>AGDI_HOME_VOLUME</code>. This creates a Docker volume and mounts it at
+<code>/home/node</code>, while keeping the standard config/workspace bind mounts. Use a
+named volume here (not a bind path); for bind mounts, use
+<code>AGDI_EXTRA_MOUNTS</code>.</p>
+<p>Example:</p>
+<pre><code class="language-bash">export AGDI_HOME_VOLUME=&quot;agdi_home&quot;
+./docker-setup.sh
+</code></pre>
+<p>You can combine this with extra mounts:</p>
+<pre><code class="language-bash">export AGDI_HOME_VOLUME=&quot;agdi_home&quot;
+export AGDI_EXTRA_MOUNTS=&quot;$HOME/.codex:/home/node/.codex:ro,$HOME/github:/home/node/github:rw&quot;
+./docker-setup.sh
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>If you change <code>AGDI_HOME_VOLUME</code>, rerun <code>docker-setup.sh</code> to regenerate the
+extra compose file.</li>
+<li>The named volume persists until removed with <code>docker volume rm &lt;name&gt;</code>.</li>
+</ul>
+<h3>Install extra apt packages (optional)</h3>
+<p>If you need system packages inside the image (for example, build tools or media
+libraries), set <code>AGDI_DOCKER_APT_PACKAGES</code> before running <code>docker-setup.sh</code>.
+This installs the packages during the image build, so they persist even if the
+container is deleted.</p>
+<p>Example:</p>
+<pre><code class="language-bash">export AGDI_DOCKER_APT_PACKAGES=&quot;ffmpeg build-essential&quot;
+./docker-setup.sh
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>This accepts a space-separated list of apt package names.</li>
+<li>If you change <code>AGDI_DOCKER_APT_PACKAGES</code>, rerun <code>docker-setup.sh</code> to rebuild
+the image.</li>
+</ul>
+<h3>Power-user / full-featured container (opt-in)</h3>
+<p>The default Docker image is <strong>security-first</strong> and runs as the non-root <code>node</code>
+user. This keeps the attack surface small, but it means:</p>
+<ul>
+<li>no system package installs at runtime</li>
+<li>no Homebrew by default</li>
+<li>no bundled Chromium/Playwright browsers</li>
+</ul>
+<p>If you want a more full-featured container, use these opt-in knobs:</p>
+<ol>
+<li><strong>Persist <code>/home/node</code></strong> so browser downloads and tool caches survive:</li>
+</ol>
+<pre><code class="language-bash">export AGDI_HOME_VOLUME=&quot;agdi_home&quot;
+./docker-setup.sh
+</code></pre>
+<ol start="2">
+<li><strong>Bake system deps into the image</strong> (repeatable + persistent):</li>
+</ol>
+<pre><code class="language-bash">export AGDI_DOCKER_APT_PACKAGES=&quot;git curl jq&quot;
+./docker-setup.sh
+</code></pre>
+<ol start="3">
+<li><strong>Install Playwright browsers without <code>npx</code></strong> (avoids npm override conflicts):</li>
+</ol>
+<pre><code class="language-bash">docker compose run --rm agdi-cli \
+  node /app/node_modules/playwright-core/cli.js install chromium
+</code></pre>
+<p>If you need Playwright to install system deps, rebuild the image with
+<code>AGDI_DOCKER_APT_PACKAGES</code> instead of using <code>--with-deps</code> at runtime.</p>
+<ol start="4">
+<li><strong>Persist Playwright browser downloads</strong>:</li>
+</ol>
+<ul>
+<li>Set <code>PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright</code> in
+<code>docker-compose.yml</code>.</li>
+<li>Ensure <code>/home/node</code> persists via <code>AGDI_HOME_VOLUME</code>, or mount
+<code>/home/node/.cache/ms-playwright</code> via <code>AGDI_EXTRA_MOUNTS</code>.</li>
+</ul>
+<h3>Permissions + EACCES</h3>
+<p>The image runs as <code>node</code> (uid 1000). If you see permission errors on
+<code>/home/node/.agdi</code>, make sure your host bind mounts are owned by uid 1000.</p>
+<p>Example (Linux host):</p>
+<pre><code class="language-bash">sudo chown -R 1000:1000 /path/to/agdi-config /path/to/agdi-workspace
+</code></pre>
+<p>If you choose to run as root for convenience, you accept the security tradeoff.</p>
+<h3>Faster rebuilds (recommended)</h3>
+<p>To speed up rebuilds, order your Dockerfile so dependency layers are cached.
+This avoids re-running <code>pnpm install</code> unless lockfiles change:</p>
+<pre><code class="language-dockerfile">FROM node:22-bookworm
+
+# Install Bun (required for build scripts)
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH=&quot;/root/.bun/bin:${PATH}&quot;
+
+RUN corepack enable
+
+WORKDIR /app
+
+# Cache dependencies unless package metadata changes
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY ui/package.json ./ui/package.json
+COPY scripts ./scripts
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm build
+RUN pnpm ui:install
+RUN pnpm ui:build
+
+ENV NODE_ENV=production
+
+CMD [&quot;node&quot;,&quot;dist/index.js&quot;]
+</code></pre>
+<h3>Channel setup (optional)</h3>
+<p>Use the CLI container to configure channels, then restart the gateway if needed.</p>
+<p>WhatsApp (QR):</p>
+<pre><code class="language-bash">docker compose run --rm agdi-cli channels login
+</code></pre>
+<p>Telegram (bot token):</p>
+<pre><code class="language-bash">docker compose run --rm agdi-cli channels add --channel telegram --token &quot;&lt;token&gt;&quot;
+</code></pre>
+<p>Discord (bot token):</p>
+<pre><code class="language-bash">docker compose run --rm agdi-cli channels add --channel discord --token &quot;&lt;token&gt;&quot;
+</code></pre>
+<p>Docs: <a href="/channels/whatsapp">WhatsApp</a>, <a href="/channels/telegram">Telegram</a>, <a href="/channels/discord">Discord</a></p>
+<h3>OpenAI Codex OAuth (headless Docker)</h3>
+<p>If you pick OpenAI Codex OAuth in the wizard, it opens a browser URL and tries
+to capture a callback on <code>http://127.0.0.1:1455/auth/callback</code>. In Docker or
+headless setups that callback can show a browser error. Copy the full redirect
+URL you land on and paste it back into the wizard to finish auth.</p>
+<h3>Health check</h3>
+<pre><code class="language-bash">docker compose exec agdi-gateway node dist/index.js health --token &quot;$AGDI_GATEWAY_TOKEN&quot;
+</code></pre>
+<h3>E2E smoke test (Docker)</h3>
+<pre><code class="language-bash">scripts/e2e/onboard-docker.sh
+</code></pre>
+<h3>QR import smoke test (Docker)</h3>
+<pre><code class="language-bash">pnpm test:docker:qr
+</code></pre>
+<h3>Notes</h3>
+<ul>
+<li>Gateway bind defaults to <code>lan</code> for container use.</li>
+<li>Dockerfile CMD uses <code>--allow-unconfigured</code>; mounted config with <code>gateway.mode</code> not <code>local</code> will still start. Override CMD to enforce the guard.</li>
+<li>The gateway container is the source of truth for sessions (<code>~/.agdi/agents/&lt;agentId&gt;/sessions/</code>).</li>
+</ul>
+<h2>Agent Sandbox (host gateway + Docker tools)</h2>
+<p>Deep dive: <a href="/gateway/sandboxing">Sandboxing</a></p>
+<h3>What it does</h3>
+<p>When <code>agents.defaults.sandbox</code> is enabled, <strong>non-main sessions</strong> run tools inside a Docker
+container. The gateway stays on your host, but the tool execution is isolated:</p>
+<ul>
+<li>scope: <code>&quot;agent&quot;</code> by default (one container + workspace per agent)</li>
+<li>scope: <code>&quot;session&quot;</code> for per-session isolation</li>
+<li>per-scope workspace folder mounted at <code>/workspace</code></li>
+<li>optional agent workspace access (<code>agents.defaults.sandbox.workspaceAccess</code>)</li>
+<li>allow/deny tool policy (deny wins)</li>
+<li>inbound media is copied into the active sandbox workspace (<code>media/inbound/*</code>) so tools can read it (with <code>workspaceAccess: &quot;rw&quot;</code>, this lands in the agent workspace)</li>
+</ul>
+<p>Warning: <code>scope: &quot;shared&quot;</code> disables cross-session isolation. All sessions share
+one container and one workspace.</p>
+<h3>Per-agent sandbox profiles (multi-agent)</h3>
+<p>If you use multi-agent routing, each agent can override sandbox + tool settings:
+<code>agents.list[].sandbox</code> and <code>agents.list[].tools</code> (plus <code>agents.list[].tools.sandbox.tools</code>). This lets you run
+mixed access levels in one gateway:</p>
+<ul>
+<li>Full access (personal agent)</li>
+<li>Read-only tools + read-only workspace (family/work agent)</li>
+<li>No filesystem/shell tools (public agent)</li>
+</ul>
+<p>See <a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> for examples,
+precedence, and troubleshooting.</p>
+<h3>Default behavior</h3>
+<ul>
+<li>Image: <code>agdi-sandbox:bookworm-slim</code></li>
+<li>One container per agent</li>
+<li>Agent workspace access: <code>workspaceAccess: &quot;none&quot;</code> (default) uses <code>~/.agdi/sandboxes</code><ul>
+<li><code>&quot;ro&quot;</code> keeps the sandbox workspace at <code>/workspace</code> and mounts the agent workspace read-only at <code>/agent</code> (disables <code>write</code>/<code>edit</code>/<code>apply_patch</code>)</li>
+<li><code>&quot;rw&quot;</code> mounts the agent workspace read/write at <code>/workspace</code></li>
+</ul>
+</li>
+<li>Auto-prune: idle &gt; 24h OR age &gt; 7d</li>
+<li>Network: <code>none</code> by default (explicitly opt-in if you need egress)</li>
+<li>Default allow: <code>exec</code>, <code>process</code>, <code>read</code>, <code>write</code>, <code>edit</code>, <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>sessions_spawn</code>, <code>session_status</code></li>
+<li>Default deny: <code>browser</code>, <code>canvas</code>, <code>nodes</code>, <code>cron</code>, <code>discord</code>, <code>gateway</code></li>
+</ul>
+<h3>Enable sandboxing</h3>
+<p>If you plan to install packages in <code>setupCommand</code>, note:</p>
+<ul>
+<li>Default <code>docker.network</code> is <code>&quot;none&quot;</code> (no egress).</li>
+<li><code>readOnlyRoot: true</code> blocks package installs.</li>
+<li><code>user</code> must be root for <code>apt-get</code> (omit <code>user</code> or set <code>user: &quot;0:0&quot;</code>).
+AGDI auto-recreates containers when <code>setupCommand</code> (or docker config) changes
+unless the container was <strong>recently used</strong> (within ~5 minutes). Hot containers
+log a warning with the exact <code>agdi sandbox recreate ...</code> command.</li>
+</ul>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;, // off | non-main | all
+        scope: &quot;agent&quot;, // session | agent | shared (agent is default)
+        workspaceAccess: &quot;none&quot;, // none | ro | rw
+        workspaceRoot: &quot;~/.agdi/sandboxes&quot;,
+        docker: {
+          image: &quot;agdi-sandbox:bookworm-slim&quot;,
+          workdir: &quot;/workspace&quot;,
+          readOnlyRoot: true,
+          tmpfs: [&quot;/tmp&quot;, &quot;/var/tmp&quot;, &quot;/run&quot;],
+          network: &quot;none&quot;,
+          user: &quot;1000:1000&quot;,
+          capDrop: [&quot;ALL&quot;],
+          env: { LANG: &quot;C.UTF-8&quot; },
+          setupCommand: &quot;apt-get update &amp;&amp; apt-get install -y git curl jq&quot;,
+          pidsLimit: 256,
+          memory: &quot;1g&quot;,
+          memorySwap: &quot;2g&quot;,
+          cpus: 1,
+          ulimits: {
+            nofile: { soft: 1024, hard: 2048 },
+            nproc: 256,
+          },
+          seccompProfile: &quot;/path/to/seccomp.json&quot;,
+          apparmorProfile: &quot;agdi-sandbox&quot;,
+          dns: [&quot;1.1.1.1&quot;, &quot;8.8.8.8&quot;],
+          extraHosts: [&quot;internal.service:10.0.0.5&quot;],
+        },
+        prune: {
+          idleHours: 24, // 0 disables idle pruning
+          maxAgeDays: 7, // 0 disables max-age pruning
+        },
+      },
+    },
+  },
+  tools: {
+    sandbox: {
+      tools: {
+        allow: [
+          &quot;exec&quot;,
+          &quot;process&quot;,
+          &quot;read&quot;,
+          &quot;write&quot;,
+          &quot;edit&quot;,
+          &quot;sessions_list&quot;,
+          &quot;sessions_history&quot;,
+          &quot;sessions_send&quot;,
+          &quot;sessions_spawn&quot;,
+          &quot;session_status&quot;,
+        ],
+        deny: [&quot;browser&quot;, &quot;canvas&quot;, &quot;nodes&quot;, &quot;cron&quot;, &quot;discord&quot;, &quot;gateway&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Hardening knobs live under <code>agents.defaults.sandbox.docker</code>:
+<code>network</code>, <code>user</code>, <code>pidsLimit</code>, <code>memory</code>, <code>memorySwap</code>, <code>cpus</code>, <code>ulimits</code>,
+<code>seccompProfile</code>, <code>apparmorProfile</code>, <code>dns</code>, <code>extraHosts</code>.</p>
+<p>Multi-agent: override <code>agents.defaults.sandbox.{docker,browser,prune}.*</code> per agent via <code>agents.list[].sandbox.{docker,browser,prune}.*</code>
+(ignored when <code>agents.defaults.sandbox.scope</code> / <code>agents.list[].sandbox.scope</code> is <code>&quot;shared&quot;</code>).</p>
+<h3>Build the default sandbox image</h3>
+<pre><code class="language-bash">scripts/sandbox-setup.sh
+</code></pre>
+<p>This builds <code>agdi-sandbox:bookworm-slim</code> using <code>Dockerfile.sandbox</code>.</p>
+<h3>Sandbox common image (optional)</h3>
+<p>If you want a sandbox image with common build tooling (Node, Go, Rust, etc.), build the common image:</p>
+<pre><code class="language-bash">scripts/sandbox-common-setup.sh
+</code></pre>
+<p>This builds <code>agdi-sandbox-common:bookworm-slim</code>. To use it:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: { docker: { image: &quot;agdi-sandbox-common:bookworm-slim&quot; } },
+    },
+  },
+}
+</code></pre>
+<h3>Sandbox browser image</h3>
+<p>To run the browser tool inside the sandbox, build the browser image:</p>
+<pre><code class="language-bash">scripts/sandbox-browser-setup.sh
+</code></pre>
+<p>This builds <code>agdi-sandbox-browser:bookworm-slim</code> using
+<code>Dockerfile.sandbox-browser</code>. The container runs Chromium with CDP enabled and
+an optional noVNC observer (headful via Xvfb).</p>
+<p>Notes:</p>
+<ul>
+<li>Headful (Xvfb) reduces bot blocking vs headless.</li>
+<li>Headless can still be used by setting <code>agents.defaults.sandbox.browser.headless=true</code>.</li>
+<li>No full desktop environment (GNOME) is needed; Xvfb provides the display.</li>
+</ul>
+<p>Use config:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        browser: { enabled: true },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Custom browser image:</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: { browser: { image: &quot;my-agdi-browser&quot; } },
+    },
+  },
+}
+</code></pre>
+<p>When enabled, the agent receives:</p>
+<ul>
+<li>a sandbox browser control URL (for the <code>browser</code> tool)</li>
+<li>a noVNC URL (if enabled and headless=false)</li>
+</ul>
+<p>Remember: if you use an allowlist for tools, add <code>browser</code> (and remove it from
+deny) or the tool remains blocked.
+Prune rules (<code>agents.defaults.sandbox.prune</code>) apply to browser containers too.</p>
+<h3>Custom sandbox image</h3>
+<p>Build your own image and point config to it:</p>
+<pre><code class="language-bash">docker build -t my-agdi-sbx -f Dockerfile.sandbox .
+</code></pre>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: { docker: { image: &quot;my-agdi-sbx&quot; } },
+    },
+  },
+}
+</code></pre>
+<h3>Tool policy (allow/deny)</h3>
+<ul>
+<li><code>deny</code> wins over <code>allow</code>.</li>
+<li>If <code>allow</code> is empty: all tools (except deny) are available.</li>
+<li>If <code>allow</code> is non-empty: only tools in <code>allow</code> are available (minus deny).</li>
+</ul>
+<h3>Pruning strategy</h3>
+<p>Two knobs:</p>
+<ul>
+<li><code>prune.idleHours</code>: remove containers not used in X hours (0 = disable)</li>
+<li><code>prune.maxAgeDays</code>: remove containers older than X days (0 = disable)</li>
+</ul>
+<p>Example:</p>
+<ul>
+<li>Keep busy sessions but cap lifetime:
+<code>idleHours: 24</code>, <code>maxAgeDays: 7</code></li>
+<li>Never prune:
+<code>idleHours: 0</code>, <code>maxAgeDays: 0</code></li>
+</ul>
+<h3>Security notes</h3>
+<ul>
+<li>Hard wall only applies to <strong>tools</strong> (exec/read/write/edit/apply_patch).</li>
+<li>Host-only tools like browser/camera/canvas are blocked by default.</li>
+<li>Allowing <code>browser</code> in sandbox <strong>breaks isolation</strong> (browser runs on host).</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>Image missing: build with <a href="https://github.com/agdi/agdi/blob/main/scripts/sandbox-setup.sh"><code>scripts/sandbox-setup.sh</code></a> or set <code>agents.defaults.sandbox.docker.image</code>.</li>
+<li>Container not running: it will auto-create per session on demand.</li>
+<li>Permission errors in sandbox: set <code>docker.user</code> to a UID:GID that matches your
+mounted workspace ownership (or chown the workspace folder).</li>
+<li>Custom tools not found: AGDI runs commands with <code>sh -lc</code> (login shell), which
+sources <code>/etc/profile</code> and may reset PATH. Set <code>docker.env.PATH</code> to prepend your
+custom tool paths (e.g., <code>/custom/bin:/usr/local/share/npm-global/bin</code>), or add
+a script under <code>/etc/profile.d/</code> in your Dockerfile.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

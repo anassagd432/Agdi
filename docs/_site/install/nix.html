@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nix — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab active" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Install overview</h4><ul><li><a class="" href="/install/index.html">Install</a></li><li><a class="" href="/install/installer.html">Installer Internals</a></li></ul></div><div class="sidebar-group"><h4>Other install methods</h4><ul><li><a class="" href="/install/docker.html">Docker</a></li><li><a class="" href="/install/podman.html">Podman</a></li><li><a class="active" href="/install/nix.html">Nix</a></li><li><a class="" href="/install/ansible.html">Ansible</a></li><li><a class="" href="/install/bun.html">Bun (Experimental)</a></li></ul></div><div class="sidebar-group"><h4>Maintenance</h4><ul><li><a class="" href="/install/updating.html">Updating</a></li><li><a class="" href="/install/migrating.html">Migration Guide</a></li><li><a class="" href="/install/uninstall.html">Uninstall</a></li></ul></div><div class="sidebar-group"><h4>Hosting and deployment</h4><ul><li><a class="" href="/install/fly.html">Fly.io</a></li><li><a class="" href="/install/hetzner.html">Hetzner</a></li><li><a class="" href="/install/gcp.html">GCP</a></li><li><a class="" href="/install/macos-vm.html">macOS VMs</a></li><li><a class="" href="/install/exe-dev.html">exe.dev</a></li><li><a class="" href="/install/railway.html">railway</a></li><li><a class="" href="/install/render.html">render</a></li><li><a class="" href="/install/northflank.html">northflank</a></li></ul></div><div class="sidebar-group"><h4>Advanced</h4><ul><li><a class="" href="/install/development-channels.html">Development Channels</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Nix Installation</h1>
+<p>The recommended way to run AGDI with Nix is via <strong><a href="https://github.com/agdi/nix-agdi">nix-agdi</a></strong> — a batteries-included Home Manager module.</p>
+<h2>Quick Start</h2>
+<p>Paste this to your AI agent (Claude, Cursor, etc.):</p>
+<pre><code class="language-text">I want to set up nix-agdi on my Mac.
+Repository: github:agdi/nix-agdi
+
+What I need you to do:
+1. Check if Determinate Nix is installed (if not, install it)
+2. Create a local flake at ~/code/agdi-local using templates/agent-first/flake.nix
+3. Help me create a Telegram bot (@BotFather) and get my chat ID (@userinfobot)
+4. Set up secrets (bot token, Anthropic key) - plain files at ~/.secrets/ is fine
+5. Fill in the template placeholders and run home-manager switch
+6. Verify: launchd running, bot responds to messages
+
+Reference the nix-agdi README for module options.
+</code></pre>
+<blockquote>
+<p><strong>📦 Full guide: <a href="https://github.com/agdi/nix-agdi">github.com/agdi/nix-agdi</a></strong></p>
+<p>The nix-agdi repo is the source of truth for Nix installation. This page is just a quick overview.</p>
+</blockquote>
+<h2>What you get</h2>
+<ul>
+<li>Gateway + macOS app + tools (whisper, spotify, cameras) — all pinned</li>
+<li>Launchd service that survives reboots</li>
+<li>Plugin system with declarative config</li>
+<li>Instant rollback: <code>home-manager switch --rollback</code></li>
+</ul>
+<hr>
+<h2>Nix Mode Runtime Behavior</h2>
+<p>When <code>AGDI_NIX_MODE=1</code> is set (automatic with nix-agdi):</p>
+<p>AGDI supports a <strong>Nix mode</strong> that makes configuration deterministic and disables auto-install flows.
+Enable it by exporting:</p>
+<pre><code class="language-bash">AGDI_NIX_MODE=1
+</code></pre>
+<p>On macOS, the GUI app does not automatically inherit shell env vars. You can
+also enable Nix mode via defaults:</p>
+<pre><code class="language-bash">defaults write bot.molt.mac agdi.nixMode -bool true
+</code></pre>
+<h3>Config + state paths</h3>
+<p>AGDI reads JSON5 config from <code>AGDI_CONFIG_PATH</code> and stores mutable data in <code>AGDI_STATE_DIR</code>.
+When needed, you can also set <code>AGDI_HOME</code> to control the base home directory used for internal path resolution.</p>
+<ul>
+<li><code>AGDI_HOME</code> (default precedence: <code>HOME</code> / <code>USERPROFILE</code> / <code>os.homedir()</code>)</li>
+<li><code>AGDI_STATE_DIR</code> (default: <code>~/.agdi</code>)</li>
+<li><code>AGDI_CONFIG_PATH</code> (default: <code>$AGDI_STATE_DIR/agdi.json</code>)</li>
+</ul>
+<p>When running under Nix, set these explicitly to Nix-managed locations so runtime state and config
+stay out of the immutable store.</p>
+<h3>Runtime behavior in Nix mode</h3>
+<ul>
+<li>Auto-install and self-mutation flows are disabled</li>
+<li>Missing dependencies surface Nix-specific remediation messages</li>
+<li>UI surfaces a read-only Nix mode banner when present</li>
+</ul>
+<h2>Packaging note (macOS)</h2>
+<p>The macOS packaging flow expects a stable Info.plist template at:</p>
+<pre><code>apps/macos/Sources/AGDI/Resources/Info.plist
+</code></pre>
+<p><a href="https://github.com/agdi/agdi/blob/main/scripts/package-mac-app.sh"><code>scripts/package-mac-app.sh</code></a> copies this template into the app bundle and patches dynamic fields
+(bundle ID, version/build, Git SHA, Sparkle keys). This keeps the plist deterministic for SwiftPM
+packaging and Nix builds (which do not rely on a full Xcode toolchain).</p>
+<h2>Related</h2>
+<ul>
+<li><a href="https://github.com/agdi/nix-agdi">nix-agdi</a> — full setup guide</li>
+<li><a href="/start/wizard">Wizard</a> — non-Nix CLI setup</li>
+<li><a href="/install/docker">Docker</a> — containerized setup</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

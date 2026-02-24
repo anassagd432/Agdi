@@ -4,8 +4,8 @@ import { computeSandboxBrowserConfigHash, computeSandboxConfigHash } from "./con
 
 function createDockerConfig(overrides?: Partial<SandboxDockerConfig>): SandboxDockerConfig {
   return {
-    image: "openclaw-sandbox:test",
-    containerPrefix: "openclaw-sbx-",
+    image: "agdi-sandbox:test",
+    containerPrefix: "agdi-sbx-",
     workdir: "/workspace",
     readOnlyRoot: true,
     tmpfs: ["/tmp", "/var/tmp", "/run"],

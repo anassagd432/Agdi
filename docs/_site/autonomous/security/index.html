@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Suite — AGDI Docs</title>
+  <meta name="description" content="AGDI's built-in cybersecurity toolkit — network recon, web scanning, WiFi attacks, exploit engine, and 100+ Kali Linux tools.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab active" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/autonomous/index.html">Autonomous Agent</a></li></ul></div><div class="sidebar-group"><h4>Device Control</h4><ul><li><a class="" href="/autonomous/device-control.html">Device Control</a></li></ul></div><div class="sidebar-group"><h4>Security Suite</h4><ul><li><a class="active" href="/autonomous/security/index.html">Security Suite</a></li><li><a class="" href="/autonomous/security/network-recon.html">Network Recon</a></li><li><a class="" href="/autonomous/security/web-scanner.html">Web Scanner</a></li><li><a class="" href="/autonomous/security/wifi.html">WiFi Security</a></li><li><a class="" href="/autonomous/security/crypto.html">Crypto Toolkit</a></li><li><a class="" href="/autonomous/security/exploits.html">Exploit Engine</a></li><li><a class="" href="/autonomous/security/packets.html">Packet Sniffer</a></li><li><a class="" href="/autonomous/security/kali.html">Kali Linux Tools</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/autonomous/workflows.html">Workflows & Automation</a></li><li><a class="" href="/autonomous/delegation.html">AI-to-AI Delegation</a></li></ul></div><div class="sidebar-group"><h4>Security Hardening</h4><ul><li><a class="" href="/autonomous/security-hardening.html">Security Hardening</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Security Suite</h1>
+<p>AGDI includes a full offensive security toolkit built into the autonomous agent. Every tool runs as native TypeScript with fallback to system binaries.</p>
+<h2>Modules</h2>
+<ul>
+<li><strong><a href="/autonomous/security/network-recon.html">Network Recon</a></strong> — Port scanning, host discovery, DNS enumeration, traceroute.</li>
+<li><strong><a href="/autonomous/security/web-scanner.html">Web Scanner</a></strong> — SQLi, XSS, directory brute-forcing, header audit, SSL/TLS analysis.</li>
+<li><strong><a href="/autonomous/security/wifi.html">WiFi Security</a></strong> — Aircrack-ng suite, handshake capture, deauth, WPS testing.</li>
+<li><strong><a href="/autonomous/security/crypto.html">Crypto Toolkit</a></strong> — Hash cracking, encoding/decoding, password generation.</li>
+<li><strong><a href="/autonomous/security/exploits.html">Exploit Engine</a></strong> — Metasploit bridge, msfvenom, reverse shells, CVE lookup.</li>
+<li><strong><a href="/autonomous/security/packets.html">Packet Sniffer</a></strong> — Live capture, PCAP analysis, credential extraction.</li>
+<li><strong><a href="/autonomous/security/kali.html">Kali Linux Tools</a></strong> — Direct access to 100+ tools across 11 categories.</li>
+</ul>
+<h2>Quick Example</h2>
+<pre><code class="language-typescript">import { NetworkRecon, WebSecurityScanner, ExploitEngine } from &quot;agdi/autonomous&quot;;
+
+// Port scan
+const recon = new NetworkRecon();
+const result = await recon.scanPorts({
+  target: &quot;10.0.0.1&quot;,
+  ports: &quot;1-1024&quot;,
+  technique: &quot;syn&quot;,
+  serviceDetection: true,
+});
+
+// Web vulnerability scan
+const scanner = new WebSecurityScanner();
+const findings = await scanner.fullScan({
+  url: &quot;https://target.com&quot;,
+  depth: 3,
+});
+
+// Generate reverse shell
+const exploit = new ExploitEngine();
+const shell = exploit.reverseShellOneLiner(&quot;10.0.0.5&quot;, 4444, &quot;python&quot;);
+</code></pre>
+<h2>Tool Audit</h2>
+<p>Check which security tools are installed on your system:</p>
+<pre><code class="language-typescript">import { auditKaliTools } from &quot;agdi/autonomous&quot;;
+
+const audit = await auditKaliTools();
+console.log(`${audit.installed.length}/${audit.total} tools installed`);
+console.log(&quot;Missing:&quot;, audit.missing);
+</code></pre>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

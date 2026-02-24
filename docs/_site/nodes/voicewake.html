@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Wake — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="active" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Voice Wake (Global Wake Words)</h1>
+<p>AGDI treats <strong>wake words as a single global list</strong> owned by the <strong>Gateway</strong>.</p>
+<ul>
+<li>There are <strong>no per-node custom wake words</strong>.</li>
+<li><strong>Any node/app UI may edit</strong> the list; changes are persisted by the Gateway and broadcast to everyone.</li>
+<li>Each device still keeps its own <strong>Voice Wake enabled/disabled</strong> toggle (local UX + permissions differ).</li>
+</ul>
+<h2>Storage (Gateway host)</h2>
+<p>Wake words are stored on the gateway machine at:</p>
+<ul>
+<li><code>~/.agdi/settings/voicewake.json</code></li>
+</ul>
+<p>Shape:</p>
+<pre><code class="language-json">{ &quot;triggers&quot;: [&quot;agdi&quot;, &quot;claude&quot;, &quot;computer&quot;], &quot;updatedAtMs&quot;: 1730000000000 }
+</code></pre>
+<h2>Protocol</h2>
+<h3>Methods</h3>
+<ul>
+<li><code>voicewake.get</code> → <code>{ triggers: string[] }</code></li>
+<li><code>voicewake.set</code> with params <code>{ triggers: string[] }</code> → <code>{ triggers: string[] }</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Triggers are normalized (trimmed, empties dropped). Empty lists fall back to defaults.</li>
+<li>Limits are enforced for safety (count/length caps).</li>
+</ul>
+<h3>Events</h3>
+<ul>
+<li><code>voicewake.changed</code> payload <code>{ triggers: string[] }</code></li>
+</ul>
+<p>Who receives it:</p>
+<ul>
+<li>All WebSocket clients (macOS app, WebChat, etc.)</li>
+<li>All connected nodes (iOS/Android), and also on node connect as an initial “current state” push.</li>
+</ul>
+<h2>Client behavior</h2>
+<h3>macOS app</h3>
+<ul>
+<li>Uses the global list to gate <code>VoiceWakeRuntime</code> triggers.</li>
+<li>Editing “Trigger words” in Voice Wake settings calls <code>voicewake.set</code> and then relies on the broadcast to keep other clients in sync.</li>
+</ul>
+<h3>iOS node</h3>
+<ul>
+<li>Uses the global list for <code>VoiceWakeManager</code> trigger detection.</li>
+<li>Editing Wake Words in Settings calls <code>voicewake.set</code> (over the Gateway WS) and also keeps local wake-word detection responsive.</li>
+</ul>
+<h3>Android node</h3>
+<ul>
+<li>Exposes a Wake Words editor in Settings.</li>
+<li>Calls <code>voicewake.set</code> over the Gateway WS so edits sync everywhere.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

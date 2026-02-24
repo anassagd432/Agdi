@@ -151,7 +151,7 @@ describe("enableConsoleCapture", () => {
 });
 
 function tempLogPath() {
-  return path.join(os.tmpdir(), `openclaw-log-${crypto.randomUUID()}.log`);
+  return path.join(os.tmpdir(), `agdi-log-${crypto.randomUUID()}.log`);
 }
 
 function eioError() {

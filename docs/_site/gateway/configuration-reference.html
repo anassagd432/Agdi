@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuration Reference — AGDI Docs</title>
+  <meta name="description" content="Complete field-by-field reference for ~/.agdi/agdi.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="active" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Configuration Reference</h1>
+<p>Every field available in <code>~/.agdi/agdi.json</code>. For a task-oriented overview, see <a href="/gateway/configuration">Configuration</a>.</p>
+<p>Config format is <strong>JSON5</strong> (comments + trailing commas allowed). All fields are optional — AGDI uses safe defaults when omitted.</p>
+<hr>
+<h2>Channels</h2>
+<p>Each channel starts automatically when its config section exists (unless <code>enabled: false</code>).</p>
+<h3>DM and group access</h3>
+<p>All channels support DM policies and group policies:</p>
+<table>
+<thead>
+<tr>
+<th>DM policy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pairing</code> (default)</td>
+<td>Unknown senders get a one-time pairing code; owner must approve</td>
+</tr>
+<tr>
+<td><code>allowlist</code></td>
+<td>Only senders in <code>allowFrom</code> (or paired allow store)</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td>Allow all inbound DMs (requires <code>allowFrom: [&quot;*&quot;]</code>)</td>
+</tr>
+<tr>
+<td><code>disabled</code></td>
+<td>Ignore all inbound DMs</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Group policy</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>allowlist</code> (default)</td>
+<td>Only groups matching the configured allowlist</td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td>Bypass group allowlists (mention-gating still applies)</td>
+</tr>
+<tr>
+<td><code>disabled</code></td>
+<td>Block all group/room messages</td>
+</tr>
+</tbody></table>
+<p><code>channels.defaults.groupPolicy</code> sets the default when a provider&#39;s <code>groupPolicy</code> is unset.
+Pairing codes expire after 1 hour. Pending DM pairing requests are capped at <strong>3 per channel</strong>.
+Slack/Discord have a special fallback: if their provider section is missing entirely, runtime group policy can resolve to <code>open</code> (with a startup warning).</p>
+<h3>WhatsApp</h3>
+<p>WhatsApp runs through the gateway&#39;s web channel (Baileys Web). It starts automatically when a linked session exists.</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      dmPolicy: &quot;pairing&quot;, // pairing | allowlist | open | disabled
+      allowFrom: [&quot;+15555550123&quot;, &quot;+447700900123&quot;],
+      textChunkLimit: 4000,
+      chunkMode: &quot;length&quot;, // length | newline
+      mediaMaxMb: 50,
+      sendReadReceipts: true, // blue ticks (false in self-chat mode)
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+      },
+      groupPolicy: &quot;allowlist&quot;,
+      groupAllowFrom: [&quot;+15551234567&quot;],
+    },
+  },
+  web: {
+    enabled: true,
+    heartbeatSeconds: 60,
+    reconnect: {
+      initialMs: 2000,
+      maxMs: 120000,
+      factor: 1.4,
+      jitter: 0.2,
+      maxAttempts: 0,
+    },
+  },
+}
+</code></pre>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      accounts: {
+        default: {},
+        personal: {},
+        biz: {
+          // authDir: &quot;~/.agdi/credentials/whatsapp/biz&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Outbound commands default to account <code>default</code> if present; otherwise the first configured account id (sorted).</li>
+<li>Legacy single-account Baileys auth dir is migrated by <code>agdi doctor</code> into <code>whatsapp/default</code>.</li>
+<li>Per-account overrides: <code>channels.whatsapp.accounts.&lt;id&gt;.sendReadReceipts</code>, <code>channels.whatsapp.accounts.&lt;id&gt;.dmPolicy</code>, <code>channels.whatsapp.accounts.&lt;id&gt;.allowFrom</code>.</li>
+</ul>
+<h3>Telegram</h3>
+<pre><code class="language-json5">{
+  channels: {
+    telegram: {
+      enabled: true,
+      botToken: &quot;your-bot-token&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;tg:123456789&quot;],
+      groups: {
+        &quot;*&quot;: { requireMention: true },
+        &quot;-1001234567890&quot;: {
+          allowFrom: [&quot;@admin&quot;],
+          systemPrompt: &quot;Keep answers brief.&quot;,
+          topics: {
+            &quot;99&quot;: {
+              requireMention: false,
+              skills: [&quot;search&quot;],
+              systemPrompt: &quot;Stay on topic.&quot;,
+            },
+          },
+        },
+      },
+      customCommands: [
+        { command: &quot;backup&quot;, description: &quot;Git backup&quot; },
+        { command: &quot;generate&quot;, description: &quot;Create an image&quot; },
+      ],
+      historyLimit: 50,
+      replyToMode: &quot;first&quot;, // off | first | all
+      linkPreview: true,
+      streamMode: &quot;partial&quot;, // off | partial | block
+      draftChunk: {
+        minChars: 200,
+        maxChars: 800,
+        breakPreference: &quot;paragraph&quot;, // paragraph | newline | sentence
+      },
+      actions: { reactions: true, sendMessage: true },
+      reactionNotifications: &quot;own&quot;, // off | own | all
+      mediaMaxMb: 5,
+      retry: {
+        attempts: 3,
+        minDelayMs: 400,
+        maxDelayMs: 30000,
+        jitter: 0.1,
+      },
+      network: { autoSelectFamily: false },
+      proxy: &quot;socks5://localhost:9050&quot;,
+      webhookUrl: &quot;https://example.com/telegram-webhook&quot;,
+      webhookSecret: &quot;secret&quot;,
+      webhookPath: &quot;/telegram-webhook&quot;,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Bot token: <code>channels.telegram.botToken</code> or <code>channels.telegram.tokenFile</code>, with <code>TELEGRAM_BOT_TOKEN</code> as fallback for the default account.</li>
+<li><code>configWrites: false</code> blocks Telegram-initiated config writes (supergroup ID migrations, <code>/config set|unset</code>).</li>
+<li>Telegram stream previews use <code>sendMessage</code> + <code>editMessageText</code> (works in direct and group chats).</li>
+<li>Retry policy: see <a href="/concepts/retry">Retry policy</a>.</li>
+</ul>
+<h3>Discord</h3>
+<pre><code class="language-json5">{
+  channels: {
+    discord: {
+      enabled: true,
+      token: &quot;your-bot-token&quot;,
+      mediaMaxMb: 8,
+      allowBots: false,
+      actions: {
+        reactions: true,
+        stickers: true,
+        polls: true,
+        permissions: true,
+        messages: true,
+        threads: true,
+        pins: true,
+        search: true,
+        memberInfo: true,
+        roleInfo: true,
+        roles: false,
+        channelInfo: true,
+        voiceStatus: true,
+        events: true,
+        moderation: false,
+      },
+      replyToMode: &quot;off&quot;, // off | first | all
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;1234567890&quot;, &quot;steipete&quot;],
+      dm: { enabled: true, groupEnabled: false, groupChannels: [&quot;agdi-dm&quot;] },
+      guilds: {
+        &quot;123456789012345678&quot;: {
+          slug: &quot;friends-of-agdi&quot;,
+          requireMention: false,
+          reactionNotifications: &quot;own&quot;,
+          users: [&quot;987654321098765432&quot;],
+          channels: {
+            general: { allow: true },
+            help: {
+              allow: true,
+              requireMention: true,
+              users: [&quot;987654321098765432&quot;],
+              skills: [&quot;docs&quot;],
+              systemPrompt: &quot;Short answers only.&quot;,
+            },
+          },
+        },
+      },
+      historyLimit: 20,
+      textChunkLimit: 2000,
+      chunkMode: &quot;length&quot;, // length | newline
+      maxLinesPerMessage: 17,
+      ui: {
+        components: {
+          accentColor: &quot;#5865F2&quot;,
+        },
+      },
+      retry: {
+        attempts: 3,
+        minDelayMs: 500,
+        maxDelayMs: 30000,
+        jitter: 0.1,
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Token: <code>channels.discord.token</code>, with <code>DISCORD_BOT_TOKEN</code> as fallback for the default account.</li>
+<li>Use <code>user:&lt;id&gt;</code> (DM) or <code>channel:&lt;id&gt;</code> (guild channel) for delivery targets; bare numeric IDs are rejected.</li>
+<li>Guild slugs are lowercase with spaces replaced by <code>-</code>; channel keys use the slugged name (no <code>#</code>). Prefer guild IDs.</li>
+<li>Bot-authored messages are ignored by default. <code>allowBots: true</code> enables them (own messages still filtered).</li>
+<li><code>maxLinesPerMessage</code> (default 17) splits tall messages even when under 2000 chars.</li>
+<li><code>channels.discord.ui.components.accentColor</code> sets the accent color for Discord components v2 containers.</li>
+</ul>
+<p><strong>Reaction notification modes:</strong> <code>off</code> (none), <code>own</code> (bot&#39;s messages, default), <code>all</code> (all messages), <code>allowlist</code> (from <code>guilds.&lt;id&gt;.users</code> on all messages).</p>
+<h3>Google Chat</h3>
+<pre><code class="language-json5">{
+  channels: {
+    googlechat: {
+      enabled: true,
+      serviceAccountFile: &quot;/path/to/service-account.json&quot;,
+      audienceType: &quot;app-url&quot;, // app-url | project-number
+      audience: &quot;https://gateway.example.com/googlechat&quot;,
+      webhookPath: &quot;/googlechat&quot;,
+      botUser: &quot;users/1234567890&quot;,
+      dm: {
+        enabled: true,
+        policy: &quot;pairing&quot;,
+        allowFrom: [&quot;users/1234567890&quot;],
+      },
+      groupPolicy: &quot;allowlist&quot;,
+      groups: {
+        &quot;spaces/AAAA&quot;: { allow: true, requireMention: true },
+      },
+      actions: { reactions: true },
+      typingIndicator: &quot;message&quot;,
+      mediaMaxMb: 20,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Service account JSON: inline (<code>serviceAccount</code>) or file-based (<code>serviceAccountFile</code>).</li>
+<li>Env fallbacks: <code>GOOGLE_CHAT_SERVICE_ACCOUNT</code> or <code>GOOGLE_CHAT_SERVICE_ACCOUNT_FILE</code>.</li>
+<li>Use <code>spaces/&lt;spaceId&gt;</code> or <code>users/&lt;userId|email&gt;</code> for delivery targets.</li>
+</ul>
+<h3>Slack</h3>
+<pre><code class="language-json5">{
+  channels: {
+    slack: {
+      enabled: true,
+      botToken: &quot;xoxb-...&quot;,
+      appToken: &quot;xapp-...&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;U123&quot;, &quot;U456&quot;, &quot;*&quot;],
+      dm: { enabled: true, groupEnabled: false, groupChannels: [&quot;G123&quot;] },
+      channels: {
+        C123: { allow: true, requireMention: true, allowBots: false },
+        &quot;#general&quot;: {
+          allow: true,
+          requireMention: true,
+          allowBots: false,
+          users: [&quot;U123&quot;],
+          skills: [&quot;docs&quot;],
+          systemPrompt: &quot;Short answers only.&quot;,
+        },
+      },
+      historyLimit: 50,
+      allowBots: false,
+      reactionNotifications: &quot;own&quot;,
+      reactionAllowlist: [&quot;U123&quot;],
+      replyToMode: &quot;off&quot;, // off | first | all
+      thread: {
+        historyScope: &quot;thread&quot;, // thread | channel
+        inheritParent: false,
+      },
+      actions: {
+        reactions: true,
+        messages: true,
+        pins: true,
+        memberInfo: true,
+        emojiList: true,
+      },
+      slashCommand: {
+        enabled: true,
+        name: &quot;agdi&quot;,
+        sessionPrefix: &quot;slack:slash&quot;,
+        ephemeral: true,
+      },
+      textChunkLimit: 4000,
+      chunkMode: &quot;length&quot;,
+      mediaMaxMb: 20,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><strong>Socket mode</strong> requires both <code>botToken</code> and <code>appToken</code> (<code>SLACK_BOT_TOKEN</code> + <code>SLACK_APP_TOKEN</code> for default account env fallback).</li>
+<li><strong>HTTP mode</strong> requires <code>botToken</code> plus <code>signingSecret</code> (at root or per-account).</li>
+<li><code>configWrites: false</code> blocks Slack-initiated config writes.</li>
+<li>Use <code>user:&lt;id&gt;</code> (DM) or <code>channel:&lt;id&gt;</code> for delivery targets.</li>
+</ul>
+<p><strong>Reaction notification modes:</strong> <code>off</code>, <code>own</code> (default), <code>all</code>, <code>allowlist</code> (from <code>reactionAllowlist</code>).</p>
+<p><strong>Thread session isolation:</strong> <code>thread.historyScope</code> is per-thread (default) or shared across channel. <code>thread.inheritParent</code> copies parent channel transcript to new threads.</p>
+<table>
+<thead>
+<tr>
+<th>Action group</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>reactions</td>
+<td>enabled</td>
+<td>React + list reactions</td>
+</tr>
+<tr>
+<td>messages</td>
+<td>enabled</td>
+<td>Read/send/edit/delete</td>
+</tr>
+<tr>
+<td>pins</td>
+<td>enabled</td>
+<td>Pin/unpin/list</td>
+</tr>
+<tr>
+<td>memberInfo</td>
+<td>enabled</td>
+<td>Member info</td>
+</tr>
+<tr>
+<td>emojiList</td>
+<td>enabled</td>
+<td>Custom emoji list</td>
+</tr>
+</tbody></table>
+<h3>Mattermost</h3>
+<p>Mattermost ships as a plugin: <code>agdi plugins install @agdi/mattermost</code>.</p>
+<pre><code class="language-json5">{
+  channels: {
+    mattermost: {
+      enabled: true,
+      botToken: &quot;mm-token&quot;,
+      baseUrl: &quot;https://chat.example.com&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      chatmode: &quot;oncall&quot;, // oncall | onmessage | onchar
+      oncharPrefixes: [&quot;&gt;&quot;, &quot;!&quot;],
+      textChunkLimit: 4000,
+      chunkMode: &quot;length&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Chat modes: <code>oncall</code> (respond on @-mention, default), <code>onmessage</code> (every message), <code>onchar</code> (messages starting with trigger prefix).</p>
+<h3>Signal</h3>
+<pre><code class="language-json5">{
+  channels: {
+    signal: {
+      reactionNotifications: &quot;own&quot;, // off | own | all | allowlist
+      reactionAllowlist: [&quot;+15551234567&quot;, &quot;uuid:123e4567-e89b-12d3-a456-426614174000&quot;],
+      historyLimit: 50,
+    },
+  },
+}
+</code></pre>
+<p><strong>Reaction notification modes:</strong> <code>off</code>, <code>own</code> (default), <code>all</code>, <code>allowlist</code> (from <code>reactionAllowlist</code>).</p>
+<h3>iMessage</h3>
+<p>AGDI spawns <code>imsg rpc</code> (JSON-RPC over stdio). No daemon or port required.</p>
+<pre><code class="language-json5">{
+  channels: {
+    imessage: {
+      enabled: true,
+      cliPath: &quot;imsg&quot;,
+      dbPath: &quot;~/Library/Messages/chat.db&quot;,
+      remoteHost: &quot;user@gateway-host&quot;,
+      dmPolicy: &quot;pairing&quot;,
+      allowFrom: [&quot;+15555550123&quot;, &quot;user@example.com&quot;, &quot;chat_id:123&quot;],
+      historyLimit: 50,
+      includeAttachments: false,
+      mediaMaxMb: 16,
+      service: &quot;auto&quot;,
+      region: &quot;US&quot;,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Requires Full Disk Access to the Messages DB.</li>
+<li>Prefer <code>chat_id:&lt;id&gt;</code> targets. Use <code>imsg chats --limit 20</code> to list chats.</li>
+<li><code>cliPath</code> can point to an SSH wrapper; set <code>remoteHost</code> for SCP attachment fetching.</li>
+</ul>
+<pre><code class="language-bash">#!/usr/bin/env bash
+exec ssh -T gateway-host imsg &quot;$@&quot;
+</code></pre>
+<h3>Multi-account (all channels)</h3>
+<p>Run multiple accounts per channel (each with its own <code>accountId</code>):</p>
+<pre><code class="language-json5">{
+  channels: {
+    telegram: {
+      accounts: {
+        default: {
+          name: &quot;Primary bot&quot;,
+          botToken: &quot;123456:ABC...&quot;,
+        },
+        alerts: {
+          name: &quot;Alerts bot&quot;,
+          botToken: &quot;987654:XYZ...&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>default</code> is used when <code>accountId</code> is omitted (CLI + routing).</li>
+<li>Env tokens only apply to the <strong>default</strong> account.</li>
+<li>Base channel settings apply to all accounts unless overridden per account.</li>
+<li>Use <code>bindings[].match.accountId</code> to route each account to a different agent.</li>
+</ul>
+<h3>Group chat mention gating</h3>
+<p>Group messages default to <strong>require mention</strong> (metadata mention or regex patterns). Applies to WhatsApp, Telegram, Discord, Google Chat, and iMessage group chats.</p>
+<p><strong>Mention types:</strong></p>
+<ul>
+<li><strong>Metadata mentions</strong>: Native platform @-mentions. Ignored in WhatsApp self-chat mode.</li>
+<li><strong>Text patterns</strong>: Regex patterns in <code>agents.list[].groupChat.mentionPatterns</code>. Always checked.</li>
+<li>Mention gating is enforced only when detection is possible (native mentions or at least one pattern).</li>
+</ul>
+<pre><code class="language-json5">{
+  messages: {
+    groupChat: { historyLimit: 50 },
+  },
+  agents: {
+    list: [{ id: &quot;main&quot;, groupChat: { mentionPatterns: [&quot;@agdi&quot;, &quot;agdi&quot;] } }],
+  },
+}
+</code></pre>
+<p><code>messages.groupChat.historyLimit</code> sets the global default. Channels can override with <code>channels.&lt;channel&gt;.historyLimit</code> (or per-account). Set <code>0</code> to disable.</p>
+<h4>DM history limits</h4>
+<pre><code class="language-json5">{
+  channels: {
+    telegram: {
+      dmHistoryLimit: 30,
+      dms: {
+        &quot;123456789&quot;: { historyLimit: 50 },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Resolution: per-DM override → provider default → no limit (all retained).</p>
+<p>Supported: <code>telegram</code>, <code>whatsapp</code>, <code>discord</code>, <code>slack</code>, <code>signal</code>, <code>imessage</code>, <code>msteams</code>.</p>
+<h4>Self-chat mode</h4>
+<p>Include your own number in <code>allowFrom</code> to enable self-chat mode (ignores native @-mentions, only responds to text patterns):</p>
+<pre><code class="language-json5">{
+  channels: {
+    whatsapp: {
+      allowFrom: [&quot;+15555550123&quot;],
+      groups: { &quot;*&quot;: { requireMention: true } },
+    },
+  },
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        groupChat: { mentionPatterns: [&quot;reisponde&quot;, &quot;@agdi&quot;] },
+      },
+    ],
+  },
+}
+</code></pre>
+<h3>Commands (chat command handling)</h3>
+<pre><code class="language-json5">{
+  commands: {
+    native: &quot;auto&quot;, // register native commands when supported
+    text: true, // parse /commands in chat messages
+    bash: false, // allow ! (alias: /bash)
+    bashForegroundMs: 2000,
+    config: false, // allow /config
+    debug: false, // allow /debug
+    restart: false, // allow /restart + gateway restart tool
+    allowFrom: {
+      &quot;*&quot;: [&quot;user1&quot;],
+      discord: [&quot;user:123&quot;],
+    },
+    useAccessGroups: true,
+  },
+}
+</code></pre>
+<ul>
+<li>Text commands must be <strong>standalone</strong> messages with leading <code>/</code>.</li>
+<li><code>native: &quot;auto&quot;</code> turns on native commands for Discord/Telegram, leaves Slack off.</li>
+<li>Override per channel: <code>channels.discord.commands.native</code> (bool or <code>&quot;auto&quot;</code>). <code>false</code> clears previously registered commands.</li>
+<li><code>channels.telegram.customCommands</code> adds extra Telegram bot menu entries.</li>
+<li><code>bash: true</code> enables <code>! &lt;cmd&gt;</code> for host shell. Requires <code>tools.elevated.enabled</code> and sender in <code>tools.elevated.allowFrom.&lt;channel&gt;</code>.</li>
+<li><code>config: true</code> enables <code>/config</code> (reads/writes <code>agdi.json</code>).</li>
+<li><code>channels.&lt;provider&gt;.configWrites</code> gates config mutations per channel (default: true).</li>
+<li><code>allowFrom</code> is per-provider. When set, it is the <strong>only</strong> authorization source (channel allowlists/pairing and <code>useAccessGroups</code> are ignored).</li>
+<li><code>useAccessGroups: false</code> allows commands to bypass access-group policies when <code>allowFrom</code> is not set.</li>
+</ul>
+<hr>
+<h2>Agent defaults</h2>
+<h3><code>agents.defaults.workspace</code></h3>
+<p>Default: <code>~/.agdi/workspace</code>.</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { workspace: &quot;~/.agdi/workspace&quot; } },
+}
+</code></pre>
+<h3><code>agents.defaults.repoRoot</code></h3>
+<p>Optional repository root shown in the system prompt&#39;s Runtime line. If unset, AGDI auto-detects by walking upward from the workspace.</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { repoRoot: &quot;~/Projects/agdi&quot; } },
+}
+</code></pre>
+<h3><code>agents.defaults.skipBootstrap</code></h3>
+<p>Disables automatic creation of workspace bootstrap files (<code>AGENTS.md</code>, <code>SOUL.md</code>, <code>TOOLS.md</code>, <code>IDENTITY.md</code>, <code>USER.md</code>, <code>HEARTBEAT.md</code>, <code>BOOTSTRAP.md</code>).</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { skipBootstrap: true } },
+}
+</code></pre>
+<h3><code>agents.defaults.bootstrapMaxChars</code></h3>
+<p>Max characters per workspace bootstrap file before truncation. Default: <code>20000</code>.</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { bootstrapMaxChars: 20000 } },
+}
+</code></pre>
+<h3><code>agents.defaults.bootstrapTotalMaxChars</code></h3>
+<p>Max total characters injected across all workspace bootstrap files. Default: <code>24000</code>.</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { bootstrapTotalMaxChars: 24000 } },
+}
+</code></pre>
+<h3><code>agents.defaults.userTimezone</code></h3>
+<p>Timezone for system prompt context (not message timestamps). Falls back to host timezone.</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { userTimezone: &quot;America/Chicago&quot; } },
+}
+</code></pre>
+<h3><code>agents.defaults.timeFormat</code></h3>
+<p>Time format in system prompt. Default: <code>auto</code> (OS preference).</p>
+<pre><code class="language-json5">{
+  agents: { defaults: { timeFormat: &quot;auto&quot; } }, // auto | 12 | 24
+}
+</code></pre>
+<h3><code>agents.defaults.model</code></h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      models: {
+        &quot;anthropic/claude-opus-4-6&quot;: { alias: &quot;opus&quot; },
+        &quot;minimax/MiniMax-M2.1&quot;: { alias: &quot;minimax&quot; },
+      },
+      model: {
+        primary: &quot;anthropic/claude-opus-4-6&quot;,
+        fallbacks: [&quot;minimax/MiniMax-M2.1&quot;],
+      },
+      imageModel: {
+        primary: &quot;openrouter/qwen/qwen-2.5-vl-72b-instruct:free&quot;,
+        fallbacks: [&quot;openrouter/google/gemini-2.0-flash-vision:free&quot;],
+      },
+      thinkingDefault: &quot;low&quot;,
+      verboseDefault: &quot;off&quot;,
+      elevatedDefault: &quot;on&quot;,
+      timeoutSeconds: 600,
+      mediaMaxMb: 5,
+      contextTokens: 200000,
+      maxConcurrent: 3,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>model.primary</code>: format <code>provider/model</code> (e.g. <code>anthropic/claude-opus-4-6</code>). If you omit the provider, AGDI assumes <code>anthropic</code> (deprecated).</li>
+<li><code>models</code>: the configured model catalog and allowlist for <code>/model</code>. Each entry can include <code>alias</code> (shortcut) and <code>params</code> (provider-specific: <code>temperature</code>, <code>maxTokens</code>).</li>
+<li><code>imageModel</code>: only used if the primary model lacks image input.</li>
+<li><code>maxConcurrent</code>: max parallel agent runs across sessions (each session still serialized). Default: 1.</li>
+</ul>
+<p><strong>Built-in alias shorthands</strong> (only apply when the model is in <code>agents.defaults.models</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Alias</th>
+<th>Model</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>opus</code></td>
+<td><code>anthropic/claude-opus-4-6</code></td>
+</tr>
+<tr>
+<td><code>sonnet</code></td>
+<td><code>anthropic/claude-sonnet-4-5</code></td>
+</tr>
+<tr>
+<td><code>gpt</code></td>
+<td><code>openai/gpt-5.2</code></td>
+</tr>
+<tr>
+<td><code>gpt-mini</code></td>
+<td><code>openai/gpt-5-mini</code></td>
+</tr>
+<tr>
+<td><code>gemini</code></td>
+<td><code>google/gemini-3-pro-preview</code></td>
+</tr>
+<tr>
+<td><code>gemini-flash</code></td>
+<td><code>google/gemini-3-flash-preview</code></td>
+</tr>
+</tbody></table>
+<p>Your configured aliases always win over defaults.</p>
+<p>Z.AI GLM-4.x models automatically enable thinking mode unless you set <code>--thinking off</code> or define <code>agents.defaults.models[&quot;zai/&lt;model&gt;&quot;].params.thinking</code> yourself.</p>
+<h3><code>agents.defaults.cliBackends</code></h3>
+<p>Optional CLI backends for text-only fallback runs (no tool calls). Useful as a backup when API providers fail.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      cliBackends: {
+        &quot;claude-cli&quot;: {
+          command: &quot;/opt/homebrew/bin/claude&quot;,
+        },
+        &quot;my-cli&quot;: {
+          command: &quot;my-cli&quot;,
+          args: [&quot;--json&quot;],
+          output: &quot;json&quot;,
+          modelArg: &quot;--model&quot;,
+          sessionArg: &quot;--session&quot;,
+          sessionMode: &quot;existing&quot;,
+          systemPromptArg: &quot;--system&quot;,
+          systemPromptWhen: &quot;first&quot;,
+          imageArg: &quot;--image&quot;,
+          imageMode: &quot;repeat&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>CLI backends are text-first; tools are always disabled.</li>
+<li>Sessions supported when <code>sessionArg</code> is set.</li>
+<li>Image pass-through supported when <code>imageArg</code> accepts file paths.</li>
+</ul>
+<h3><code>agents.defaults.heartbeat</code></h3>
+<p>Periodic heartbeat runs.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      heartbeat: {
+        every: &quot;30m&quot;, // 0m disables
+        model: &quot;openai/gpt-5.2-mini&quot;,
+        includeReasoning: false,
+        session: &quot;main&quot;,
+        to: &quot;+15555550123&quot;,
+        target: &quot;last&quot;, // last | whatsapp | telegram | discord | ... | none
+        prompt: &quot;Read HEARTBEAT.md if it exists...&quot;,
+        ackMaxChars: 300,
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>every</code>: duration string (ms/s/m/h). Default: <code>30m</code>.</li>
+<li>Per-agent: set <code>agents.list[].heartbeat</code>. When any agent defines <code>heartbeat</code>, <strong>only those agents</strong> run heartbeats.</li>
+<li>Heartbeats run full agent turns — shorter intervals burn more tokens.</li>
+</ul>
+<h3><code>agents.defaults.compaction</code></h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      compaction: {
+        mode: &quot;safeguard&quot;, // default | safeguard
+        reserveTokensFloor: 24000,
+        memoryFlush: {
+          enabled: true,
+          softThresholdTokens: 6000,
+          systemPrompt: &quot;Session nearing compaction. Store durable memories now.&quot;,
+          prompt: &quot;Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.&quot;,
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>mode</code>: <code>default</code> or <code>safeguard</code> (chunked summarization for long histories). See <a href="/concepts/compaction">Compaction</a>.</li>
+<li><code>memoryFlush</code>: silent agentic turn before auto-compaction to store durable memories. Skipped when workspace is read-only.</li>
+</ul>
+<h3><code>agents.defaults.contextPruning</code></h3>
+<p>Prunes <strong>old tool results</strong> from in-memory context before sending to the LLM. Does <strong>not</strong> modify session history on disk.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      contextPruning: {
+        mode: &quot;cache-ttl&quot;, // off | cache-ttl
+        ttl: &quot;1h&quot;, // duration (ms/s/m/h), default unit: minutes
+        keepLastAssistants: 3,
+        softTrimRatio: 0.3,
+        hardClearRatio: 0.5,
+        minPrunableToolChars: 50000,
+        softTrim: { maxChars: 4000, headChars: 1500, tailChars: 1500 },
+        hardClear: { enabled: true, placeholder: &quot;[Old tool result content cleared]&quot; },
+        tools: { deny: [&quot;browser&quot;, &quot;canvas&quot;] },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>mode: &quot;cache-ttl&quot;</code> enables pruning passes.</li>
+<li><code>ttl</code> controls how often pruning can run again (after the last cache touch).</li>
+<li>Pruning soft-trims oversized tool results first, then hard-clears older tool results if needed.</li>
+</ul>
+<p><strong>Soft-trim</strong> keeps beginning + end and inserts <code>...</code> in the middle.</p>
+<p><strong>Hard-clear</strong> replaces the entire tool result with the placeholder.</p>
+<p>Notes:</p>
+<ul>
+<li>Image blocks are never trimmed/cleared.</li>
+<li>Ratios are character-based (approximate), not exact token counts.</li>
+<li>If fewer than <code>keepLastAssistants</code> assistant messages exist, pruning is skipped.</li>
+</ul>
+<p>See <a href="/concepts/session-pruning">Session Pruning</a> for behavior details.</p>
+<h3>Block streaming</h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      blockStreamingDefault: &quot;off&quot;, // on | off
+      blockStreamingBreak: &quot;text_end&quot;, // text_end | message_end
+      blockStreamingChunk: { minChars: 800, maxChars: 1200 },
+      blockStreamingCoalesce: { idleMs: 1000 },
+      humanDelay: { mode: &quot;natural&quot; }, // off | natural | custom (use minMs/maxMs)
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Non-Telegram channels require explicit <code>*.blockStreaming: true</code> to enable block replies.</li>
+<li>Channel overrides: <code>channels.&lt;channel&gt;.blockStreamingCoalesce</code> (and per-account variants). Signal/Slack/Discord/Google Chat default <code>minChars: 1500</code>.</li>
+<li><code>humanDelay</code>: randomized pause between block replies. <code>natural</code> = 800–2500ms. Per-agent override: <code>agents.list[].humanDelay</code>.</li>
+</ul>
+<p>See <a href="/concepts/streaming">Streaming</a> for behavior + chunking details.</p>
+<h3>Typing indicators</h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      typingMode: &quot;instant&quot;, // never | instant | thinking | message
+      typingIntervalSeconds: 6,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Defaults: <code>instant</code> for direct chats/mentions, <code>message</code> for unmentioned group chats.</li>
+<li>Per-session overrides: <code>session.typingMode</code>, <code>session.typingIntervalSeconds</code>.</li>
+</ul>
+<p>See <a href="/concepts/typing-indicators">Typing Indicators</a>.</p>
+<h3><code>agents.defaults.sandbox</code></h3>
+<p>Optional <strong>Docker sandboxing</strong> for the embedded agent. See <a href="/gateway/sandboxing">Sandboxing</a> for the full guide.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      sandbox: {
+        mode: &quot;non-main&quot;, // off | non-main | all
+        scope: &quot;agent&quot;, // session | agent | shared
+        workspaceAccess: &quot;none&quot;, // none | ro | rw
+        workspaceRoot: &quot;~/.agdi/sandboxes&quot;,
+        docker: {
+          image: &quot;agdi-sandbox:bookworm-slim&quot;,
+          containerPrefix: &quot;agdi-sbx-&quot;,
+          workdir: &quot;/workspace&quot;,
+          readOnlyRoot: true,
+          tmpfs: [&quot;/tmp&quot;, &quot;/var/tmp&quot;, &quot;/run&quot;],
+          network: &quot;none&quot;,
+          user: &quot;1000:1000&quot;,
+          capDrop: [&quot;ALL&quot;],
+          env: { LANG: &quot;C.UTF-8&quot; },
+          setupCommand: &quot;apt-get update &amp;&amp; apt-get install -y git curl jq&quot;,
+          pidsLimit: 256,
+          memory: &quot;1g&quot;,
+          memorySwap: &quot;2g&quot;,
+          cpus: 1,
+          ulimits: {
+            nofile: { soft: 1024, hard: 2048 },
+            nproc: 256,
+          },
+          seccompProfile: &quot;/path/to/seccomp.json&quot;,
+          apparmorProfile: &quot;agdi-sandbox&quot;,
+          dns: [&quot;1.1.1.1&quot;, &quot;8.8.8.8&quot;],
+          extraHosts: [&quot;internal.service:10.0.0.5&quot;],
+          binds: [&quot;/home/user/source:/source:rw&quot;],
+        },
+        browser: {
+          enabled: false,
+          image: &quot;agdi-sandbox-browser:bookworm-slim&quot;,
+          cdpPort: 9222,
+          vncPort: 5900,
+          noVncPort: 6080,
+          headless: false,
+          enableNoVnc: true,
+          allowHostControl: false,
+          autoStart: true,
+          autoStartTimeoutMs: 12000,
+        },
+        prune: {
+          idleHours: 24,
+          maxAgeDays: 7,
+        },
+      },
+    },
+  },
+  tools: {
+    sandbox: {
+      tools: {
+        allow: [
+          &quot;exec&quot;,
+          &quot;process&quot;,
+          &quot;read&quot;,
+          &quot;write&quot;,
+          &quot;edit&quot;,
+          &quot;apply_patch&quot;,
+          &quot;sessions_list&quot;,
+          &quot;sessions_history&quot;,
+          &quot;sessions_send&quot;,
+          &quot;sessions_spawn&quot;,
+          &quot;session_status&quot;,
+        ],
+        deny: [&quot;browser&quot;, &quot;canvas&quot;, &quot;nodes&quot;, &quot;cron&quot;, &quot;discord&quot;, &quot;gateway&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<p><strong>Workspace access:</strong></p>
+<ul>
+<li><code>none</code>: per-scope sandbox workspace under <code>~/.agdi/sandboxes</code></li>
+<li><code>ro</code>: sandbox workspace at <code>/workspace</code>, agent workspace mounted read-only at <code>/agent</code></li>
+<li><code>rw</code>: agent workspace mounted read/write at <code>/workspace</code></li>
+</ul>
+<p><strong>Scope:</strong></p>
+<ul>
+<li><code>session</code>: per-session container + workspace</li>
+<li><code>agent</code>: one container + workspace per agent (default)</li>
+<li><code>shared</code>: shared container and workspace (no cross-session isolation)</li>
+</ul>
+<p><strong><code>setupCommand</code></strong> runs once after container creation (via <code>sh -lc</code>). Needs network egress, writable root, root user.</p>
+<p><strong>Containers default to <code>network: &quot;none&quot;</code></strong> — set to <code>&quot;bridge&quot;</code> if the agent needs outbound access.</p>
+<p><strong>Inbound attachments</strong> are staged into <code>media/inbound/*</code> in the active workspace.</p>
+<p><strong><code>docker.binds</code></strong> mounts additional host directories; global and per-agent binds are merged.</p>
+<p><strong>Sandboxed browser</strong> (<code>sandbox.browser.enabled</code>): Chromium + CDP in a container. noVNC URL injected into system prompt. Does not require <code>browser.enabled</code> in main config.</p>
+<ul>
+<li><code>allowHostControl: false</code> (default) blocks sandboxed sessions from targeting the host browser.</li>
+<li><code>sandbox.browser.binds</code> mounts additional host directories into the sandbox browser container only. When set (including <code>[]</code>), it replaces <code>docker.binds</code> for the browser container.</li>
+</ul>
+<p>Build images:</p>
+<pre><code class="language-bash">scripts/sandbox-setup.sh           # main sandbox image
+scripts/sandbox-browser-setup.sh   # optional browser image
+</code></pre>
+<h3><code>agents.list</code> (per-agent overrides)</h3>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        default: true,
+        name: &quot;Main Agent&quot;,
+        workspace: &quot;~/.agdi/workspace&quot;,
+        agentDir: &quot;~/.agdi/agents/main/agent&quot;,
+        model: &quot;anthropic/claude-opus-4-6&quot;, // or { primary, fallbacks }
+        identity: {
+          name: &quot;Samantha&quot;,
+          theme: &quot;helpful sloth&quot;,
+          emoji: &quot;🦥&quot;,
+          avatar: &quot;avatars/samantha.png&quot;,
+        },
+        groupChat: { mentionPatterns: [&quot;@agdi&quot;] },
+        sandbox: { mode: &quot;off&quot; },
+        subagents: { allowAgents: [&quot;*&quot;] },
+        tools: {
+          profile: &quot;coding&quot;,
+          allow: [&quot;browser&quot;],
+          deny: [&quot;canvas&quot;],
+          elevated: { enabled: true },
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<ul>
+<li><code>id</code>: stable agent id (required).</li>
+<li><code>default</code>: when multiple are set, first wins (warning logged). If none set, first list entry is default.</li>
+<li><code>model</code>: string form overrides <code>primary</code> only; object form <code>{ primary, fallbacks }</code> overrides both (<code>[]</code> disables global fallbacks).</li>
+<li><code>identity.avatar</code>: workspace-relative path, <code>http(s)</code> URL, or <code>data:</code> URI.</li>
+<li><code>identity</code> derives defaults: <code>ackReaction</code> from <code>emoji</code>, <code>mentionPatterns</code> from <code>name</code>/<code>emoji</code>.</li>
+<li><code>subagents.allowAgents</code>: allowlist of agent ids for <code>sessions_spawn</code> (<code>[&quot;*&quot;]</code> = any; default: same agent only).</li>
+</ul>
+<hr>
+<h2>Multi-agent routing</h2>
+<p>Run multiple isolated agents inside one Gateway. See <a href="/concepts/multi-agent">Multi-Agent</a>.</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      { id: &quot;home&quot;, default: true, workspace: &quot;~/.agdi/workspace-home&quot; },
+      { id: &quot;work&quot;, workspace: &quot;~/.agdi/workspace-work&quot; },
+    ],
+  },
+  bindings: [
+    { agentId: &quot;home&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;personal&quot; } },
+    { agentId: &quot;work&quot;, match: { channel: &quot;whatsapp&quot;, accountId: &quot;biz&quot; } },
+  ],
+}
+</code></pre>
+<h3>Binding match fields</h3>
+<ul>
+<li><code>match.channel</code> (required)</li>
+<li><code>match.accountId</code> (optional; <code>*</code> = any account; omitted = default account)</li>
+<li><code>match.peer</code> (optional; <code>{ kind: direct|group|channel, id }</code>)</li>
+<li><code>match.guildId</code> / <code>match.teamId</code> (optional; channel-specific)</li>
+</ul>
+<p><strong>Deterministic match order:</strong></p>
+<ol>
+<li><code>match.peer</code></li>
+<li><code>match.guildId</code></li>
+<li><code>match.teamId</code></li>
+<li><code>match.accountId</code> (exact, no peer/guild/team)</li>
+<li><code>match.accountId: &quot;*&quot;</code> (channel-wide)</li>
+<li>Default agent</li>
+</ol>
+<p>Within each tier, the first matching <code>bindings</code> entry wins.</p>
+<h3>Per-agent access profiles</h3>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;personal&quot;,
+        workspace: &quot;~/.agdi/workspace-personal&quot;,
+        sandbox: { mode: &quot;off&quot; },
+      },
+    ],
+  },
+}
+</code></pre>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;family&quot;,
+        workspace: &quot;~/.agdi/workspace-family&quot;,
+        sandbox: { mode: &quot;all&quot;, scope: &quot;agent&quot;, workspaceAccess: &quot;ro&quot; },
+        tools: {
+          allow: [
+            &quot;read&quot;,
+            &quot;sessions_list&quot;,
+            &quot;sessions_history&quot;,
+            &quot;sessions_send&quot;,
+            &quot;sessions_spawn&quot;,
+            &quot;session_status&quot;,
+          ],
+          deny: [&quot;write&quot;, &quot;edit&quot;, &quot;apply_patch&quot;, &quot;exec&quot;, &quot;process&quot;, &quot;browser&quot;],
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;public&quot;,
+        workspace: &quot;~/.agdi/workspace-public&quot;,
+        sandbox: { mode: &quot;all&quot;, scope: &quot;agent&quot;, workspaceAccess: &quot;none&quot; },
+        tools: {
+          allow: [
+            &quot;sessions_list&quot;,
+            &quot;sessions_history&quot;,
+            &quot;sessions_send&quot;,
+            &quot;sessions_spawn&quot;,
+            &quot;session_status&quot;,
+            &quot;whatsapp&quot;,
+            &quot;telegram&quot;,
+            &quot;slack&quot;,
+            &quot;discord&quot;,
+            &quot;gateway&quot;,
+          ],
+          deny: [
+            &quot;read&quot;,
+            &quot;write&quot;,
+            &quot;edit&quot;,
+            &quot;apply_patch&quot;,
+            &quot;exec&quot;,
+            &quot;process&quot;,
+            &quot;browser&quot;,
+            &quot;canvas&quot;,
+            &quot;nodes&quot;,
+            &quot;cron&quot;,
+            &quot;gateway&quot;,
+            &quot;image&quot;,
+          ],
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>See <a href="/tools/multi-agent-sandbox-tools">Multi-Agent Sandbox &amp; Tools</a> for precedence details.</p>
+<hr>
+<h2>Session</h2>
+<pre><code class="language-json5">{
+  session: {
+    scope: &quot;per-sender&quot;,
+    dmScope: &quot;main&quot;, // main | per-peer | per-channel-peer | per-account-channel-peer
+    identityLinks: {
+      alice: [&quot;telegram:123456789&quot;, &quot;discord:987654321012345678&quot;],
+    },
+    reset: {
+      mode: &quot;daily&quot;, // daily | idle
+      atHour: 4,
+      idleMinutes: 60,
+    },
+    resetByType: {
+      thread: { mode: &quot;daily&quot;, atHour: 4 },
+      direct: { mode: &quot;idle&quot;, idleMinutes: 240 },
+      group: { mode: &quot;idle&quot;, idleMinutes: 120 },
+    },
+    resetTriggers: [&quot;/new&quot;, &quot;/reset&quot;],
+    store: &quot;~/.agdi/agents/{agentId}/sessions/sessions.json&quot;,
+    maintenance: {
+      mode: &quot;warn&quot;, // warn | enforce
+      pruneAfter: &quot;30d&quot;,
+      maxEntries: 500,
+      rotateBytes: &quot;10mb&quot;,
+    },
+    mainKey: &quot;main&quot;, // legacy (runtime always uses &quot;main&quot;)
+    agentToAgent: { maxPingPongTurns: 5 },
+    sendPolicy: {
+      rules: [{ action: &quot;deny&quot;, match: { channel: &quot;discord&quot;, chatType: &quot;group&quot; } }],
+      default: &quot;allow&quot;,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><strong><code>dmScope</code></strong>: how DMs are grouped.<ul>
+<li><code>main</code>: all DMs share the main session.</li>
+<li><code>per-peer</code>: isolate by sender id across channels.</li>
+<li><code>per-channel-peer</code>: isolate per channel + sender (recommended for multi-user inboxes).</li>
+<li><code>per-account-channel-peer</code>: isolate per account + channel + sender (recommended for multi-account).</li>
+</ul>
+</li>
+<li><strong><code>identityLinks</code></strong>: map canonical ids to provider-prefixed peers for cross-channel session sharing.</li>
+<li><strong><code>reset</code></strong>: primary reset policy. <code>daily</code> resets at <code>atHour</code> local time; <code>idle</code> resets after <code>idleMinutes</code>. When both configured, whichever expires first wins.</li>
+<li><strong><code>resetByType</code></strong>: per-type overrides (<code>direct</code>, <code>group</code>, <code>thread</code>). Legacy <code>dm</code> accepted as alias for <code>direct</code>.</li>
+<li><strong><code>mainKey</code></strong>: legacy field. Runtime now always uses <code>&quot;main&quot;</code> for the main direct-chat bucket.</li>
+<li><strong><code>sendPolicy</code></strong>: match by <code>channel</code>, <code>chatType</code> (<code>direct|group|channel</code>, with legacy <code>dm</code> alias), <code>keyPrefix</code>, or <code>rawKeyPrefix</code>. First deny wins.</li>
+<li><strong><code>maintenance</code></strong>: <code>warn</code> warns the active session on eviction; <code>enforce</code> applies pruning and rotation.</li>
+</ul>
+<hr>
+<h2>Messages</h2>
+<pre><code class="language-json5">{
+  messages: {
+    responsePrefix: &quot;🦞&quot;, // or &quot;auto&quot;
+    ackReaction: &quot;👀&quot;,
+    ackReactionScope: &quot;group-mentions&quot;, // group-mentions | group-all | direct | all
+    removeAckAfterReply: false,
+    queue: {
+      mode: &quot;collect&quot;, // steer | followup | collect | steer-backlog | steer+backlog | queue | interrupt
+      debounceMs: 1000,
+      cap: 20,
+      drop: &quot;summarize&quot;, // old | new | summarize
+      byChannel: {
+        whatsapp: &quot;collect&quot;,
+        telegram: &quot;collect&quot;,
+      },
+    },
+    inbound: {
+      debounceMs: 2000, // 0 disables
+      byChannel: {
+        whatsapp: 5000,
+        slack: 1500,
+      },
+    },
+  },
+}
+</code></pre>
+<h3>Response prefix</h3>
+<p>Per-channel/account overrides: <code>channels.&lt;channel&gt;.responsePrefix</code>, <code>channels.&lt;channel&gt;.accounts.&lt;id&gt;.responsePrefix</code>.</p>
+<p>Resolution (most specific wins): account → channel → global. <code>&quot;&quot;</code> disables and stops cascade. <code>&quot;auto&quot;</code> derives <code>[{identity.name}]</code>.</p>
+<p><strong>Template variables:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{model}</code></td>
+<td>Short model name</td>
+<td><code>claude-opus-4-6</code></td>
+</tr>
+<tr>
+<td><code>{modelFull}</code></td>
+<td>Full model identifier</td>
+<td><code>anthropic/claude-opus-4-6</code></td>
+</tr>
+<tr>
+<td><code>{provider}</code></td>
+<td>Provider name</td>
+<td><code>anthropic</code></td>
+</tr>
+<tr>
+<td><code>{thinkingLevel}</code></td>
+<td>Current thinking level</td>
+<td><code>high</code>, <code>low</code>, <code>off</code></td>
+</tr>
+<tr>
+<td><code>{identity.name}</code></td>
+<td>Agent identity name</td>
+<td>(same as <code>&quot;auto&quot;</code>)</td>
+</tr>
+</tbody></table>
+<p>Variables are case-insensitive. <code>{think}</code> is an alias for <code>{thinkingLevel}</code>.</p>
+<h3>Ack reaction</h3>
+<ul>
+<li>Defaults to active agent&#39;s <code>identity.emoji</code>, otherwise <code>&quot;👀&quot;</code>. Set <code>&quot;&quot;</code> to disable.</li>
+<li>Per-channel overrides: <code>channels.&lt;channel&gt;.ackReaction</code>, <code>channels.&lt;channel&gt;.accounts.&lt;id&gt;.ackReaction</code>.</li>
+<li>Resolution order: account → channel → <code>messages.ackReaction</code> → identity fallback.</li>
+<li>Scope: <code>group-mentions</code> (default), <code>group-all</code>, <code>direct</code>, <code>all</code>.</li>
+<li><code>removeAckAfterReply</code>: removes ack after reply (Slack/Discord/Telegram/Google Chat only).</li>
+</ul>
+<h3>Inbound debounce</h3>
+<p>Batches rapid text-only messages from the same sender into a single agent turn. Media/attachments flush immediately. Control commands bypass debouncing.</p>
+<h3>TTS (text-to-speech)</h3>
+<pre><code class="language-json5">{
+  messages: {
+    tts: {
+      auto: &quot;always&quot;, // off | always | inbound | tagged
+      mode: &quot;final&quot;, // final | all
+      provider: &quot;elevenlabs&quot;,
+      summaryModel: &quot;openai/gpt-4.1-mini&quot;,
+      modelOverrides: { enabled: true },
+      maxTextLength: 4000,
+      timeoutMs: 30000,
+      prefsPath: &quot;~/.agdi/settings/tts.json&quot;,
+      elevenlabs: {
+        apiKey: &quot;elevenlabs_api_key&quot;,
+        baseUrl: &quot;https://api.elevenlabs.io&quot;,
+        voiceId: &quot;voice_id&quot;,
+        modelId: &quot;eleven_multilingual_v2&quot;,
+        seed: 42,
+        applyTextNormalization: &quot;auto&quot;,
+        languageCode: &quot;en&quot;,
+        voiceSettings: {
+          stability: 0.5,
+          similarityBoost: 0.75,
+          style: 0.0,
+          useSpeakerBoost: true,
+          speed: 1.0,
+        },
+      },
+      openai: {
+        apiKey: &quot;openai_api_key&quot;,
+        model: &quot;gpt-4o-mini-tts&quot;,
+        voice: &quot;alloy&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>auto</code> controls auto-TTS. <code>/tts off|always|inbound|tagged</code> overrides per session.</li>
+<li><code>summaryModel</code> overrides <code>agents.defaults.model.primary</code> for auto-summary.</li>
+<li>API keys fall back to <code>ELEVENLABS_API_KEY</code>/<code>XI_API_KEY</code> and <code>OPENAI_API_KEY</code>.</li>
+</ul>
+<hr>
+<h2>Talk</h2>
+<p>Defaults for Talk mode (macOS/iOS/Android).</p>
+<pre><code class="language-json5">{
+  talk: {
+    voiceId: &quot;elevenlabs_voice_id&quot;,
+    voiceAliases: {
+      Clawd: &quot;EXAVITQu4vr4xnSDxMaL&quot;,
+      Roger: &quot;CwhRBWXzGAHq8TQ4Fs17&quot;,
+    },
+    modelId: &quot;eleven_v3&quot;,
+    outputFormat: &quot;mp3_44100_128&quot;,
+    apiKey: &quot;elevenlabs_api_key&quot;,
+    interruptOnSpeech: true,
+  },
+}
+</code></pre>
+<ul>
+<li>Voice IDs fall back to <code>ELEVENLABS_VOICE_ID</code> or <code>SAG_VOICE_ID</code>.</li>
+<li><code>apiKey</code> falls back to <code>ELEVENLABS_API_KEY</code>.</li>
+<li><code>voiceAliases</code> lets Talk directives use friendly names.</li>
+</ul>
+<hr>
+<h2>Tools</h2>
+<h3>Tool profiles</h3>
+<p><code>tools.profile</code> sets a base allowlist before <code>tools.allow</code>/<code>tools.deny</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Includes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>minimal</code></td>
+<td><code>session_status</code> only</td>
+</tr>
+<tr>
+<td><code>coding</code></td>
+<td><code>group:fs</code>, <code>group:runtime</code>, <code>group:sessions</code>, <code>group:memory</code>, <code>image</code></td>
+</tr>
+<tr>
+<td><code>messaging</code></td>
+<td><code>group:messaging</code>, <code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>session_status</code></td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td>No restriction (same as unset)</td>
+</tr>
+</tbody></table>
+<h3>Tool groups</h3>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>group:runtime</code></td>
+<td><code>exec</code>, <code>process</code> (<code>bash</code> is accepted as an alias for <code>exec</code>)</td>
+</tr>
+<tr>
+<td><code>group:fs</code></td>
+<td><code>read</code>, <code>write</code>, <code>edit</code>, <code>apply_patch</code></td>
+</tr>
+<tr>
+<td><code>group:sessions</code></td>
+<td><code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>, <code>sessions_spawn</code>, <code>session_status</code></td>
+</tr>
+<tr>
+<td><code>group:memory</code></td>
+<td><code>memory_search</code>, <code>memory_get</code></td>
+</tr>
+<tr>
+<td><code>group:web</code></td>
+<td><code>web_search</code>, <code>web_fetch</code></td>
+</tr>
+<tr>
+<td><code>group:ui</code></td>
+<td><code>browser</code>, <code>canvas</code></td>
+</tr>
+<tr>
+<td><code>group:automation</code></td>
+<td><code>cron</code>, <code>gateway</code></td>
+</tr>
+<tr>
+<td><code>group:messaging</code></td>
+<td><code>message</code></td>
+</tr>
+<tr>
+<td><code>group:nodes</code></td>
+<td><code>nodes</code></td>
+</tr>
+<tr>
+<td><code>group:agdi</code></td>
+<td>All built-in tools (excludes provider plugins)</td>
+</tr>
+</tbody></table>
+<h3><code>tools.allow</code> / <code>tools.deny</code></h3>
+<p>Global tool allow/deny policy (deny wins). Case-insensitive, supports <code>*</code> wildcards. Applied even when Docker sandbox is off.</p>
+<pre><code class="language-json5">{
+  tools: { deny: [&quot;browser&quot;, &quot;canvas&quot;] },
+}
+</code></pre>
+<h3><code>tools.byProvider</code></h3>
+<p>Further restrict tools for specific providers or models. Order: base profile → provider profile → allow/deny.</p>
+<pre><code class="language-json5">{
+  tools: {
+    profile: &quot;coding&quot;,
+    byProvider: {
+      &quot;google-antigravity&quot;: { profile: &quot;minimal&quot; },
+      &quot;openai/gpt-5.2&quot;: { allow: [&quot;group:fs&quot;, &quot;sessions_list&quot;] },
+    },
+  },
+}
+</code></pre>
+<h3><code>tools.elevated</code></h3>
+<p>Controls elevated (host) exec access:</p>
+<pre><code class="language-json5">{
+  tools: {
+    elevated: {
+      enabled: true,
+      allowFrom: {
+        whatsapp: [&quot;+15555550123&quot;],
+        discord: [&quot;steipete&quot;, &quot;1234567890123&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Per-agent override (<code>agents.list[].tools.elevated</code>) can only further restrict.</li>
+<li><code>/elevated on|off|ask|full</code> stores state per session; inline directives apply to single message.</li>
+<li>Elevated <code>exec</code> runs on the host, bypasses sandboxing.</li>
+</ul>
+<h3><code>tools.exec</code></h3>
+<pre><code class="language-json5">{
+  tools: {
+    exec: {
+      backgroundMs: 10000,
+      timeoutSec: 1800,
+      cleanupMs: 1800000,
+      notifyOnExit: true,
+      notifyOnExitEmptySuccess: false,
+      applyPatch: {
+        enabled: false,
+        allowModels: [&quot;gpt-5.2&quot;],
+      },
+    },
+  },
+}
+</code></pre>
+<h3><code>tools.web</code></h3>
+<pre><code class="language-json5">{
+  tools: {
+    web: {
+      search: {
+        enabled: true,
+        apiKey: &quot;brave_api_key&quot;, // or BRAVE_API_KEY env
+        maxResults: 5,
+        timeoutSeconds: 30,
+        cacheTtlMinutes: 15,
+      },
+      fetch: {
+        enabled: true,
+        maxChars: 50000,
+        maxCharsCap: 50000,
+        timeoutSeconds: 30,
+        cacheTtlMinutes: 15,
+        userAgent: &quot;custom-ua&quot;,
+      },
+    },
+  },
+}
+</code></pre>
+<h3><code>tools.media</code></h3>
+<p>Configures inbound media understanding (image/audio/video):</p>
+<pre><code class="language-json5">{
+  tools: {
+    media: {
+      concurrency: 2,
+      audio: {
+        enabled: true,
+        maxBytes: 20971520,
+        scope: {
+          default: &quot;deny&quot;,
+          rules: [{ action: &quot;allow&quot;, match: { chatType: &quot;direct&quot; } }],
+        },
+        models: [
+          { provider: &quot;openai&quot;, model: &quot;gpt-4o-mini-transcribe&quot; },
+          { type: &quot;cli&quot;, command: &quot;whisper&quot;, args: [&quot;--model&quot;, &quot;base&quot;, &quot;{{MediaPath}}&quot;] },
+        ],
+      },
+      video: {
+        enabled: true,
+        maxBytes: 52428800,
+        models: [{ provider: &quot;google&quot;, model: &quot;gemini-3-flash-preview&quot; }],
+      },
+    },
+  },
+}
+</code></pre>
+<p><strong>Provider entry</strong> (<code>type: &quot;provider&quot;</code> or omitted):</p>
+<ul>
+<li><code>provider</code>: API provider id (<code>openai</code>, <code>anthropic</code>, <code>google</code>/<code>gemini</code>, <code>groq</code>, etc.)</li>
+<li><code>model</code>: model id override</li>
+<li><code>profile</code> / <code>preferredProfile</code>: auth profile selection</li>
+</ul>
+<p><strong>CLI entry</strong> (<code>type: &quot;cli&quot;</code>):</p>
+<ul>
+<li><code>command</code>: executable to run</li>
+<li><code>args</code>: templated args (supports <code>{{MediaPath}}</code>, <code>{{Prompt}}</code>, <code>{{MaxChars}}</code>, etc.)</li>
+</ul>
+<p><strong>Common fields:</strong></p>
+<ul>
+<li><code>capabilities</code>: optional list (<code>image</code>, <code>audio</code>, <code>video</code>). Defaults: <code>openai</code>/<code>anthropic</code>/<code>minimax</code> → image, <code>google</code> → image+audio+video, <code>groq</code> → audio.</li>
+<li><code>prompt</code>, <code>maxChars</code>, <code>maxBytes</code>, <code>timeoutSeconds</code>, <code>language</code>: per-entry overrides.</li>
+<li>Failures fall back to the next entry.</li>
+</ul>
+<p>Provider auth follows standard order: auth profiles → env vars → <code>models.providers.*.apiKey</code>.</p>
+<h3><code>tools.agentToAgent</code></h3>
+<pre><code class="language-json5">{
+  tools: {
+    agentToAgent: {
+      enabled: false,
+      allow: [&quot;home&quot;, &quot;work&quot;],
+    },
+  },
+}
+</code></pre>
+<h3><code>tools.sessions</code></h3>
+<p>Controls which sessions can be targeted by the session tools (<code>sessions_list</code>, <code>sessions_history</code>, <code>sessions_send</code>).</p>
+<p>Default: <code>tree</code> (current session + sessions spawned by it, such as subagents).</p>
+<pre><code class="language-json5">{
+  tools: {
+    sessions: {
+      // &quot;self&quot; | &quot;tree&quot; | &quot;agent&quot; | &quot;all&quot;
+      visibility: &quot;tree&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>self</code>: only the current session key.</li>
+<li><code>tree</code>: current session + sessions spawned by the current session (subagents).</li>
+<li><code>agent</code>: any session belonging to the current agent id (can include other users if you run per-sender sessions under the same agent id).</li>
+<li><code>all</code>: any session. Cross-agent targeting still requires <code>tools.agentToAgent</code>.</li>
+<li>Sandbox clamp: when the current session is sandboxed and <code>agents.defaults.sandbox.sessionToolsVisibility=&quot;spawned&quot;</code>, visibility is forced to <code>tree</code> even if <code>tools.sessions.visibility=&quot;all&quot;</code>.</li>
+</ul>
+<h3><code>tools.subagents</code></h3>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      subagents: {
+        model: &quot;minimax/MiniMax-M2.1&quot;,
+        maxConcurrent: 1,
+        archiveAfterMinutes: 60,
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>model</code>: default model for spawned sub-agents. If omitted, sub-agents inherit the caller&#39;s model.</li>
+<li>Per-subagent tool policy: <code>tools.subagents.tools.allow</code> / <code>tools.subagents.tools.deny</code>.</li>
+</ul>
+<hr>
+<h2>Custom providers and base URLs</h2>
+<p>AGDI uses the pi-coding-agent model catalog. Add custom providers via <code>models.providers</code> in config or <code>~/.agdi/agents/&lt;agentId&gt;/agent/models.json</code>.</p>
+<pre><code class="language-json5">{
+  models: {
+    mode: &quot;merge&quot;, // merge (default) | replace
+    providers: {
+      &quot;custom-proxy&quot;: {
+        baseUrl: &quot;http://localhost:4000/v1&quot;,
+        apiKey: &quot;LITELLM_KEY&quot;,
+        api: &quot;openai-completions&quot;, // openai-completions | openai-responses | anthropic-messages | google-generative-ai
+        models: [
+          {
+            id: &quot;llama-3.1-8b&quot;,
+            name: &quot;Llama 3.1 8B&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 128000,
+            maxTokens: 32000,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Use <code>authHeader: true</code> + <code>headers</code> for custom auth needs.</li>
+<li>Override agent config root with <code>AGDI_AGENT_DIR</code> (or <code>PI_CODING_AGENT_DIR</code>).</li>
+</ul>
+<h3>Provider examples</h3>
+<pre><code class="language-json5">{
+  env: { CEREBRAS_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      model: {
+        primary: &quot;cerebras/zai-glm-4.7&quot;,
+        fallbacks: [&quot;cerebras/zai-glm-4.6&quot;],
+      },
+      models: {
+        &quot;cerebras/zai-glm-4.7&quot;: { alias: &quot;GLM 4.7 (Cerebras)&quot; },
+        &quot;cerebras/zai-glm-4.6&quot;: { alias: &quot;GLM 4.6 (Cerebras)&quot; },
+      },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      cerebras: {
+        baseUrl: &quot;https://api.cerebras.ai/v1&quot;,
+        apiKey: &quot;${CEREBRAS_API_KEY}&quot;,
+        api: &quot;openai-completions&quot;,
+        models: [
+          { id: &quot;zai-glm-4.7&quot;, name: &quot;GLM 4.7 (Cerebras)&quot; },
+          { id: &quot;zai-glm-4.6&quot;, name: &quot;GLM 4.6 (Cerebras)&quot; },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Use <code>cerebras/zai-glm-4.7</code> for Cerebras; <code>zai/glm-4.7</code> for Z.AI direct.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;opencode/claude-opus-4-6&quot; },
+      models: { &quot;opencode/claude-opus-4-6&quot;: { alias: &quot;Opus&quot; } },
+    },
+  },
+}
+</code></pre>
+<p>Set <code>OPENCODE_API_KEY</code> (or <code>OPENCODE_ZEN_API_KEY</code>). Shortcut: <code>agdi onboard --auth-choice opencode-zen</code>.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;zai/glm-4.7&quot; },
+      models: { &quot;zai/glm-4.7&quot;: {} },
+    },
+  },
+}
+</code></pre>
+<p>Set <code>ZAI_API_KEY</code>. <code>z.ai/*</code> and <code>z-ai/*</code> are accepted aliases. Shortcut: <code>agdi onboard --auth-choice zai-api-key</code>.</p>
+<ul>
+<li>General endpoint: <code>https://api.z.ai/api/paas/v4</code></li>
+<li>Coding endpoint (default): <code>https://api.z.ai/api/coding/paas/v4</code></li>
+<li>For the general endpoint, define a custom provider with the base URL override.</li>
+</ul>
+<pre><code class="language-json5">{
+  env: { MOONSHOT_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      model: { primary: &quot;moonshot/kimi-k2.5&quot; },
+      models: { &quot;moonshot/kimi-k2.5&quot;: { alias: &quot;Kimi K2.5&quot; } },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      moonshot: {
+        baseUrl: &quot;https://api.moonshot.ai/v1&quot;,
+        apiKey: &quot;${MOONSHOT_API_KEY}&quot;,
+        api: &quot;openai-completions&quot;,
+        models: [
+          {
+            id: &quot;kimi-k2.5&quot;,
+            name: &quot;Kimi K2.5&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 256000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>For the China endpoint: <code>baseUrl: &quot;https://api.moonshot.cn/v1&quot;</code> or <code>agdi onboard --auth-choice moonshot-api-key-cn</code>.</p>
+<pre><code class="language-json5">{
+  env: { KIMI_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      model: { primary: &quot;kimi-coding/k2p5&quot; },
+      models: { &quot;kimi-coding/k2p5&quot;: { alias: &quot;Kimi K2.5&quot; } },
+    },
+  },
+}
+</code></pre>
+<p>Anthropic-compatible, built-in provider. Shortcut: <code>agdi onboard --auth-choice kimi-code-api-key</code>.</p>
+<pre><code class="language-json5">{
+  env: { SYNTHETIC_API_KEY: &quot;sk-...&quot; },
+  agents: {
+    defaults: {
+      model: { primary: &quot;synthetic/hf:MiniMaxAI/MiniMax-M2.1&quot; },
+      models: { &quot;synthetic/hf:MiniMaxAI/MiniMax-M2.1&quot;: { alias: &quot;MiniMax M2.1&quot; } },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      synthetic: {
+        baseUrl: &quot;https://api.synthetic.new/anthropic&quot;,
+        apiKey: &quot;${SYNTHETIC_API_KEY}&quot;,
+        api: &quot;anthropic-messages&quot;,
+        models: [
+          {
+            id: &quot;hf:MiniMaxAI/MiniMax-M2.1&quot;,
+            name: &quot;MiniMax M2.1&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 192000,
+            maxTokens: 65536,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Base URL should omit <code>/v1</code> (Anthropic client appends it). Shortcut: <code>agdi onboard --auth-choice synthetic-api-key</code>.</p>
+<pre><code class="language-json5">{
+  agents: {
+    defaults: {
+      model: { primary: &quot;minimax/MiniMax-M2.1&quot; },
+      models: {
+        &quot;minimax/MiniMax-M2.1&quot;: { alias: &quot;Minimax&quot; },
+      },
+    },
+  },
+  models: {
+    mode: &quot;merge&quot;,
+    providers: {
+      minimax: {
+        baseUrl: &quot;https://api.minimax.io/anthropic&quot;,
+        apiKey: &quot;${MINIMAX_API_KEY}&quot;,
+        api: &quot;anthropic-messages&quot;,
+        models: [
+          {
+            id: &quot;MiniMax-M2.1&quot;,
+            name: &quot;MiniMax M2.1&quot;,
+            reasoning: false,
+            input: [&quot;text&quot;],
+            cost: { input: 15, output: 60, cacheRead: 2, cacheWrite: 10 },
+            contextWindow: 200000,
+            maxTokens: 8192,
+          },
+        ],
+      },
+    },
+  },
+}
+</code></pre>
+<p>Set <code>MINIMAX_API_KEY</code>. Shortcut: <code>agdi onboard --auth-choice minimax-api</code>.</p>
+<p>See <a href="/gateway/local-models">Local Models</a>. TL;DR: run MiniMax M2.1 via LM Studio Responses API on serious hardware; keep hosted models merged for fallback.</p>
+<hr>
+<h2>Skills</h2>
+<pre><code class="language-json5">{
+  skills: {
+    allowBundled: [&quot;gemini&quot;, &quot;peekaboo&quot;],
+    load: {
+      extraDirs: [&quot;~/Projects/agent-scripts/skills&quot;],
+    },
+    install: {
+      preferBrew: true,
+      nodeManager: &quot;npm&quot;, // npm | pnpm | yarn
+    },
+    entries: {
+      &quot;nano-banana-pro&quot;: {
+        apiKey: &quot;GEMINI_KEY_HERE&quot;,
+        env: { GEMINI_API_KEY: &quot;GEMINI_KEY_HERE&quot; },
+      },
+      peekaboo: { enabled: true },
+      sag: { enabled: false },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>allowBundled</code>: optional allowlist for bundled skills only (managed/workspace skills unaffected).</li>
+<li><code>entries.&lt;skillKey&gt;.enabled: false</code> disables a skill even if bundled/installed.</li>
+<li><code>entries.&lt;skillKey&gt;.apiKey</code>: convenience for skills declaring a primary env var.</li>
+</ul>
+<hr>
+<h2>Plugins</h2>
+<pre><code class="language-json5">{
+  plugins: {
+    enabled: true,
+    allow: [&quot;voice-call&quot;],
+    deny: [],
+    load: {
+      paths: [&quot;~/Projects/oss/voice-call-extension&quot;],
+    },
+    entries: {
+      &quot;voice-call&quot;: {
+        enabled: true,
+        config: { provider: &quot;twilio&quot; },
+      },
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Loaded from <code>~/.agdi/extensions</code>, <code>&lt;workspace&gt;/.agdi/extensions</code>, plus <code>plugins.load.paths</code>.</li>
+<li><strong>Config changes require a gateway restart.</strong></li>
+<li><code>allow</code>: optional allowlist (only listed plugins load). <code>deny</code> wins.</li>
+</ul>
+<p>See <a href="/tools/plugin">Plugins</a>.</p>
+<hr>
+<h2>Browser</h2>
+<pre><code class="language-json5">{
+  browser: {
+    enabled: true,
+    evaluateEnabled: true,
+    defaultProfile: &quot;chrome&quot;,
+    profiles: {
+      agdi: { cdpPort: 18800, color: &quot;#FF4500&quot; },
+      work: { cdpPort: 18801, color: &quot;#0066CC&quot; },
+      remote: { cdpUrl: &quot;http://10.0.0.42:9222&quot;, color: &quot;#00AA00&quot; },
+    },
+    color: &quot;#FF4500&quot;,
+    // headless: false,
+    // noSandbox: false,
+    // executablePath: &quot;/Applications/Brave Browser.app/Contents/MacOS/Brave Browser&quot;,
+    // attachOnly: false,
+  },
+}
+</code></pre>
+<ul>
+<li><code>evaluateEnabled: false</code> disables <code>act:evaluate</code> and <code>wait --fn</code>.</li>
+<li>Remote profiles are attach-only (start/stop/reset disabled).</li>
+<li>Auto-detect order: default browser if Chromium-based → Chrome → Brave → Edge → Chromium → Chrome Canary.</li>
+<li>Control service: loopback only (port derived from <code>gateway.port</code>, default <code>18791</code>).</li>
+</ul>
+<hr>
+<h2>UI</h2>
+<pre><code class="language-json5">{
+  ui: {
+    seamColor: &quot;#FF4500&quot;,
+    assistant: {
+      name: &quot;AGDI&quot;,
+      avatar: &quot;CB&quot;, // emoji, short text, image URL, or data URI
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>seamColor</code>: accent color for native app UI chrome (Talk Mode bubble tint, etc.).</li>
+<li><code>assistant</code>: Control UI identity override. Falls back to active agent identity.</li>
+</ul>
+<hr>
+<h2>Gateway</h2>
+<pre><code class="language-json5">{
+  gateway: {
+    mode: &quot;local&quot;, // local | remote
+    port: 18789,
+    bind: &quot;loopback&quot;,
+    auth: {
+      mode: &quot;token&quot;, // token | password | trusted-proxy
+      token: &quot;your-token&quot;,
+      // password: &quot;your-password&quot;, // or AGDI_GATEWAY_PASSWORD
+      // trustedProxy: { userHeader: &quot;x-forwarded-user&quot; }, // for mode=trusted-proxy; see /gateway/trusted-proxy-auth
+      allowTailscale: true,
+      rateLimit: {
+        maxAttempts: 10,
+        windowMs: 60000,
+        lockoutMs: 300000,
+        exemptLoopback: true,
+      },
+    },
+    tailscale: {
+      mode: &quot;off&quot;, // off | serve | funnel
+      resetOnExit: false,
+    },
+    controlUi: {
+      enabled: true,
+      basePath: &quot;/agdi&quot;,
+      // root: &quot;dist/control-ui&quot;,
+      // allowInsecureAuth: false,
+      // dangerouslyDisableDeviceAuth: false,
+    },
+    remote: {
+      url: &quot;ws://gateway.tailnet:18789&quot;,
+      transport: &quot;ssh&quot;, // ssh | direct
+      token: &quot;your-token&quot;,
+      // password: &quot;your-password&quot;,
+    },
+    trustedProxies: [&quot;10.0.0.1&quot;],
+    tools: {
+      // Additional /tools/invoke HTTP denies
+      deny: [&quot;browser&quot;],
+      // Remove tools from the default HTTP deny list
+      allow: [&quot;gateway&quot;],
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>mode</code>: <code>local</code> (run gateway) or <code>remote</code> (connect to remote gateway). Gateway refuses to start unless <code>local</code>.</li>
+<li><code>port</code>: single multiplexed port for WS + HTTP. Precedence: <code>--port</code> &gt; <code>AGDI_GATEWAY_PORT</code> &gt; <code>gateway.port</code> &gt; <code>18789</code>.</li>
+<li><code>bind</code>: <code>auto</code>, <code>loopback</code> (default), <code>lan</code> (<code>0.0.0.0</code>), <code>tailnet</code> (Tailscale IP only), or <code>custom</code>.</li>
+<li><strong>Auth</strong>: required by default. Non-loopback binds require a shared token/password. Onboarding wizard generates a token by default.</li>
+<li><code>auth.mode: &quot;trusted-proxy&quot;</code>: delegate auth to an identity-aware reverse proxy and trust identity headers from <code>gateway.trustedProxies</code> (see <a href="/gateway/trusted-proxy-auth">Trusted Proxy Auth</a>).</li>
+<li><code>auth.allowTailscale</code>: when <code>true</code>, Tailscale Serve identity headers satisfy auth (verified via <code>tailscale whois</code>). Defaults to <code>true</code> when <code>tailscale.mode = &quot;serve&quot;</code>.</li>
+<li><code>auth.rateLimit</code>: optional failed-auth limiter. Applies per client IP and per auth scope (shared-secret and device-token are tracked independently). Blocked attempts return <code>429</code> + <code>Retry-After</code>.<ul>
+<li><code>auth.rateLimit.exemptLoopback</code> defaults to <code>true</code>; set <code>false</code> when you intentionally want localhost traffic rate-limited too (for test setups or strict proxy deployments).</li>
+</ul>
+</li>
+<li><code>tailscale.mode</code>: <code>serve</code> (tailnet only, loopback bind) or <code>funnel</code> (public, requires auth).</li>
+<li><code>remote.transport</code>: <code>ssh</code> (default) or <code>direct</code> (ws/wss). For <code>direct</code>, <code>remote.url</code> must be <code>ws://</code> or <code>wss://</code>.</li>
+<li><code>gateway.remote.token</code> is for remote CLI calls only; does not enable local gateway auth.</li>
+<li><code>trustedProxies</code>: reverse proxy IPs that terminate TLS. Only list proxies you control.</li>
+<li><code>gateway.tools.deny</code>: extra tool names blocked for HTTP <code>POST /tools/invoke</code> (extends default deny list).</li>
+<li><code>gateway.tools.allow</code>: remove tool names from the default HTTP deny list.</li>
+</ul>
+<h3>OpenAI-compatible endpoints</h3>
+<ul>
+<li>Chat Completions: disabled by default. Enable with <code>gateway.http.endpoints.chatCompletions.enabled: true</code>.</li>
+<li>Responses API: <code>gateway.http.endpoints.responses.enabled</code>.</li>
+<li>Responses URL-input hardening:<ul>
+<li><code>gateway.http.endpoints.responses.maxUrlParts</code></li>
+<li><code>gateway.http.endpoints.responses.files.urlAllowlist</code></li>
+<li><code>gateway.http.endpoints.responses.images.urlAllowlist</code></li>
+</ul>
+</li>
+</ul>
+<h3>Multi-instance isolation</h3>
+<p>Run multiple gateways on one host with unique ports and state dirs:</p>
+<pre><code class="language-bash">AGDI_CONFIG_PATH=~/.agdi/a.json \
+AGDI_STATE_DIR=~/.agdi-a \
+agdi gateway --port 19001
+</code></pre>
+<p>Convenience flags: <code>--dev</code> (uses <code>~/.agdi-dev</code> + port <code>19001</code>), <code>--profile &lt;name&gt;</code> (uses <code>~/.agdi-&lt;name&gt;</code>).</p>
+<p>See <a href="/gateway/multiple-gateways">Multiple Gateways</a>.</p>
+<hr>
+<h2>Hooks</h2>
+<pre><code class="language-json5">{
+  hooks: {
+    enabled: true,
+    token: &quot;shared-secret&quot;,
+    path: &quot;/hooks&quot;,
+    maxBodyBytes: 262144,
+    defaultSessionKey: &quot;hook:ingress&quot;,
+    allowRequestSessionKey: false,
+    allowedSessionKeyPrefixes: [&quot;hook:&quot;],
+    allowedAgentIds: [&quot;hooks&quot;, &quot;main&quot;],
+    presets: [&quot;gmail&quot;],
+    transformsDir: &quot;~/.agdi/hooks/transforms&quot;,
+    mappings: [
+      {
+        match: { path: &quot;gmail&quot; },
+        action: &quot;agent&quot;,
+        agentId: &quot;hooks&quot;,
+        wakeMode: &quot;now&quot;,
+        name: &quot;Gmail&quot;,
+        sessionKey: &quot;hook:gmail:{{messages[0].id}}&quot;,
+        messageTemplate: &quot;From: {{messages[0].from}}\nSubject: {{messages[0].subject}}\n{{messages[0].snippet}}&quot;,
+        deliver: true,
+        channel: &quot;last&quot;,
+        model: &quot;openai/gpt-5.2-mini&quot;,
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Auth: <code>Authorization: Bearer &lt;token&gt;</code> or <code>x-agdi-token: &lt;token&gt;</code>.</p>
+<p><strong>Endpoints:</strong></p>
+<ul>
+<li><p><code>POST /hooks/wake</code> → <code>{ text, mode?: &quot;now&quot;|&quot;next-heartbeat&quot; }</code></p>
+</li>
+<li><p><code>POST /hooks/agent</code> → <code>{ message, name?, agentId?, sessionKey?, wakeMode?, deliver?, channel?, to?, model?, thinking?, timeoutSeconds? }</code></p>
+<ul>
+<li><code>sessionKey</code> from request payload is accepted only when <code>hooks.allowRequestSessionKey=true</code> (default: <code>false</code>).</li>
+</ul>
+</li>
+<li><p><code>POST /hooks/&lt;name&gt;</code> → resolved via <code>hooks.mappings</code></p>
+</li>
+<li><p><code>match.path</code> matches sub-path after <code>/hooks</code> (e.g. <code>/hooks/gmail</code> → <code>gmail</code>).</p>
+</li>
+<li><p><code>match.source</code> matches a payload field for generic paths.</p>
+</li>
+<li><p>Templates like <code>{{messages[0].subject}}</code> read from the payload.</p>
+</li>
+<li><p><code>transform</code> can point to a JS/TS module returning a hook action.</p>
+<ul>
+<li><code>transform.module</code> must be a relative path and stays within <code>hooks.transformsDir</code> (absolute paths and traversal are rejected).</li>
+</ul>
+</li>
+<li><p><code>agentId</code> routes to a specific agent; unknown IDs fall back to default.</p>
+</li>
+<li><p><code>allowedAgentIds</code>: restricts explicit routing (<code>*</code> or omitted = allow all, <code>[]</code> = deny all).</p>
+</li>
+<li><p><code>defaultSessionKey</code>: optional fixed session key for hook agent runs without explicit <code>sessionKey</code>.</p>
+</li>
+<li><p><code>allowRequestSessionKey</code>: allow <code>/hooks/agent</code> callers to set <code>sessionKey</code> (default: <code>false</code>).</p>
+</li>
+<li><p><code>allowedSessionKeyPrefixes</code>: optional prefix allowlist for explicit <code>sessionKey</code> values (request + mapping), e.g. <code>[&quot;hook:&quot;]</code>.</p>
+</li>
+<li><p><code>deliver: true</code> sends final reply to a channel; <code>channel</code> defaults to <code>last</code>.</p>
+</li>
+<li><p><code>model</code> overrides LLM for this hook run (must be allowed if model catalog is set).</p>
+</li>
+</ul>
+<h3>Gmail integration</h3>
+<pre><code class="language-json5">{
+  hooks: {
+    gmail: {
+      account: &quot;agdi@gmail.com&quot;,
+      topic: &quot;projects/&lt;project-id&gt;/topics/gog-gmail-watch&quot;,
+      subscription: &quot;gog-gmail-watch-push&quot;,
+      pushToken: &quot;shared-push-token&quot;,
+      hookUrl: &quot;http://127.0.0.1:18789/hooks/gmail&quot;,
+      includeBody: true,
+      maxBytes: 20000,
+      renewEveryMinutes: 720,
+      serve: { bind: &quot;127.0.0.1&quot;, port: 8788, path: &quot;/&quot; },
+      tailscale: { mode: &quot;funnel&quot;, path: &quot;/gmail-pubsub&quot; },
+      model: &quot;openrouter/meta-llama/llama-3.3-70b-instruct:free&quot;,
+      thinking: &quot;off&quot;,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Gateway auto-starts <code>gog gmail watch serve</code> on boot when configured. Set <code>AGDI_SKIP_GMAIL_WATCHER=1</code> to disable.</li>
+<li>Don&#39;t run a separate <code>gog gmail watch serve</code> alongside the Gateway.</li>
+</ul>
+<hr>
+<h2>Canvas host</h2>
+<pre><code class="language-json5">{
+  canvasHost: {
+    root: &quot;~/.agdi/workspace/canvas&quot;,
+    liveReload: true,
+    // enabled: false, // or AGDI_SKIP_CANVAS_HOST=1
+  },
+}
+</code></pre>
+<ul>
+<li>Serves agent-editable HTML/CSS/JS and A2UI over HTTP under the Gateway port:<ul>
+<li><code>http://&lt;gateway-host&gt;:&lt;gateway.port&gt;/__agdi__/canvas/</code></li>
+<li><code>http://&lt;gateway-host&gt;:&lt;gateway.port&gt;/__agdi__/a2ui/</code></li>
+</ul>
+</li>
+<li>Local-only: keep <code>gateway.bind: &quot;loopback&quot;</code> (default).</li>
+<li>Non-loopback binds: canvas routes require Gateway auth (token/password/trusted-proxy), same as other Gateway HTTP surfaces.</li>
+<li>Node WebViews typically don&#39;t send auth headers; after a node is paired and connected, the Gateway allows a private-IP fallback so the node can load canvas/A2UI without leaking secrets into URLs.</li>
+<li>Injects live-reload client into served HTML.</li>
+<li>Auto-creates starter <code>index.html</code> when empty.</li>
+<li>Also serves A2UI at <code>/__agdi__/a2ui/</code>.</li>
+<li>Changes require a gateway restart.</li>
+<li>Disable live reload for large directories or <code>EMFILE</code> errors.</li>
+</ul>
+<hr>
+<h2>Discovery</h2>
+<h3>mDNS (Bonjour)</h3>
+<pre><code class="language-json5">{
+  discovery: {
+    mdns: {
+      mode: &quot;minimal&quot;, // minimal | full | off
+    },
+  },
+}
+</code></pre>
+<ul>
+<li><code>minimal</code> (default): omit <code>cliPath</code> + <code>sshPort</code> from TXT records.</li>
+<li><code>full</code>: include <code>cliPath</code> + <code>sshPort</code>.</li>
+<li>Hostname defaults to <code>agdi</code>. Override with <code>AGDI_MDNS_HOSTNAME</code>.</li>
+</ul>
+<h3>Wide-area (DNS-SD)</h3>
+<pre><code class="language-json5">{
+  discovery: {
+    wideArea: { enabled: true },
+  },
+}
+</code></pre>
+<p>Writes a unicast DNS-SD zone under <code>~/.agdi/dns/</code>. For cross-network discovery, pair with a DNS server (CoreDNS recommended) + Tailscale split DNS.</p>
+<p>Setup: <code>agdi dns setup --apply</code>.</p>
+<hr>
+<h2>Environment</h2>
+<h3><code>env</code> (inline env vars)</h3>
+<pre><code class="language-json5">{
+  env: {
+    OPENROUTER_API_KEY: &quot;sk-or-...&quot;,
+    vars: {
+      GROQ_API_KEY: &quot;gsk-...&quot;,
+    },
+    shellEnv: {
+      enabled: true,
+      timeoutMs: 15000,
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Inline env vars are only applied if the process env is missing the key.</li>
+<li><code>.env</code> files: CWD <code>.env</code> + <code>~/.agdi/.env</code> (neither overrides existing vars).</li>
+<li><code>shellEnv</code>: imports missing expected keys from your login shell profile.</li>
+<li>See <a href="/help/environment">Environment</a> for full precedence.</li>
+</ul>
+<h3>Env var substitution</h3>
+<p>Reference env vars in any config string with <code>${VAR_NAME}</code>:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    auth: { token: &quot;${AGDI_GATEWAY_TOKEN}&quot; },
+  },
+}
+</code></pre>
+<ul>
+<li>Only uppercase names matched: <code>[A-Z_][A-Z0-9_]*</code>.</li>
+<li>Missing/empty vars throw an error at config load.</li>
+<li>Escape with <code>$${VAR}</code> for a literal <code>${VAR}</code>.</li>
+<li>Works with <code>$include</code>.</li>
+</ul>
+<hr>
+<h2>Auth storage</h2>
+<pre><code class="language-json5">{
+  auth: {
+    profiles: {
+      &quot;anthropic:me@example.com&quot;: { provider: &quot;anthropic&quot;, mode: &quot;oauth&quot;, email: &quot;me@example.com&quot; },
+      &quot;anthropic:work&quot;: { provider: &quot;anthropic&quot;, mode: &quot;api_key&quot; },
+    },
+    order: {
+      anthropic: [&quot;anthropic:me@example.com&quot;, &quot;anthropic:work&quot;],
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>Per-agent auth profiles stored at <code>&lt;agentDir&gt;/auth-profiles.json</code>.</li>
+<li>Legacy OAuth imports from <code>~/.agdi/credentials/oauth.json</code>.</li>
+<li>See <a href="/concepts/oauth">OAuth</a>.</li>
+</ul>
+<hr>
+<h2>Logging</h2>
+<pre><code class="language-json5">{
+  logging: {
+    level: &quot;info&quot;,
+    file: &quot;/tmp/agdi/agdi.log&quot;,
+    consoleLevel: &quot;info&quot;,
+    consoleStyle: &quot;pretty&quot;, // pretty | compact | json
+    redactSensitive: &quot;tools&quot;, // off | tools
+    redactPatterns: [&quot;\\bTOKEN\\b\\s*[=:]\\s*([\&quot;&#39;]?)([^\\s\&quot;&#39;]+)\\1&quot;],
+  },
+}
+</code></pre>
+<ul>
+<li>Default log file: <code>/tmp/agdi/agdi-YYYY-MM-DD.log</code>.</li>
+<li>Set <code>logging.file</code> for a stable path.</li>
+<li><code>consoleLevel</code> bumps to <code>debug</code> when <code>--verbose</code>.</li>
+</ul>
+<hr>
+<h2>Wizard</h2>
+<p>Metadata written by CLI wizards (<code>onboard</code>, <code>configure</code>, <code>doctor</code>):</p>
+<pre><code class="language-json5">{
+  wizard: {
+    lastRunAt: &quot;2026-01-01T00:00:00.000Z&quot;,
+    lastRunVersion: &quot;2026.1.4&quot;,
+    lastRunCommit: &quot;abc1234&quot;,
+    lastRunCommand: &quot;configure&quot;,
+    lastRunMode: &quot;local&quot;,
+  },
+}
+</code></pre>
+<hr>
+<h2>Identity</h2>
+<pre><code class="language-json5">{
+  agents: {
+    list: [
+      {
+        id: &quot;main&quot;,
+        identity: {
+          name: &quot;Samantha&quot;,
+          theme: &quot;helpful sloth&quot;,
+          emoji: &quot;🦥&quot;,
+          avatar: &quot;avatars/samantha.png&quot;,
+        },
+      },
+    ],
+  },
+}
+</code></pre>
+<p>Written by the macOS onboarding assistant. Derives defaults:</p>
+<ul>
+<li><code>messages.ackReaction</code> from <code>identity.emoji</code> (falls back to 👀)</li>
+<li><code>mentionPatterns</code> from <code>identity.name</code>/<code>identity.emoji</code></li>
+<li><code>avatar</code> accepts: workspace-relative path, <code>http(s)</code> URL, or <code>data:</code> URI</li>
+</ul>
+<hr>
+<h2>Bridge (legacy, removed)</h2>
+<p>Current builds no longer include the TCP bridge. Nodes connect over the Gateway WebSocket. <code>bridge.*</code> keys are no longer part of the config schema (validation fails until removed; <code>agdi doctor --fix</code> can strip unknown keys).</p>
+<pre><code class="language-json">{
+  &quot;bridge&quot;: {
+    &quot;enabled&quot;: true,
+    &quot;port&quot;: 18790,
+    &quot;bind&quot;: &quot;tailnet&quot;,
+    &quot;tls&quot;: {
+      &quot;enabled&quot;: true,
+      &quot;autoGenerate&quot;: true
+    }
+  }
+}
+</code></pre>
+<hr>
+<h2>Cron</h2>
+<pre><code class="language-json5">{
+  cron: {
+    enabled: true,
+    maxConcurrentRuns: 2,
+    webhook: &quot;https://example.invalid/cron-finished&quot;, // optional, must be http:// or https://
+    webhookToken: &quot;replace-with-dedicated-token&quot;, // optional bearer token for outbound webhook auth
+    sessionRetention: &quot;24h&quot;, // duration string or false
+  },
+}
+</code></pre>
+<ul>
+<li><code>sessionRetention</code>: how long to keep completed cron sessions before pruning. Default: <code>24h</code>.</li>
+<li><code>webhook</code>: finished-run webhook endpoint, only used when the job has <code>notify: true</code>.</li>
+<li><code>webhookToken</code>: dedicated bearer token for webhook auth, if omitted no auth header is sent.</li>
+</ul>
+<p>See <a href="/automation/cron-jobs">Cron Jobs</a>.</p>
+<hr>
+<h2>Media model template variables</h2>
+<p>Template placeholders expanded in <code>tools.media.*.models[].args</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{{Body}}</code></td>
+<td>Full inbound message body</td>
+</tr>
+<tr>
+<td><code>{{RawBody}}</code></td>
+<td>Raw body (no history/sender wrappers)</td>
+</tr>
+<tr>
+<td><code>{{BodyStripped}}</code></td>
+<td>Body with group mentions stripped</td>
+</tr>
+<tr>
+<td><code>{{From}}</code></td>
+<td>Sender identifier</td>
+</tr>
+<tr>
+<td><code>{{To}}</code></td>
+<td>Destination identifier</td>
+</tr>
+<tr>
+<td><code>{{MessageSid}}</code></td>
+<td>Channel message id</td>
+</tr>
+<tr>
+<td><code>{{SessionId}}</code></td>
+<td>Current session UUID</td>
+</tr>
+<tr>
+<td><code>{{IsNewSession}}</code></td>
+<td><code>&quot;true&quot;</code> when new session created</td>
+</tr>
+<tr>
+<td><code>{{MediaUrl}}</code></td>
+<td>Inbound media pseudo-URL</td>
+</tr>
+<tr>
+<td><code>{{MediaPath}}</code></td>
+<td>Local media path</td>
+</tr>
+<tr>
+<td><code>{{MediaType}}</code></td>
+<td>Media type (image/audio/document/…)</td>
+</tr>
+<tr>
+<td><code>{{Transcript}}</code></td>
+<td>Audio transcript</td>
+</tr>
+<tr>
+<td><code>{{Prompt}}</code></td>
+<td>Resolved media prompt for CLI entries</td>
+</tr>
+<tr>
+<td><code>{{MaxChars}}</code></td>
+<td>Resolved max output chars for CLI entries</td>
+</tr>
+<tr>
+<td><code>{{ChatType}}</code></td>
+<td><code>&quot;direct&quot;</code> or <code>&quot;group&quot;</code></td>
+</tr>
+<tr>
+<td><code>{{GroupSubject}}</code></td>
+<td>Group subject (best effort)</td>
+</tr>
+<tr>
+<td><code>{{GroupMembers}}</code></td>
+<td>Group members preview (best effort)</td>
+</tr>
+<tr>
+<td><code>{{SenderName}}</code></td>
+<td>Sender display name (best effort)</td>
+</tr>
+<tr>
+<td><code>{{SenderE164}}</code></td>
+<td>Sender phone number (best effort)</td>
+</tr>
+<tr>
+<td><code>{{Provider}}</code></td>
+<td>Provider hint (whatsapp, telegram, discord, etc.)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Config includes (<code>$include</code>)</h2>
+<p>Split config into multiple files:</p>
+<pre><code class="language-json5">// ~/.agdi/agdi.json
+{
+  gateway: { port: 18789 },
+  agents: { $include: &quot;./agents.json5&quot; },
+  broadcast: {
+    $include: [&quot;./clients/mueller.json5&quot;, &quot;./clients/schmidt.json5&quot;],
+  },
+}
+</code></pre>
+<p><strong>Merge behavior:</strong></p>
+<ul>
+<li>Single file: replaces the containing object.</li>
+<li>Array of files: deep-merged in order (later overrides earlier).</li>
+<li>Sibling keys: merged after includes (override included values).</li>
+<li>Nested includes: up to 10 levels deep.</li>
+<li>Paths: relative (to the including file), absolute, or <code>../</code> parent references.</li>
+<li>Errors: clear messages for missing files, parse errors, and circular includes.</li>
+</ul>
+<hr>
+<p><em>Related: <a href="/gateway/configuration">Configuration</a> · <a href="/gateway/configuration-examples">Configuration Examples</a> · <a href="/gateway/doctor">Doctor</a></em></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

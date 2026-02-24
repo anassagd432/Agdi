@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debugging — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab active" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/docs/help/index.html">Help</a></li><li><a class="" href="/docs/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/docs/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/docs/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/docs/help/environment.html">Environment Variables</a></li><li><a class="active" href="/docs/help/debugging.html">Debugging</a></li><li><a class="" href="/docs/help/testing.html">Testing</a></li><li><a class="" href="/docs/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/docs/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/docs/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/docs/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/docs/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/docs/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/docs/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Debugging</h1>
+<p>This page covers debugging helpers for streaming output, especially when a
+provider mixes reasoning into normal text.</p>
+<h2>Runtime debug overrides</h2>
+<p>Use <code>/debug</code> in chat to set <strong>runtime-only</strong> config overrides (memory, not disk).
+<code>/debug</code> is disabled by default; enable with <code>commands.debug: true</code>.
+This is handy when you need to toggle obscure settings without editing <code>agdi.json</code>.</p>
+<p>Examples:</p>
+<pre><code>/debug show
+/debug set messages.responsePrefix=&quot;[agdi]&quot;
+/debug unset messages.responsePrefix
+/debug reset
+</code></pre>
+<p><code>/debug reset</code> clears all overrides and returns to the on-disk config.</p>
+<h2>Gateway watch mode</h2>
+<p>For fast iteration, run the gateway under the file watcher:</p>
+<pre><code class="language-bash">pnpm gateway:watch --force
+</code></pre>
+<p>This maps to:</p>
+<pre><code class="language-bash">tsx watch src/entry.ts gateway --force
+</code></pre>
+<p>Add any gateway CLI flags after <code>gateway:watch</code> and they will be passed through
+on each restart.</p>
+<h2>Dev profile + dev gateway (--dev)</h2>
+<p>Use the dev profile to isolate state and spin up a safe, disposable setup for
+debugging. There are <strong>two</strong> <code>--dev</code> flags:</p>
+<ul>
+<li><strong>Global <code>--dev</code> (profile):</strong> isolates state under <code>~/.agdi-dev</code> and
+defaults the gateway port to <code>19001</code> (derived ports shift with it).</li>
+<li><strong><code>gateway --dev</code>: tells the Gateway to auto-create a default config +
+workspace</strong> when missing (and skip BOOTSTRAP.md).</li>
+</ul>
+<p>Recommended flow (dev profile + dev bootstrap):</p>
+<pre><code class="language-bash">pnpm gateway:dev
+AGDI_PROFILE=dev agdi tui
+</code></pre>
+<p>If you don’t have a global install yet, run the CLI via <code>pnpm agdi ...</code>.</p>
+<p>What this does:</p>
+<ol>
+<li><p><strong>Profile isolation</strong> (global <code>--dev</code>)</p>
+<ul>
+<li><code>AGDI_PROFILE=dev</code></li>
+<li><code>AGDI_STATE_DIR=~/.agdi-dev</code></li>
+<li><code>AGDI_CONFIG_PATH=~/.agdi-dev/agdi.json</code></li>
+<li><code>AGDI_GATEWAY_PORT=19001</code> (browser/canvas shift accordingly)</li>
+</ul>
+</li>
+<li><p><strong>Dev bootstrap</strong> (<code>gateway --dev</code>)</p>
+<ul>
+<li>Writes a minimal config if missing (<code>gateway.mode=local</code>, bind loopback).</li>
+<li>Sets <code>agent.workspace</code> to the dev workspace.</li>
+<li>Sets <code>agent.skipBootstrap=true</code> (no BOOTSTRAP.md).</li>
+<li>Seeds the workspace files if missing:
+<code>AGENTS.md</code>, <code>SOUL.md</code>, <code>TOOLS.md</code>, <code>IDENTITY.md</code>, <code>USER.md</code>, <code>HEARTBEAT.md</code>.</li>
+<li>Default identity: <strong>C3‑PO</strong> (protocol droid).</li>
+<li>Skips channel providers in dev mode (<code>AGDI_SKIP_CHANNELS=1</code>).</li>
+</ul>
+</li>
+</ol>
+<p>Reset flow (fresh start):</p>
+<pre><code class="language-bash">pnpm gateway:dev:reset
+</code></pre>
+<p>Note: <code>--dev</code> is a <strong>global</strong> profile flag and gets eaten by some runners.
+If you need to spell it out, use the env var form:</p>
+<pre><code class="language-bash">AGDI_PROFILE=dev agdi gateway --dev --reset
+</code></pre>
+<p><code>--reset</code> wipes config, credentials, sessions, and the dev workspace (using
+<code>trash</code>, not <code>rm</code>), then recreates the default dev setup.</p>
+<p>Tip: if a non‑dev gateway is already running (launchd/systemd), stop it first:</p>
+<pre><code class="language-bash">agdi gateway stop
+</code></pre>
+<h2>Raw stream logging (AGDI)</h2>
+<p>AGDI can log the <strong>raw assistant stream</strong> before any filtering/formatting.
+This is the best way to see whether reasoning is arriving as plain text deltas
+(or as separate thinking blocks).</p>
+<p>Enable it via CLI:</p>
+<pre><code class="language-bash">pnpm gateway:watch --force --raw-stream
+</code></pre>
+<p>Optional path override:</p>
+<pre><code class="language-bash">pnpm gateway:watch --force --raw-stream --raw-stream-path ~/.agdi/logs/raw-stream.jsonl
+</code></pre>
+<p>Equivalent env vars:</p>
+<pre><code class="language-bash">AGDI_RAW_STREAM=1
+AGDI_RAW_STREAM_PATH=~/.agdi/logs/raw-stream.jsonl
+</code></pre>
+<p>Default file:</p>
+<p><code>~/.agdi/logs/raw-stream.jsonl</code></p>
+<h2>Raw chunk logging (pi-mono)</h2>
+<p>To capture <strong>raw OpenAI-compat chunks</strong> before they are parsed into blocks,
+pi-mono exposes a separate logger:</p>
+<pre><code class="language-bash">PI_RAW_STREAM=1
+</code></pre>
+<p>Optional path:</p>
+<pre><code class="language-bash">PI_RAW_STREAM_PATH=~/.pi-mono/logs/raw-openai-completions.jsonl
+</code></pre>
+<p>Default file:</p>
+<p><code>~/.pi-mono/logs/raw-openai-completions.jsonl</code></p>
+<blockquote>
+<p>Note: this is only emitted by processes using pi-mono’s
+<code>openai-completions</code> provider.</p>
+</blockquote>
+<h2>Safety notes</h2>
+<ul>
+<li>Raw stream logs can include full prompts, tool output, and user data.</li>
+<li>Keep logs local and delete them after debugging.</li>
+<li>If you share logs, scrub secrets and PII first.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

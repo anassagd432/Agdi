@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workspace Memory Research — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/cli/index.html">CLI Reference</a></li><li><a class="" href="/cli/agent.html">agent</a></li><li><a class="" href="/cli/agents.html">agents</a></li><li><a class="" href="/cli/approvals.html">approvals</a></li><li><a class="" href="/cli/browser.html">browser</a></li><li><a class="" href="/cli/channels.html">channels</a></li><li><a class="" href="/cli/configure.html">configure</a></li><li><a class="" href="/cli/cron.html">cron</a></li><li><a class="" href="/cli/dashboard.html">dashboard</a></li><li><a class="" href="/cli/directory.html">directory</a></li><li><a class="" href="/cli/dns.html">dns</a></li><li><a class="" href="/cli/docs.html">docs</a></li><li><a class="" href="/cli/doctor.html">doctor</a></li><li><a class="" href="/cli/gateway.html">gateway</a></li><li><a class="" href="/cli/health.html">health</a></li><li><a class="" href="/cli/hooks.html">hooks</a></li><li><a class="" href="/cli/logs.html">logs</a></li><li><a class="" href="/cli/memory.html">memory</a></li><li><a class="" href="/cli/message.html">message</a></li><li><a class="" href="/cli/models.html">models</a></li><li><a class="" href="/cli/nodes.html">nodes</a></li><li><a class="" href="/cli/onboard.html">onboard</a></li><li><a class="" href="/cli/pairing.html">pairing</a></li><li><a class="" href="/cli/plugins.html">plugins</a></li><li><a class="" href="/cli/reset.html">reset</a></li><li><a class="" href="/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/cli/security.html">security</a></li><li><a class="" href="/cli/sessions.html">sessions</a></li><li><a class="" href="/cli/setup.html">setup</a></li><li><a class="" href="/cli/skills.html">skills</a></li><li><a class="" href="/cli/status.html">status</a></li><li><a class="" href="/cli/system.html">system</a></li><li><a class="" href="/cli/tui.html">tui</a></li><li><a class="" href="/cli/uninstall.html">uninstall</a></li><li><a class="" href="/cli/update.html">update</a></li><li><a class="" href="/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="active" href="/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Workspace Memory v2 (offline): research notes</h1>
+<p>Target: Clawd-style workspace (<code>agents.defaults.workspace</code>, default <code>~/.agdi/workspace</code>) where “memory” is stored as one Markdown file per day (<code>memory/YYYY-MM-DD.md</code>) plus a small set of stable files (e.g. <code>memory.md</code>, <code>SOUL.md</code>).</p>
+<p>This doc proposes an <strong>offline-first</strong> memory architecture that keeps Markdown as the canonical, reviewable source of truth, but adds <strong>structured recall</strong> (search, entity summaries, confidence updates) via a derived index.</p>
+<h2>Why change?</h2>
+<p>The current setup (one file per day) is excellent for:</p>
+<ul>
+<li>“append-only” journaling</li>
+<li>human editing</li>
+<li>git-backed durability + auditability</li>
+<li>low-friction capture (“just write it down”)</li>
+</ul>
+<p>It’s weak for:</p>
+<ul>
+<li>high-recall retrieval (“what did we decide about X?”, “last time we tried Y?”)</li>
+<li>entity-centric answers (“tell me about Alice / The Castle / warelay”) without rereading many files</li>
+<li>opinion/preference stability (and evidence when it changes)</li>
+<li>time constraints (“what was true during Nov 2025?”) and conflict resolution</li>
+</ul>
+<h2>Design goals</h2>
+<ul>
+<li><strong>Offline</strong>: works without network; can run on laptop/Castle; no cloud dependency.</li>
+<li><strong>Explainable</strong>: retrieved items should be attributable (file + location) and separable from inference.</li>
+<li><strong>Low ceremony</strong>: daily logging stays Markdown, no heavy schema work.</li>
+<li><strong>Incremental</strong>: v1 is useful with FTS only; semantic/vector and graphs are optional upgrades.</li>
+<li><strong>Agent-friendly</strong>: makes “recall within token budgets” easy (return small bundles of facts).</li>
+</ul>
+<h2>North star model (Hindsight × Letta)</h2>
+<p>Two pieces to blend:</p>
+<ol>
+<li><strong>Letta/MemGPT-style control loop</strong></li>
+</ol>
+<ul>
+<li>keep a small “core” always in context (persona + key user facts)</li>
+<li>everything else is out-of-context and retrieved via tools</li>
+<li>memory writes are explicit tool calls (append/replace/insert), persisted, then re-injected next turn</li>
+</ul>
+<ol start="2">
+<li><strong>Hindsight-style memory substrate</strong></li>
+</ol>
+<ul>
+<li>separate what’s observed vs what’s believed vs what’s summarized</li>
+<li>support retain/recall/reflect</li>
+<li>confidence-bearing opinions that can evolve with evidence</li>
+<li>entity-aware retrieval + temporal queries (even without full knowledge graphs)</li>
+</ul>
+<h2>Proposed architecture (Markdown source-of-truth + derived index)</h2>
+<h3>Canonical store (git-friendly)</h3>
+<p>Keep <code>~/.agdi/workspace</code> as canonical human-readable memory.</p>
+<p>Suggested workspace layout:</p>
+<pre><code>~/.agdi/workspace/
+  memory.md                    # small: durable facts + preferences (core-ish)
+  memory/
+    YYYY-MM-DD.md              # daily log (append; narrative)
+  bank/                        # “typed” memory pages (stable, reviewable)
+    world.md                   # objective facts about the world
+    experience.md              # what the agent did (first-person)
+    opinions.md                # subjective prefs/judgments + confidence + evidence pointers
+    entities/
+      Peter.md
+      The-Castle.md
+      warelay.md
+      ...
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><strong>Daily log stays daily log</strong>. No need to turn it into JSON.</li>
+<li>The <code>bank/</code> files are <strong>curated</strong>, produced by reflection jobs, and can still be edited by hand.</li>
+<li><code>memory.md</code> remains “small + core-ish”: the things you want Clawd to see every session.</li>
+</ul>
+<h3>Derived store (machine recall)</h3>
+<p>Add a derived index under the workspace (not necessarily git tracked):</p>
+<pre><code>~/.agdi/workspace/.memory/index.sqlite
+</code></pre>
+<p>Back it with:</p>
+<ul>
+<li>SQLite schema for facts + entity links + opinion metadata</li>
+<li>SQLite <strong>FTS5</strong> for lexical recall (fast, tiny, offline)</li>
+<li>optional embeddings table for semantic recall (still offline)</li>
+</ul>
+<p>The index is always <strong>rebuildable from Markdown</strong>.</p>
+<h2>Retain / Recall / Reflect (operational loop)</h2>
+<h3>Retain: normalize daily logs into “facts”</h3>
+<p>Hindsight’s key insight that matters here: store <strong>narrative, self-contained facts</strong>, not tiny snippets.</p>
+<p>Practical rule for <code>memory/YYYY-MM-DD.md</code>:</p>
+<ul>
+<li>at end of day (or during), add a <code>## Retain</code> section with 2–5 bullets that are:<ul>
+<li>narrative (cross-turn context preserved)</li>
+<li>self-contained (standalone makes sense later)</li>
+<li>tagged with type + entity mentions</li>
+</ul>
+</li>
+</ul>
+<p>Example:</p>
+<pre><code>## Retain
+- W @Peter: Currently in Marrakech (Nov 27–Dec 1, 2025) for Andy’s birthday.
+- B @warelay: I fixed the Baileys WS crash by wrapping connection.update handlers in try/catch (see memory/2025-11-27.md).
+- O(c=0.95) @Peter: Prefers concise replies (&amp;lt;1500 chars) on WhatsApp; long content goes into files.
+</code></pre>
+<p>Minimal parsing:</p>
+<ul>
+<li>Type prefix: <code>W</code> (world), <code>B</code> (experience/biographical), <code>O</code> (opinion), <code>S</code> (observation/summary; usually generated)</li>
+<li>Entities: <code>@Peter</code>, <code>@warelay</code>, etc (slugs map to <code>bank/entities/*.md</code>)</li>
+<li>Opinion confidence: <code>O(c=0.0..1.0)</code> optional</li>
+</ul>
+<p>If you don’t want authors to think about it: the reflect job can infer these bullets from the rest of the log, but having an explicit <code>## Retain</code> section is the easiest “quality lever”.</p>
+<h3>Recall: queries over the derived index</h3>
+<p>Recall should support:</p>
+<ul>
+<li><strong>lexical</strong>: “find exact terms / names / commands” (FTS5)</li>
+<li><strong>entity</strong>: “tell me about X” (entity pages + entity-linked facts)</li>
+<li><strong>temporal</strong>: “what happened around Nov 27” / “since last week”</li>
+<li><strong>opinion</strong>: “what does Peter prefer?” (with confidence + evidence)</li>
+</ul>
+<p>Return format should be agent-friendly and cite sources:</p>
+<ul>
+<li><code>kind</code> (<code>world|experience|opinion|observation</code>)</li>
+<li><code>timestamp</code> (source day, or extracted time range if present)</li>
+<li><code>entities</code> (<code>[&quot;Peter&quot;,&quot;warelay&quot;]</code>)</li>
+<li><code>content</code> (the narrative fact)</li>
+<li><code>source</code> (<code>memory/2025-11-27.md#L12</code> etc)</li>
+</ul>
+<h3>Reflect: produce stable pages + update beliefs</h3>
+<p>Reflection is a scheduled job (daily or heartbeat <code>ultrathink</code>) that:</p>
+<ul>
+<li>updates <code>bank/entities/*.md</code> from recent facts (entity summaries)</li>
+<li>updates <code>bank/opinions.md</code> confidence based on reinforcement/contradiction</li>
+<li>optionally proposes edits to <code>memory.md</code> (“core-ish” durable facts)</li>
+</ul>
+<p>Opinion evolution (simple, explainable):</p>
+<ul>
+<li>each opinion has:<ul>
+<li>statement</li>
+<li>confidence <code>c ∈ [0,1]</code></li>
+<li>last_updated</li>
+<li>evidence links (supporting + contradicting fact IDs)</li>
+</ul>
+</li>
+<li>when new facts arrive:<ul>
+<li>find candidate opinions by entity overlap + similarity (FTS first, embeddings later)</li>
+<li>update confidence by small deltas; big jumps require strong contradiction + repeated evidence</li>
+</ul>
+</li>
+</ul>
+<h2>CLI integration: standalone vs deep integration</h2>
+<p>Recommendation: <strong>deep integration in AGDI</strong>, but keep a separable core library.</p>
+<h3>Why integrate into AGDI?</h3>
+<ul>
+<li>AGDI already knows:<ul>
+<li>the workspace path (<code>agents.defaults.workspace</code>)</li>
+<li>the session model + heartbeats</li>
+<li>logging + troubleshooting patterns</li>
+</ul>
+</li>
+<li>You want the agent itself to call the tools:<ul>
+<li><code>agdi memory recall &quot;…&quot; --k 25 --since 30d</code></li>
+<li><code>agdi memory reflect --since 7d</code></li>
+</ul>
+</li>
+</ul>
+<h3>Why still split a library?</h3>
+<ul>
+<li>keep memory logic testable without gateway/runtime</li>
+<li>reuse from other contexts (local scripts, future desktop app, etc.)</li>
+</ul>
+<p>Shape:
+The memory tooling is intended to be a small CLI + library layer, but this is exploratory only.</p>
+<h2>“S-Collide” / SuCo: when to use it (research)</h2>
+<p>If “S-Collide” refers to <strong>SuCo (Subspace Collision)</strong>: it’s an ANN retrieval approach that targets strong recall/latency tradeoffs by using learned/structured collisions in subspaces (paper: arXiv 2411.14754, 2024).</p>
+<p>Pragmatic take for <code>~/.agdi/workspace</code>:</p>
+<ul>
+<li><strong>don’t start</strong> with SuCo.</li>
+<li>start with SQLite FTS + (optional) simple embeddings; you’ll get most UX wins immediately.</li>
+<li>consider SuCo/HNSW/ScaNN-class solutions only once:<ul>
+<li>corpus is big (tens/hundreds of thousands of chunks)</li>
+<li>brute-force embedding search becomes too slow</li>
+<li>recall quality is meaningfully bottlenecked by lexical search</li>
+</ul>
+</li>
+</ul>
+<p>Offline-friendly alternatives (in increasing complexity):</p>
+<ul>
+<li>SQLite FTS5 + metadata filters (zero ML)</li>
+<li>Embeddings + brute force (works surprisingly far if chunk count is low)</li>
+<li>HNSW index (common, robust; needs a library binding)</li>
+<li>SuCo (research-grade; attractive if there’s a solid implementation you can embed)</li>
+</ul>
+<p>Open question:</p>
+<ul>
+<li>what’s the <strong>best</strong> offline embedding model for “personal assistant memory” on your machines (laptop + desktop)?<ul>
+<li>if you already have Ollama: embed with a local model; otherwise ship a small embedding model in the toolchain.</li>
+</ul>
+</li>
+</ul>
+<h2>Smallest useful pilot</h2>
+<p>If you want a minimal, still-useful version:</p>
+<ul>
+<li>Add <code>bank/</code> entity pages and a <code>## Retain</code> section in daily logs.</li>
+<li>Use SQLite FTS for recall with citations (path + line numbers).</li>
+<li>Add embeddings only if recall quality or scale demands it.</li>
+</ul>
+<h2>References</h2>
+<ul>
+<li>Letta / MemGPT concepts: “core memory blocks” + “archival memory” + tool-driven self-editing memory.</li>
+<li>Hindsight Technical Report: “retain / recall / reflect”, four-network memory, narrative fact extraction, opinion confidence evolution.</li>
+<li>SuCo: arXiv 2411.14754 (2024): “Subspace Collision” approximate nearest neighbor retrieval.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

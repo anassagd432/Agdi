@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gateway-Owned Pairing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="active" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway-owned pairing (Option B)</h1>
+<p>In Gateway-owned pairing, the <strong>Gateway</strong> is the source of truth for which nodes
+are allowed to join. UIs (macOS app, future clients) are just frontends that
+approve or reject pending requests.</p>
+<p><strong>Important:</strong> WS nodes use <strong>device pairing</strong> (role <code>node</code>) during <code>connect</code>.
+<code>node.pair.*</code> is a separate pairing store and does <strong>not</strong> gate the WS handshake.
+Only clients that explicitly call <code>node.pair.*</code> use this flow.</p>
+<h2>Concepts</h2>
+<ul>
+<li><strong>Pending request</strong>: a node asked to join; requires approval.</li>
+<li><strong>Paired node</strong>: approved node with an issued auth token.</li>
+<li><strong>Transport</strong>: the Gateway WS endpoint forwards requests but does not decide
+membership. (Legacy TCP bridge support is deprecated/removed.)</li>
+</ul>
+<h2>How pairing works</h2>
+<ol>
+<li>A node connects to the Gateway WS and requests pairing.</li>
+<li>The Gateway stores a <strong>pending request</strong> and emits <code>node.pair.requested</code>.</li>
+<li>You approve or reject the request (CLI or UI).</li>
+<li>On approval, the Gateway issues a <strong>new token</strong> (tokens are rotated on re‑pair).</li>
+<li>The node reconnects using the token and is now “paired”.</li>
+</ol>
+<p>Pending requests expire automatically after <strong>5 minutes</strong>.</p>
+<h2>CLI workflow (headless friendly)</h2>
+<pre><code class="language-bash">agdi nodes pending
+agdi nodes approve &lt;requestId&gt;
+agdi nodes reject &lt;requestId&gt;
+agdi nodes status
+agdi nodes rename --node &lt;id|name|ip&gt; --name &quot;Living Room iPad&quot;
+</code></pre>
+<p><code>nodes status</code> shows paired/connected nodes and their capabilities.</p>
+<h2>API surface (gateway protocol)</h2>
+<p>Events:</p>
+<ul>
+<li><code>node.pair.requested</code> — emitted when a new pending request is created.</li>
+<li><code>node.pair.resolved</code> — emitted when a request is approved/rejected/expired.</li>
+</ul>
+<p>Methods:</p>
+<ul>
+<li><code>node.pair.request</code> — create or reuse a pending request.</li>
+<li><code>node.pair.list</code> — list pending + paired nodes.</li>
+<li><code>node.pair.approve</code> — approve a pending request (issues token).</li>
+<li><code>node.pair.reject</code> — reject a pending request.</li>
+<li><code>node.pair.verify</code> — verify <code>{ nodeId, token }</code>.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><code>node.pair.request</code> is idempotent per node: repeated calls return the same
+pending request.</li>
+<li>Approval <strong>always</strong> generates a fresh token; no token is ever returned from
+<code>node.pair.request</code>.</li>
+<li>Requests may include <code>silent: true</code> as a hint for auto-approval flows.</li>
+</ul>
+<h2>Auto-approval (macOS app)</h2>
+<p>The macOS app can optionally attempt a <strong>silent approval</strong> when:</p>
+<ul>
+<li>the request is marked <code>silent</code>, and</li>
+<li>the app can verify an SSH connection to the gateway host using the same user.</li>
+</ul>
+<p>If silent approval fails, it falls back to the normal “Approve/Reject” prompt.</p>
+<h2>Storage (local, private)</h2>
+<p>Pairing state is stored under the Gateway state directory (default <code>~/.agdi</code>):</p>
+<ul>
+<li><code>~/.agdi/nodes/paired.json</code></li>
+<li><code>~/.agdi/nodes/pending.json</code></li>
+</ul>
+<p>If you override <code>AGDI_STATE_DIR</code>, the <code>nodes/</code> folder moves with it.</p>
+<p>Security notes:</p>
+<ul>
+<li>Tokens are secrets; treat <code>paired.json</code> as sensitive.</li>
+<li>Rotating a token requires re-approval (or deleting the node entry).</li>
+</ul>
+<h2>Transport behavior</h2>
+<ul>
+<li>The transport is <strong>stateless</strong>; it does not store membership.</li>
+<li>If the Gateway is offline or pairing is disabled, nodes cannot pair.</li>
+<li>If the Gateway is in remote mode, pairing still happens against the remote Gateway’s store.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

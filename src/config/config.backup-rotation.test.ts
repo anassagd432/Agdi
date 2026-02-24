@@ -1,22 +1,22 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { OpenClawConfig } from "./types.js";
+import type { AGDIConfig } from "./types.js";
 import { rotateConfigBackups } from "./backup-rotation.js";
 import { withTempHome } from "./test-helpers.js";
 
 describe("config backup rotation", () => {
   it("keeps a 5-deep backup ring for config writes", async () => {
     await withTempHome(async () => {
-      const stateDir = process.env.OPENCLAW_STATE_DIR?.trim();
+      const stateDir = process.env.AGDI_STATE_DIR?.trim();
       if (!stateDir) {
-        throw new Error("Expected OPENCLAW_STATE_DIR to be set by withTempHome");
+        throw new Error("Expected AGDI_STATE_DIR to be set by withTempHome");
       }
-      const configPath = path.join(stateDir, "openclaw.json");
-      const buildConfig = (version: number): OpenClawConfig =>
+      const configPath = path.join(stateDir, "agdi.json");
+      const buildConfig = (version: number): AGDIConfig =>
         ({
           agents: { list: [{ id: `v${version}` }] },
-        }) as OpenClawConfig;
+        }) as AGDIConfig;
 
       const writeVersion = async (version: number) => {
         const json = JSON.stringify(buildConfig(version), null, 2).trimEnd().concat("\n");

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troubleshooting — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="active" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Gateway troubleshooting</h1>
+<p>This page is the deep runbook.
+Start at <a href="/help/troubleshooting">/help/troubleshooting</a> if you want the fast triage flow first.</p>
+<h2>Command ladder</h2>
+<p>Run these first, in this order:</p>
+<pre><code class="language-bash">agdi status
+agdi gateway status
+agdi logs --follow
+agdi doctor
+agdi channels status --probe
+</code></pre>
+<p>Expected healthy signals:</p>
+<ul>
+<li><code>agdi gateway status</code> shows <code>Runtime: running</code> and <code>RPC probe: ok</code>.</li>
+<li><code>agdi doctor</code> reports no blocking config/service issues.</li>
+<li><code>agdi channels status --probe</code> shows connected/ready channels.</li>
+</ul>
+<h2>No replies</h2>
+<p>If channels are up but nothing answers, check routing and policy before reconnecting anything.</p>
+<pre><code class="language-bash">agdi status
+agdi channels status --probe
+agdi pairing list &lt;channel&gt;
+agdi config get channels
+agdi logs --follow
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>Pairing pending for DM senders.</li>
+<li>Group mention gating (<code>requireMention</code>, <code>mentionPatterns</code>).</li>
+<li>Channel/group allowlist mismatches.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>drop guild message (mention required</code> → group message ignored until mention.</li>
+<li><code>pairing request</code> → sender needs approval.</li>
+<li><code>blocked</code> / <code>allowlist</code> → sender/channel was filtered by policy.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/channels/troubleshooting">/channels/troubleshooting</a></li>
+<li><a href="/channels/pairing">/channels/pairing</a></li>
+<li><a href="/channels/groups">/channels/groups</a></li>
+</ul>
+<h2>Dashboard control ui connectivity</h2>
+<p>When dashboard/control UI will not connect, validate URL, auth mode, and secure context assumptions.</p>
+<pre><code class="language-bash">agdi gateway status
+agdi status
+agdi logs --follow
+agdi doctor
+agdi gateway status --json
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>Correct probe URL and dashboard URL.</li>
+<li>Auth mode/token mismatch between client and gateway.</li>
+<li>HTTP usage where device identity is required.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>device identity required</code> → non-secure context or missing device auth.</li>
+<li><code>unauthorized</code> / reconnect loop → token/password mismatch.</li>
+<li><code>gateway connect failed:</code> → wrong host/port/url target.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/web/control-ui">/web/control-ui</a></li>
+<li><a href="/gateway/authentication">/gateway/authentication</a></li>
+<li><a href="/gateway/remote">/gateway/remote</a></li>
+</ul>
+<h2>Gateway service not running</h2>
+<p>Use this when service is installed but process does not stay up.</p>
+<pre><code class="language-bash">agdi gateway status
+agdi status
+agdi logs --follow
+agdi doctor
+agdi gateway status --deep
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li><code>Runtime: stopped</code> with exit hints.</li>
+<li>Service config mismatch (<code>Config (cli)</code> vs <code>Config (service)</code>).</li>
+<li>Port/listener conflicts.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>Gateway start blocked: set gateway.mode=local</code> → local gateway mode is not enabled. Fix: set <code>gateway.mode=&quot;local&quot;</code> in your config (or run <code>agdi configure</code>). If you are running AGDI via Podman using the dedicated <code>agdi</code> user, the config lives at <code>~agdi/.agdi/agdi.json</code>.</li>
+<li><code>refusing to bind gateway ... without auth</code> → non-loopback bind without token/password.</li>
+<li><code>another gateway instance is already listening</code> / <code>EADDRINUSE</code> → port conflict.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/gateway/background-process">/gateway/background-process</a></li>
+<li><a href="/gateway/configuration">/gateway/configuration</a></li>
+<li><a href="/gateway/doctor">/gateway/doctor</a></li>
+</ul>
+<h2>Channel connected messages not flowing</h2>
+<p>If channel state is connected but message flow is dead, focus on policy, permissions, and channel specific delivery rules.</p>
+<pre><code class="language-bash">agdi channels status --probe
+agdi pairing list &lt;channel&gt;
+agdi status --deep
+agdi logs --follow
+agdi config get channels
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>DM policy (<code>pairing</code>, <code>allowlist</code>, <code>open</code>, <code>disabled</code>).</li>
+<li>Group allowlist and mention requirements.</li>
+<li>Missing channel API permissions/scopes.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>mention required</code> → message ignored by group mention policy.</li>
+<li><code>pairing</code> / pending approval traces → sender is not approved.</li>
+<li><code>missing_scope</code>, <code>not_in_channel</code>, <code>Forbidden</code>, <code>401/403</code> → channel auth/permissions issue.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/channels/troubleshooting">/channels/troubleshooting</a></li>
+<li><a href="/channels/whatsapp">/channels/whatsapp</a></li>
+<li><a href="/channels/telegram">/channels/telegram</a></li>
+<li><a href="/channels/discord">/channels/discord</a></li>
+</ul>
+<h2>Cron and heartbeat delivery</h2>
+<p>If cron or heartbeat did not run or did not deliver, verify scheduler state first, then delivery target.</p>
+<pre><code class="language-bash">agdi cron status
+agdi cron list
+agdi cron runs --id &lt;jobId&gt; --limit 20
+agdi system heartbeat last
+agdi logs --follow
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>Cron enabled and next wake present.</li>
+<li>Job run history status (<code>ok</code>, <code>skipped</code>, <code>error</code>).</li>
+<li>Heartbeat skip reasons (<code>quiet-hours</code>, <code>requests-in-flight</code>, <code>alerts-disabled</code>).</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>cron: scheduler disabled; jobs will not run automatically</code> → cron disabled.</li>
+<li><code>cron: timer tick failed</code> → scheduler tick failed; check file/log/runtime errors.</li>
+<li><code>heartbeat skipped</code> with <code>reason=quiet-hours</code> → outside active hours window.</li>
+<li><code>heartbeat: unknown accountId</code> → invalid account id for heartbeat delivery target.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/automation/troubleshooting">/automation/troubleshooting</a></li>
+<li><a href="/automation/cron-jobs">/automation/cron-jobs</a></li>
+<li><a href="/gateway/heartbeat">/gateway/heartbeat</a></li>
+</ul>
+<h2>Node paired tool fails</h2>
+<p>If a node is paired but tools fail, isolate foreground, permission, and approval state.</p>
+<pre><code class="language-bash">agdi nodes status
+agdi nodes describe --node &lt;idOrNameOrIp&gt;
+agdi approvals get --node &lt;idOrNameOrIp&gt;
+agdi logs --follow
+agdi status
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>Node online with expected capabilities.</li>
+<li>OS permission grants for camera/mic/location/screen.</li>
+<li>Exec approvals and allowlist state.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>NODE_BACKGROUND_UNAVAILABLE</code> → node app must be in foreground.</li>
+<li><code>*_PERMISSION_REQUIRED</code> / <code>LOCATION_PERMISSION_REQUIRED</code> → missing OS permission.</li>
+<li><code>SYSTEM_RUN_DENIED: approval required</code> → exec approval pending.</li>
+<li><code>SYSTEM_RUN_DENIED: allowlist miss</code> → command blocked by allowlist.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/nodes/troubleshooting">/nodes/troubleshooting</a></li>
+<li><a href="/nodes/index">/nodes/index</a></li>
+<li><a href="/tools/exec-approvals">/tools/exec-approvals</a></li>
+</ul>
+<h2>Browser tool fails</h2>
+<p>Use this when browser tool actions fail even though the gateway itself is healthy.</p>
+<pre><code class="language-bash">agdi browser status
+agdi browser start --browser-profile agdi
+agdi browser profiles
+agdi logs --follow
+agdi doctor
+</code></pre>
+<p>Look for:</p>
+<ul>
+<li>Valid browser executable path.</li>
+<li>CDP profile reachability.</li>
+<li>Extension relay tab attachment for <code>profile=&quot;chrome&quot;</code>.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>Failed to start Chrome CDP on port</code> → browser process failed to launch.</li>
+<li><code>browser.executablePath not found</code> → configured path is invalid.</li>
+<li><code>Chrome extension relay is running, but no tab is connected</code> → extension relay not attached.</li>
+<li><code>Browser attachOnly is enabled ... not reachable</code> → attach-only profile has no reachable target.</li>
+</ul>
+<p>Related:</p>
+<ul>
+<li><a href="/tools/browser-linux-troubleshooting">/tools/browser-linux-troubleshooting</a></li>
+<li><a href="/tools/chrome-extension">/tools/chrome-extension</a></li>
+<li><a href="/tools/browser">/tools/browser</a></li>
+</ul>
+<h2>If you upgraded and something suddenly broke</h2>
+<p>Most post-upgrade breakage is config drift or stricter defaults now being enforced.</p>
+<h3>1) Auth and URL override behavior changed</h3>
+<pre><code class="language-bash">agdi gateway status
+agdi config get gateway.mode
+agdi config get gateway.remote.url
+agdi config get gateway.auth.mode
+</code></pre>
+<p>What to check:</p>
+<ul>
+<li>If <code>gateway.mode=remote</code>, CLI calls may be targeting remote while your local service is fine.</li>
+<li>Explicit <code>--url</code> calls do not fall back to stored credentials.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>gateway connect failed:</code> → wrong URL target.</li>
+<li><code>unauthorized</code> → endpoint reachable but wrong auth.</li>
+</ul>
+<h3>2) Bind and auth guardrails are stricter</h3>
+<pre><code class="language-bash">agdi config get gateway.bind
+agdi config get gateway.auth.token
+agdi gateway status
+agdi logs --follow
+</code></pre>
+<p>What to check:</p>
+<ul>
+<li>Non-loopback binds (<code>lan</code>, <code>tailnet</code>, <code>custom</code>) need auth configured.</li>
+<li>Old keys like <code>gateway.token</code> do not replace <code>gateway.auth.token</code>.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>refusing to bind gateway ... without auth</code> → bind+auth mismatch.</li>
+<li><code>RPC probe: failed</code> while runtime is running → gateway alive but inaccessible with current auth/url.</li>
+</ul>
+<h3>3) Pairing and device identity state changed</h3>
+<pre><code class="language-bash">agdi devices list
+agdi pairing list &lt;channel&gt;
+agdi logs --follow
+agdi doctor
+</code></pre>
+<p>What to check:</p>
+<ul>
+<li>Pending device approvals for dashboard/nodes.</li>
+<li>Pending DM pairing approvals after policy or identity changes.</li>
+</ul>
+<p>Common signatures:</p>
+<ul>
+<li><code>device identity required</code> → device auth not satisfied.</li>
+<li><code>pairing required</code> → sender/device must be approved.</li>
+</ul>
+<p>If the service config and runtime still disagree after checks, reinstall service metadata from the same profile/state directory:</p>
+<pre><code class="language-bash">agdi gateway install --force
+agdi gateway restart
+</code></pre>
+<p>Related:</p>
+<ul>
+<li><a href="/gateway/pairing">/gateway/pairing</a></li>
+<li><a href="/gateway/authentication">/gateway/authentication</a></li>
+<li><a href="/gateway/background-process">/gateway/background-process</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

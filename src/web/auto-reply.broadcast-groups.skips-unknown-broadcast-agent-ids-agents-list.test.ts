@@ -1,6 +1,6 @@
 import "./test-helpers.js";
 import { describe, expect, it, vi } from "vitest";
-import type { OpenClawConfig } from "../config/config.js";
+import type { AGDIConfig } from "../config/config.js";
 import { monitorWebChannelWithCapture } from "./auto-reply.broadcast-groups.test-harness.js";
 import {
   installWebAutoReplyTestHomeHooks,
@@ -25,7 +25,7 @@ describe("broadcast groups", () => {
       broadcast: {
         "+1000": ["alfred", "missing"],
       },
-    } satisfies OpenClawConfig);
+    } satisfies AGDIConfig);
 
     const seen: string[] = [];
     const resolver = vi.fn(async (ctx: { SessionKey?: unknown }) => {

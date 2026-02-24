@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding Wizard (CLI) — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab active" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Home</h4><ul><li><a class="" href="/index.html">AGDI</a></li></ul></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/start/showcase.html">Showcase</a></li></ul></div><div class="sidebar-group"><h4>Core concepts</h4><ul><li><a class="" href="/concepts/features.html">Features</a></li></ul></div><div class="sidebar-group"><h4>First steps</h4><ul><li><a class="" href="/start/getting-started.html">Getting Started</a></li><li><a class="" href="/start/onboarding-overview.html">Onboarding Overview</a></li><li><a class="active" href="/start/wizard.html">Onboarding Wizard (CLI)</a></li><li><a class="" href="/start/onboarding.html">Onboarding (macOS App)</a></li></ul></div><div class="sidebar-group"><h4>Guides</h4><ul><li><a class="" href="/start/openclaw.html">Personal Assistant Setup</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Onboarding Wizard (CLI)</h1>
+<p>The onboarding wizard is the <strong>recommended</strong> way to set up AGDI on macOS,
+Linux, or Windows (via WSL2; strongly recommended).
+It configures a local Gateway or a remote Gateway connection, plus channels, skills,
+and workspace defaults in one guided flow.</p>
+<pre><code class="language-bash">agdi onboard
+</code></pre>
+<p>Fastest first chat: open the Control UI (no channel setup needed). Run
+<code>agdi dashboard</code> and chat in the browser. Docs: <a href="/web/dashboard">Dashboard</a>.</p>
+<p>To reconfigure later:</p>
+<pre><code class="language-bash">agdi configure
+agdi agents add &lt;name&gt;
+</code></pre>
+<p><code>--json</code> does not imply non-interactive mode. For scripts, use <code>--non-interactive</code>.</p>
+<p>Recommended: set up a Brave Search API key so the agent can use <code>web_search</code>
+(<code>web_fetch</code> works without a key). Easiest path: <code>agdi configure --section web</code>
+which stores <code>tools.web.search.apiKey</code>. Docs: <a href="/tools/web">Web tools</a>.</p>
+<h2>QuickStart vs Advanced</h2>
+<p>The wizard starts with <strong>QuickStart</strong> (defaults) vs <strong>Advanced</strong> (full control).</p>
+<pre><code>- Local gateway (loopback)
+- Workspace default (or existing workspace)
+- Gateway port **18789**
+- Gateway auth **Token** (auto‑generated, even on loopback)
+- Tailscale exposure **Off**
+- Telegram + WhatsApp DMs default to **allowlist** (you&#39;ll be prompted for your phone number)
+
+
+- Exposes every step (mode, workspace, gateway, channels, daemon, skills).
+</code></pre>
+<h2>What the wizard configures</h2>
+<p><strong>Local mode (default)</strong> walks you through these steps:</p>
+<ol>
+<li><strong>Model/Auth</strong> — Anthropic API key (recommended), OpenAI, or Custom Provider
+(OpenAI-compatible, Anthropic-compatible, or Unknown auto-detect). Pick a default model.</li>
+<li><strong>Workspace</strong> — Location for agent files (default <code>~/.agdi/workspace</code>). Seeds bootstrap files.</li>
+<li><strong>Gateway</strong> — Port, bind address, auth mode, Tailscale exposure.</li>
+<li><strong>Channels</strong> — WhatsApp, Telegram, Discord, Google Chat, Mattermost, Signal, BlueBubbles, or iMessage.</li>
+<li><strong>Daemon</strong> — Installs a LaunchAgent (macOS) or systemd user unit (Linux/WSL2).</li>
+<li><strong>Health check</strong> — Starts the Gateway and verifies it&#39;s running.</li>
+<li><strong>Skills</strong> — Installs recommended skills and optional dependencies.</li>
+</ol>
+<p>Re-running the wizard does <strong>not</strong> wipe anything unless you explicitly choose <strong>Reset</strong> (or pass <code>--reset</code>).
+If the config is invalid or contains legacy keys, the wizard asks you to run <code>agdi doctor</code> first.</p>
+<p><strong>Remote mode</strong> only configures the local client to connect to a Gateway elsewhere.
+It does <strong>not</strong> install or change anything on the remote host.</p>
+<h2>Add another agent</h2>
+<p>Use <code>agdi agents add &lt;name&gt;</code> to create a separate agent with its own workspace,
+sessions, and auth profiles. Running without <code>--workspace</code> launches the wizard.</p>
+<p>What it sets:</p>
+<ul>
+<li><code>agents.list[].name</code></li>
+<li><code>agents.list[].workspace</code></li>
+<li><code>agents.list[].agentDir</code></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Default workspaces follow <code>~/.agdi/workspace-&lt;agentId&gt;</code>.</li>
+<li>Add <code>bindings</code> to route inbound messages (the wizard can do this).</li>
+<li>Non-interactive flags: <code>--model</code>, <code>--agent-dir</code>, <code>--bind</code>, <code>--non-interactive</code>.</li>
+</ul>
+<h2>Full reference</h2>
+<p>For detailed step-by-step breakdowns, non-interactive scripting, Signal setup,
+RPC API, and a full list of config fields the wizard writes, see the
+<a href="/reference/wizard">Wizard Reference</a>.</p>
+<h2>Related docs</h2>
+<ul>
+<li>CLI command reference: <a href="/cli/onboard"><code>agdi onboard</code></a></li>
+<li>Onboarding overview: <a href="/start/onboarding-overview">Onboarding Overview</a></li>
+<li>macOS app onboarding: <a href="/start/onboarding">Onboarding</a></li>
+<li>Agent first-run ritual: <a href="/start/bootstrapping">Agent Bootstrapping</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

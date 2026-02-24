@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hooks — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab active" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>CLI commands</h4><ul><li><a class="" href="/docs/cli/index.html">CLI Reference</a></li><li><a class="" href="/docs/cli/agent.html">agent</a></li><li><a class="" href="/docs/cli/agents.html">agents</a></li><li><a class="" href="/docs/cli/approvals.html">approvals</a></li><li><a class="" href="/docs/cli/browser.html">browser</a></li><li><a class="" href="/docs/cli/channels.html">channels</a></li><li><a class="" href="/docs/cli/configure.html">configure</a></li><li><a class="" href="/docs/cli/cron.html">cron</a></li><li><a class="" href="/docs/cli/dashboard.html">dashboard</a></li><li><a class="" href="/docs/cli/directory.html">directory</a></li><li><a class="" href="/docs/cli/dns.html">dns</a></li><li><a class="" href="/docs/cli/docs.html">docs</a></li><li><a class="" href="/docs/cli/doctor.html">doctor</a></li><li><a class="" href="/docs/cli/gateway.html">gateway</a></li><li><a class="" href="/docs/cli/health.html">health</a></li><li><a class="active" href="/docs/cli/hooks.html">hooks</a></li><li><a class="" href="/docs/cli/logs.html">logs</a></li><li><a class="" href="/docs/cli/memory.html">memory</a></li><li><a class="" href="/docs/cli/message.html">message</a></li><li><a class="" href="/docs/cli/models.html">models</a></li><li><a class="" href="/docs/cli/nodes.html">nodes</a></li><li><a class="" href="/docs/cli/onboard.html">onboard</a></li><li><a class="" href="/docs/cli/pairing.html">pairing</a></li><li><a class="" href="/docs/cli/plugins.html">plugins</a></li><li><a class="" href="/docs/cli/reset.html">reset</a></li><li><a class="" href="/docs/cli/sandbox.html">Sandbox CLI</a></li><li><a class="" href="/docs/cli/security.html">security</a></li><li><a class="" href="/docs/cli/sessions.html">sessions</a></li><li><a class="" href="/docs/cli/setup.html">setup</a></li><li><a class="" href="/docs/cli/skills.html">skills</a></li><li><a class="" href="/docs/cli/status.html">status</a></li><li><a class="" href="/docs/cli/system.html">system</a></li><li><a class="" href="/docs/cli/tui.html">tui</a></li><li><a class="" href="/docs/cli/uninstall.html">uninstall</a></li><li><a class="" href="/docs/cli/update.html">update</a></li><li><a class="" href="/docs/cli/voicecall.html">voicecall</a></li></ul></div><div class="sidebar-group"><h4>RPC and API</h4><ul><li><a class="" href="/docs/reference/rpc.html">RPC Adapters</a></li><li><a class="" href="/docs/reference/device-models.html">Device Model Database</a></li></ul></div><div class="sidebar-group"><h4>Templates</h4><ul><li><a class="" href="/docs/reference/AGENTS.default.html">Default AGENTS.md</a></li><li><a class="" href="/docs/reference/templates/AGENTS.html">AGENTS.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOT.html">BOOT.md Template</a></li><li><a class="" href="/docs/reference/templates/BOOTSTRAP.html">BOOTSTRAP.md Template</a></li><li><a class="" href="/docs/reference/templates/HEARTBEAT.html">HEARTBEAT.md Template</a></li><li><a class="" href="/docs/reference/templates/IDENTITY.html">IDENTITY</a></li><li><a class="" href="/docs/reference/templates/SOUL.html">SOUL.md Template</a></li><li><a class="" href="/docs/reference/templates/TOOLS.html">TOOLS.md Template</a></li><li><a class="" href="/docs/reference/templates/USER.html">USER</a></li></ul></div><div class="sidebar-group"><h4>Technical reference</h4><ul><li><a class="" href="/docs/reference/wizard.html">Onboarding Wizard Reference</a></li><li><a class="" href="/docs/reference/token-use.html">Token Use and Costs</a></li><li><a class="" href="/docs/channels/grammy.html">grammY</a></li></ul></div><div class="sidebar-group"><h4>Concept internals</h4><ul><li><a class="" href="/docs/concepts/typebox.html">TypeBox</a></li><li><a class="" href="/docs/concepts/markdown-formatting.html">Markdown Formatting</a></li><li><a class="" href="/docs/concepts/typing-indicators.html">Typing Indicators</a></li><li><a class="" href="/docs/concepts/usage-tracking.html">Usage Tracking</a></li><li><a class="" href="/docs/concepts/timezone.html">Timezones</a></li></ul></div><div class="sidebar-group"><h4>Project</h4><ul><li><a class="" href="/docs/reference/credits.html">Credits</a></li></ul></div><div class="sidebar-group"><h4>Release notes</h4><ul><li><a class="" href="/docs/reference/RELEASING.html">Release Checklist</a></li><li><a class="" href="/docs/reference/test.html">Tests</a></li></ul></div><div class="sidebar-group"><h4>Experiments</h4><ul><li><a class="" href="/docs/experiments/onboarding-config-protocol.html">Onboarding and Config Protocol</a></li><li><a class="" href="/docs/experiments/plans/cron-add-hardening.html">Cron Add Hardening</a></li><li><a class="" href="/docs/experiments/plans/group-policy-hardening.html">Telegram Allowlist Hardening</a></li><li><a class="" href="/docs/experiments/research/memory.html">Workspace Memory Research</a></li><li><a class="" href="/docs/experiments/proposals/model-config.html">Model Config Exploration</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1><code>agdi hooks</code></h1>
+<p>Manage agent hooks (event-driven automations for commands like <code>/new</code>, <code>/reset</code>, and gateway startup).</p>
+<p>Related:</p>
+<ul>
+<li>Hooks: <a href="/docs/automation/hooks">Hooks</a></li>
+<li>Plugin hooks: <a href="/docs/tools/plugin#plugin-hooks">Plugins</a></li>
+</ul>
+<h2>List All Hooks</h2>
+<pre><code class="language-bash">agdi hooks list
+</code></pre>
+<p>List all discovered hooks from workspace, managed, and bundled directories.</p>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--eligible</code>: Show only eligible hooks (requirements met)</li>
+<li><code>--json</code>: Output as JSON</li>
+<li><code>-v, --verbose</code>: Show detailed information including missing requirements</li>
+</ul>
+<p><strong>Example output:</strong></p>
+<pre><code>Hooks (4/4 ready)
+
+Ready:
+  🚀 boot-md ✓ - Run BOOT.md on gateway startup
+  📎 bootstrap-extra-files ✓ - Inject extra workspace bootstrap files during agent bootstrap
+  📝 command-logger ✓ - Log all command events to a centralized audit file
+  💾 session-memory ✓ - Save session context to memory when /new command is issued
+</code></pre>
+<p><strong>Example (verbose):</strong></p>
+<pre><code class="language-bash">agdi hooks list --verbose
+</code></pre>
+<p>Shows missing requirements for ineligible hooks.</p>
+<p><strong>Example (JSON):</strong></p>
+<pre><code class="language-bash">agdi hooks list --json
+</code></pre>
+<p>Returns structured JSON for programmatic use.</p>
+<h2>Get Hook Information</h2>
+<pre><code class="language-bash">agdi hooks info &lt;name&gt;
+</code></pre>
+<p>Show detailed information about a specific hook.</p>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>&lt;name&gt;</code>: Hook name (e.g., <code>session-memory</code>)</li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--json</code>: Output as JSON</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">agdi hooks info session-memory
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>💾 session-memory ✓ Ready
+
+Save session context to memory when /new command is issued
+
+Details:
+  Source: agdi-bundled
+  Path: /path/to/agdi/hooks/bundled/session-memory/HOOK.md
+  Handler: /path/to/agdi/hooks/bundled/session-memory/handler.ts
+  Homepage: https://docs.agdi.ai/automation/hooks#session-memory
+  Events: command:new
+
+Requirements:
+  Config: ✓ workspace.dir
+</code></pre>
+<h2>Check Hooks Eligibility</h2>
+<pre><code class="language-bash">agdi hooks check
+</code></pre>
+<p>Show summary of hook eligibility status (how many are ready vs. not ready).</p>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--json</code>: Output as JSON</li>
+</ul>
+<p><strong>Example output:</strong></p>
+<pre><code>Hooks Status
+
+Total hooks: 4
+Ready: 4
+Not ready: 0
+</code></pre>
+<h2>Enable a Hook</h2>
+<pre><code class="language-bash">agdi hooks enable &lt;name&gt;
+</code></pre>
+<p>Enable a specific hook by adding it to your config (<code>~/.agdi/config.json</code>).</p>
+<p><strong>Note:</strong> Hooks managed by plugins show <code>plugin:&lt;id&gt;</code> in <code>agdi hooks list</code> and
+can’t be enabled/disabled here. Enable/disable the plugin instead.</p>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>&lt;name&gt;</code>: Hook name (e.g., <code>session-memory</code>)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">agdi hooks enable session-memory
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>✓ Enabled hook: 💾 session-memory
+</code></pre>
+<p><strong>What it does:</strong></p>
+<ul>
+<li>Checks if hook exists and is eligible</li>
+<li>Updates <code>hooks.internal.entries.&lt;name&gt;.enabled = true</code> in your config</li>
+<li>Saves config to disk</li>
+</ul>
+<p><strong>After enabling:</strong></p>
+<ul>
+<li>Restart the gateway so hooks reload (menu bar app restart on macOS, or restart your gateway process in dev).</li>
+</ul>
+<h2>Disable a Hook</h2>
+<pre><code class="language-bash">agdi hooks disable &lt;name&gt;
+</code></pre>
+<p>Disable a specific hook by updating your config.</p>
+<p><strong>Arguments:</strong></p>
+<ul>
+<li><code>&lt;name&gt;</code>: Hook name (e.g., <code>command-logger</code>)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash">agdi hooks disable command-logger
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>⏸ Disabled hook: 📝 command-logger
+</code></pre>
+<p><strong>After disabling:</strong></p>
+<ul>
+<li>Restart the gateway so hooks reload</li>
+</ul>
+<h2>Install Hooks</h2>
+<pre><code class="language-bash">agdi hooks install &lt;path-or-spec&gt;
+</code></pre>
+<p>Install a hook pack from a local folder/archive or npm.</p>
+<p>Npm specs are <strong>registry-only</strong> (package name + optional version/tag). Git/URL/file
+specs are rejected. Dependency installs run with <code>--ignore-scripts</code> for safety.</p>
+<p><strong>What it does:</strong></p>
+<ul>
+<li>Copies the hook pack into <code>~/.agdi/hooks/&lt;id&gt;</code></li>
+<li>Enables the installed hooks in <code>hooks.internal.entries.*</code></li>
+<li>Records the install under <code>hooks.internal.installs</code></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>-l, --link</code>: Link a local directory instead of copying (adds it to <code>hooks.internal.load.extraDirs</code>)</li>
+</ul>
+<p><strong>Supported archives:</strong> <code>.zip</code>, <code>.tgz</code>, <code>.tar.gz</code>, <code>.tar</code></p>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-bash"># Local directory
+agdi hooks install ./my-hook-pack
+
+# Local archive
+agdi hooks install ./my-hook-pack.zip
+
+# NPM package
+agdi hooks install @agdi/my-hook-pack
+
+# Link a local directory without copying
+agdi hooks install -l ./my-hook-pack
+</code></pre>
+<h2>Update Hooks</h2>
+<pre><code class="language-bash">agdi hooks update &lt;id&gt;
+agdi hooks update --all
+</code></pre>
+<p>Update installed hook packs (npm installs only).</p>
+<p><strong>Options:</strong></p>
+<ul>
+<li><code>--all</code>: Update all tracked hook packs</li>
+<li><code>--dry-run</code>: Show what would change without writing</li>
+</ul>
+<h2>Bundled Hooks</h2>
+<h3>session-memory</h3>
+<p>Saves session context to memory when you issue <code>/new</code>.</p>
+<p><strong>Enable:</strong></p>
+<pre><code class="language-bash">agdi hooks enable session-memory
+</code></pre>
+<p><strong>Output:</strong> <code>~/.agdi/workspace/memory/YYYY-MM-DD-slug.md</code></p>
+<p><strong>See:</strong> <a href="/docs/automation/hooks#session-memory">session-memory documentation</a></p>
+<h3>bootstrap-extra-files</h3>
+<p>Injects additional bootstrap files (for example monorepo-local <code>AGENTS.md</code> / <code>TOOLS.md</code>) during <code>agent:bootstrap</code>.</p>
+<p><strong>Enable:</strong></p>
+<pre><code class="language-bash">agdi hooks enable bootstrap-extra-files
+</code></pre>
+<p><strong>See:</strong> <a href="/docs/automation/hooks#bootstrap-extra-files">bootstrap-extra-files documentation</a></p>
+<h3>command-logger</h3>
+<p>Logs all command events to a centralized audit file.</p>
+<p><strong>Enable:</strong></p>
+<pre><code class="language-bash">agdi hooks enable command-logger
+</code></pre>
+<p><strong>Output:</strong> <code>~/.agdi/logs/commands.log</code></p>
+<p><strong>View logs:</strong></p>
+<pre><code class="language-bash"># Recent commands
+tail -n 20 ~/.agdi/logs/commands.log
+
+# Pretty-print
+cat ~/.agdi/logs/commands.log | jq .
+
+# Filter by action
+grep &#39;&quot;action&quot;:&quot;new&quot;&#39; ~/.agdi/logs/commands.log | jq .
+</code></pre>
+<p><strong>See:</strong> <a href="/docs/automation/hooks#command-logger">command-logger documentation</a></p>
+<h3>boot-md</h3>
+<p>Runs <code>BOOT.md</code> when the gateway starts (after channels start).</p>
+<p><strong>Events</strong>: <code>gateway:startup</code></p>
+<p><strong>Enable</strong>:</p>
+<pre><code class="language-bash">agdi hooks enable boot-md
+</code></pre>
+<p><strong>See:</strong> <a href="/docs/automation/hooks#boot-md">boot-md documentation</a></p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -61,7 +61,7 @@ vi.mock("../model-auth.js", () => ({
 }));
 
 vi.mock("../models-config.js", () => ({
-  ensureOpenClawModelsJson: vi.fn(async () => {}),
+  ensureAGDIModelsJson: vi.fn(async () => {}),
 }));
 
 vi.mock("../context-window-guard.js", () => ({
@@ -88,7 +88,7 @@ vi.mock("../../utils/message-channel.js", () => ({
 }));
 
 vi.mock("../agent-paths.js", () => ({
-  resolveOpenClawAgentDir: vi.fn(() => "/tmp/agent-dir"),
+  resolveAGDIAgentDir: vi.fn(() => "/tmp/agent-dir"),
 }));
 
 vi.mock("../defaults.js", () => ({

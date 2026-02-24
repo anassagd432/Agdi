@@ -11,14 +11,14 @@ const ciWorkers = isWindows ? 2 : 3;
 
 export default defineConfig({
   resolve: {
-    // Keep this ordered: the base `openclaw/plugin-sdk` alias is a prefix match.
+    // Keep this ordered: the base `agdi/plugin-sdk` alias is a prefix match.
     alias: [
       {
-        find: "openclaw/plugin-sdk/account-id",
+        find: "agdi/plugin-sdk/account-id",
         replacement: path.join(repoRoot, "src", "plugin-sdk", "account-id.ts"),
       },
       {
-        find: "openclaw/plugin-sdk",
+        find: "agdi/plugin-sdk",
         replacement: path.join(repoRoot, "src", "plugin-sdk", "index.ts"),
       },
     ],
@@ -41,13 +41,16 @@ export default defineConfig({
       "apps/macos/.build/**",
       "**/node_modules/**",
       "**/vendor/**",
-      "dist/OpenClaw.app/**",
+      "dist/Agdi.app/**",
       "**/*.live.test.ts",
       "**/*.e2e.test.ts",
     ],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],
+      // Keep coverage stable without an ever-growing exclude list:
+      // only count files actually exercised by the test suite.
+      all: false,
       thresholds: {
         lines: 70,
         functions: 70,

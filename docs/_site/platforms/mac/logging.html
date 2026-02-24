@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS Logging — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab active" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Platforms overview</h4><ul><li><a class="" href="/platforms/index.html">Platforms</a></li><li><a class="" href="/platforms/macos.html">macOS App</a></li><li><a class="" href="/platforms/linux.html">Linux App</a></li><li><a class="" href="/platforms/windows.html">Windows (WSL2)</a></li><li><a class="" href="/platforms/android.html">Android App</a></li><li><a class="" href="/platforms/ios.html">iOS App</a></li></ul></div><div class="sidebar-group"><h4>macOS companion app</h4><ul><li><a class="" href="/platforms/mac/dev-setup.html">macOS Dev Setup</a></li><li><a class="" href="/platforms/mac/menu-bar.html">Menu Bar</a></li><li><a class="" href="/platforms/mac/voicewake.html">Voice Wake</a></li><li><a class="" href="/platforms/mac/voice-overlay.html">Voice Overlay</a></li><li><a class="" href="/platforms/mac/webchat.html">WebChat</a></li><li><a class="" href="/platforms/mac/canvas.html">Canvas</a></li><li><a class="" href="/platforms/mac/child-process.html">Gateway Lifecycle</a></li><li><a class="" href="/platforms/mac/health.html">Health Checks</a></li><li><a class="" href="/platforms/mac/icon.html">Menu Bar Icon</a></li><li><a class="active" href="/platforms/mac/logging.html">macOS Logging</a></li><li><a class="" href="/platforms/mac/permissions.html">macOS Permissions</a></li><li><a class="" href="/platforms/mac/remote.html">Remote Control</a></li><li><a class="" href="/platforms/mac/signing.html">macOS Signing</a></li><li><a class="" href="/platforms/mac/release.html">macOS Release</a></li><li><a class="" href="/platforms/mac/bundled-gateway.html">Gateway on macOS</a></li><li><a class="" href="/platforms/mac/xpc.html">macOS IPC</a></li><li><a class="" href="/platforms/mac/skills.html">Skills</a></li><li><a class="" href="/platforms/mac/peekaboo.html">Peekaboo Bridge</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Logging (macOS)</h1>
+<h2>Rolling diagnostics file log (Debug pane)</h2>
+<p>AGDI routes macOS app logs through swift-log (unified logging by default) and can write a local, rotating file log to disk when you need a durable capture.</p>
+<ul>
+<li>Verbosity: <strong>Debug pane → Logs → App logging → Verbosity</strong></li>
+<li>Enable: <strong>Debug pane → Logs → App logging → “Write rolling diagnostics log (JSONL)”</strong></li>
+<li>Location: <code>~/Library/Logs/AGDI/diagnostics.jsonl</code> (rotates automatically; old files are suffixed with <code>.1</code>, <code>.2</code>, …)</li>
+<li>Clear: <strong>Debug pane → Logs → App logging → “Clear”</strong></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>This is <strong>off by default</strong>. Enable only while actively debugging.</li>
+<li>Treat the file as sensitive; don’t share it without review.</li>
+</ul>
+<h2>Unified logging private data on macOS</h2>
+<p>Unified logging redacts most payloads unless a subsystem opts into <code>privacy -off</code>. Per Peter&#39;s write-up on macOS <a href="https://steipete.me/posts/2025/logging-privacy-shenanigans">logging privacy shenanigans</a> (2025) this is controlled by a plist in <code>/Library/Preferences/Logging/Subsystems/</code> keyed by the subsystem name. Only new log entries pick up the flag, so enable it before reproducing an issue.</p>
+<h2>Enable for AGDI (<code>bot.molt</code>)</h2>
+<ul>
+<li>Write the plist to a temp file first, then install it atomically as root:</li>
+</ul>
+<pre><code class="language-bash">cat &lt;&lt;&#39;EOF&#39; &gt;/tmp/bot.molt.plist
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+&lt;plist version=&quot;1.0&quot;&gt;
+&lt;dict&gt;
+    &lt;key&gt;DEFAULT-OPTIONS&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;Enable-Private-Data&lt;/key&gt;
+        &lt;true/&gt;
+    &lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+EOF
+sudo install -m 644 -o root -g wheel /tmp/bot.molt.plist /Library/Preferences/Logging/Subsystems/bot.molt.plist
+</code></pre>
+<ul>
+<li>No reboot is required; logd notices the file quickly, but only new log lines will include private payloads.</li>
+<li>View the richer output with the existing helper, e.g. <code>./scripts/clawlog.sh --category WebChat --last 5m</code>.</li>
+</ul>
+<h2>Disable after debugging</h2>
+<ul>
+<li>Remove the override: <code>sudo rm /Library/Preferences/Logging/Subsystems/bot.molt.plist</code>.</li>
+<li>Optionally run <code>sudo log config --reload</code> to force logd to drop the override immediately.</li>
+<li>Remember this surface can include phone numbers and message bodies; keep the plist in place only while you actively need the extra detail.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import type {
-  OpenClawHookMetadata,
+  AGDIHookMetadata,
   HookEntry,
   HookInstallSpec,
   HookInvocationPolicy,
@@ -10,10 +10,10 @@ import {
   getFrontmatterString,
   normalizeStringList,
   parseFrontmatterBool,
-  resolveOpenClawManifestBlock,
-  resolveOpenClawManifestInstall,
-  resolveOpenClawManifestOs,
-  resolveOpenClawManifestRequires,
+  resolveAGDIManifestBlock,
+  resolveAGDIManifestInstall,
+  resolveAGDIManifestOs,
+  resolveAGDIManifestRequires,
 } from "../shared/frontmatter.js";
 
 export function parseFrontmatter(content: string): ParsedHookFrontmatter {
@@ -56,16 +56,16 @@ function parseInstallSpec(input: unknown): HookInstallSpec | undefined {
   return spec;
 }
 
-export function resolveOpenClawMetadata(
+export function resolveAGDIMetadata(
   frontmatter: ParsedHookFrontmatter,
-): OpenClawHookMetadata | undefined {
-  const metadataObj = resolveOpenClawManifestBlock({ frontmatter });
+): AGDIHookMetadata | undefined {
+  const metadataObj = resolveAGDIManifestBlock({ frontmatter });
   if (!metadataObj) {
     return undefined;
   }
-  const requires = resolveOpenClawManifestRequires(metadataObj);
-  const install = resolveOpenClawManifestInstall(metadataObj, parseInstallSpec);
-  const osRaw = resolveOpenClawManifestOs(metadataObj);
+  const requires = resolveAGDIManifestRequires(metadataObj);
+  const install = resolveAGDIManifestInstall(metadataObj, parseInstallSpec);
+  const osRaw = resolveAGDIManifestOs(metadataObj);
   const eventsRaw = normalizeStringList(metadataObj.events);
   return {
     always: typeof metadataObj.always === "boolean" ? metadataObj.always : undefined,

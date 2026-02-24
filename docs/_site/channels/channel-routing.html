@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Channel Routing — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab active" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/channels/telegram.html">Telegram</a></li><li><a class="" href="/channels/discord.html">Discord</a></li><li><a class="" href="/channels/irc.html">IRC</a></li><li><a class="" href="/channels/slack.html">Slack</a></li><li><a class="" href="/channels/feishu.html">Feishu</a></li><li><a class="" href="/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/channels/signal.html">Signal</a></li><li><a class="" href="/channels/imessage.html">iMessage</a></li><li><a class="" href="/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/channels/line.html">LINE</a></li><li><a class="" href="/channels/matrix.html">Matrix</a></li><li><a class="" href="/channels/zalo.html">Zalo</a></li><li><a class="" href="/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/channels/pairing.html">Pairing</a></li><li><a class="" href="/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/channels/groups.html">Groups</a></li><li><a class="" href="/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="active" href="/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Channels &amp; routing</h1>
+<p>AGDI routes replies <strong>back to the channel where a message came from</strong>. The
+model does not choose a channel; routing is deterministic and controlled by the
+host configuration.</p>
+<h2>Key terms</h2>
+<ul>
+<li><strong>Channel</strong>: <code>whatsapp</code>, <code>telegram</code>, <code>discord</code>, <code>slack</code>, <code>signal</code>, <code>imessage</code>, <code>webchat</code>.</li>
+<li><strong>AccountId</strong>: per‑channel account instance (when supported).</li>
+<li><strong>AgentId</strong>: an isolated workspace + session store (“brain”).</li>
+<li><strong>SessionKey</strong>: the bucket key used to store context and control concurrency.</li>
+</ul>
+<h2>Session key shapes (examples)</h2>
+<p>Direct messages collapse to the agent’s <strong>main</strong> session:</p>
+<ul>
+<li><code>agent:&lt;agentId&gt;:&lt;mainKey&gt;</code> (default: <code>agent:main:main</code>)</li>
+</ul>
+<p>Groups and channels remain isolated per channel:</p>
+<ul>
+<li>Groups: <code>agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</code></li>
+<li>Channels/rooms: <code>agent:&lt;agentId&gt;:&lt;channel&gt;:channel:&lt;id&gt;</code></li>
+</ul>
+<p>Threads:</p>
+<ul>
+<li>Slack/Discord threads append <code>:thread:&lt;threadId&gt;</code> to the base key.</li>
+<li>Telegram forum topics embed <code>:topic:&lt;topicId&gt;</code> in the group key.</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><code>agent:main:telegram:group:-1001234567890:topic:42</code></li>
+<li><code>agent:main:discord:channel:123456:thread:987654</code></li>
+</ul>
+<h2>Routing rules (how an agent is chosen)</h2>
+<p>Routing picks <strong>one agent</strong> for each inbound message:</p>
+<ol>
+<li><strong>Exact peer match</strong> (<code>bindings</code> with <code>peer.kind</code> + <code>peer.id</code>).</li>
+<li><strong>Parent peer match</strong> (thread inheritance).</li>
+<li><strong>Guild + roles match</strong> (Discord) via <code>guildId</code> + <code>roles</code>.</li>
+<li><strong>Guild match</strong> (Discord) via <code>guildId</code>.</li>
+<li><strong>Team match</strong> (Slack) via <code>teamId</code>.</li>
+<li><strong>Account match</strong> (<code>accountId</code> on the channel).</li>
+<li><strong>Channel match</strong> (any account on that channel, <code>accountId: &quot;*&quot;</code>).</li>
+<li><strong>Default agent</strong> (<code>agents.list[].default</code>, else first list entry, fallback to <code>main</code>).</li>
+</ol>
+<p>When a binding includes multiple match fields (<code>peer</code>, <code>guildId</code>, <code>teamId</code>, <code>roles</code>), <strong>all provided fields must match</strong> for that binding to apply.</p>
+<p>The matched agent determines which workspace and session store are used.</p>
+<h2>Broadcast groups (run multiple agents)</h2>
+<p>Broadcast groups let you run <strong>multiple agents</strong> for the same peer <strong>when AGDI would normally reply</strong> (for example: in WhatsApp groups, after mention/activation gating).</p>
+<p>Config:</p>
+<pre><code class="language-json5">{
+  broadcast: {
+    strategy: &quot;parallel&quot;,
+    &quot;120363403215116621@g.us&quot;: [&quot;alfred&quot;, &quot;baerbel&quot;],
+    &quot;+15555550123&quot;: [&quot;support&quot;, &quot;logger&quot;],
+  },
+}
+</code></pre>
+<p>See: <a href="/channels/broadcast-groups">Broadcast Groups</a>.</p>
+<h2>Config overview</h2>
+<ul>
+<li><code>agents.list</code>: named agent definitions (workspace, model, etc.).</li>
+<li><code>bindings</code>: map inbound channels/accounts/peers to agents.</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-json5">{
+  agents: {
+    list: [{ id: &quot;support&quot;, name: &quot;Support&quot;, workspace: &quot;~/.agdi/workspace-support&quot; }],
+  },
+  bindings: [
+    { match: { channel: &quot;slack&quot;, teamId: &quot;T123&quot; }, agentId: &quot;support&quot; },
+    { match: { channel: &quot;telegram&quot;, peer: { kind: &quot;group&quot;, id: &quot;-100123&quot; } }, agentId: &quot;support&quot; },
+  ],
+}
+</code></pre>
+<h2>Session storage</h2>
+<p>Session stores live under the state directory (default <code>~/.agdi</code>):</p>
+<ul>
+<li><code>~/.agdi/agents/&lt;agentId&gt;/sessions/sessions.json</code></li>
+<li>JSONL transcripts live alongside the store</li>
+</ul>
+<p>You can override the store path via <code>session.store</code> and <code>{agentId}</code> templating.</p>
+<h2>WebChat behavior</h2>
+<p>WebChat attaches to the <strong>selected agent</strong> and defaults to the agent’s main
+session. Because of this, WebChat lets you see cross‑channel context for that
+agent in one place.</p>
+<h2>Reply context</h2>
+<p>Inbound replies include:</p>
+<ul>
+<li><code>ReplyToId</code>, <code>ReplyToBody</code>, and <code>ReplyToSender</code> when available.</li>
+<li>Quoted context is appended to <code>Body</code> as a <code>[Replying to ...]</code> block.</li>
+</ul>
+<p>This is consistent across channels.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

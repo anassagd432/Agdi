@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="active" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>OAuth</h1>
+<p>AGDI supports “subscription auth” via OAuth for providers that offer it (notably <strong>OpenAI Codex (ChatGPT OAuth)</strong>). For Anthropic subscriptions, use the <strong>setup-token</strong> flow. This page explains:</p>
+<ul>
+<li>how the OAuth <strong>token exchange</strong> works (PKCE)</li>
+<li>where tokens are <strong>stored</strong> (and why)</li>
+<li>how to handle <strong>multiple accounts</strong> (profiles + per-session overrides)</li>
+</ul>
+<p>AGDI also supports <strong>provider plugins</strong> that ship their own OAuth or API‑key
+flows. Run them via:</p>
+<pre><code class="language-bash">agdi models auth login --provider &lt;id&gt;
+</code></pre>
+<h2>The token sink (why it exists)</h2>
+<p>OAuth providers commonly mint a <strong>new refresh token</strong> during login/refresh flows. Some providers (or OAuth clients) can invalidate older refresh tokens when a new one is issued for the same user/app.</p>
+<p>Practical symptom:</p>
+<ul>
+<li>you log in via AGDI <em>and</em> via Claude Code / Codex CLI → one of them randomly gets “logged out” later</li>
+</ul>
+<p>To reduce that, AGDI treats <code>auth-profiles.json</code> as a <strong>token sink</strong>:</p>
+<ul>
+<li>the runtime reads credentials from <strong>one place</strong></li>
+<li>we can keep multiple profiles and route them deterministically</li>
+</ul>
+<h2>Storage (where tokens live)</h2>
+<p>Secrets are stored <strong>per-agent</strong>:</p>
+<ul>
+<li>Auth profiles (OAuth + API keys): <code>~/.agdi/agents/&lt;agentId&gt;/agent/auth-profiles.json</code></li>
+<li>Runtime cache (managed automatically; don’t edit): <code>~/.agdi/agents/&lt;agentId&gt;/agent/auth.json</code></li>
+</ul>
+<p>Legacy import-only file (still supported, but not the main store):</p>
+<ul>
+<li><code>~/.agdi/credentials/oauth.json</code> (imported into <code>auth-profiles.json</code> on first use)</li>
+</ul>
+<p>All of the above also respect <code>$AGDI_STATE_DIR</code> (state dir override). Full reference: <a href="/gateway/configuration#auth-storage-oauth--api-keys">/gateway/configuration</a></p>
+<h2>Anthropic setup-token (subscription auth)</h2>
+<p>Run <code>claude setup-token</code> on any machine, then paste it into AGDI:</p>
+<pre><code class="language-bash">agdi models auth setup-token --provider anthropic
+</code></pre>
+<p>If you generated the token elsewhere, paste it manually:</p>
+<pre><code class="language-bash">agdi models auth paste-token --provider anthropic
+</code></pre>
+<p>Verify:</p>
+<pre><code class="language-bash">agdi models status
+</code></pre>
+<h2>OAuth exchange (how login works)</h2>
+<p>AGDI’s interactive login flows are implemented in <code>@mariozechner/pi-ai</code> and wired into the wizards/commands.</p>
+<h3>Anthropic (Claude Pro/Max) setup-token</h3>
+<p>Flow shape:</p>
+<ol>
+<li>run <code>claude setup-token</code></li>
+<li>paste the token into AGDI</li>
+<li>store as a token auth profile (no refresh)</li>
+</ol>
+<p>The wizard path is <code>agdi onboard</code> → auth choice <code>setup-token</code> (Anthropic).</p>
+<h3>OpenAI Codex (ChatGPT OAuth)</h3>
+<p>Flow shape (PKCE):</p>
+<ol>
+<li>generate PKCE verifier/challenge + random <code>state</code></li>
+<li>open <code>https://auth.openai.com/oauth/authorize?...</code></li>
+<li>try to capture callback on <code>http://127.0.0.1:1455/auth/callback</code></li>
+<li>if callback can’t bind (or you’re remote/headless), paste the redirect URL/code</li>
+<li>exchange at <code>https://auth.openai.com/oauth/token</code></li>
+<li>extract <code>accountId</code> from the access token and store <code>{ access, refresh, expires, accountId }</code></li>
+</ol>
+<p>Wizard path is <code>agdi onboard</code> → auth choice <code>openai-codex</code>.</p>
+<h2>Refresh + expiry</h2>
+<p>Profiles store an <code>expires</code> timestamp.</p>
+<p>At runtime:</p>
+<ul>
+<li>if <code>expires</code> is in the future → use the stored access token</li>
+<li>if expired → refresh (under a file lock) and overwrite the stored credentials</li>
+</ul>
+<p>The refresh flow is automatic; you generally don&#39;t need to manage tokens manually.</p>
+<h2>Multiple accounts (profiles) + routing</h2>
+<p>Two patterns:</p>
+<h3>1) Preferred: separate agents</h3>
+<p>If you want “personal” and “work” to never interact, use isolated agents (separate sessions + credentials + workspace):</p>
+<pre><code class="language-bash">agdi agents add work
+agdi agents add personal
+</code></pre>
+<p>Then configure auth per-agent (wizard) and route chats to the right agent.</p>
+<h3>2) Advanced: multiple profiles in one agent</h3>
+<p><code>auth-profiles.json</code> supports multiple profile IDs for the same provider.</p>
+<p>Pick which profile is used:</p>
+<ul>
+<li>globally via config ordering (<code>auth.order</code>)</li>
+<li>per-session via <code>/model ...@&lt;profileId&gt;</code></li>
+</ul>
+<p>Example (session override):</p>
+<ul>
+<li><code>/model Opus@anthropic:work</code></li>
+</ul>
+<p>How to see what profile IDs exist:</p>
+<ul>
+<li><code>agdi channels list --json</code> (shows <code>auth[]</code>)</li>
+</ul>
+<p>Related docs:</p>
+<ul>
+<li><a href="/concepts/model-failover">/concepts/model-failover</a> (rotation + cooldown rules)</li>
+<li><a href="/tools/slash-commands">/tools/slash-commands</a> (command surface)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

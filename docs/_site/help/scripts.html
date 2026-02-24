@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scripts — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab active" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Help</h4><ul><li><a class="" href="/help/index.html">Help</a></li><li><a class="" href="/help/troubleshooting.html">Troubleshooting</a></li><li><a class="" href="/help/faq.html">FAQ</a></li></ul></div><div class="sidebar-group"><h4>Community</h4><ul><li><a class="" href="/start/lore.html">AGDI Lore</a></li></ul></div><div class="sidebar-group"><h4>Environment and debugging</h4><ul><li><a class="" href="/help/environment.html">Environment Variables</a></li><li><a class="" href="/help/debugging.html">Debugging</a></li><li><a class="" href="/help/testing.html">Testing</a></li><li><a class="active" href="/help/scripts.html">Scripts</a></li></ul></div><div class="sidebar-group"><h4>Node runtime</h4><ul><li><a class="" href="/install/node.html">Node.js</a></li></ul></div><div class="sidebar-group"><h4>Compaction internals</h4><ul><li><a class="" href="/reference/session-management-compaction.html">Session Management Deep Dive</a></li></ul></div><div class="sidebar-group"><h4>Developer setup</h4><ul><li><a class="" href="/start/setup.html">Setup</a></li></ul></div><div class="sidebar-group"><h4>Contributing</h4><ul><li><a class="" href="/ci.html">CI Pipeline</a></li></ul></div><div class="sidebar-group"><h4>Docs meta</h4><ul><li><a class="" href="/start/hubs.html">Docs Hubs</a></li><li><a class="" href="/start/docs-directory.html">Docs directory</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Scripts</h1>
+<p>The <code>scripts/</code> directory contains helper scripts for local workflows and ops tasks.
+Use these when a task is clearly tied to a script; otherwise prefer the CLI.</p>
+<h2>Conventions</h2>
+<ul>
+<li>Scripts are <strong>optional</strong> unless referenced in docs or release checklists.</li>
+<li>Prefer CLI surfaces when they exist (example: auth monitoring uses <code>agdi models status --check</code>).</li>
+<li>Assume scripts are host‑specific; read them before running on a new machine.</li>
+</ul>
+<h2>Auth monitoring scripts</h2>
+<p>Auth monitoring scripts are documented here:
+<a href="/automation/auth-monitoring">/automation/auth-monitoring</a></p>
+<h2>When adding scripts</h2>
+<ul>
+<li>Keep scripts focused and documented.</li>
+<li>Add a short entry in the relevant doc (or create one if missing).</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

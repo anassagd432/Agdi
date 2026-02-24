@@ -17,18 +17,18 @@ describe("config io write", () => {
   async function withTempHome(prefix: string, fn: (home: string) => Promise<void>): Promise<void> {
     const safePrefix = prefix.trim().replace(/[^a-zA-Z0-9._-]+/g, "-") || "tmp";
     const home = path.join(fixtureRoot, `${safePrefix}${caseId++}`);
-    await fs.mkdir(path.join(home, ".openclaw"), { recursive: true });
+    await fs.mkdir(path.join(home, ".agdi"), { recursive: true });
 
     const snapshot = captureEnv([
       "HOME",
       "USERPROFILE",
       "HOMEDRIVE",
       "HOMEPATH",
-      "OPENCLAW_STATE_DIR",
+      "AGDI_STATE_DIR",
     ]);
     process.env.HOME = home;
     process.env.USERPROFILE = home;
-    process.env.OPENCLAW_STATE_DIR = path.join(home, ".openclaw");
+    process.env.AGDI_STATE_DIR = path.join(home, ".agdi");
 
     if (process.platform === "win32") {
       const match = home.match(/^([A-Za-z]:)(.*)$/);
@@ -46,7 +46,7 @@ describe("config io write", () => {
   }
 
   beforeAll(async () => {
-    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-config-io-"));
+    fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-config-io-"));
   });
 
   afterAll(async () => {
@@ -57,8 +57,8 @@ describe("config io write", () => {
   });
 
   it("persists caller changes onto resolved config without leaking runtime defaults", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -98,8 +98,8 @@ describe("config io write", () => {
   });
 
   it("preserves env var references when writing", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -157,8 +157,8 @@ describe("config io write", () => {
   });
 
   it("does not reintroduce Slack/Discord legacy dm.policy defaults when writing", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -219,8 +219,8 @@ describe("config io write", () => {
   });
 
   it("keeps env refs in arrays when appending entries", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -292,8 +292,8 @@ describe("config io write", () => {
   });
 
   it("logs an overwrite audit entry when replacing an existing config file", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -331,7 +331,7 @@ describe("config io write", () => {
   });
 
   it("does not log an overwrite audit entry when creating config for the first time", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
+    await withTempHome("agdi-config-io-", async (home) => {
       const warn = vi.fn();
       const io = createConfigIO({
         env: {} as NodeJS.ProcessEnv,
@@ -354,9 +354,9 @@ describe("config io write", () => {
   });
 
   it("appends config write audit JSONL entries with forensic metadata", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const auditPath = path.join(home, ".openclaw", "logs", "config-audit.jsonl");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
+      const auditPath = path.join(home, ".agdi", "logs", "config-audit.jsonl");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -399,9 +399,9 @@ describe("config io write", () => {
   });
 
   it("records gateway watch session markers in config audit entries", async () => {
-    await withTempHome("openclaw-config-io-", async (home) => {
-      const configPath = path.join(home, ".openclaw", "openclaw.json");
-      const auditPath = path.join(home, ".openclaw", "logs", "config-audit.jsonl");
+    await withTempHome("agdi-config-io-", async (home) => {
+      const configPath = path.join(home, ".agdi", "agdi.json");
+      const auditPath = path.join(home, ".agdi", "logs", "config-audit.jsonl");
       await fs.mkdir(path.dirname(configPath), { recursive: true });
       await fs.writeFile(
         configPath,
@@ -411,9 +411,9 @@ describe("config io write", () => {
 
       const io = createConfigIO({
         env: {
-          OPENCLAW_WATCH_MODE: "1",
-          OPENCLAW_WATCH_SESSION: "watch-session-1",
-          OPENCLAW_WATCH_COMMAND: "gateway --force",
+          AGDI_WATCH_MODE: "1",
+          AGDI_WATCH_SESSION: "watch-session-1",
+          AGDI_WATCH_COMMAND: "gateway --force",
         } as NodeJS.ProcessEnv,
         homedir: () => home,
         logger: {

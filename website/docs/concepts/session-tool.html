@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session Tools — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="active" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Session Tools</h1>
+<p>Goal: small, hard-to-misuse tool set so agents can list sessions, fetch history, and send to another session.</p>
+<h2>Tool Names</h2>
+<ul>
+<li><code>sessions_list</code></li>
+<li><code>sessions_history</code></li>
+<li><code>sessions_send</code></li>
+<li><code>sessions_spawn</code></li>
+</ul>
+<h2>Key Model</h2>
+<ul>
+<li>Main direct chat bucket is always the literal key <code>&quot;main&quot;</code> (resolved to the current agent’s main key).</li>
+<li>Group chats use <code>agent:&lt;agentId&gt;:&lt;channel&gt;:group:&lt;id&gt;</code> or <code>agent:&lt;agentId&gt;:&lt;channel&gt;:channel:&lt;id&gt;</code> (pass the full key).</li>
+<li>Cron jobs use <code>cron:&lt;job.id&gt;</code>.</li>
+<li>Hooks use <code>hook:&lt;uuid&gt;</code> unless explicitly set.</li>
+<li>Node sessions use <code>node-&lt;nodeId&gt;</code> unless explicitly set.</li>
+</ul>
+<p><code>global</code> and <code>unknown</code> are reserved values and are never listed. If <code>session.scope = &quot;global&quot;</code>, we alias it to <code>main</code> for all tools so callers never see <code>global</code>.</p>
+<h2>sessions_list</h2>
+<p>List sessions as an array of rows.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>kinds?: string[]</code> filter: any of <code>&quot;main&quot; | &quot;group&quot; | &quot;cron&quot; | &quot;hook&quot; | &quot;node&quot; | &quot;other&quot;</code></li>
+<li><code>limit?: number</code> max rows (default: server default, clamp e.g. 200)</li>
+<li><code>activeMinutes?: number</code> only sessions updated within N minutes</li>
+<li><code>messageLimit?: number</code> 0 = no messages (default 0); &gt;0 = include last N messages</li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li><code>messageLimit &gt; 0</code> fetches <code>chat.history</code> per session and includes the last N messages.</li>
+<li>Tool results are filtered out in list output; use <code>sessions_history</code> for tool messages.</li>
+<li>When running in a <strong>sandboxed</strong> agent session, session tools default to <strong>spawned-only visibility</strong> (see below).</li>
+</ul>
+<p>Row shape (JSON):</p>
+<ul>
+<li><code>key</code>: session key (string)</li>
+<li><code>kind</code>: <code>main | group | cron | hook | node | other</code></li>
+<li><code>channel</code>: <code>whatsapp | telegram | discord | signal | imessage | webchat | internal | unknown</code></li>
+<li><code>displayName</code> (group display label if available)</li>
+<li><code>updatedAt</code> (ms)</li>
+<li><code>sessionId</code></li>
+<li><code>model</code>, <code>contextTokens</code>, <code>totalTokens</code></li>
+<li><code>thinkingLevel</code>, <code>verboseLevel</code>, <code>systemSent</code>, <code>abortedLastRun</code></li>
+<li><code>sendPolicy</code> (session override if set)</li>
+<li><code>lastChannel</code>, <code>lastTo</code></li>
+<li><code>deliveryContext</code> (normalized <code>{ channel, to, accountId }</code> when available)</li>
+<li><code>transcriptPath</code> (best-effort path derived from store dir + sessionId)</li>
+<li><code>messages?</code> (only when <code>messageLimit &gt; 0</code>)</li>
+</ul>
+<h2>sessions_history</h2>
+<p>Fetch transcript for one session.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>sessionKey</code> (required; accepts session key or <code>sessionId</code> from <code>sessions_list</code>)</li>
+<li><code>limit?: number</code> max messages (server clamps)</li>
+<li><code>includeTools?: boolean</code> (default false)</li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li><code>includeTools=false</code> filters <code>role: &quot;toolResult&quot;</code> messages.</li>
+<li>Returns messages array in the raw transcript format.</li>
+<li>When given a <code>sessionId</code>, AGDI resolves it to the corresponding session key (missing ids error).</li>
+</ul>
+<h2>sessions_send</h2>
+<p>Send a message into another session.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>sessionKey</code> (required; accepts session key or <code>sessionId</code> from <code>sessions_list</code>)</li>
+<li><code>message</code> (required)</li>
+<li><code>timeoutSeconds?: number</code> (default &gt;0; 0 = fire-and-forget)</li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li><code>timeoutSeconds = 0</code>: enqueue and return <code>{ runId, status: &quot;accepted&quot; }</code>.</li>
+<li><code>timeoutSeconds &gt; 0</code>: wait up to N seconds for completion, then return <code>{ runId, status: &quot;ok&quot;, reply }</code>.</li>
+<li>If wait times out: <code>{ runId, status: &quot;timeout&quot;, error }</code>. Run continues; call <code>sessions_history</code> later.</li>
+<li>If the run fails: <code>{ runId, status: &quot;error&quot;, error }</code>.</li>
+<li>Announce delivery runs after the primary run completes and is best-effort; <code>status: &quot;ok&quot;</code> does not guarantee the announce was delivered.</li>
+<li>Waits via gateway <code>agent.wait</code> (server-side) so reconnects don&#39;t drop the wait.</li>
+<li>Agent-to-agent message context is injected for the primary run.</li>
+<li>Inter-session messages are persisted with <code>message.provenance.kind = &quot;inter_session&quot;</code> so transcript readers can distinguish routed agent instructions from external user input.</li>
+<li>After the primary run completes, AGDI runs a <strong>reply-back loop</strong>:<ul>
+<li>Round 2+ alternates between requester and target agents.</li>
+<li>Reply exactly <code>REPLY_SKIP</code> to stop the ping‑pong.</li>
+<li>Max turns is <code>session.agentToAgent.maxPingPongTurns</code> (0–5, default 5).</li>
+</ul>
+</li>
+<li>Once the loop ends, AGDI runs the <strong>agent‑to‑agent announce step</strong> (target agent only):<ul>
+<li>Reply exactly <code>ANNOUNCE_SKIP</code> to stay silent.</li>
+<li>Any other reply is sent to the target channel.</li>
+<li>Announce step includes the original request + round‑1 reply + latest ping‑pong reply.</li>
+</ul>
+</li>
+</ul>
+<h2>Channel Field</h2>
+<ul>
+<li>For groups, <code>channel</code> is the channel recorded on the session entry.</li>
+<li>For direct chats, <code>channel</code> maps from <code>lastChannel</code>.</li>
+<li>For cron/hook/node, <code>channel</code> is <code>internal</code>.</li>
+<li>If missing, <code>channel</code> is <code>unknown</code>.</li>
+</ul>
+<h2>Security / Send Policy</h2>
+<p>Policy-based blocking by channel/chat type (not per session id).</p>
+<pre><code class="language-json">{
+  &quot;session&quot;: {
+    &quot;sendPolicy&quot;: {
+      &quot;rules&quot;: [
+        {
+          &quot;match&quot;: { &quot;channel&quot;: &quot;discord&quot;, &quot;chatType&quot;: &quot;group&quot; },
+          &quot;action&quot;: &quot;deny&quot;
+        }
+      ],
+      &quot;default&quot;: &quot;allow&quot;
+    }
+  }
+}
+</code></pre>
+<p>Runtime override (per session entry):</p>
+<ul>
+<li><code>sendPolicy: &quot;allow&quot; | &quot;deny&quot;</code> (unset = inherit config)</li>
+<li>Settable via <code>sessions.patch</code> or owner-only <code>/send on|off|inherit</code> (standalone message).</li>
+</ul>
+<p>Enforcement points:</p>
+<ul>
+<li><code>chat.send</code> / <code>agent</code> (gateway)</li>
+<li>auto-reply delivery logic</li>
+</ul>
+<h2>sessions_spawn</h2>
+<p>Spawn a sub-agent run in an isolated session and announce the result back to the requester chat channel.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>task</code> (required)</li>
+<li><code>label?</code> (optional; used for logs/UI)</li>
+<li><code>agentId?</code> (optional; spawn under another agent id if allowed)</li>
+<li><code>model?</code> (optional; overrides the sub-agent model; invalid values error)</li>
+<li><code>runTimeoutSeconds?</code> (default 0; when set, aborts the sub-agent run after N seconds)</li>
+<li><code>cleanup?</code> (<code>delete|keep</code>, default <code>keep</code>)</li>
+</ul>
+<p>Allowlist:</p>
+<ul>
+<li><code>agents.list[].subagents.allowAgents</code>: list of agent ids allowed via <code>agentId</code> (<code>[&quot;*&quot;]</code> to allow any). Default: only the requester agent.</li>
+</ul>
+<p>Discovery:</p>
+<ul>
+<li>Use <code>agents_list</code> to discover which agent ids are allowed for <code>sessions_spawn</code>.</li>
+</ul>
+<p>Behavior:</p>
+<ul>
+<li>Starts a new <code>agent:&lt;agentId&gt;:subagent:&lt;uuid&gt;</code> session with <code>deliver: false</code>.</li>
+<li>Sub-agents default to the full tool set <strong>minus session tools</strong> (configurable via <code>tools.subagents.tools</code>).</li>
+<li>Sub-agents are not allowed to call <code>sessions_spawn</code> (no sub-agent → sub-agent spawning).</li>
+<li>Always non-blocking: returns <code>{ status: &quot;accepted&quot;, runId, childSessionKey }</code> immediately.</li>
+<li>After completion, AGDI runs a sub-agent <strong>announce step</strong> and posts the result to the requester chat channel.</li>
+<li>Reply exactly <code>ANNOUNCE_SKIP</code> during the announce step to stay silent.</li>
+<li>Announce replies are normalized to <code>Status</code>/<code>Result</code>/<code>Notes</code>; <code>Status</code> comes from runtime outcome (not model text).</li>
+<li>Sub-agent sessions are auto-archived after <code>agents.defaults.subagents.archiveAfterMinutes</code> (default: 60).</li>
+<li>Announce replies include a stats line (runtime, tokens, sessionKey/sessionId, transcript path, and optional cost).</li>
+</ul>
+<h2>Sandbox Session Visibility</h2>
+<p>Session tools can be scoped to reduce cross-session access.</p>
+<p>Default behavior:</p>
+<ul>
+<li><code>tools.sessions.visibility</code> defaults to <code>tree</code> (current session + spawned subagent sessions).</li>
+<li>For sandboxed sessions, <code>agents.defaults.sandbox.sessionToolsVisibility</code> can hard-clamp visibility.</li>
+</ul>
+<p>Config:</p>
+<pre><code class="language-json5">{
+  tools: {
+    sessions: {
+      // &quot;self&quot; | &quot;tree&quot; | &quot;agent&quot; | &quot;all&quot;
+      // default: &quot;tree&quot;
+      visibility: &quot;tree&quot;,
+    },
+  },
+  agents: {
+    defaults: {
+      sandbox: {
+        // default: &quot;spawned&quot;
+        sessionToolsVisibility: &quot;spawned&quot;, // or &quot;all&quot;
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>self</code>: only the current session key.</li>
+<li><code>tree</code>: current session + sessions spawned by the current session.</li>
+<li><code>agent</code>: any session belonging to the current agent id.</li>
+<li><code>all</code>: any session (cross-agent access still requires <code>tools.agentToAgent</code>).</li>
+<li>When a session is sandboxed and <code>sessionToolsVisibility=&quot;spawned&quot;</code>, AGDI clamps visibility to <code>tree</code> even if you set <code>tools.sessions.visibility=&quot;all&quot;</code>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab" href="/docs/channels/index.html">Channels</a><a class="tab active" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/docs/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/docs/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/docs/concepts/agent-loop.html">Agent Loop</a></li><li><a class="" href="/docs/concepts/system-prompt.html">System Prompt</a></li><li><a class="active" href="/docs/concepts/context.html">Context</a></li><li><a class="" href="/docs/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/docs/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/docs/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/docs/concepts/session.html">Session Management</a></li><li><a class="" href="/docs/concepts/sessions.html">Sessions</a></li><li><a class="" href="/docs/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/docs/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/docs/concepts/memory.html">Memory</a></li><li><a class="" href="/docs/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/docs/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/docs/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/docs/concepts/messages.html">Messages</a></li><li><a class="" href="/docs/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/docs/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/docs/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Context</h1>
+<p>“Context” is <strong>everything AGDI sends to the model for a run</strong>. It is bounded by the model’s <strong>context window</strong> (token limit).</p>
+<p>Beginner mental model:</p>
+<ul>
+<li><strong>System prompt</strong> (AGDI-built): rules, tools, skills list, time/runtime, and injected workspace files.</li>
+<li><strong>Conversation history</strong>: your messages + the assistant’s messages for this session.</li>
+<li><strong>Tool calls/results + attachments</strong>: command output, file reads, images/audio, etc.</li>
+</ul>
+<p>Context is <em>not the same thing</em> as “memory”: memory can be stored on disk and reloaded later; context is what’s inside the model’s current window.</p>
+<h2>Quick start (inspect context)</h2>
+<ul>
+<li><code>/status</code> → quick “how full is my window?” view + session settings.</li>
+<li><code>/context list</code> → what’s injected + rough sizes (per file + totals).</li>
+<li><code>/context detail</code> → deeper breakdown: per-file, per-tool schema sizes, per-skill entry sizes, and system prompt size.</li>
+<li><code>/usage tokens</code> → append per-reply usage footer to normal replies.</li>
+<li><code>/compact</code> → summarize older history into a compact entry to free window space.</li>
+</ul>
+<p>See also: <a href="/docs/tools/slash-commands">Slash commands</a>, <a href="/docs/reference/token-use">Token use &amp; costs</a>, <a href="/docs/concepts/compaction">Compaction</a>.</p>
+<h2>Example output</h2>
+<p>Values vary by model, provider, tool policy, and what’s in your workspace.</p>
+<h3><code>/context list</code></h3>
+<pre><code>🧠 Context breakdown
+Workspace: &lt;workspaceDir&gt;
+Bootstrap max/file: 20,000 chars
+Sandbox: mode=non-main sandboxed=false
+System prompt (run): 38,412 chars (~9,603 tok) (Project Context 23,901 chars (~5,976 tok))
+
+Injected workspace files:
+- AGENTS.md: OK | raw 1,742 chars (~436 tok) | injected 1,742 chars (~436 tok)
+- SOUL.md: OK | raw 912 chars (~228 tok) | injected 912 chars (~228 tok)
+- TOOLS.md: TRUNCATED | raw 54,210 chars (~13,553 tok) | injected 20,962 chars (~5,241 tok)
+- IDENTITY.md: OK | raw 211 chars (~53 tok) | injected 211 chars (~53 tok)
+- USER.md: OK | raw 388 chars (~97 tok) | injected 388 chars (~97 tok)
+- HEARTBEAT.md: MISSING | raw 0 | injected 0
+- BOOTSTRAP.md: OK | raw 0 chars (~0 tok) | injected 0 chars (~0 tok)
+
+Skills list (system prompt text): 2,184 chars (~546 tok) (12 skills)
+Tools: read, edit, write, exec, process, browser, message, sessions_send, …
+Tool list (system prompt text): 1,032 chars (~258 tok)
+Tool schemas (JSON): 31,988 chars (~7,997 tok) (counts toward context; not shown as text)
+Tools: (same as above)
+
+Session tokens (cached): 14,250 total / ctx=32,000
+</code></pre>
+<h3><code>/context detail</code></h3>
+<pre><code>🧠 Context breakdown (detailed)
+…
+Top skills (prompt entry size):
+- frontend-design: 412 chars (~103 tok)
+- oracle: 401 chars (~101 tok)
+… (+10 more skills)
+
+Top tools (schema size):
+- browser: 9,812 chars (~2,453 tok)
+- exec: 6,240 chars (~1,560 tok)
+… (+N more tools)
+</code></pre>
+<h2>What counts toward the context window</h2>
+<p>Everything the model receives counts, including:</p>
+<ul>
+<li>System prompt (all sections).</li>
+<li>Conversation history.</li>
+<li>Tool calls + tool results.</li>
+<li>Attachments/transcripts (images/audio/files).</li>
+<li>Compaction summaries and pruning artifacts.</li>
+<li>Provider “wrappers” or hidden headers (not visible, still counted).</li>
+</ul>
+<h2>How AGDI builds the system prompt</h2>
+<p>The system prompt is <strong>AGDI-owned</strong> and rebuilt each run. It includes:</p>
+<ul>
+<li>Tool list + short descriptions.</li>
+<li>Skills list (metadata only; see below).</li>
+<li>Workspace location.</li>
+<li>Time (UTC + converted user time if configured).</li>
+<li>Runtime metadata (host/OS/model/thinking).</li>
+<li>Injected workspace bootstrap files under <strong>Project Context</strong>.</li>
+</ul>
+<p>Full breakdown: <a href="/docs/concepts/system-prompt">System Prompt</a>.</p>
+<h2>Injected workspace files (Project Context)</h2>
+<p>By default, AGDI injects a fixed set of workspace files (if present):</p>
+<ul>
+<li><code>AGENTS.md</code></li>
+<li><code>SOUL.md</code></li>
+<li><code>TOOLS.md</code></li>
+<li><code>IDENTITY.md</code></li>
+<li><code>USER.md</code></li>
+<li><code>HEARTBEAT.md</code></li>
+<li><code>BOOTSTRAP.md</code> (first-run only)</li>
+</ul>
+<p>Large files are truncated per-file using <code>agents.defaults.bootstrapMaxChars</code> (default <code>20000</code> chars). AGDI also enforces a total bootstrap injection cap across files with <code>agents.defaults.bootstrapTotalMaxChars</code> (default <code>24000</code> chars). <code>/context</code> shows <strong>raw vs injected</strong> sizes and whether truncation happened.</p>
+<h2>Skills: what’s injected vs loaded on-demand</h2>
+<p>The system prompt includes a compact <strong>skills list</strong> (name + description + location). This list has real overhead.</p>
+<p>Skill instructions are <em>not</em> included by default. The model is expected to <code>read</code> the skill’s <code>SKILL.md</code> <strong>only when needed</strong>.</p>
+<h2>Tools: there are two costs</h2>
+<p>Tools affect context in two ways:</p>
+<ol>
+<li><strong>Tool list text</strong> in the system prompt (what you see as “Tooling”).</li>
+<li><strong>Tool schemas</strong> (JSON). These are sent to the model so it can call tools. They count toward context even though you don’t see them as plain text.</li>
+</ol>
+<p><code>/context detail</code> breaks down the biggest tool schemas so you can see what dominates.</p>
+<h2>Commands, directives, and “inline shortcuts”</h2>
+<p>Slash commands are handled by the Gateway. There are a few different behaviors:</p>
+<ul>
+<li><strong>Standalone commands</strong>: a message that is only <code>/...</code> runs as a command.</li>
+<li><strong>Directives</strong>: <code>/think</code>, <code>/verbose</code>, <code>/reasoning</code>, <code>/elevated</code>, <code>/model</code>, <code>/queue</code> are stripped before the model sees the message.<ul>
+<li>Directive-only messages persist session settings.</li>
+<li>Inline directives in a normal message act as per-message hints.</li>
+</ul>
+</li>
+<li><strong>Inline shortcuts</strong> (allowlisted senders only): certain <code>/...</code> tokens inside a normal message can run immediately (example: “hey /status”), and are stripped before the model sees the remaining text.</li>
+</ul>
+<p>Details: <a href="/docs/tools/slash-commands">Slash commands</a>.</p>
+<h2>Sessions, compaction, and pruning (what persists)</h2>
+<p>What persists across messages depends on the mechanism:</p>
+<ul>
+<li><strong>Normal history</strong> persists in the session transcript until compacted/pruned by policy.</li>
+<li><strong>Compaction</strong> persists a summary into the transcript and keeps recent messages intact.</li>
+<li><strong>Pruning</strong> removes old tool results from the <em>in-memory</em> prompt for a run, but does not rewrite the transcript.</li>
+</ul>
+<p>Docs: <a href="/docs/concepts/session">Session</a>, <a href="/docs/concepts/compaction">Compaction</a>, <a href="/docs/concepts/session-pruning">Session pruning</a>.</p>
+<h2>What <code>/context</code> actually reports</h2>
+<p><code>/context</code> prefers the latest <strong>run-built</strong> system prompt report when available:</p>
+<ul>
+<li><code>System prompt (run)</code> = captured from the last embedded (tool-capable) run and persisted in the session store.</li>
+<li><code>System prompt (estimate)</code> = computed on the fly when no run report exists (or when running via a CLI backend that doesn’t generate the report).</li>
+</ul>
+<p>Either way, it reports sizes and top contributors; it does <strong>not</strong> dump the full system prompt or tool schemas.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

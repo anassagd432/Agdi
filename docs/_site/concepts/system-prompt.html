@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Prompt — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab active" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Fundamentals</h4><ul><li><a class="" href="/concepts/architecture.html">Gateway Architecture</a></li><li><a class="" href="/concepts/agent.html">Agent Runtime</a></li><li><a class="" href="/concepts/agent-loop.html">Agent Loop</a></li><li><a class="active" href="/concepts/system-prompt.html">System Prompt</a></li><li><a class="" href="/concepts/context.html">Context</a></li><li><a class="" href="/concepts/agent-workspace.html">Agent Workspace</a></li><li><a class="" href="/concepts/oauth.html">OAuth</a></li></ul></div><div class="sidebar-group"><h4>Bootstrapping</h4><ul><li><a class="" href="/start/bootstrapping.html">Agent Bootstrapping</a></li></ul></div><div class="sidebar-group"><h4>Sessions and memory</h4><ul><li><a class="" href="/concepts/session.html">Session Management</a></li><li><a class="" href="/concepts/sessions.html">Sessions</a></li><li><a class="" href="/concepts/session-pruning.html">Session Pruning</a></li><li><a class="" href="/concepts/session-tool.html">Session Tools</a></li><li><a class="" href="/concepts/memory.html">Memory</a></li><li><a class="" href="/concepts/compaction.html">Compaction</a></li></ul></div><div class="sidebar-group"><h4>Multi-agent</h4><ul><li><a class="" href="/concepts/multi-agent.html">Multi-Agent Routing</a></li><li><a class="" href="/concepts/presence.html">Presence</a></li></ul></div><div class="sidebar-group"><h4>Messages and delivery</h4><ul><li><a class="" href="/concepts/messages.html">Messages</a></li><li><a class="" href="/concepts/streaming.html">Streaming and Chunking</a></li><li><a class="" href="/concepts/retry.html">Retry Policy</a></li><li><a class="" href="/concepts/queue.html">Command Queue</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>System Prompt</h1>
+<p>AGDI builds a custom system prompt for every agent run. The prompt is <strong>AGDI-owned</strong> and does not use the pi-coding-agent default prompt.</p>
+<p>The prompt is assembled by AGDI and injected into each agent run.</p>
+<h2>Structure</h2>
+<p>The prompt is intentionally compact and uses fixed sections:</p>
+<ul>
+<li><strong>Tooling</strong>: current tool list + short descriptions.</li>
+<li><strong>Safety</strong>: short guardrail reminder to avoid power-seeking behavior or bypassing oversight.</li>
+<li><strong>Skills</strong> (when available): tells the model how to load skill instructions on demand.</li>
+<li><strong>AGDI Self-Update</strong>: how to run <code>config.apply</code> and <code>update.run</code>.</li>
+<li><strong>Workspace</strong>: working directory (<code>agents.defaults.workspace</code>).</li>
+<li><strong>Documentation</strong>: local path to AGDI docs (repo or npm package) and when to read them.</li>
+<li><strong>Workspace Files (injected)</strong>: indicates bootstrap files are included below.</li>
+<li><strong>Sandbox</strong> (when enabled): indicates sandboxed runtime, sandbox paths, and whether elevated exec is available.</li>
+<li><strong>Current Date &amp; Time</strong>: user-local time, timezone, and time format.</li>
+<li><strong>Reply Tags</strong>: optional reply tag syntax for supported providers.</li>
+<li><strong>Heartbeats</strong>: heartbeat prompt and ack behavior.</li>
+<li><strong>Runtime</strong>: host, OS, node, model, repo root (when detected), thinking level (one line).</li>
+<li><strong>Reasoning</strong>: current visibility level + /reasoning toggle hint.</li>
+</ul>
+<p>Safety guardrails in the system prompt are advisory. They guide model behavior but do not enforce policy. Use tool policy, exec approvals, sandboxing, and channel allowlists for hard enforcement; operators can disable these by design.</p>
+<h2>Prompt modes</h2>
+<p>AGDI can render smaller system prompts for sub-agents. The runtime sets a
+<code>promptMode</code> for each run (not a user-facing config):</p>
+<ul>
+<li><code>full</code> (default): includes all sections above.</li>
+<li><code>minimal</code>: used for sub-agents; omits <strong>Skills</strong>, <strong>Memory Recall</strong>, <strong>AGDI
+Self-Update</strong>, <strong>Model Aliases</strong>, <strong>User Identity</strong>, <strong>Reply Tags</strong>,
+<strong>Messaging</strong>, <strong>Silent Replies</strong>, and <strong>Heartbeats</strong>. Tooling, <strong>Safety</strong>,
+Workspace, Sandbox, Current Date &amp; Time (when known), Runtime, and injected
+context stay available.</li>
+<li><code>none</code>: returns only the base identity line.</li>
+</ul>
+<p>When <code>promptMode=minimal</code>, extra injected prompts are labeled <strong>Subagent
+Context</strong> instead of <strong>Group Chat Context</strong>.</p>
+<h2>Workspace bootstrap injection</h2>
+<p>Bootstrap files are trimmed and appended under <strong>Project Context</strong> so the model sees identity and profile context without needing explicit reads:</p>
+<ul>
+<li><code>AGENTS.md</code></li>
+<li><code>SOUL.md</code></li>
+<li><code>TOOLS.md</code></li>
+<li><code>IDENTITY.md</code></li>
+<li><code>USER.md</code></li>
+<li><code>HEARTBEAT.md</code></li>
+<li><code>BOOTSTRAP.md</code> (only on brand-new workspaces)</li>
+<li><code>MEMORY.md</code> and/or <code>memory.md</code> (when present in the workspace; either or both may be injected)</li>
+</ul>
+<p>All of these files are <strong>injected into the context window</strong> on every turn, which
+means they consume tokens. Keep them concise — especially <code>MEMORY.md</code>, which can
+grow over time and lead to unexpectedly high context usage and more frequent
+compaction.</p>
+<blockquote>
+<p><strong>Note:</strong> <code>memory/*.md</code> daily files are <strong>not</strong> injected automatically. They
+are accessed on demand via the <code>memory_search</code> and <code>memory_get</code> tools, so they
+do not count against the context window unless the model explicitly reads them.</p>
+</blockquote>
+<p>Large files are truncated with a marker. The max per-file size is controlled by
+<code>agents.defaults.bootstrapMaxChars</code> (default: 20000). Total injected bootstrap
+content across files is capped by <code>agents.defaults.bootstrapTotalMaxChars</code>
+(default: 24000). Missing files inject a short missing-file marker.</p>
+<p>Sub-agent sessions only inject <code>AGENTS.md</code> and <code>TOOLS.md</code> (other bootstrap files
+are filtered out to keep the sub-agent context small).</p>
+<p>Internal hooks can intercept this step via <code>agent:bootstrap</code> to mutate or replace
+the injected bootstrap files (for example swapping <code>SOUL.md</code> for an alternate persona).</p>
+<p>To inspect how much each injected file contributes (raw vs injected, truncation, plus tool schema overhead), use <code>/context list</code> or <code>/context detail</code>. See <a href="/concepts/context">Context</a>.</p>
+<h2>Time handling</h2>
+<p>The system prompt includes a dedicated <strong>Current Date &amp; Time</strong> section when the
+user timezone is known. To keep the prompt cache-stable, it now only includes
+the <strong>time zone</strong> (no dynamic clock or time format).</p>
+<p>Use <code>session_status</code> when the agent needs the current time; the status card
+includes a timestamp line.</p>
+<p>Configure with:</p>
+<ul>
+<li><code>agents.defaults.userTimezone</code></li>
+<li><code>agents.defaults.timeFormat</code> (<code>auto</code> | <code>12</code> | <code>24</code>)</li>
+</ul>
+<p>See <a href="/date-time">Date &amp; Time</a> for full behavior details.</p>
+<h2>Skills</h2>
+<p>When eligible skills exist, AGDI injects a compact <strong>available skills list</strong>
+(<code>formatSkillsForPrompt</code>) that includes the <strong>file path</strong> for each skill. The
+prompt instructs the model to use <code>read</code> to load the SKILL.md at the listed
+location (workspace, managed, or bundled). If no skills are eligible, the
+Skills section is omitted.</p>
+<pre><code>&lt;available_skills&gt;
+  &lt;skill&gt;
+    &lt;name&gt;...&lt;/name&gt;
+    &lt;description&gt;...&lt;/description&gt;
+    &lt;location&gt;...&lt;/location&gt;
+  &lt;/skill&gt;
+&lt;/available_skills&gt;
+</code></pre>
+<p>This keeps the base prompt small while still enabling targeted skill usage.</p>
+<h2>Documentation</h2>
+<p>When available, the system prompt includes a <strong>Documentation</strong> section that points to the
+local AGDI docs directory (either <code>docs/</code> in the repo workspace or the bundled npm
+package docs) and also notes the public mirror, source repo, community Discord, and
+ClawHub (<a href="https://clawhub.com">https://clawhub.com</a>) for skills discovery. The prompt instructs the model to consult local docs first
+for AGDI behavior, commands, configuration, or architecture, and to run
+<code>agdi status</code> itself when possible (asking the user only when it lacks access).</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

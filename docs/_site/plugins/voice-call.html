@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Call Plugin — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab active" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/tools/index.html">Tools</a></li></ul></div><div class="sidebar-group"><h4>Built-in tools</h4><ul><li><a class="" href="/tools/lobster.html">Lobster</a></li><li><a class="" href="/tools/llm-task.html">LLM Task</a></li><li><a class="" href="/tools/exec.html">Exec Tool</a></li><li><a class="" href="/tools/web.html">Web Tools</a></li><li><a class="" href="/tools/apply-patch.html">apply_patch Tool</a></li><li><a class="" href="/tools/elevated.html">Elevated Mode</a></li><li><a class="" href="/tools/thinking.html">Thinking Levels</a></li><li><a class="" href="/tools/reactions.html">Reactions</a></li></ul></div><div class="sidebar-group"><h4>Browser</h4><ul><li><a class="" href="/tools/browser.html">Browser (AGDI-managed)</a></li><li><a class="" href="/tools/browser-login.html">Browser Login</a></li><li><a class="" href="/tools/chrome-extension.html">Chrome Extension</a></li><li><a class="" href="/tools/browser-linux-troubleshooting.html">Browser Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Agent coordination</h4><ul><li><a class="" href="/tools/agent-send.html">Agent Send</a></li><li><a class="" href="/tools/subagents.html">Sub-Agents</a></li><li><a class="" href="/tools/multi-agent-sandbox-tools.html">Multi-Agent Sandbox & Tools</a></li></ul></div><div class="sidebar-group"><h4>Skills</h4><ul><li><a class="" href="/tools/slash-commands.html">Slash Commands</a></li><li><a class="" href="/tools/skills.html">Skills</a></li><li><a class="" href="/tools/skills-config.html">Skills Config</a></li><li><a class="" href="/tools/clawhub.html">ClawHub</a></li><li><a class="" href="/tools/plugin.html">Plugins</a></li></ul></div><div class="sidebar-group"><h4>Extensions</h4><ul><li><a class="active" href="/plugins/voice-call.html">Voice Call Plugin</a></li><li><a class="" href="/plugins/zalouser.html">Zalo Personal Plugin</a></li></ul></div><div class="sidebar-group"><h4>Automation</h4><ul><li><a class="" href="/automation/hooks.html">Hooks</a></li><li><a class="" href="/automation/cron-jobs.html">Cron Jobs</a></li><li><a class="" href="/automation/cron-vs-heartbeat.html">Cron vs Heartbeat</a></li><li><a class="" href="/automation/troubleshooting.html">Automation Troubleshooting</a></li><li><a class="" href="/automation/webhook.html">Webhooks</a></li><li><a class="" href="/automation/gmail-pubsub.html">Gmail PubSub</a></li><li><a class="" href="/automation/poll.html">Polls</a></li><li><a class="" href="/automation/auth-monitoring.html">Auth Monitoring</a></li></ul></div><div class="sidebar-group"><h4>Media and devices</h4><ul><li><a class="" href="/nodes/index.html">Nodes</a></li><li><a class="" href="/nodes/troubleshooting.html">Node Troubleshooting</a></li><li><a class="" href="/nodes/images.html">Image and Media Support</a></li><li><a class="" href="/nodes/audio.html">Audio and Voice Notes</a></li><li><a class="" href="/nodes/camera.html">Camera Capture</a></li><li><a class="" href="/nodes/talk.html">Talk Mode</a></li><li><a class="" href="/nodes/voicewake.html">Voice Wake</a></li><li><a class="" href="/nodes/location-command.html">Location Command</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Voice Call (plugin)</h1>
+<p>Voice calls for AGDI via a plugin. Supports outbound notifications and
+multi-turn conversations with inbound policies.</p>
+<p>Current providers:</p>
+<ul>
+<li><code>twilio</code> (Programmable Voice + Media Streams)</li>
+<li><code>telnyx</code> (Call Control v2)</li>
+<li><code>plivo</code> (Voice API + XML transfer + GetInput speech)</li>
+<li><code>mock</code> (dev/no network)</li>
+</ul>
+<p>Quick mental model:</p>
+<ul>
+<li>Install plugin</li>
+<li>Restart Gateway</li>
+<li>Configure under <code>plugins.entries.voice-call.config</code></li>
+<li>Use <code>agdi voicecall ...</code> or the <code>voice_call</code> tool</li>
+</ul>
+<h2>Where it runs (local vs remote)</h2>
+<p>The Voice Call plugin runs <strong>inside the Gateway process</strong>.</p>
+<p>If you use a remote Gateway, install/configure the plugin on the <strong>machine running the Gateway</strong>, then restart the Gateway to load it.</p>
+<h2>Install</h2>
+<h3>Option A: install from npm (recommended)</h3>
+<pre><code class="language-bash">agdi plugins install @agdi/voice-call
+</code></pre>
+<p>Restart the Gateway afterwards.</p>
+<h3>Option B: install from a local folder (dev, no copying)</h3>
+<pre><code class="language-bash">agdi plugins install ./extensions/voice-call
+cd ./extensions/voice-call &amp;&amp; pnpm install
+</code></pre>
+<p>Restart the Gateway afterwards.</p>
+<h2>Config</h2>
+<p>Set config under <code>plugins.entries.voice-call.config</code>:</p>
+<pre><code class="language-json5">{
+  plugins: {
+    entries: {
+      &quot;voice-call&quot;: {
+        enabled: true,
+        config: {
+          provider: &quot;twilio&quot;, // or &quot;telnyx&quot; | &quot;plivo&quot; | &quot;mock&quot;
+          fromNumber: &quot;+15550001234&quot;,
+          toNumber: &quot;+15550005678&quot;,
+
+          twilio: {
+            accountSid: &quot;ACxxxxxxxx&quot;,
+            authToken: &quot;...&quot;,
+          },
+
+          telnyx: {
+            apiKey: &quot;...&quot;,
+            connectionId: &quot;...&quot;,
+            // Telnyx webhook public key from the Telnyx Mission Control Portal
+            // (Base64 string; can also be set via TELNYX_PUBLIC_KEY).
+            publicKey: &quot;...&quot;,
+          },
+
+          plivo: {
+            authId: &quot;MAxxxxxxxxxxxxxxxxxxxx&quot;,
+            authToken: &quot;...&quot;,
+          },
+
+          // Webhook server
+          serve: {
+            port: 3334,
+            path: &quot;/voice/webhook&quot;,
+          },
+
+          // Webhook security (recommended for tunnels/proxies)
+          webhookSecurity: {
+            allowedHosts: [&quot;voice.example.com&quot;],
+            trustedProxyIPs: [&quot;100.64.0.1&quot;],
+          },
+
+          // Public exposure (pick one)
+          // publicUrl: &quot;https://example.ngrok.app/voice/webhook&quot;,
+          // tunnel: { provider: &quot;ngrok&quot; },
+          // tailscale: { mode: &quot;funnel&quot;, path: &quot;/voice/webhook&quot; }
+
+          outbound: {
+            defaultMode: &quot;notify&quot;, // notify | conversation
+          },
+
+          streaming: {
+            enabled: true,
+            streamPath: &quot;/voice/stream&quot;,
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li>Twilio/Telnyx require a <strong>publicly reachable</strong> webhook URL.</li>
+<li>Plivo requires a <strong>publicly reachable</strong> webhook URL.</li>
+<li><code>mock</code> is a local dev provider (no network calls).</li>
+<li>Telnyx requires <code>telnyx.publicKey</code> (or <code>TELNYX_PUBLIC_KEY</code>) unless <code>skipSignatureVerification</code> is true.</li>
+<li><code>skipSignatureVerification</code> is for local testing only.</li>
+<li>If you use ngrok free tier, set <code>publicUrl</code> to the exact ngrok URL; signature verification is always enforced.</li>
+<li><code>tunnel.allowNgrokFreeTierLoopbackBypass: true</code> allows Twilio webhooks with invalid signatures <strong>only</strong> when <code>tunnel.provider=&quot;ngrok&quot;</code> and <code>serve.bind</code> is loopback (ngrok local agent). Use for local dev only.</li>
+<li>Ngrok free tier URLs can change or add interstitial behavior; if <code>publicUrl</code> drifts, Twilio signatures will fail. For production, prefer a stable domain or Tailscale funnel.</li>
+</ul>
+<h2>Webhook Security</h2>
+<p>When a proxy or tunnel sits in front of the Gateway, the plugin reconstructs the
+public URL for signature verification. These options control which forwarded
+headers are trusted.</p>
+<p><code>webhookSecurity.allowedHosts</code> allowlists hosts from forwarding headers.</p>
+<p><code>webhookSecurity.trustForwardingHeaders</code> trusts forwarded headers without an allowlist.</p>
+<p><code>webhookSecurity.trustedProxyIPs</code> only trusts forwarded headers when the request
+remote IP matches the list.</p>
+<p>Example with a stable public host:</p>
+<pre><code class="language-json5">{
+  plugins: {
+    entries: {
+      &quot;voice-call&quot;: {
+        config: {
+          publicUrl: &quot;https://voice.example.com/voice/webhook&quot;,
+          webhookSecurity: {
+            allowedHosts: [&quot;voice.example.com&quot;],
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>TTS for calls</h2>
+<p>Voice Call uses the core <code>messages.tts</code> configuration (OpenAI or ElevenLabs) for
+streaming speech on calls. You can override it under the plugin config with the
+<strong>same shape</strong> — it deep‑merges with <code>messages.tts</code>.</p>
+<pre><code class="language-json5">{
+  tts: {
+    provider: &quot;elevenlabs&quot;,
+    elevenlabs: {
+      voiceId: &quot;pMsXgVXv3BLzUgSXRplE&quot;,
+      modelId: &quot;eleven_multilingual_v2&quot;,
+    },
+  },
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><strong>Edge TTS is ignored for voice calls</strong> (telephony audio needs PCM; Edge output is unreliable).</li>
+<li>Core TTS is used when Twilio media streaming is enabled; otherwise calls fall back to provider native voices.</li>
+</ul>
+<h3>More examples</h3>
+<p>Use core TTS only (no override):</p>
+<pre><code class="language-json5">{
+  messages: {
+    tts: {
+      provider: &quot;openai&quot;,
+      openai: { voice: &quot;alloy&quot; },
+    },
+  },
+}
+</code></pre>
+<p>Override to ElevenLabs just for calls (keep core default elsewhere):</p>
+<pre><code class="language-json5">{
+  plugins: {
+    entries: {
+      &quot;voice-call&quot;: {
+        config: {
+          tts: {
+            provider: &quot;elevenlabs&quot;,
+            elevenlabs: {
+              apiKey: &quot;elevenlabs_key&quot;,
+              voiceId: &quot;pMsXgVXv3BLzUgSXRplE&quot;,
+              modelId: &quot;eleven_multilingual_v2&quot;,
+            },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<p>Override only the OpenAI model for calls (deep‑merge example):</p>
+<pre><code class="language-json5">{
+  plugins: {
+    entries: {
+      &quot;voice-call&quot;: {
+        config: {
+          tts: {
+            openai: {
+              model: &quot;gpt-4o-mini-tts&quot;,
+              voice: &quot;marin&quot;,
+            },
+          },
+        },
+      },
+    },
+  },
+}
+</code></pre>
+<h2>Inbound calls</h2>
+<p>Inbound policy defaults to <code>disabled</code>. To enable inbound calls, set:</p>
+<pre><code class="language-json5">{
+  inboundPolicy: &quot;allowlist&quot;,
+  allowFrom: [&quot;+15550001234&quot;],
+  inboundGreeting: &quot;Hello! How can I help?&quot;,
+}
+</code></pre>
+<p>Auto-responses use the agent system. Tune with:</p>
+<ul>
+<li><code>responseModel</code></li>
+<li><code>responseSystemPrompt</code></li>
+<li><code>responseTimeoutMs</code></li>
+</ul>
+<h2>CLI</h2>
+<pre><code class="language-bash">agdi voicecall call --to &quot;+15555550123&quot; --message &quot;Hello from AGDI&quot;
+agdi voicecall continue --call-id &lt;id&gt; --message &quot;Any questions?&quot;
+agdi voicecall speak --call-id &lt;id&gt; --message &quot;One moment&quot;
+agdi voicecall end --call-id &lt;id&gt;
+agdi voicecall status --call-id &lt;id&gt;
+agdi voicecall tail
+agdi voicecall expose --mode funnel
+</code></pre>
+<h2>Agent tool</h2>
+<p>Tool name: <code>voice_call</code></p>
+<p>Actions:</p>
+<ul>
+<li><code>initiate_call</code> (message, to?, mode?)</li>
+<li><code>continue_call</code> (callId, message)</li>
+<li><code>speak_to_user</code> (callId, message)</li>
+<li><code>end_call</code> (callId)</li>
+<li><code>get_status</code> (callId)</li>
+</ul>
+<p>This repo ships a matching skill doc at <code>skills/voice-call/SKILL.md</code>.</p>
+<h2>Gateway RPC</h2>
+<ul>
+<li><code>voicecall.initiate</code> (<code>to?</code>, <code>message</code>, <code>mode?</code>)</li>
+<li><code>voicecall.continue</code> (<code>callId</code>, <code>message</code>)</li>
+<li><code>voicecall.speak</code> (<code>callId</code>, <code>message</code>)</li>
+<li><code>voicecall.end</code> (<code>callId</code>)</li>
+<li><code>voicecall.status</code> (<code>callId</code>)</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

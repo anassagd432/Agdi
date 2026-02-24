@@ -101,7 +101,7 @@ const HttpUrlSchema = z
     return protocol === "http:" || protocol === "https:";
   }, "Expected http:// or https:// URL");
 
-export const OpenClawSchema = z
+export const AGDISchema = z
   .object({
     $schema: z.string().optional(),
     meta: z
@@ -559,6 +559,21 @@ export const OpenClawSchema = z
       .strict()
       .optional(),
     memory: MemorySchema,
+    autonomous: z
+      .object({
+        enabled: z.boolean().optional(),
+        headless: z.boolean().optional(),
+        dashboardPort: z.number().int().min(1).max(65535).optional(),
+        visionModel: z.string().optional(),
+        fastModel: z.string().optional(),
+        dataDir: z.string().optional(),
+        selfImprove: z.boolean().optional(),
+        recording: z.boolean().optional(),
+        scheduler: z.boolean().optional(),
+        plugins: z.boolean().optional(),
+      })
+      .strict()
+      .optional(),
     skills: z
       .object({
         allowBundled: z.array(z.string()).optional(),

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remote Access — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab active" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Gateway</h4><ul><li><a class="" href="/gateway/index.html">Gateway Runbook</a></li></ul></div><div class="sidebar-group"><h4>Configuration and operations</h4><ul><li><a class="" href="/gateway/configuration.html">Configuration</a></li><li><a class="" href="/gateway/configuration-reference.html">Configuration Reference</a></li><li><a class="" href="/gateway/configuration-examples.html">Configuration Examples</a></li><li><a class="" href="/gateway/authentication.html">Authentication</a></li><li><a class="" href="/gateway/trusted-proxy-auth.html">trusted-proxy-auth</a></li><li><a class="" href="/gateway/health.html">Health Checks</a></li><li><a class="" href="/gateway/heartbeat.html">Heartbeat</a></li><li><a class="" href="/gateway/doctor.html">Doctor</a></li><li><a class="" href="/gateway/logging.html">Logging</a></li><li><a class="" href="/gateway/gateway-lock.html">Gateway Lock</a></li><li><a class="" href="/gateway/background-process.html">Background Exec and Process Tool</a></li><li><a class="" href="/gateway/multiple-gateways.html">Multiple Gateways</a></li><li><a class="" href="/gateway/troubleshooting.html">Troubleshooting</a></li></ul></div><div class="sidebar-group"><h4>Security and sandboxing</h4><ul><li><a class="" href="/gateway/security/index.html">Security</a></li><li><a class="" href="/gateway/sandboxing.html">Sandboxing</a></li><li><a class="" href="/gateway/sandbox-vs-tool-policy-vs-elevated.html">Sandbox vs Tool Policy vs Elevated</a></li></ul></div><div class="sidebar-group"><h4>Protocols and APIs</h4><ul><li><a class="" href="/gateway/protocol.html">Gateway Protocol</a></li><li><a class="" href="/gateway/bridge-protocol.html">Bridge Protocol</a></li><li><a class="" href="/gateway/openai-http-api.html">OpenAI Chat Completions</a></li><li><a class="" href="/gateway/tools-invoke-http-api.html">Tools Invoke API</a></li><li><a class="" href="/gateway/cli-backends.html">CLI Backends</a></li><li><a class="" href="/gateway/local-models.html">Local Models</a></li></ul></div><div class="sidebar-group"><h4>Networking and discovery</h4><ul><li><a class="" href="/gateway/network-model.html">Network model</a></li><li><a class="" href="/gateway/pairing.html">Gateway-Owned Pairing</a></li><li><a class="" href="/gateway/discovery.html">Discovery and Transports</a></li><li><a class="" href="/gateway/bonjour.html">Bonjour Discovery</a></li></ul></div><div class="sidebar-group"><h4>Remote access</h4><ul><li><a class="active" href="/gateway/remote.html">Remote Access</a></li><li><a class="" href="/gateway/remote-gateway-readme.html">Remote Gateway Setup</a></li><li><a class="" href="/gateway/tailscale.html">Tailscale</a></li></ul></div><div class="sidebar-group"><h4>Security</h4><ul><li><a class="" href="/security/formal-verification.html">Formal Verification (Security Models)</a></li></ul></div><div class="sidebar-group"><h4>Web interfaces</h4><ul><li><a class="" href="/web/index.html">Web</a></li><li><a class="" href="/web/control-ui.html">Control UI</a></li><li><a class="" href="/web/dashboard.html">Dashboard</a></li><li><a class="" href="/web/webchat.html">WebChat</a></li><li><a class="" href="/web/tui.html">TUI</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Remote access (SSH, tunnels, and tailnets)</h1>
+<p>This repo supports “remote over SSH” by keeping a single Gateway (the master) running on a dedicated host (desktop/server) and connecting clients to it.</p>
+<ul>
+<li>For <strong>operators (you / the macOS app)</strong>: SSH tunneling is the universal fallback.</li>
+<li>For <strong>nodes (iOS/Android and future devices)</strong>: connect to the Gateway <strong>WebSocket</strong> (LAN/tailnet or SSH tunnel as needed).</li>
+</ul>
+<h2>The core idea</h2>
+<ul>
+<li>The Gateway WebSocket binds to <strong>loopback</strong> on your configured port (defaults to 18789).</li>
+<li>For remote use, you forward that loopback port over SSH (or use a tailnet/VPN and tunnel less).</li>
+</ul>
+<h2>Common VPN/tailnet setups (where the agent lives)</h2>
+<p>Think of the <strong>Gateway host</strong> as “where the agent lives.” It owns sessions, auth profiles, channels, and state.
+Your laptop/desktop (and nodes) connect to that host.</p>
+<h3>1) Always-on Gateway in your tailnet (VPS or home server)</h3>
+<p>Run the Gateway on a persistent host and reach it via <strong>Tailscale</strong> or SSH.</p>
+<ul>
+<li><strong>Best UX:</strong> keep <code>gateway.bind: &quot;loopback&quot;</code> and use <strong>Tailscale Serve</strong> for the Control UI.</li>
+<li><strong>Fallback:</strong> keep loopback + SSH tunnel from any machine that needs access.</li>
+<li><strong>Examples:</strong> <a href="/install/exe-dev">exe.dev</a> (easy VM) or <a href="/install/hetzner">Hetzner</a> (production VPS).</li>
+</ul>
+<p>This is ideal when your laptop sleeps often but you want the agent always-on.</p>
+<h3>2) Home desktop runs the Gateway, laptop is remote control</h3>
+<p>The laptop does <strong>not</strong> run the agent. It connects remotely:</p>
+<ul>
+<li>Use the macOS app’s <strong>Remote over SSH</strong> mode (Settings → General → “AGDI runs”).</li>
+<li>The app opens and manages the tunnel, so WebChat + health checks “just work.”</li>
+</ul>
+<p>Runbook: <a href="/platforms/mac/remote">macOS remote access</a>.</p>
+<h3>3) Laptop runs the Gateway, remote access from other machines</h3>
+<p>Keep the Gateway local but expose it safely:</p>
+<ul>
+<li>SSH tunnel to the laptop from other machines, or</li>
+<li>Tailscale Serve the Control UI and keep the Gateway loopback-only.</li>
+</ul>
+<p>Guide: <a href="/gateway/tailscale">Tailscale</a> and <a href="/web">Web overview</a>.</p>
+<h2>Command flow (what runs where)</h2>
+<p>One gateway service owns state + channels. Nodes are peripherals.</p>
+<p>Flow example (Telegram → node):</p>
+<ul>
+<li>Telegram message arrives at the <strong>Gateway</strong>.</li>
+<li>Gateway runs the <strong>agent</strong> and decides whether to call a node tool.</li>
+<li>Gateway calls the <strong>node</strong> over the Gateway WebSocket (<code>node.*</code> RPC).</li>
+<li>Node returns the result; Gateway replies back out to Telegram.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><strong>Nodes do not run the gateway service.</strong> Only one gateway should run per host unless you intentionally run isolated profiles (see <a href="/gateway/multiple-gateways">Multiple gateways</a>).</li>
+<li>macOS app “node mode” is just a node client over the Gateway WebSocket.</li>
+</ul>
+<h2>SSH tunnel (CLI + tools)</h2>
+<p>Create a local tunnel to the remote Gateway WS:</p>
+<pre><code class="language-bash">ssh -N -L 18789:127.0.0.1:18789 user@host
+</code></pre>
+<p>With the tunnel up:</p>
+<ul>
+<li><code>agdi health</code> and <code>agdi status --deep</code> now reach the remote gateway via <code>ws://127.0.0.1:18789</code>.</li>
+<li><code>agdi gateway {status,health,send,agent,call}</code> can also target the forwarded URL via <code>--url</code> when needed.</li>
+</ul>
+<p>Note: replace <code>18789</code> with your configured <code>gateway.port</code> (or <code>--port</code>/<code>AGDI_GATEWAY_PORT</code>).
+Note: when you pass <code>--url</code>, the CLI does not fall back to config or environment credentials.
+Include <code>--token</code> or <code>--password</code> explicitly. Missing explicit credentials is an error.</p>
+<h2>CLI remote defaults</h2>
+<p>You can persist a remote target so CLI commands use it by default:</p>
+<pre><code class="language-json5">{
+  gateway: {
+    mode: &quot;remote&quot;,
+    remote: {
+      url: &quot;ws://127.0.0.1:18789&quot;,
+      token: &quot;your-token&quot;,
+    },
+  },
+}
+</code></pre>
+<p>When the gateway is loopback-only, keep the URL at <code>ws://127.0.0.1:18789</code> and open the SSH tunnel first.</p>
+<h2>Chat UI over SSH</h2>
+<p>WebChat no longer uses a separate HTTP port. The SwiftUI chat UI connects directly to the Gateway WebSocket.</p>
+<ul>
+<li>Forward <code>18789</code> over SSH (see above), then connect clients to <code>ws://127.0.0.1:18789</code>.</li>
+<li>On macOS, prefer the app’s “Remote over SSH” mode, which manages the tunnel automatically.</li>
+</ul>
+<h2>macOS app “Remote over SSH”</h2>
+<p>The macOS menu bar app can drive the same setup end-to-end (remote status checks, WebChat, and Voice Wake forwarding).</p>
+<p>Runbook: <a href="/platforms/mac/remote">macOS remote access</a>.</p>
+<h2>Security rules (remote/VPN)</h2>
+<p>Short version: <strong>keep the Gateway loopback-only</strong> unless you’re sure you need a bind.</p>
+<ul>
+<li><strong>Loopback + SSH/Tailscale Serve</strong> is the safest default (no public exposure).</li>
+<li><strong>Non-loopback binds</strong> (<code>lan</code>/<code>tailnet</code>/<code>custom</code>, or <code>auto</code> when loopback is unavailable) must use auth tokens/passwords.</li>
+<li><code>gateway.remote.token</code> is <strong>only</strong> for remote CLI calls — it does <strong>not</strong> enable local auth.</li>
+<li><code>gateway.remote.tlsFingerprint</code> pins the remote TLS cert when using <code>wss://</code>.</li>
+<li><strong>Tailscale Serve</strong> can authenticate via identity headers when <code>gateway.auth.allowTailscale: true</code>.
+Set it to <code>false</code> if you want tokens/passwords instead.</li>
+<li>Treat browser control like operator access: tailnet-only + deliberate node pairing.</li>
+</ul>
+<p>Deep dive: <a href="/gateway/security">Security</a>.</p>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

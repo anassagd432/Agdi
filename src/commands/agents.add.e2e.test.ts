@@ -33,7 +33,7 @@ const runtime: RuntimeEnv = {
 };
 
 const baseSnapshot = {
-  path: "/tmp/openclaw.json",
+  path: "/tmp/agdi.json",
   exists: true,
   raw: "{}",
   parsed: {},

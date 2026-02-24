@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Broadcast Groups — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/docs/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/docs/index.html">Get started</a><a class="tab" href="/docs/install/index.html">Install</a><a class="tab active" href="/docs/channels/index.html">Channels</a><a class="tab" href="/docs/concepts/architecture.html">Agents</a><a class="tab" href="/docs/autonomous/index.html">Autonomous</a><a class="tab" href="/docs/tools/index.html">Tools</a><a class="tab" href="/docs/providers/index.html">Models</a><a class="tab" href="/docs/platforms/index.html">Platforms</a><a class="tab" href="/docs/gateway/index.html">Gateway & Ops</a><a class="tab" href="/docs/cli/index.html">Reference</a><a class="tab" href="/docs/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/docs/channels/index.html">Chat Channels</a></li></ul></div><div class="sidebar-group"><h4>Messaging platforms</h4><ul><li><a class="" href="/docs/channels/whatsapp.html">WhatsApp</a></li><li><a class="" href="/docs/channels/telegram.html">Telegram</a></li><li><a class="" href="/docs/channels/discord.html">Discord</a></li><li><a class="" href="/docs/channels/irc.html">IRC</a></li><li><a class="" href="/docs/channels/slack.html">Slack</a></li><li><a class="" href="/docs/channels/feishu.html">Feishu</a></li><li><a class="" href="/docs/channels/googlechat.html">Google Chat</a></li><li><a class="" href="/docs/channels/mattermost.html">Mattermost</a></li><li><a class="" href="/docs/channels/signal.html">Signal</a></li><li><a class="" href="/docs/channels/imessage.html">iMessage</a></li><li><a class="" href="/docs/channels/msteams.html">Microsoft Teams</a></li><li><a class="" href="/docs/channels/line.html">LINE</a></li><li><a class="" href="/docs/channels/matrix.html">Matrix</a></li><li><a class="" href="/docs/channels/zalo.html">Zalo</a></li><li><a class="" href="/docs/channels/zalouser.html">Zalo Personal</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/docs/channels/pairing.html">Pairing</a></li><li><a class="" href="/docs/channels/group-messages.html">Group Messages</a></li><li><a class="" href="/docs/channels/groups.html">Groups</a></li><li><a class="active" href="/docs/channels/broadcast-groups.html">Broadcast Groups</a></li><li><a class="" href="/docs/channels/channel-routing.html">Channel Routing</a></li><li><a class="" href="/docs/channels/location.html">Channel Location Parsing</a></li><li><a class="" href="/docs/channels/troubleshooting.html">Channel Troubleshooting</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>Broadcast Groups</h1>
+<p><strong>Status:</strong> Experimental<br><strong>Version:</strong> Added in 2026.1.9</p>
+<h2>Overview</h2>
+<p>Broadcast Groups enable multiple agents to process and respond to the same message simultaneously. This allows you to create specialized agent teams that work together in a single WhatsApp group or DM — all using one phone number.</p>
+<p>Current scope: <strong>WhatsApp only</strong> (web channel).</p>
+<p>Broadcast groups are evaluated after channel allowlists and group activation rules. In WhatsApp groups, this means broadcasts happen when AGDI would normally reply (for example: on mention, depending on your group settings).</p>
+<h2>Use Cases</h2>
+<h3>1. Specialized Agent Teams</h3>
+<p>Deploy multiple agents with atomic, focused responsibilities:</p>
+<pre><code>Group: &quot;Development Team&quot;
+Agents:
+  - CodeReviewer (reviews code snippets)
+  - DocumentationBot (generates docs)
+  - SecurityAuditor (checks for vulnerabilities)
+  - TestGenerator (suggests test cases)
+</code></pre>
+<p>Each agent processes the same message and provides its specialized perspective.</p>
+<h3>2. Multi-Language Support</h3>
+<pre><code>Group: &quot;International Support&quot;
+Agents:
+  - Agent_EN (responds in English)
+  - Agent_DE (responds in German)
+  - Agent_ES (responds in Spanish)
+</code></pre>
+<h3>3. Quality Assurance Workflows</h3>
+<pre><code>Group: &quot;Customer Support&quot;
+Agents:
+  - SupportAgent (provides answer)
+  - QAAgent (reviews quality, only responds if issues found)
+</code></pre>
+<h3>4. Task Automation</h3>
+<pre><code>Group: &quot;Project Management&quot;
+Agents:
+  - TaskTracker (updates task database)
+  - TimeLogger (logs time spent)
+  - ReportGenerator (creates summaries)
+</code></pre>
+<h2>Configuration</h2>
+<h3>Basic Setup</h3>
+<p>Add a top-level <code>broadcast</code> section (next to <code>bindings</code>). Keys are WhatsApp peer ids:</p>
+<ul>
+<li>group chats: group JID (e.g. <code>120363403215116621@g.us</code>)</li>
+<li>DMs: E.164 phone number (e.g. <code>+15551234567</code>)</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;120363403215116621@g.us&quot;: [&quot;alfred&quot;, &quot;baerbel&quot;, &quot;assistant3&quot;]
+  }
+}
+</code></pre>
+<p><strong>Result:</strong> When AGDI would reply in this chat, it will run all three agents.</p>
+<h3>Processing Strategy</h3>
+<p>Control how agents process messages:</p>
+<h4>Parallel (Default)</h4>
+<p>All agents process simultaneously:</p>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;strategy&quot;: &quot;parallel&quot;,
+    &quot;120363403215116621@g.us&quot;: [&quot;alfred&quot;, &quot;baerbel&quot;]
+  }
+}
+</code></pre>
+<h4>Sequential</h4>
+<p>Agents process in order (one waits for previous to finish):</p>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;strategy&quot;: &quot;sequential&quot;,
+    &quot;120363403215116621@g.us&quot;: [&quot;alfred&quot;, &quot;baerbel&quot;]
+  }
+}
+</code></pre>
+<h3>Complete Example</h3>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;code-reviewer&quot;,
+        &quot;name&quot;: &quot;Code Reviewer&quot;,
+        &quot;workspace&quot;: &quot;/path/to/code-reviewer&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;all&quot; }
+      },
+      {
+        &quot;id&quot;: &quot;security-auditor&quot;,
+        &quot;name&quot;: &quot;Security Auditor&quot;,
+        &quot;workspace&quot;: &quot;/path/to/security-auditor&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;all&quot; }
+      },
+      {
+        &quot;id&quot;: &quot;docs-generator&quot;,
+        &quot;name&quot;: &quot;Documentation Generator&quot;,
+        &quot;workspace&quot;: &quot;/path/to/docs-generator&quot;,
+        &quot;sandbox&quot;: { &quot;mode&quot;: &quot;all&quot; }
+      }
+    ]
+  },
+  &quot;broadcast&quot;: {
+    &quot;strategy&quot;: &quot;parallel&quot;,
+    &quot;120363403215116621@g.us&quot;: [&quot;code-reviewer&quot;, &quot;security-auditor&quot;, &quot;docs-generator&quot;],
+    &quot;120363424282127706@g.us&quot;: [&quot;support-en&quot;, &quot;support-de&quot;],
+    &quot;+15555550123&quot;: [&quot;assistant&quot;, &quot;logger&quot;]
+  }
+}
+</code></pre>
+<h2>How It Works</h2>
+<h3>Message Flow</h3>
+<ol>
+<li><strong>Incoming message</strong> arrives in a WhatsApp group</li>
+<li><strong>Broadcast check</strong>: System checks if peer ID is in <code>broadcast</code></li>
+<li><strong>If in broadcast list</strong>:<ul>
+<li>All listed agents process the message</li>
+<li>Each agent has its own session key and isolated context</li>
+<li>Agents process in parallel (default) or sequentially</li>
+</ul>
+</li>
+<li><strong>If not in broadcast list</strong>:<ul>
+<li>Normal routing applies (first matching binding)</li>
+</ul>
+</li>
+</ol>
+<p>Note: broadcast groups do not bypass channel allowlists or group activation rules (mentions/commands/etc). They only change <em>which agents run</em> when a message is eligible for processing.</p>
+<h3>Session Isolation</h3>
+<p>Each agent in a broadcast group maintains completely separate:</p>
+<ul>
+<li><strong>Session keys</strong> (<code>agent:alfred:whatsapp:group:120363...</code> vs <code>agent:baerbel:whatsapp:group:120363...</code>)</li>
+<li><strong>Conversation history</strong> (agent doesn&#39;t see other agents&#39; messages)</li>
+<li><strong>Workspace</strong> (separate sandboxes if configured)</li>
+<li><strong>Tool access</strong> (different allow/deny lists)</li>
+<li><strong>Memory/context</strong> (separate IDENTITY.md, SOUL.md, etc.)</li>
+<li><strong>Group context buffer</strong> (recent group messages used for context) is shared per peer, so all broadcast agents see the same context when triggered</li>
+</ul>
+<p>This allows each agent to have:</p>
+<ul>
+<li>Different personalities</li>
+<li>Different tool access (e.g., read-only vs. read-write)</li>
+<li>Different models (e.g., opus vs. sonnet)</li>
+<li>Different skills installed</li>
+</ul>
+<h3>Example: Isolated Sessions</h3>
+<p>In group <code>120363403215116621@g.us</code> with agents <code>[&quot;alfred&quot;, &quot;baerbel&quot;]</code>:</p>
+<p><strong>Alfred&#39;s context:</strong></p>
+<pre><code>Session: agent:alfred:whatsapp:group:120363403215116621@g.us
+History: [user message, alfred&#39;s previous responses]
+Workspace: /Users/pascal/agdi-alfred/
+Tools: read, write, exec
+</code></pre>
+<p><strong>Bärbel&#39;s context:</strong></p>
+<pre><code>Session: agent:baerbel:whatsapp:group:120363403215116621@g.us
+History: [user message, baerbel&#39;s previous responses]
+Workspace: /Users/pascal/agdi-baerbel/
+Tools: read only
+</code></pre>
+<h2>Best Practices</h2>
+<h3>1. Keep Agents Focused</h3>
+<p>Design each agent with a single, clear responsibility:</p>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;DEV_GROUP&quot;: [&quot;formatter&quot;, &quot;linter&quot;, &quot;tester&quot;]
+  }
+}
+</code></pre>
+<p>✅ <strong>Good:</strong> Each agent has one job<br>❌ <strong>Bad:</strong> One generic &quot;dev-helper&quot; agent</p>
+<h3>2. Use Descriptive Names</h3>
+<p>Make it clear what each agent does:</p>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;security-scanner&quot;: { &quot;name&quot;: &quot;Security Scanner&quot; },
+    &quot;code-formatter&quot;: { &quot;name&quot;: &quot;Code Formatter&quot; },
+    &quot;test-generator&quot;: { &quot;name&quot;: &quot;Test Generator&quot; }
+  }
+}
+</code></pre>
+<h3>3. Configure Different Tool Access</h3>
+<p>Give agents only the tools they need:</p>
+<pre><code class="language-json">{
+  &quot;agents&quot;: {
+    &quot;reviewer&quot;: {
+      &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;, &quot;exec&quot;] } // Read-only
+    },
+    &quot;fixer&quot;: {
+      &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;, &quot;write&quot;, &quot;edit&quot;, &quot;exec&quot;] } // Read-write
+    }
+  }
+}
+</code></pre>
+<h3>4. Monitor Performance</h3>
+<p>With many agents, consider:</p>
+<ul>
+<li>Using <code>&quot;strategy&quot;: &quot;parallel&quot;</code> (default) for speed</li>
+<li>Limiting broadcast groups to 5-10 agents</li>
+<li>Using faster models for simpler agents</li>
+</ul>
+<h3>5. Handle Failures Gracefully</h3>
+<p>Agents fail independently. One agent&#39;s error doesn&#39;t block others:</p>
+<pre><code>Message → [Agent A ✓, Agent B ✗ error, Agent C ✓]
+Result: Agent A and C respond, Agent B logs error
+</code></pre>
+<h2>Compatibility</h2>
+<h3>Providers</h3>
+<p>Broadcast groups currently work with:</p>
+<ul>
+<li>✅ WhatsApp (implemented)</li>
+<li>🚧 Telegram (planned)</li>
+<li>🚧 Discord (planned)</li>
+<li>🚧 Slack (planned)</li>
+</ul>
+<h3>Routing</h3>
+<p>Broadcast groups work alongside existing routing:</p>
+<pre><code class="language-json">{
+  &quot;bindings&quot;: [
+    {
+      &quot;match&quot;: { &quot;channel&quot;: &quot;whatsapp&quot;, &quot;peer&quot;: { &quot;kind&quot;: &quot;group&quot;, &quot;id&quot;: &quot;GROUP_A&quot; } },
+      &quot;agentId&quot;: &quot;alfred&quot;
+    }
+  ],
+  &quot;broadcast&quot;: {
+    &quot;GROUP_B&quot;: [&quot;agent1&quot;, &quot;agent2&quot;]
+  }
+}
+</code></pre>
+<ul>
+<li><code>GROUP_A</code>: Only alfred responds (normal routing)</li>
+<li><code>GROUP_B</code>: agent1 AND agent2 respond (broadcast)</li>
+</ul>
+<p><strong>Precedence:</strong> <code>broadcast</code> takes priority over <code>bindings</code>.</p>
+<h2>Troubleshooting</h2>
+<h3>Agents Not Responding</h3>
+<p><strong>Check:</strong></p>
+<ol>
+<li>Agent IDs exist in <code>agents.list</code></li>
+<li>Peer ID format is correct (e.g., <code>120363403215116621@g.us</code>)</li>
+<li>Agents are not in deny lists</li>
+</ol>
+<p><strong>Debug:</strong></p>
+<pre><code class="language-bash">tail -f ~/.agdi/logs/gateway.log | grep broadcast
+</code></pre>
+<h3>Only One Agent Responding</h3>
+<p><strong>Cause:</strong> Peer ID might be in <code>bindings</code> but not <code>broadcast</code>.</p>
+<p><strong>Fix:</strong> Add to broadcast config or remove from bindings.</p>
+<h3>Performance Issues</h3>
+<p><strong>If slow with many agents:</strong></p>
+<ul>
+<li>Reduce number of agents per group</li>
+<li>Use lighter models (sonnet instead of opus)</li>
+<li>Check sandbox startup time</li>
+</ul>
+<h2>Examples</h2>
+<h3>Example 1: Code Review Team</h3>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;strategy&quot;: &quot;parallel&quot;,
+    &quot;120363403215116621@g.us&quot;: [
+      &quot;code-formatter&quot;,
+      &quot;security-scanner&quot;,
+      &quot;test-coverage&quot;,
+      &quot;docs-checker&quot;
+    ]
+  },
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      {
+        &quot;id&quot;: &quot;code-formatter&quot;,
+        &quot;workspace&quot;: &quot;~/agents/formatter&quot;,
+        &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;, &quot;write&quot;] }
+      },
+      {
+        &quot;id&quot;: &quot;security-scanner&quot;,
+        &quot;workspace&quot;: &quot;~/agents/security&quot;,
+        &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;, &quot;exec&quot;] }
+      },
+      {
+        &quot;id&quot;: &quot;test-coverage&quot;,
+        &quot;workspace&quot;: &quot;~/agents/testing&quot;,
+        &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;, &quot;exec&quot;] }
+      },
+      { &quot;id&quot;: &quot;docs-checker&quot;, &quot;workspace&quot;: &quot;~/agents/docs&quot;, &quot;tools&quot;: { &quot;allow&quot;: [&quot;read&quot;] } }
+    ]
+  }
+}
+</code></pre>
+<p><strong>User sends:</strong> Code snippet<br><strong>Responses:</strong></p>
+<ul>
+<li>code-formatter: &quot;Fixed indentation and added type hints&quot;</li>
+<li>security-scanner: &quot;⚠️ SQL injection vulnerability in line 12&quot;</li>
+<li>test-coverage: &quot;Coverage is 45%, missing tests for error cases&quot;</li>
+<li>docs-checker: &quot;Missing docstring for function <code>process_data</code>&quot;</li>
+</ul>
+<h3>Example 2: Multi-Language Support</h3>
+<pre><code class="language-json">{
+  &quot;broadcast&quot;: {
+    &quot;strategy&quot;: &quot;sequential&quot;,
+    &quot;+15555550123&quot;: [&quot;detect-language&quot;, &quot;translator-en&quot;, &quot;translator-de&quot;]
+  },
+  &quot;agents&quot;: {
+    &quot;list&quot;: [
+      { &quot;id&quot;: &quot;detect-language&quot;, &quot;workspace&quot;: &quot;~/agents/lang-detect&quot; },
+      { &quot;id&quot;: &quot;translator-en&quot;, &quot;workspace&quot;: &quot;~/agents/translate-en&quot; },
+      { &quot;id&quot;: &quot;translator-de&quot;, &quot;workspace&quot;: &quot;~/agents/translate-de&quot; }
+    ]
+  }
+}
+</code></pre>
+<h2>API Reference</h2>
+<h3>Config Schema</h3>
+<pre><code class="language-typescript">interface AGDIConfig {
+  broadcast?: {
+    strategy?: &quot;parallel&quot; | &quot;sequential&quot;;
+    [peerId: string]: string[];
+  };
+}
+</code></pre>
+<h3>Fields</h3>
+<ul>
+<li><code>strategy</code> (optional): How to process agents<ul>
+<li><code>&quot;parallel&quot;</code> (default): All agents process simultaneously</li>
+<li><code>&quot;sequential&quot;</code>: Agents process in array order</li>
+</ul>
+</li>
+<li><code>[peerId]</code>: WhatsApp group JID, E.164 number, or other peer ID<ul>
+<li>Value: Array of agent IDs that should process messages</li>
+</ul>
+</li>
+</ul>
+<h2>Limitations</h2>
+<ol>
+<li><strong>Max agents:</strong> No hard limit, but 10+ agents may be slow</li>
+<li><strong>Shared context:</strong> Agents don&#39;t see each other&#39;s responses (by design)</li>
+<li><strong>Message ordering:</strong> Parallel responses may arrive in any order</li>
+<li><strong>Rate limits:</strong> All agents count toward WhatsApp rate limits</li>
+</ol>
+<h2>Future Enhancements</h2>
+<p>Planned features:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Shared context mode (agents see each other&#39;s responses)</li>
+<li><input disabled="" type="checkbox"> Agent coordination (agents can signal each other)</li>
+<li><input disabled="" type="checkbox"> Dynamic agent selection (choose agents based on message content)</li>
+<li><input disabled="" type="checkbox"> Agent priorities (some agents respond before others)</li>
+</ul>
+<h2>See Also</h2>
+<ul>
+<li><a href="/docs/tools/multi-agent-sandbox-tools">Multi-Agent Configuration</a></li>
+<li><a href="/docs/channels/channel-routing">Routing Configuration</a></li>
+<li><a href="/docs/concepts/sessions">Session Management</a></li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

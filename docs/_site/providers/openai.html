@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAI — AGDI Docs</title>
+  <meta name="description" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/docs.css">
+</head>
+<body>
+  <nav class="topbar">
+    <a href="/" class="logo">⚡ AGDI</a>
+    <span class="topbar-title">Documentation</span>
+    <a href="https://agdi-ai.vercel.app" class="back-link">← Back to site</a>
+  </nav>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-tabs"><a class="tab" href="/index.html">Get started</a><a class="tab" href="/install/index.html">Install</a><a class="tab" href="/channels/index.html">Channels</a><a class="tab" href="/concepts/architecture.html">Agents</a><a class="tab" href="/autonomous/index.html">Autonomous</a><a class="tab" href="/tools/index.html">Tools</a><a class="tab active" href="/providers/index.html">Models</a><a class="tab" href="/platforms/index.html">Platforms</a><a class="tab" href="/gateway/index.html">Gateway & Ops</a><a class="tab" href="/cli/index.html">Reference</a><a class="tab" href="/help/index.html">Help</a></div><div class="sidebar-group"><h4>Overview</h4><ul><li><a class="" href="/providers/index.html">Model Providers</a></li><li><a class="" href="/providers/models.html">Model Provider Quickstart</a></li></ul></div><div class="sidebar-group"><h4>Model concepts</h4><ul><li><a class="" href="/concepts/models.html">Models CLI</a></li></ul></div><div class="sidebar-group"><h4>Configuration</h4><ul><li><a class="" href="/concepts/model-providers.html">Model Providers</a></li><li><a class="" href="/concepts/model-failover.html">Model Failover</a></li></ul></div><div class="sidebar-group"><h4>Providers</h4><ul><li><a class="" href="/providers/anthropic.html">Anthropic</a></li><li><a class="active" href="/providers/openai.html">OpenAI</a></li><li><a class="" href="/providers/openrouter.html">OpenRouter</a></li><li><a class="" href="/providers/litellm.html">litellm</a></li><li><a class="" href="/providers/bedrock.html">Amazon Bedrock</a></li><li><a class="" href="/providers/vercel-ai-gateway.html">Vercel AI Gateway</a></li><li><a class="" href="/providers/moonshot.html">Moonshot AI</a></li><li><a class="" href="/providers/minimax.html">MiniMax</a></li><li><a class="" href="/providers/opencode.html">OpenCode Zen</a></li><li><a class="" href="/providers/glm.html">GLM Models</a></li><li><a class="" href="/providers/zai.html">Z.AI</a></li><li><a class="" href="/providers/synthetic.html">Synthetic</a></li><li><a class="" href="/providers/qianfan.html">Qianfan</a></li></ul></div></aside>
+    <main class="content">
+      <article class="prose"><h1>OpenAI</h1>
+<p>OpenAI provides developer APIs for GPT models. Codex supports <strong>ChatGPT sign-in</strong> for subscription
+access or <strong>API key</strong> sign-in for usage-based access. Codex cloud requires ChatGPT sign-in.</p>
+<h2>Option A: OpenAI API key (OpenAI Platform)</h2>
+<p><strong>Best for:</strong> direct API access and usage-based billing.
+Get your API key from the OpenAI dashboard.</p>
+<h3>CLI setup</h3>
+<pre><code class="language-bash">agdi onboard --auth-choice openai-api-key
+# or non-interactive
+agdi onboard --openai-api-key &quot;$OPENAI_API_KEY&quot;
+</code></pre>
+<h3>Config snippet</h3>
+<pre><code class="language-json5">{
+  env: { OPENAI_API_KEY: &quot;sk-...&quot; },
+  agents: { defaults: { model: { primary: &quot;openai/gpt-5.1-codex&quot; } } },
+}
+</code></pre>
+<h2>Option B: OpenAI Code (Codex) subscription</h2>
+<p><strong>Best for:</strong> using ChatGPT/Codex subscription access instead of an API key.
+Codex cloud requires ChatGPT sign-in, while the Codex CLI supports ChatGPT or API key sign-in.</p>
+<h3>CLI setup (Codex OAuth)</h3>
+<pre><code class="language-bash"># Run Codex OAuth in the wizard
+agdi onboard --auth-choice openai-codex
+
+# Or run OAuth directly
+agdi models auth login --provider openai-codex
+</code></pre>
+<h3>Config snippet (Codex subscription)</h3>
+<pre><code class="language-json5">{
+  agents: { defaults: { model: { primary: &quot;openai-codex/gpt-5.3-codex&quot; } } },
+}
+</code></pre>
+<h2>Notes</h2>
+<ul>
+<li>Model refs always use <code>provider/model</code> (see <a href="/concepts/models">/concepts/models</a>).</li>
+<li>Auth details + reuse rules are in <a href="/concepts/oauth">/concepts/oauth</a>.</li>
+</ul>
+</article>
+    </main>
+  </div>
+  <script>
+    // Mobile sidebar toggle
+    document.querySelector('.topbar-title')?.addEventListener('click', () => {
+      document.querySelector('.sidebar')?.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
