@@ -2,7 +2,7 @@ import {
   resolveChannelMediaMaxBytes,
   type AGDIConfig,
   type PluginRuntime,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { MSTeamsAccessTokenProvider } from "./attachments/types.js";
 import type {
   MSTeamsConversationStore,

@@ -1,4 +1,4 @@
-import type { AGDIConfig, DmPolicy } from "openclaw/plugin-sdk";
+import type { AGDIConfig, DmPolicy } from "agdi/plugin-sdk";
 import {
   addWildcardAllowFrom,
   formatDocsLink,
@@ -9,7 +9,7 @@ import {
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   migrateBaseNameToDefaultAccount,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import {
   listGoogleChatAccountIds,
   resolveDefaultGoogleChatAccountId,

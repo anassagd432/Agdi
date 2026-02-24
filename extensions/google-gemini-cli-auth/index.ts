@@ -3,7 +3,7 @@ import {
   emptyPluginConfigSchema,
   type AGDIPluginApi,
   type ProviderAuthContext,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import { loginGeminiCliOAuth } from "./oauth.js";
 
 const PROVIDER_ID = "google-gemini-cli";

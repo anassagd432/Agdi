@@ -1,5 +1,5 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
+import { emptyPluginConfigSchema } from "agdi/plugin-sdk";
 import { googlechatDock, googlechatPlugin } from "./src/channel.js";
 import { handleGoogleChatWebhookRequest } from "./src/monitor.js";
 import { setGoogleChatRuntime } from "./src/runtime.js";

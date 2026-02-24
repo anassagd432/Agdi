@@ -3,7 +3,7 @@ import type {
   ChannelDock,
   ChannelPlugin,
   AGDIConfig,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import {
   applyAccountNameToChannelSection,
   buildChannelConfigSchema,
@@ -17,7 +17,7 @@ import {
   PAIRING_APPROVED_MESSAGE,
   resolveChannelAccountConfigBasePath,
   setAccountEnabledInConfigSection,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import {
   listZaloAccountIds,
   resolveDefaultZaloAccountId,

@@ -2,7 +2,7 @@ import {
   emptyPluginConfigSchema,
   type AGDIPluginApi,
   type ProviderAuthContext,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import { loginQwenPortalOAuth } from "./oauth.js";
 
 const PROVIDER_ID = "qwen-portal";

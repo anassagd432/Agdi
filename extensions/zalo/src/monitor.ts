@@ -1,12 +1,12 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { AGDIConfig, MarkdownTableMode } from "openclaw/plugin-sdk";
+import type { AGDIConfig, MarkdownTableMode } from "agdi/plugin-sdk";
 import {
   createReplyPrefixOptions,
   normalizeWebhookPath,
   readJsonBodyWithLimit,
   resolveWebhookPath,
   requestBodyErrorToText,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { ResolvedZaloAccount } from "./accounts.js";
 import {
   ZaloApiError,

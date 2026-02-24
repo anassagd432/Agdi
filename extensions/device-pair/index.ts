@@ -1,6 +1,6 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
 import os from "node:os";
-import { approveDevicePairing, listDevicePairing } from "openclaw/plugin-sdk";
+import { approveDevicePairing, listDevicePairing } from "agdi/plugin-sdk";
 
 const DEFAULT_GATEWAY_PORT = 18789;
 

@@ -1,5 +1,5 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
+import { emptyPluginConfigSchema } from "agdi/plugin-sdk";
 import { signalPlugin } from "./src/channel.js";
 import { setSignalRuntime } from "./src/runtime.js";
 

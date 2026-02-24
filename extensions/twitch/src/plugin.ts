@@ -5,8 +5,8 @@
  * This is the primary entry point for the Twitch channel integration.
  */
 
-import type { AGDIConfig } from "openclaw/plugin-sdk";
-import { buildChannelConfigSchema } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk";
+import { buildChannelConfigSchema } from "agdi/plugin-sdk";
 import type {
   ChannelAccountSnapshot,
   ChannelCapabilities,

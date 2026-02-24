@@ -1,5 +1,5 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
-import { emptyPluginConfigSchema } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
+import { emptyPluginConfigSchema } from "agdi/plugin-sdk";
 import { tlonPlugin } from "./src/channel.js";
 import { setTlonRuntime } from "./src/runtime.js";
 

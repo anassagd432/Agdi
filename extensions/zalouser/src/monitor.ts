@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process";
-import type { AGDIConfig, MarkdownTableMode, RuntimeEnv } from "openclaw/plugin-sdk";
-import { createReplyPrefixOptions, mergeAllowlist, summarizeMapping } from "openclaw/plugin-sdk";
+import type { AGDIConfig, MarkdownTableMode, RuntimeEnv } from "agdi/plugin-sdk";
+import { createReplyPrefixOptions, mergeAllowlist, summarizeMapping } from "agdi/plugin-sdk";
 import type { ResolvedZalouserAccount, ZcaFriend, ZcaGroup, ZcaMessage } from "./types.js";
 import { getZalouserRuntime } from "./runtime.js";
 import { sendMessageZalouser } from "./send.js";

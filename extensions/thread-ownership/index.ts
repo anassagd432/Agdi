@@ -1,4 +1,4 @@
-import type { AGDIConfig, AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIConfig, AGDIPluginApi } from "agdi/plugin-sdk";
 
 type ThreadOwnershipConfig = {
   forwarderUrl?: string;

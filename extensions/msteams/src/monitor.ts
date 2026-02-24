@@ -5,7 +5,7 @@ import {
   summarizeMapping,
   type AGDIConfig,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { MSTeamsConversationStore } from "./conversation-store.js";
 import type { MSTeamsAdapter } from "./messenger.js";
 import { createMSTeamsConversationStoreFs } from "./conversation-store-fs.js";

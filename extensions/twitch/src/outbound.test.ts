@@ -9,7 +9,7 @@
  * - Abort signal handling
  */
 
-import type { AGDIConfig } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { twitchOutbound } from "./outbound.js";
 

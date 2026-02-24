@@ -1,5 +1,5 @@
-import type { AGDIConfig } from "openclaw/plugin-sdk";
-import { loadWebMedia, resolveChannelMediaMaxBytes } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk";
+import { loadWebMedia, resolveChannelMediaMaxBytes } from "agdi/plugin-sdk";
 import { createMSTeamsConversationStoreFs } from "./conversation-store-fs.js";
 import {
   classifyMSTeamsSendError,

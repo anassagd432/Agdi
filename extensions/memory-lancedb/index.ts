@@ -7,7 +7,7 @@
  */
 
 import type * as LanceDB from "@lancedb/lancedb";
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
 import { Type } from "@sinclair/typebox";
 import { randomUUID } from "node:crypto";
 import OpenAI from "openai";

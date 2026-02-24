@@ -1,4 +1,4 @@
-import type { GatewayRequestHandlerOptions, AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { GatewayRequestHandlerOptions, AGDIPluginApi } from "agdi/plugin-sdk";
 import { Type } from "@sinclair/typebox";
 import type { CoreConfig } from "./src/core-bridge.js";
 import { registerVoiceCallCli } from "./src/cli.js";

@@ -1,4 +1,4 @@
-import type { AGDIConfig } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk";
 import { describe, expect, it } from "vitest";
 import { zaloPlugin } from "./channel.js";
 

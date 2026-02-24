@@ -1,5 +1,5 @@
 import type * as Lark from "@larksuiteoapi/node-sdk";
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
 import { Type } from "@sinclair/typebox";
 import { Readable } from "stream";
 import { listEnabledFeishuAccounts } from "./accounts.js";

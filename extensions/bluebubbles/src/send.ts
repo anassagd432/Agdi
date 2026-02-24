@@ -1,6 +1,6 @@
-import type { AGDIConfig } from "openclaw/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk";
 import crypto from "node:crypto";
-import { stripMarkdown } from "openclaw/plugin-sdk";
+import { stripMarkdown } from "agdi/plugin-sdk";
 import { resolveBlueBubblesAccount } from "./accounts.js";
 import { getCachedBlueBubblesPrivateApiStatus } from "./probe.js";
 import { extractBlueBubblesMessageId, resolveBlueBubblesSendTarget } from "./send-helpers.js";

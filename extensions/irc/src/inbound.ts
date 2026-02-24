@@ -4,7 +4,7 @@ import {
   resolveControlCommandGate,
   type AGDIConfig,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { ResolvedIrcAccount } from "./accounts.js";
 import type { CoreConfig, IrcInboundMessage } from "./types.js";
 import { normalizeIrcAllowlist, resolveIrcAllowlistMatch } from "./normalize.js";

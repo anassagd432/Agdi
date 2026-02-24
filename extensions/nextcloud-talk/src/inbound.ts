@@ -4,7 +4,7 @@ import {
   resolveControlCommandGate,
   type AGDIConfig,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { ResolvedNextcloudTalkAccount } from "./accounts.js";
 import type { CoreConfig, GroupPolicy, NextcloudTalkInboundMessage } from "./types.js";
 import {

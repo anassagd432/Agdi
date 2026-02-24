@@ -3,14 +3,14 @@ import type {
   ChannelOnboardingDmPolicy,
   AGDIConfig,
   WizardPrompter,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import {
   addWildcardAllowFrom,
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   promptAccountId,
   promptChannelAccessConfig,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { ZcaFriend, ZcaGroup } from "./types.js";
 import {
   listZalouserAccountIds,

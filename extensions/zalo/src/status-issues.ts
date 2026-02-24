@@ -1,4 +1,4 @@
-import type { ChannelAccountSnapshot, ChannelStatusIssue } from "openclaw/plugin-sdk";
+import type { ChannelAccountSnapshot, ChannelStatusIssue } from "agdi/plugin-sdk";
 
 type ZaloAccountStatus = {
   accountId?: unknown;

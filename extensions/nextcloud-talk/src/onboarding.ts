@@ -8,7 +8,7 @@ import {
   type ChannelOnboardingDmPolicy,
   type AGDIConfig,
   type WizardPrompter,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { CoreConfig, DmPolicy } from "./types.js";
 import {
   listNextcloudTalkAccountIds,

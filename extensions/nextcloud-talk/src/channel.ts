@@ -9,7 +9,7 @@ import {
   type ChannelPlugin,
   type AGDIConfig,
   type ChannelSetupInput,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { CoreConfig } from "./types.js";
 import {
   listNextcloudTalkAccountIds,

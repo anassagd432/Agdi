@@ -1,4 +1,4 @@
-import type { AGDIPluginApi, AGDIPluginService } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi, AGDIPluginService } from "agdi/plugin-sdk";
 import fs from "node:fs/promises";
 import path from "node:path";
 

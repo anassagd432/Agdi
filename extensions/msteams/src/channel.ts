@@ -1,4 +1,4 @@
-import type { ChannelMessageActionName, ChannelPlugin, AGDIConfig } from "openclaw/plugin-sdk";
+import type { ChannelMessageActionName, ChannelPlugin, AGDIConfig } from "agdi/plugin-sdk";
 import {
   buildBaseChannelStatusSummary,
   buildChannelConfigSchema,
@@ -6,7 +6,7 @@ import {
   DEFAULT_ACCOUNT_ID,
   MSTeamsConfigSchema,
   PAIRING_APPROVED_MESSAGE,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import { listMSTeamsDirectoryGroupsLive, listMSTeamsDirectoryPeersLive } from "./directory-live.js";
 import { msteamsOnboardingAdapter } from "./onboarding.js";
 import { msteamsOutbound } from "./outbound.js";

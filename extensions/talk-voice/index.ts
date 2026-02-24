@@ -1,4 +1,4 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
 
 type ElevenLabsVoice = {
   voice_id: string;

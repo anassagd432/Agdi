@@ -1,4 +1,4 @@
-import type { AGDIPluginApi } from "openclaw/plugin-sdk";
+import type { AGDIPluginApi } from "agdi/plugin-sdk";
 import { Type } from "@sinclair/typebox";
 import type { FeishuConfig } from "./types.js";
 import { createFeishuClient } from "./client.js";

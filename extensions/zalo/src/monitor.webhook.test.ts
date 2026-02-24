@@ -1,5 +1,5 @@
 import type { AddressInfo } from "node:net";
-import type { AGDIConfig, PluginRuntime } from "openclaw/plugin-sdk";
+import type { AGDIConfig, PluginRuntime } from "agdi/plugin-sdk";
 import { createServer } from "node:http";
 import { describe, expect, it, vi } from "vitest";
 import type { ResolvedZaloAccount } from "./types.js";

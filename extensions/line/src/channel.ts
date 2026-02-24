@@ -9,7 +9,7 @@ import {
   type LineConfig,
   type LineChannelData,
   type ResolvedLineAccount,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import { getLineRuntime } from "./runtime.js";
 
 // LINE channel metadata

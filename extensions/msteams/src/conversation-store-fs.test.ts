@@ -1,4 +1,4 @@
-import type { PluginRuntime } from "openclaw/plugin-sdk";
+import type { PluginRuntime } from "agdi/plugin-sdk";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";

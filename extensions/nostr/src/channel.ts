@@ -5,7 +5,7 @@ import {
   DEFAULT_ACCOUNT_ID,
   formatPairingApproveHint,
   type ChannelPlugin,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 import type { NostrProfile } from "./config-schema.js";
 import type { MetricEvent, MetricsSnapshot } from "./metrics.js";
 import type { ProfilePublishResult } from "./nostr-profile.js";

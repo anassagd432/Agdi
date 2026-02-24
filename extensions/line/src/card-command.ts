@@ -1,4 +1,4 @@
-import type { LineChannelData, AGDIPluginApi, ReplyPayload } from "openclaw/plugin-sdk";
+import type { LineChannelData, AGDIPluginApi, ReplyPayload } from "agdi/plugin-sdk";
 import {
   createActionCard,
   createImageCard,
@@ -7,7 +7,7 @@ import {
   createReceiptCard,
   type CardAction,
   type ListItem,
-} from "openclaw/plugin-sdk";
+} from "agdi/plugin-sdk";
 
 const CARD_USAGE = `Usage: /card <type> "title" "body" [options]
 
