@@ -87,3 +87,5 @@ package-lock.json
 build-output*.txt
 build.log
 a2ui-bundle-output.txt
+tsc-errors*.txt
+tsc-src-errors*.txt
