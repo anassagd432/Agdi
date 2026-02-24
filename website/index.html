@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AGDI — Self-Hosted AI Assistant Infrastructure</title>
+    <meta name="description"
+        content="Run your own AI assistant on your infrastructure. Connect any model to WhatsApp, Telegram, Slack, Discord, and 30+ channels. Full agent tools. Total control." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="AGDI — Self-Hosted AI Assistant Infrastructure" />
+    <meta property="og:description"
+        content="Connect any LLM to 36+ messaging channels. Self-hosted. Agent tools built in. Security-first." />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ff5c5c'/%3E%3Ctext x='16' y='22' font-family='system-ui' font-size='16' font-weight='700' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<body>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <a href="#" class="nav-brand" aria-label="AGDI Home">
+                <span class="nav-brand-icon">A</span>
+                AGDI
+            </a>
+
+            <div class="nav-links" id="nav-links" role="menubar">
+                <a href="#features" class="nav-link" role="menuitem">Features</a>
+                <a href="#channels" class="nav-link" role="menuitem">Channels</a>
+                <a href="#security" class="nav-link" role="menuitem">Security</a>
+                <a href="https://docs.agdi.ai" class="nav-link" role="menuitem" target="_blank" rel="noopener">Docs</a>
+                <a href="https://github.com/agdi/agdi" class="nav-link" role="menuitem" target="_blank"
+                    rel="noopener">GitHub</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="#deploy" class="btn btn-primary">Get Started</a>
+                <button class="nav-hamburger" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero section" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    Self-hosted AI infrastructure
+                </div>
+
+                <h1 class="hero-title">
+                    Your AI.<br />Your infrastructure.<br /><span class="accent">Every channel.</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Run your own AI assistant gateway. Connect any model to WhatsApp, Telegram, Slack, Discord, and 30+
+                    channels. Full agent tools. Total control.
+                </p>
+
+                <div class="hero-ctas">
+                    <a href="#deploy" class="btn btn-primary btn-lg">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Run AGDI
+                    </a>
+                    <a href="https://github.com/agdi/agdi" class="btn btn-secondary btn-lg" target="_blank"
+                        rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z" />
+                        </svg>
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="hero-trust">
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1l2 3h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-3z" stroke="currentColor"
+                                stroke-width="1.5" />
+                        </svg>
+                        Open source
+                    </div>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <rect x="2" y="5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M5 5V3.5a3 3 0 016 0V5" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                        Self-hosted
+                    </div>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                        36+ channels
+                    </div>
+                    <div class="hero-trust-item">
+                        <svg class="hero-trust-icon" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                        Any model
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Visual: Dashboard Mockup -->
+            <div class="hero-visual">
+                <div class="hero-float-badge">
+                    <span style="color: #25D366">●</span> WhatsApp connected
+                </div>
+                <div class="hero-float-badge">
+                    <span style="color: #5865F2">●</span> Discord active
+                </div>
+                <div class="hero-float-badge">
+                    <span style="color: #0088cc">●</span> Telegram ready
+                </div>
+
+                <div class="hero-visual-container">
+                    <div class="hero-window-bar">
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-dot"></span>
+                        <span class="hero-window-title">AGDI Gateway — Control Panel</span>
+                    </div>
+                    <div class="hero-dashboard">
+                        <div class="hero-dash-header">
+                            <span class="hero-dash-title">Gateway Overview</span>
+                            <span class="hero-dash-status">
+                                <span class="hero-dash-status-dot"></span>
+                                All systems operational
+                            </span>
+                        </div>
+                        <div class="hero-dash-grid">
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Active Channels</div>
+                                <div class="hero-dash-card-value teal">12</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Messages Today</div>
+                                <div class="hero-dash-card-value red">2,847</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Active Model</div>
+                                <div class="hero-dash-card-value green">GPT-4o</div>
+                            </div>
+                            <div class="hero-dash-card">
+                                <div class="hero-dash-card-label">Agent Tools</div>
+                                <div class="hero-dash-card-value blue">14</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FEATURES ("What AGDI Is") ==================== -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Platform Overview</div>
+                <h2 class="section-title">AI assistant infrastructure,<br />not just another chatbot</h2>
+                <p class="section-subtitle">AGDI is a complete runtime for running, routing, and controlling AI
+                    assistants across every surface you use.</p>
+            </div>
+
+            <div class="features-grid reveal">
+                <div class="feature-card" style="--card-accent: var(--accent-red)">
+                    <div class="feature-card-icon red">⚡</div>
+                    <h3 class="feature-card-title">Gateway Control Plane</h3>
+                    <p class="feature-card-desc">Central dashboard to configure, monitor, and control your AI assistant.
+                        Real-time status, config editor, and agent management.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-teal)">
+                    <div class="feature-card-icon teal">🔗</div>
+                    <h3 class="feature-card-title">Multi-Channel Reach</h3>
+                    <p class="feature-card-desc">One assistant, 36+ channels. WhatsApp, Telegram, Discord, Slack, Teams,
+                        Signal, iMessage, Matrix, and more.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-blue)">
+                    <div class="feature-card-icon blue">🧠</div>
+                    <h3 class="feature-card-title">Model Flexibility</h3>
+                    <p class="feature-card-desc">Use OpenAI, Anthropic, Gemini, Ollama, or any compatible provider.
+                        Switch models per-channel or per-agent. No vendor lock-in.</p>
+                </div>
+                <div class="feature-card" style="--card-accent: var(--accent-purple)">
+                    <div class="feature-card-icon purple">🛠</div>
+                    <h3 class="feature-card-title">Tools + Automation</h3>
+                    <p class="feature-card-desc">Built-in agent tools: browser control, bash, filesystem, canvas,
+                        camera, cron scheduling, and sub-agents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== HOW IT WORKS ==================== -->
+    <section class="section" id="how-it-works"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal" style="text-align: center; margin-bottom: var(--space-xl);">
+                <div class="section-label" style="justify-content: center;">How It Works</div>
+                <h2 class="section-title">From install to operational in minutes</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Four steps to a fully autonomous AI assistant
+                    running on your infrastructure.</p>
+            </div>
+
+            <div class="steps-grid reveal">
+                <div class="step-item">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Install & Configure</h3>
+                    <p class="step-desc">One command setup. Configure your model provider keys and preferences via JSON
+                        or the web dashboard.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">Connect Channels</h3>
+                    <p class="step-desc">Add WhatsApp, Telegram, Discord, Slack — or any of the 36+ supported channels.
+                        Plug and play.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Enable Tools & Skills</h3>
+                    <p class="step-desc">Activate agent tools, browser automation, code execution, and custom skills to
+                        extend your assistant's capabilities.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">04</div>
+                    <h3 class="step-title">Operate from Anywhere</h3>
+                    <p class="step-desc">Manage everything from the web dashboard, native macOS/iOS/Android apps, or the
+                        CLI.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CHANNELS ==================== -->
+    <section class="section" id="channels">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Channel Integrations</div>
+                <h2 class="section-title">One assistant, every messaging surface</h2>
+                <p class="section-subtitle">Reach your AI from the apps you already use. No new UIs to learn. Your
+                    assistant lives where your conversations happen.</p>
+            </div>
+
+            <div class="channels-grid reveal">
+                <div class="channel-badge"><span class="channel-icon">💬</span> WhatsApp</div>
+                <div class="channel-badge"><span class="channel-icon">✈️</span> Telegram</div>
+                <div class="channel-badge"><span class="channel-icon">🎮</span> Discord</div>
+                <div class="channel-badge"><span class="channel-icon">💼</span> Slack</div>
+                <div class="channel-badge"><span class="channel-icon">🟦</span> Teams</div>
+                <div class="channel-badge"><span class="channel-icon">🔐</span> Signal</div>
+                <div class="channel-badge"><span class="channel-icon">💎</span> Matrix</div>
+                <div class="channel-badge"><span class="channel-icon">🍎</span> iMessage</div>
+                <div class="channel-badge"><span class="channel-icon">💜</span> Twitch</div>
+                <div class="channel-badge"><span class="channel-icon">📡</span> IRC</div>
+                <div class="channel-badge"><span class="channel-icon">🌐</span> WebChat</div>
+                <div class="channel-badge"><span class="channel-icon">📱</span> LINE</div>
+                <div class="channel-badge"><span class="channel-icon">🟢</span> Mattermost</div>
+                <div class="channel-badge"><span class="channel-icon">🔵</span> Google Chat</div>
+                <div class="channel-badge"><span class="channel-icon">⚡</span> Nostr</div>
+                <div class="channel-badge"><span class="channel-icon">💙</span> Zalo</div>
+                <div class="channel-badge"><span class="channel-icon">🟠</span> Nextcloud</div>
+                <div class="channel-badge"><span class="channel-icon">🪶</span> Feishu</div>
+            </div>
+
+            <div class="channel-count-row reveal">
+                <div class="channel-count">
+                    <strong>36+</strong> channels supported
+                </div>
+                <div class="channel-count" style="color: var(--text-tertiary);">
+                    · Extensible plugin system for custom channels
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MODELS / PROVIDERS ==================== -->
+    <section class="section" id="models"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Model Providers</div>
+                <h2 class="section-title">Use any model. Switch anytime.</h2>
+                <p class="section-subtitle">No vendor lock-in. Route different channels to different models. Failover
+                    automatically. Run local or cloud.</p>
+            </div>
+
+            <div class="providers-container reveal">
+                <div class="providers-row">
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #10a37f"></span>
+                        OpenAI</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #d4a574"></span>
+                        Anthropic</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #4285F4"></span>
+                        Google Gemini</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #ff6600"></span>
+                        Ollama</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #FF9900"></span> AWS
+                        Bedrock</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #764abc"></span>
+                        OpenRouter</div>
+                    <div class="provider-chip"><span class="provider-chip-dot" style="background: #22c55e"></span> Local
+                        LLMs</div>
+                    <div class="provider-chip"><span class="provider-chip-dot"
+                            style="background: var(--text-tertiary)"></span> Any OpenAI-compatible</div>
+                </div>
+
+                <div class="provider-features">
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Per-channel routing</div>
+                            <div class="provider-feature-desc">GPT-4o on Slack, Claude on Telegram, Ollama on local.
+                                Route each channel to the best model for the job.</div>
+                        </div>
+                    </div>
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Automatic failover</div>
+                            <div class="provider-feature-desc">If one provider goes down, AGDI routes to your fallback.
+                                No downtime for your users.</div>
+                        </div>
+                    </div>
+                    <div class="provider-feature">
+                        <svg class="provider-feature-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M3 10l5 5L17 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <div>
+                            <div class="provider-feature-title">Run fully local</div>
+                            <div class="provider-feature-desc">Pair with Ollama or any local model. Zero data leaves
+                                your machine. Full privacy.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== AGENT TOOLS ==================== -->
+    <section class="section" id="tools">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Agent Capabilities</div>
+                <h2 class="section-title">Not a chatbot. A capable agent.</h2>
+                <p class="section-subtitle">AGDI ships with real tools. Your assistant can browse, execute code, manage
+                    files, and automate tasks on your behalf.</p>
+            </div>
+
+            <div class="tools-grid reveal">
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon">🌐</div>
+                        <div class="tool-card-name">browser</div>
+                    </div>
+                    <p class="tool-card-desc">Full Playwright-powered browser. Navigate, search, fill forms, take
+                        screenshots. Your AI sees the web.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: var(--accent-teal-dim); color: var(--accent-teal);">⌨️</div>
+                        <div class="tool-card-name">bash / shell</div>
+                    </div>
+                    <p class="tool-card-desc">Execute commands in a sandboxed shell. Run scripts, install tools, pipe
+                        outputs. Real system access, controlled.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(59,130,246,0.15); color: var(--accent-blue);">📁</div>
+                        <div class="tool-card-name">filesystem</div>
+                    </div>
+                    <p class="tool-card-desc">Read, write, edit, and organize files. Workspace-scoped or full access.
+                        Your AI works with your files.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(168,85,247,0.15); color: var(--accent-purple);">🎨</div>
+                        <div class="tool-card-name">canvas</div>
+                    </div>
+                    <p class="tool-card-desc">Generate HTML/React artifacts rendered in-browser. Build interactive
+                        prototypes and visual outputs.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(245,158,11,0.15); color: var(--accent-amber);">⏰</div>
+                        <div class="tool-card-name">cron / scheduler</div>
+                    </div>
+                    <p class="tool-card-desc">Schedule recurring tasks. Daily reports, periodic checks, automated
+                        maintenance. Set it and forget it.</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-icon"
+                            style="background: rgba(34,197,94,0.15); color: var(--accent-green);">🔀</div>
+                        <div class="tool-card-name">sub-agents</div>
+                    </div>
+                    <p class="tool-card-desc">Spawn focused sub-tasks. Delegate research, code review, or analysis to
+                        specialized agent instances.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECURITY ==================== -->
+    <section class="section" id="security"
+        style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+            <div class="reveal">
+                <div class="section-label">Security First</div>
+                <h2 class="section-title">Infrastructure-grade security, built in</h2>
+                <p class="section-subtitle">Control what your AI can access. Approve actions before they execute. Audit
+                    everything.</p>
+            </div>
+
+            <div class="security-grid reveal">
+                <div class="security-features">
+                    <div class="security-item">
+                        <div class="security-item-icon">🔒</div>
+                        <div>
+                            <div class="security-item-title">Tool Policies</div>
+                            <div class="security-item-desc">Whitelist or deny specific tools per channel, per user, or
+                                globally. Granular control over what the agent can do.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">✅</div>
+                        <div>
+                            <div class="security-item-title">Approval Gates</div>
+                            <div class="security-item-desc">Require human approval before executing sensitive actions.
+                                Auto-approve routine tasks, prompt for anything risky.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">📦</div>
+                        <div>
+                            <div class="security-item-title">Sandboxing</div>
+                            <div class="security-item-desc">Filesystem and command execution scoped to workspaces.
+                                Prevent unauthorized access beyond defined boundaries.</div>
+                        </div>
+                    </div>
+                    <div class="security-item">
+                        <div class="security-item-icon">🔑</div>
+                        <div>
+                            <div class="security-item-title">Credential Redaction</div>
+                            <div class="security-item-desc">API keys, tokens, and secrets automatically redacted from
+                                logs and config exports. Round-trip safe.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security visual: audit log mockup -->
+                <div class="security-visual">
+                    <div class="security-visual-header">Security Audit Log</div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:14:32</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">browser.navigate → docs.agdi.ai</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:14:45</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">fs.read → /workspace/report.md</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:01</span>
+                        <span class="security-log-warn">PROMPT</span>
+                        <span class="security-log-label">bash.exec → npm install lodash</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:12</span>
+                        <span class="security-log-ok">APPROVED</span>
+                        <span class="security-log-label">User confirmed bash.exec</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:28</span>
+                        <span class="security-log-deny">DENY</span>
+                        <span class="security-log-label">fs.write → /etc/passwd (out of scope)</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:15:41</span>
+                        <span class="security-log-ok">ALLOW</span>
+                        <span class="security-log-label">canvas.render → dashboard.html</span>
+                    </div>
+                    <div class="security-log-line">
+                        <span class="security-log-time">09:16:03</span>
+                        <span class="security-log-ok">REDACT</span>
+                        <span class="security-log-label">config.export → 3 credentials masked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NATIVE APPS ==================== -->
+    <section class="section" id="apps">
+        <div class="container">
+            <div class="reveal" style="text-align: center;">
+                <div class="section-label" style="justify-content: center;">Operate Anywhere</div>
+                <h2 class="section-title">Dashboard, CLI, and native apps</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Control your assistant from the web, terminal, or
+                    native apps on macOS, iOS, and Android.</p>
+            </div>
+
+            <div class="apps-grid reveal">
+                <div class="app-card">
+                    <div class="app-card-icon">🖥️</div>
+                    <h3 class="app-card-name">Web Dashboard</h3>
+                    <p class="app-card-desc">Full control panel. Config editor, chat, status monitoring, and agent
+                        management.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">⌨️</div>
+                    <h3 class="app-card-name">CLI</h3>
+                    <p class="app-card-desc">Power-user interface. Run commands, manage configs, and interact with your
+                        AI from the terminal.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">🍎</div>
+                    <h3 class="app-card-name">macOS & iOS</h3>
+                    <p class="app-card-desc">Native Swift apps. Menu bar access on Mac, full mobile experience on
+                        iPhone.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">🤖</div>
+                    <h3 class="app-card-name">Android</h3>
+                    <p class="app-card-desc">Kotlin native app. Full gateway access, notifications, and chat from your
+                        Android device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DEPLOY / CTA ==================== -->
+    <section class="section deploy-section" id="deploy">
+        <div class="container">
+            <div class="reveal" style="text-align: center;">
+                <div class="section-label" style="justify-content: center;">Get Started</div>
+                <h2 class="section-title">Deploy in under 2 minutes</h2>
+                <p class="section-subtitle" style="margin: 0 auto;">Pick your path. From npm to Docker to source — AGDI
+                    runs wherever Node.js runs.</p>
+            </div>
+
+            <div class="deploy-methods reveal">
+                <div class="deploy-card">
+                    <div class="deploy-card-label">npm</div>
+                    <code class="deploy-code">npx agdi@latest</code>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-card-label">Docker</div>
+                    <code class="deploy-code">docker run -d agdi/agdi:latest</code>
+                </div>
+                <div class="deploy-card">
+                    <div class="deploy-card-label">From source</div>
+                    <code class="deploy-code">git clone && pnpm install && pnpm start</code>
+                </div>
+            </div>
+
+            <div class="deploy-ctas reveal">
+                <a href="https://docs.agdi.ai/quickstart" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                    Read the Quickstart
+                </a>
+                <a href="https://github.com/agdi/agdi" class="btn btn-secondary btn-lg" target="_blank" rel="noopener">
+                    Star on GitHub
+                </a>
+                <a href="https://docs.agdi.ai" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
+                    Full Documentation →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <span class="nav-brand-icon" style="width:28px; height:28px; font-size:0.75rem;">A</span>
+                        AGDI
+                    </div>
+                    <p class="footer-desc">Self-hosted AI assistant infrastructure. Your models, your data, every
+                        channel.</p>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Product</div>
+                    <a href="#features">Features</a>
+                    <a href="#channels">Channels</a>
+                    <a href="#tools">Agent Tools</a>
+                    <a href="#security">Security</a>
+                    <a href="#deploy">Get Started</a>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Resources</div>
+                    <a href="https://docs.agdi.ai" target="_blank" rel="noopener">Documentation</a>
+                    <a href="https://github.com/agdi/agdi" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://github.com/agdi/agdi/releases" target="_blank" rel="noopener">Releases</a>
+                    <a href="https://docs.agdi.ai/gateway/security" target="_blank" rel="noopener">Security Guide</a>
+                </div>
+
+                <div class="footer-col">
+                    <div class="footer-col-title">Community</div>
+                    <a href="https://github.com/agdi/agdi/discussions" target="_blank" rel="noopener">Discussions</a>
+                    <a href="https://github.com/agdi/agdi/issues" target="_blank" rel="noopener">Issues</a>
+                    <a href="https://discord.gg/agdi" target="_blank" rel="noopener">Discord</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>© 2026 AGDI. Open source under MIT license.</span>
+                <span>
+                    <a href="https://github.com/agdi/agdi" style="color: var(--text-secondary);">GitHub</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://docs.agdi.ai" style="color: var(--text-secondary);">Docs</a>
+                    &nbsp;·&nbsp;
+                    <a href="https://trust.agdi.ai" style="color: var(--text-secondary);">Security</a>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js" type="module"></script>
+</body>
+
+</html>
