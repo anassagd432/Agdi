@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE_NAME="${AGDI_CLEANUP_SMOKE_IMAGE:-${CLAWDBOT_CLEANUP_SMOKE_IMAGE:-agdi-cleanup-smoke:local}}"
+IMAGE_NAME="${AGDI_CLEANUP_SMOKE_IMAGE:-agdi-cleanup-smoke:local}"
 
 echo "==> Build image: $IMAGE_NAME"
 docker build \

@@ -1,7 +1,7 @@
 import { captureEnv } from "../test-utils/env.js";
 
 export function snapshotStateDirEnv() {
-  return captureEnv(["AGDI_STATE_DIR", "CLAWDBOT_STATE_DIR"]);
+  return captureEnv(["AGDI_STATE_DIR", "AGDI_STATE_DIR"]);
 }
 
 export function restoreStateDirEnv(snapshot: ReturnType<typeof snapshotStateDirEnv>): void {
@@ -10,5 +10,5 @@ export function restoreStateDirEnv(snapshot: ReturnType<typeof snapshotStateDirE
 
 export function setStateDirEnv(stateDir: string): void {
   process.env.AGDI_STATE_DIR = stateDir;
-  delete process.env.CLAWDBOT_STATE_DIR;
+  delete process.env.AGDI_STATE_DIR;
 }

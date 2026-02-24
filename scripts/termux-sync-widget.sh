@@ -6,7 +6,7 @@
 termux-toast "Syncing Agdi auth..."
 
 # Run sync on l36 server
-SERVER="${AGDI_SERVER:-${CLAWDBOT_SERVER:-l36}}"
+SERVER="${AGDI_SERVER:-l36}"
 RESULT=$(ssh "$SERVER" '/home/admin/agdi/scripts/sync-claude-code-auth.sh' 2>&1)
 EXIT_CODE=$?
 

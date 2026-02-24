@@ -47,7 +47,7 @@ const parseArgs = (): Args => {
 const loadAuthProfiles = (agentId: string) => {
   const stateRoot =
     process.env.AGDI_STATE_DIR?.trim() ||
-    process.env.CLAWDBOT_STATE_DIR?.trim() ||
+    process.env.AGDI_STATE_DIR?.trim() ||
     path.join(os.homedir(), ".agdi");
   const authPath = path.join(stateRoot, "agents", agentId, "agent", "auth-profiles.json");
   if (!fs.existsSync(authPath)) {

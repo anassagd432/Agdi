@@ -5,7 +5,7 @@
 # One-tap: shows status toast
 # If expired: directly opens auth URL
 
-SERVER="${AGDI_SERVER:-${CLAWDBOT_SERVER:-l36}}"
+SERVER="${AGDI_SERVER:-l36}"
 
 STATUS=$(ssh -o ConnectTimeout=5 "$SERVER" '$HOME/agdi/scripts/claude-auth-status.sh simple' 2>&1)
 
