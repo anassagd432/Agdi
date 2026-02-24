@@ -2,7 +2,7 @@ import type { Page } from "playwright-core";
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { resolvePreferredAGDITmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredAGDITmpDir } from "../infra/tmp-agdi-dir.js";
 import {
   ensurePageState,
   getPageForTargetId,

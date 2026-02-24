@@ -98,7 +98,7 @@ describe("resolveAGDIPackageRoot", () => {
   });
 
   it("resolves package root from .bin argv1", async () => {
-    const { resolveAGDIPackageRootSync } = await import("./openclaw-root.js");
+    const { resolveAGDIPackageRootSync } = await import("./agdi-root.js");
 
     const project = fx("bin-scenario");
     const argv1 = path.join(project, "node_modules", ".bin", "agdi");
@@ -109,7 +109,7 @@ describe("resolveAGDIPackageRoot", () => {
   });
 
   it("resolves package root via symlinked argv1", async () => {
-    const { resolveAGDIPackageRootSync } = await import("./openclaw-root.js");
+    const { resolveAGDIPackageRootSync } = await import("./agdi-root.js");
 
     const project = fx("symlink-scenario");
     const bin = path.join(project, "bin", "agdi");
@@ -121,7 +121,7 @@ describe("resolveAGDIPackageRoot", () => {
   });
 
   it("prefers moduleUrl candidates", async () => {
-    const { resolveAGDIPackageRootSync } = await import("./openclaw-root.js");
+    const { resolveAGDIPackageRootSync } = await import("./agdi-root.js");
 
     const pkgRoot = fx("moduleurl");
     setFile(path.join(pkgRoot, "package.json"), JSON.stringify({ name: "agdi" }));
@@ -131,7 +131,7 @@ describe("resolveAGDIPackageRoot", () => {
   });
 
   it("returns null for non-agdi package roots", async () => {
-    const { resolveAGDIPackageRootSync } = await import("./openclaw-root.js");
+    const { resolveAGDIPackageRootSync } = await import("./agdi-root.js");
 
     const pkgRoot = fx("not-agdi");
     setFile(path.join(pkgRoot, "package.json"), JSON.stringify({ name: "not-agdi" }));
@@ -140,7 +140,7 @@ describe("resolveAGDIPackageRoot", () => {
   });
 
   it("async resolver matches sync behavior", async () => {
-    const { resolveAGDIPackageRoot } = await import("./openclaw-root.js");
+    const { resolveAGDIPackageRoot } = await import("./agdi-root.js");
 
     const pkgRoot = fx("async");
     setFile(path.join(pkgRoot, "package.json"), JSON.stringify({ name: "agdi" }));

@@ -9,12 +9,12 @@ import { resetSubagentRegistryForTests } from "./subagent-registry.js";
 
 const callGatewayMock = getCallGatewayMock();
 
-type CreateAGDITools = (typeof import("./openclaw-tools.js"))["createAGDITools"];
+type CreateAGDITools = (typeof import("./agdi-tools.js"))["createAGDITools"];
 type CreateAGDIToolsOpts = Parameters<CreateAGDITools>[0];
 
 async function getSessionsSpawnTool(opts: CreateAGDIToolsOpts) {
   // Dynamic import: ensure harness mocks are installed before tool modules load.
-  const { createAGDITools } = await import("./openclaw-tools.js");
+  const { createAGDITools } = await import("./agdi-tools.js");
   const tool = createAGDITools(opts).find((candidate) => candidate.name === "sessions_spawn");
   if (!tool) {
     throw new Error("missing sessions_spawn tool");

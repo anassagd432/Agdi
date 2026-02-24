@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { captureEnv } from "../test-utils/env.js";
 import "./test-helpers/fast-core-tools.js";
-import { createAGDITools } from "./openclaw-tools.js";
+import { createAGDITools } from "./agdi-tools.js";
 
 vi.mock("./tools/gateway.js", () => ({
   callGatewayTool: vi.fn(async (method: string) => {

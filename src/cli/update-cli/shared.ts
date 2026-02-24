@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import type { UpdateStepProgress, UpdateStepResult } from "../../infra/update-runner.js";
 import { resolveStateDir } from "../../config/paths.js";
-import { resolveAGDIPackageRoot } from "../../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../../infra/agdi-root.js";
 import { readPackageName, readPackageVersion } from "../../infra/package-json.js";
 import { trimLogTail } from "../../infra/restart-sentinel.js";
 import { parseSemver } from "../../infra/runtime-guard.js";

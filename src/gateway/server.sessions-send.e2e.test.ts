@@ -12,7 +12,7 @@ import {
   testState,
 } from "./test-helpers.js";
 
-const { createAGDITools } = await import("../agents/openclaw-tools.js");
+const { createAGDITools } = await import("../agents/agdi-tools.js");
 
 installGatewayTestHooks({ scope: "suite" });
 

@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveAGDIPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../infra/agdi-root.js";
 import { pathExists } from "../utils.js";
 
 const FALLBACK_TEMPLATE_DIR = path.resolve(

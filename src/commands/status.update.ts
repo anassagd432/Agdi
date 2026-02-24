@@ -1,5 +1,5 @@
 import { formatCliCommand } from "../cli/command-format.js";
-import { resolveAGDIPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../infra/agdi-root.js";
 import {
   checkUpdateStatus,
   compareSemverStrings,

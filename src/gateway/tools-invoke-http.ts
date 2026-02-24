@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { AuthRateLimiter } from "./auth-rate-limit.js";
-import { createAGDITools } from "../agents/openclaw-tools.js";
+import { createAGDITools } from "../agents/agdi-tools.js";
 import {
   resolveEffectiveToolPolicy,
   resolveGroupToolPolicy,

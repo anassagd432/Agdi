@@ -184,7 +184,7 @@ vi.mock("../process/exec.js", () => ({
   runCommandWithTimeout,
 }));
 
-vi.mock("../infra/openclaw-root.js", () => ({
+vi.mock("../infra/agdi-root.js", () => ({
   resolveAGDIPackageRoot,
 }));
 

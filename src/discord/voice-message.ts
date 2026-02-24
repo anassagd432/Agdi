@@ -17,7 +17,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import type { RetryRunner } from "../infra/retry-policy.js";
-import { resolvePreferredAGDITmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredAGDITmpDir } from "../infra/tmp-agdi-dir.js";
 
 const execFileAsync = promisify(execFile);
 

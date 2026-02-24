@@ -4,7 +4,7 @@ import path from "node:path";
 import { Logger as TsLogger } from "tslog";
 import type { AGDIConfig } from "../config/types.js";
 import type { ConsoleStyle } from "./console.js";
-import { resolvePreferredAGDITmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredAGDITmpDir } from "../infra/tmp-agdi-dir.js";
 import { readLoggingConfig } from "./config.js";
 import { type LogLevel, levelToMinLevel, normalizeLogLevel } from "./levels.js";
 import { loggingState } from "./state.js";

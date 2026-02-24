@@ -234,9 +234,9 @@ export function loadAGDIPlugins(options: PluginLoadOptions = {}): PluginRegistry
       ...(pluginSdkAlias || pluginSdkAccountIdAlias
         ? {
             alias: {
-              ...(pluginSdkAlias ? { "openclaw/plugin-sdk": pluginSdkAlias } : {}),
+              ...(pluginSdkAlias ? { "agdi/plugin-sdk": pluginSdkAlias } : {}),
               ...(pluginSdkAccountIdAlias
-                ? { "openclaw/plugin-sdk/account-id": pluginSdkAccountIdAlias }
+                ? { "agdi/plugin-sdk/account-id": pluginSdkAccountIdAlias }
                 : {}),
             },
           }

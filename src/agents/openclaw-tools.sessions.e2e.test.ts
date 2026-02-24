@@ -31,7 +31,7 @@ vi.mock("../config/config.js", async (importOriginal) => {
 
 import "./test-helpers/fast-core-tools.js";
 import { sleep } from "../utils.js";
-import { createAGDITools } from "./openclaw-tools.js";
+import { createAGDITools } from "./agdi-tools.js";
 
 const waitForCalls = async (getCount: () => number, count: number, timeoutMs = 2000) => {
   const start = Date.now();

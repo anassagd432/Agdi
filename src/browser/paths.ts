@@ -1,5 +1,5 @@
 import path from "node:path";
-import { resolvePreferredAGDITmpDir } from "../infra/tmp-openclaw-dir.js";
+import { resolvePreferredAGDITmpDir } from "../infra/tmp-agdi-dir.js";
 
 export const DEFAULT_BROWSER_TMP_DIR = resolvePreferredAGDITmpDir();
 export const DEFAULT_TRACE_DIR = DEFAULT_BROWSER_TMP_DIR;

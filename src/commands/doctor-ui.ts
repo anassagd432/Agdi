@@ -6,7 +6,7 @@ import {
   resolveControlUiDistIndexHealth,
   resolveControlUiDistIndexPathForRoot,
 } from "../infra/control-ui-assets.js";
-import { resolveAGDIPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../infra/agdi-root.js";
 import { runCommandWithTimeout } from "../process/exec.js";
 import { note } from "../terminal/note.js";
 

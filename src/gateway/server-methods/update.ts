@@ -1,6 +1,6 @@
 import type { GatewayRequestHandlers } from "./types.js";
 import { loadConfig } from "../../config/config.js";
-import { resolveAGDIPackageRoot } from "../../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../../infra/agdi-root.js";
 import {
   formatDoctorNonInteractiveHint,
   type RestartSentinelPayload,

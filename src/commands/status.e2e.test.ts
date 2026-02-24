@@ -213,7 +213,7 @@ vi.mock("../gateway/call.js", async (importOriginal) => {
 vi.mock("../gateway/session-utils.js", () => ({
   listAgentsForGateway: mocks.listAgentsForGateway,
 }));
-vi.mock("../infra/openclaw-root.js", () => ({
+vi.mock("../infra/agdi-root.js", () => ({
   resolveAGDIPackageRoot: vi.fn().mockResolvedValue("/tmp/agdi"),
 }));
 vi.mock("../infra/os-summary.js", () => ({

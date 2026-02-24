@@ -11,14 +11,14 @@ const ciWorkers = isWindows ? 2 : 3;
 
 export default defineConfig({
   resolve: {
-    // Keep this ordered: the base `openclaw/plugin-sdk` alias is a prefix match.
+    // Keep this ordered: the base `agdi/plugin-sdk` alias is a prefix match.
     alias: [
       {
-        find: "openclaw/plugin-sdk/account-id",
+        find: "agdi/plugin-sdk/account-id",
         replacement: path.join(repoRoot, "src", "plugin-sdk", "account-id.ts"),
       },
       {
-        find: "openclaw/plugin-sdk",
+        find: "agdi/plugin-sdk",
         replacement: path.join(repoRoot, "src", "plugin-sdk", "index.ts"),
       },
     ],

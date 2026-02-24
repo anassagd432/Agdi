@@ -1,6 +1,6 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { POSIX_AGDI_TMP_DIR, resolvePreferredAGDITmpDir } from "./tmp-openclaw-dir.js";
+import { POSIX_AGDI_TMP_DIR, resolvePreferredAGDITmpDir } from "./tmp-agdi-dir.js";
 
 describe("resolvePreferredAGDITmpDir", () => {
   it("prefers /tmp/agdi when it already exists and is writable", () => {

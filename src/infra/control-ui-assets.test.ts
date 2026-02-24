@@ -67,7 +67,7 @@ vi.mock("node:fs", async (importOriginal) => {
   return { ...wrapped, default: wrapped };
 });
 
-vi.mock("./openclaw-root.js", () => ({
+vi.mock("./agdi-root.js", () => ({
   resolveAGDIPackageRoot: vi.fn(async () => null),
   resolveAGDIPackageRootSync: vi.fn(() => null),
 }));
@@ -111,7 +111,7 @@ describe("control UI assets helpers (fs-mocked)", () => {
   });
 
   it("uses resolveAGDIPackageRoot when available", async () => {
-    const agdiRoot = await import("./openclaw-root.js");
+    const agdiRoot = await import("./agdi-root.js");
     const { resolveControlUiDistIndexPath } = await import("./control-ui-assets.js");
 
     const pkgRoot = abs("fixtures/agdi");
@@ -180,7 +180,7 @@ describe("control UI assets helpers (fs-mocked)", () => {
   });
 
   it("resolves control-ui root for dist bundle argv1 and moduleUrl candidates", async () => {
-    const agdiRoot = await import("./openclaw-root.js");
+    const agdiRoot = await import("./agdi-root.js");
     const { resolveControlUiRootSync } = await import("./control-ui-assets.js");
 
     const pkgRoot = abs("fixtures/agdi-bundle");

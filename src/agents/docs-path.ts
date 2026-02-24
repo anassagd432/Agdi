@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { resolveAGDIPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../infra/agdi-root.js";
 
 export async function resolveAGDIDocsPath(params: {
   workspaceDir?: string;

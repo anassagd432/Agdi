@@ -11,7 +11,7 @@ import {
   resolveShellFromEnv,
   usesSlowDynamicCompletion,
 } from "../cli/completion-cli.js";
-import { resolveAGDIPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAGDIPackageRoot } from "../infra/agdi-root.js";
 import { note } from "../terminal/note.js";
 
 type CompletionShell = "zsh" | "bash" | "fish" | "powershell";
