@@ -23,6 +23,7 @@ import { ttsHandlers } from "./server-methods/tts.js";
 import { updateHandlers } from "./server-methods/update.js";
 import { usageHandlers } from "./server-methods/usage.js";
 import { voicewakeHandlers } from "./server-methods/voicewake.js";
+import { jarvisHandlers } from "./server-methods/jarvis.js";
 import { webHandlers } from "./server-methods/web.js";
 import { wizardHandlers } from "./server-methods/wizard.js";
 
@@ -68,6 +69,7 @@ const READ_METHODS = new Set([
   "voicewake.get",
   "sessions.list",
   "sessions.preview",
+  "jarvis.status",
   "cron.list",
   "cron.status",
   "cron.runs",
@@ -91,6 +93,9 @@ const WRITE_METHODS = new Set([
   "tts.setProvider",
   "voicewake.set",
   "node.invoke",
+  "jarvis.start",
+  "jarvis.stop",
+  "jarvis.config",
   "chat.send",
   "chat.abort",
   "browser.request",
@@ -194,6 +199,7 @@ export const coreGatewayHandlers: GatewayRequestHandlers = {
   ...agentHandlers,
   ...agentsHandlers,
   ...browserHandlers,
+  ...jarvisHandlers,
 };
 
 export async function handleGatewayRequest(

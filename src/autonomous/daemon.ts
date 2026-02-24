@@ -33,6 +33,8 @@ import { AuthManager } from "./auth-manager.js";
 import { GoalScheduler } from "./scheduler.js";
 import { PluginRegistry, createApiPlugin, createFilePlugin } from "./plugins.js";
 import { TaskRecorder } from "./recorder.js";
+import { JarvisDaemon } from "./jarvis/jarvis-daemon.js";
+import { VoiceController } from "./voice.js";
 
 // ---------------------------------------------------------------------------
 // Data directory
@@ -66,6 +68,8 @@ export class AutonomousDaemon {
   private scheduler: GoalScheduler | null = null;
   private pluginRegistry: PluginRegistry | null = null;
   private recorder: TaskRecorder | null = null;
+  private jarvis: JarvisDaemon | null = null;
+  private voiceCtrl: VoiceController | null = null;
 
   constructor(configOverrides?: Partial<AutonomousConfig>) {
     const dataDir = resolveDataDir(configOverrides?.dataDir);
@@ -186,6 +190,11 @@ export class AutonomousDaemon {
     // Start the loop (non-blocking)
     void this.agent.run();
 
+    // Initialize Jarvis voice assistant (optional, gated by config)
+    this.voiceCtrl = new VoiceController({ activationWord: "agdi" });
+    this.jarvis = new JarvisDaemon();
+    this.jarvis.setVoiceController(this.voiceCtrl);
+
     // Start the browser dashboard
     this.dashboard = new BrowserDashboard(this.config.dashboardPort ?? 7700);
     try {
@@ -207,6 +216,12 @@ export class AutonomousDaemon {
    */
   async stop(): Promise<void> {
     this.ui?.sendNotification("info", "Stopping autonomous daemon...");
+
+    // Stop Jarvis first (releases mic)
+    if (this.jarvis?.isRunning()) {
+      await this.jarvis.stop();
+      this.jarvis = null;
+    }
 
     this.agent?.stop();
     this.scheduler?.stop();
@@ -279,6 +294,11 @@ export class AutonomousDaemon {
   /** Get the task recorder. */
   getRecorder(): TaskRecorder | null {
     return this.recorder;
+  }
+
+  /** Get the Jarvis daemon. */
+  getJarvis(): JarvisDaemon | null {
+    return this.jarvis;
   }
 
   /** Manually trigger an improvement cycle. */
