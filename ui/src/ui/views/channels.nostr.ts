@@ -8,6 +8,7 @@ import {
   type NostrProfileFormState,
   type NostrProfileFormCallbacks,
 } from "./channels.nostr-profile-form.ts";
+import { BrandIcons } from "../components/index.ts";
 
 /**
  * Truncate a pubkey for display (shows first and last 8 chars)
@@ -183,8 +184,11 @@ export function renderNostrCard(params: {
   };
 
   return html`
-    <div class="card">
-      <div class="card-title">Nostr</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.nostr}</div>
+        <div class="card-title" style="margin-bottom: 0;">Nostr</div>
+      </div>
       <div class="card-sub">Decentralized DMs via Nostr relays (NIP-04).</div>
       ${accountCountLabel}
 
@@ -230,8 +234,8 @@ export function renderNostrCard(params: {
       ${renderChannelConfigSection({ channelId: "nostr", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(false)}>Refresh</button>
+        <agdi-button @click=${() => props.onRefresh(false)}>Refresh</agdi-button>
       </div>
-    </div>
+    </agdi-card>
   `;
 }

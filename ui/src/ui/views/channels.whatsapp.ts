@@ -3,6 +3,7 @@ import type { WhatsAppStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp, formatDurationHuman } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderWhatsAppCard(params: {
   props: ChannelsProps;
@@ -12,8 +13,11 @@ export function renderWhatsAppCard(params: {
   const { props, whatsapp, accountCountLabel } = params;
 
   return html`
-    <div class="card">
-      <div class="card-title">WhatsApp</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.whatsapp}</div>
+        <div class="card-title" style="margin-bottom: 0;">WhatsApp</div>
+      </div>
       <div class="card-sub">Link WhatsApp Web and monitor connection health.</div>
       ${accountCountLabel}
 
@@ -112,7 +116,16 @@ export function renderWhatsAppCard(params: {
         </button>
       </div>
 
+      <div class="row" style="margin-top: 12px;">
+        <agdi-button @click=${() => props.onWhatsAppStart(true)}>
+          Force Restart
+        </agdi-button>
+        <agdi-button @click=${() => props.onWhatsAppLogout()}>
+          Log Out
+        </agdi-button>
+      </div>
+
       ${renderChannelConfigSection({ channelId: "whatsapp", props })}
-    </div>
+    </agdi-card>
   `;
 }

@@ -946,11 +946,14 @@
   padding: 10px 12px;
   border-radius: var(--radius-md);
   background: var(--card);
-  transition: border-color var(--duration-fast) ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color var(--duration-fast) ease, background var(--duration-fast) ease;
 }
 
 .table-row:hover {
   border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .session-link {

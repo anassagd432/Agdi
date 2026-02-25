@@ -3,6 +3,7 @@ import type { GoogleChatStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderGoogleChatCard(params: {
   props: ChannelsProps;
@@ -12,8 +13,11 @@ export function renderGoogleChatCard(params: {
   const { props, googleChat, accountCountLabel } = params;
 
   return html`
-    <div class="card">
-      <div class="card-title">Google Chat</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.googlechat}</div>
+        <div class="card-title" style="margin-bottom: 0;">Google Chat</div>
+      </div>
       <div class="card-sub">Chat API webhook status and channel configuration.</div>
       ${accountCountLabel}
 
@@ -70,10 +74,10 @@ export function renderGoogleChatCard(params: {
       ${renderChannelConfigSection({ channelId: "googlechat", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(true)}>
+        <agdi-button @click=${() => props.onRefresh(true)}>
           Probe
-        </button>
+        </agdi-button>
       </div>
-    </div>
+    </agdi-card>
   `;
 }

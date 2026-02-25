@@ -3,6 +3,7 @@ import type { SlackStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderSlackCard(params: {
   props: ChannelsProps;
@@ -12,8 +13,11 @@ export function renderSlackCard(params: {
   const { props, slack, accountCountLabel } = params;
 
   return html`
-    <div class="card">
-      <div class="card-title">Slack</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.slack}</div>
+        <div class="card-title" style="margin-bottom: 0;">Slack</div>
+      </div>
       <div class="card-sub">Socket mode status and channel configuration.</div>
       ${accountCountLabel}
 
@@ -56,10 +60,10 @@ export function renderSlackCard(params: {
       ${renderChannelConfigSection({ channelId: "slack", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(true)}>
+        <agdi-button @click=${() => props.onRefresh(true)}>
           Probe
-        </button>
+        </agdi-button>
       </div>
-    </div>
+    </agdi-card>
   `;
 }

@@ -361,8 +361,9 @@
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  border-radius: 99px;
+  /* Pill shape */
   border: 1px solid transparent;
   background: transparent;
   color: var(--muted);
@@ -371,7 +372,8 @@
   transition:
     border-color var(--duration-fast) ease,
     background var(--duration-fast) ease,
-    color var(--duration-fast) ease;
+    color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
 }
 
 .nav-item__icon {
@@ -412,13 +414,15 @@
 }
 
 .nav-item.active {
-  color: var(--text-strong);
-  background: var(--accent-subtle);
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+  border-color: var(--accent-hover);
 }
 
 .nav-item.active .nav-item__icon {
   opacity: 1;
-  color: var(--accent);
+  color: #fff;
 }
 
 /* ===========================================

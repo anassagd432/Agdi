@@ -25,6 +25,7 @@ import { renderSignalCard } from "./channels.signal.ts";
 import { renderSlackCard } from "./channels.slack.ts";
 import { renderTelegramCard } from "./channels.telegram.ts";
 import { renderWhatsAppCard } from "./channels.whatsapp.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderChannels(props: ChannelsProps) {
   const channels = props.snapshot?.channels as Record<string, unknown> | null;
@@ -190,10 +191,14 @@ function renderGenericChannelCard(
   const lastError = typeof status?.lastError === "string" ? status.lastError : undefined;
   const accounts = channelAccounts[key] ?? [];
   const accountCountLabel = renderChannelAccountCount(key, channelAccounts);
+  const iconHtml = BrandIcons[key as keyof typeof BrandIcons] ?? nothing;
 
   return html`
-    <div class="card">
-      <div class="card-title">${label}</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${iconHtml}</div>
+        <div class="card-title" style="margin-bottom: 0;">${label}</div>
+      </div>
       <div class="card-sub">Channel status and configuration.</div>
       ${accountCountLabel}
 
@@ -231,7 +236,7 @@ function renderGenericChannelCard(
       }
 
       ${renderChannelConfigSection({ channelId: key, props })}
-    </div>
+    </agdi-card>
   `;
 }
 

@@ -3,6 +3,7 @@ import type { DiscordStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderDiscordCard(params: {
   props: ChannelsProps;
@@ -12,8 +13,11 @@ export function renderDiscordCard(params: {
   const { props, discord, accountCountLabel } = params;
 
   return html`
-    <div class="card">
-      <div class="card-title">Discord</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.discord}</div>
+        <div class="card-title" style="margin-bottom: 0;">Discord</div>
+      </div>
       <div class="card-sub">Bot status and channel configuration.</div>
       ${accountCountLabel}
 
@@ -56,10 +60,10 @@ export function renderDiscordCard(params: {
       ${renderChannelConfigSection({ channelId: "discord", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(true)}>
+        <agdi-button @click=${() => props.onRefresh(true)}>
           Probe
-        </button>
+        </agdi-button>
       </div>
-    </div>
+    </agdi-card>
   `;
 }

@@ -3,6 +3,7 @@ import type { ChannelAccountSnapshot, TelegramStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
+import { BrandIcons } from "../components/index.ts";
 
 export function renderTelegramCard(params: {
   props: ChannelsProps;
@@ -53,8 +54,11 @@ export function renderTelegramCard(params: {
   };
 
   return html`
-    <div class="card">
-      <div class="card-title">Telegram</div>
+    <agdi-card>
+      <div class="row" style="gap: 12px; align-items: center; margin-bottom: 8px;">
+        <div style="width: 24px; height: 24px; color: var(--accent);">${BrandIcons.telegram}</div>
+        <div class="card-title" style="margin-bottom: 0;">Telegram</div>
+      </div>
       <div class="card-sub">Bot status and channel configuration.</div>
       ${accountCountLabel}
 
@@ -111,10 +115,10 @@ export function renderTelegramCard(params: {
       ${renderChannelConfigSection({ channelId: "telegram", props })}
 
       <div class="row" style="margin-top: 12px;">
-        <button class="btn" @click=${() => props.onRefresh(true)}>
+        <agdi-button @click=${() => props.onRefresh(true)}>
           Probe
-        </button>
+        </agdi-button>
       </div>
-    </div>
+    </agdi-card>
   `;
 }

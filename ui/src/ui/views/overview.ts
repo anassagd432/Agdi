@@ -127,7 +127,7 @@ export function renderOverview(props: OverviewProps) {
 
   return html`
     <section class="grid grid-cols-2">
-      <div class="card">
+      <agdi-card>
         <div class="card-title">Gateway Access</div>
         <div class="card-sub">Where the dashboard connects and how it authenticates.</div>
         <div class="form-grid" style="margin-top: 16px;">
@@ -183,13 +183,13 @@ export function renderOverview(props: OverviewProps) {
           </label>
         </div>
         <div class="row" style="margin-top: 14px;">
-          <button class="btn" @click=${() => props.onConnect()}>Connect</button>
-          <button class="btn" @click=${() => props.onRefresh()}>Refresh</button>
+          <agdi-button primary @click=${() => props.onConnect()}>Connect</agdi-button>
+          <agdi-button @click=${() => props.onRefresh()}>Refresh</agdi-button>
           <span class="muted">${isTrustedProxy ? "Authenticated via trusted proxy." : "Click Connect to apply connection changes."}</span>
         </div>
-      </div>
+      </agdi-card>
 
-      <div class="card">
+      <agdi-card>
         <div class="card-title">Snapshot</div>
         <div class="card-sub">Latest gateway handshake information.</div>
         <div class="stat-grid" style="margin-top: 16px;">
@@ -227,30 +227,30 @@ export function renderOverview(props: OverviewProps) {
                 </div>
               `
         }
-      </div>
+      </agdi-card>
     </section>
 
     <section class="grid grid-cols-3" style="margin-top: 18px;">
-      <div class="card stat-card">
+      <agdi-card class="stat-card">
         <div class="stat-label">Instances</div>
         <div class="stat-value">${props.presenceCount}</div>
         <div class="muted">Presence beacons in the last 5 minutes.</div>
-      </div>
-      <div class="card stat-card">
+      </agdi-card>
+      <agdi-card class="stat-card">
         <div class="stat-label">Sessions</div>
         <div class="stat-value">${props.sessionsCount ?? "n/a"}</div>
         <div class="muted">Recent session keys tracked by the gateway.</div>
-      </div>
-      <div class="card stat-card">
+      </agdi-card>
+      <agdi-card class="stat-card">
         <div class="stat-label">Cron</div>
         <div class="stat-value">
           ${props.cronEnabled == null ? "n/a" : props.cronEnabled ? "Enabled" : "Disabled"}
         </div>
-        <div class="muted">Next wake ${formatNextRun(props.cronNext)}</div>
-      </div>
+        <div class="muted">Next wake \${formatNextRun(props.cronNext)}</div>
+      </agdi-card>
     </section>
 
-    <section class="card" style="margin-top: 18px;">
+    <agdi-card style="margin-top: 18px; display: block;">
       <div class="card-title">Notes</div>
       <div class="card-sub">Quick reminders for remote control setups.</div>
       <div class="note-grid" style="margin-top: 14px;">
@@ -269,6 +269,6 @@ export function renderOverview(props: OverviewProps) {
           <div class="muted">Use isolated sessions for recurring runs.</div>
         </div>
       </div>
-    </section>
+    </agdi-card>
   `;
 }
