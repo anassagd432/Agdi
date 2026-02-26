@@ -5,13 +5,7 @@ import { applyCliProfileEnv, parseCliProfileArgs } from "./profile.js";
 
 describe("parseCliProfileArgs", () => {
   it("leaves gateway --dev for subcommands", () => {
-    const res = parseCliProfileArgs([
-      "node",
-      "agdi",
-      "gateway",
-      "--dev",
-      "--allow-unconfigured",
-    ]);
+    const res = parseCliProfileArgs(["node", "agdi", "gateway", "--dev", "--allow-unconfigured"]);
     if (!res.ok) {
       throw new Error(res.error);
     }
@@ -96,9 +90,7 @@ describe("applyCliProfileEnv", () => {
 
     const resolvedHome = path.resolve("/srv/agdi-home");
     expect(env.AGDI_STATE_DIR).toBe(path.join(resolvedHome, ".agdi-work"));
-    expect(env.AGDI_CONFIG_PATH).toBe(
-      path.join(resolvedHome, ".agdi-work", "agdi.json"),
-    );
+    expect(env.AGDI_CONFIG_PATH).toBe(path.join(resolvedHome, ".agdi-work", "agdi.json"));
   });
 });
 
@@ -126,9 +118,9 @@ describe("formatCliCommand", () => {
   });
 
   it("returns command unchanged when --profile is already present", () => {
-    expect(
-      formatCliCommand("agdi --profile work doctor --fix", { AGDI_PROFILE: "work" }),
-    ).toBe("agdi --profile work doctor --fix");
+    expect(formatCliCommand("agdi --profile work doctor --fix", { AGDI_PROFILE: "work" })).toBe(
+      "agdi --profile work doctor --fix",
+    );
   });
 
   it("returns command unchanged when --dev is already present", () => {
@@ -150,9 +142,7 @@ describe("formatCliCommand", () => {
   });
 
   it("handles command with no args after agdi", () => {
-    expect(formatCliCommand("agdi", { AGDI_PROFILE: "test" })).toBe(
-      "agdi --profile test",
-    );
+    expect(formatCliCommand("agdi", { AGDI_PROFILE: "test" })).toBe("agdi --profile test");
   });
 
   it("handles pnpm wrapper", () => {

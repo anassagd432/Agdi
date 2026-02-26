@@ -19,13 +19,7 @@ describe("config io write", () => {
     const home = path.join(fixtureRoot, `${safePrefix}${caseId++}`);
     await fs.mkdir(path.join(home, ".agdi"), { recursive: true });
 
-    const snapshot = captureEnv([
-      "HOME",
-      "USERPROFILE",
-      "HOMEDRIVE",
-      "HOMEPATH",
-      "AGDI_STATE_DIR",
-    ]);
+    const snapshot = captureEnv(["HOME", "USERPROFILE", "HOMEDRIVE", "HOMEPATH", "AGDI_STATE_DIR"]);
     process.env.HOME = home;
     process.env.USERPROFILE = home;
     process.env.AGDI_STATE_DIR = path.join(home, ".agdi");

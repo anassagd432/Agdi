@@ -94,16 +94,15 @@ export class AgentMemory {
 
   /** Get recent actions for a given goal. */
   getActionsForGoal(goalId: string, limit: number = 20): EpisodicEntry[] {
-    return this.store.episodes
-      .filter((e) => e.goalId === goalId)
-      .slice(-limit);
+    return this.store.episodes.filter((e) => e.goalId === goalId).slice(-limit);
   }
 
   /** Get a text summary of recent actions (for context injection). */
   getRecentActionsSummary(goalId: string, limit: number = 5): string[] {
     const entries = this.getActionsForGoal(goalId, limit);
     return entries.map(
-      (e) => `[${e.result}] ${e.action.action}${e.action.text ? `: "${e.action.text}"` : ""}${e.observation ? ` → ${e.observation}` : ""}`,
+      (e) =>
+        `[${e.result}] ${e.action.action}${e.action.text ? `: "${e.action.text}"` : ""}${e.observation ? ` → ${e.observation}` : ""}`,
     );
   }
 
@@ -174,9 +173,7 @@ export class AgentMemory {
 
   /** Record a failure for a specific URL. */
   recordFailure(url: string, errorType: ErrorType, note: string): void {
-    const existing = this.store.failures.find(
-      (f) => f.url === url && f.errorType === errorType,
-    );
+    const existing = this.store.failures.find((f) => f.url === url && f.errorType === errorType);
 
     if (existing) {
       existing.count += 1;

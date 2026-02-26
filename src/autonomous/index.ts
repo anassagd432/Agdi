@@ -57,19 +57,10 @@ export { addGridOverlay } from "./grid-overlay.js";
 export { executeVisualAction, executeActionSequence } from "./visual-actions.js";
 
 // Self-repair
-export {
-  classifyError,
-  diagnose,
-  attemptRepair,
-  type RepairResult,
-} from "./repair.js";
+export { classifyError, diagnose, attemptRepair, type RepairResult } from "./repair.js";
 
 // Decision engine
-export {
-  decideStrategy,
-  assessGoalProgress,
-  type InteractionStrategy,
-} from "./decision.js";
+export { decideStrategy, assessGoalProgress, type InteractionStrategy } from "./decision.js";
 
 // User interface
 export { AgentUI, type NotificationLevel, type GoalCompletionReport } from "./user-interface.js";
@@ -173,37 +164,81 @@ export {
 } from "./device/linux-system.js";
 
 // Live desktop streaming
-export { DesktopLiveStream, type LiveStreamFrame, type LiveStreamOverlay, type StreamConfig } from "./live-stream.js";
+export {
+  DesktopLiveStream,
+  type LiveStreamFrame,
+  type LiveStreamOverlay,
+  type StreamConfig,
+} from "./live-stream.js";
 
 // Natural language commander
-export { NLCommander, type CommandResult, type CommandPlan, type CommandStep } from "./nl-commander.js";
+export {
+  NLCommander,
+  type CommandResult,
+  type CommandPlan,
+  type CommandStep,
+} from "./nl-commander.js";
 
 // Safety & approval gate
-export { ApprovalGate, type ApprovalRequest, type ApprovalLevel, type ApprovalRule } from "./approval.js";
+export {
+  ApprovalGate,
+  type ApprovalRequest,
+  type ApprovalLevel,
+  type ApprovalRule,
+} from "./approval.js";
 
 // Voice control
 export { VoiceController, type VoiceCommand, type VoiceConfig } from "./voice.js";
 
 // User profile & persistent memory
-export { UserProfile, type UserProfileData, type AppUsage, type WorkflowPattern, type UserPreference } from "./user-profile.js";
+export {
+  UserProfile,
+  type UserProfileData,
+  type AppUsage,
+  type WorkflowPattern,
+  type UserPreference,
+} from "./user-profile.js";
 
 // Workflow recording & replay
-export { WorkflowReplay, type SavedWorkflow, type WorkflowStep, type ReplayResult } from "./workflow-replay.js";
+export {
+  WorkflowReplay,
+  type SavedWorkflow,
+  type WorkflowStep,
+  type ReplayResult,
+} from "./workflow-replay.js";
 
 // One-command setup
 export { runAgentSetup, type SetupResult } from "./device/setup-agent.js";
 
 // Android device control (ADB)
-export { AndroidBackend, type AndroidDevice, type AndroidApp, type AndroidScreenSize, type BatteryInfo } from "./device/android-backend.js";
+export {
+  AndroidBackend,
+  type AndroidDevice,
+  type AndroidApp,
+  type AndroidScreenSize,
+  type BatteryInfo,
+} from "./device/android-backend.js";
 
 // iOS device control (libimobiledevice + WDA)
-export { IOSBackend, type IOSDevice, type IOSBatteryInfo, type IOSAppInfo, type IOSScreenSize } from "./device/ios-backend.js";
+export {
+  IOSBackend,
+  type IOSDevice,
+  type IOSBatteryInfo,
+  type IOSAppInfo,
+  type IOSScreenSize,
+} from "./device/ios-backend.js";
 
 // REST API
 export { AgentRestApi, type ApiConfig } from "./rest-api.js";
 
 // Screen OCR
-export { ScreenOCR, type OcrResult, type OcrWord, type TextLocation, type OcrConfig } from "./screen-ocr.js";
+export {
+  ScreenOCR,
+  type OcrResult,
+  type OcrWord,
+  type TextLocation,
+  type OcrConfig,
+} from "./screen-ocr.js";
 
 // Task scheduler
 export { TaskScheduler, type ScheduledTask, type TaskSchedule } from "./task-scheduler.js";
@@ -218,7 +253,12 @@ export { SmartClipboard, type ClipboardEntry } from "./smart-clipboard.js";
 export { MultiMonitorManager, type Monitor, type VirtualScreen } from "./multi-monitor.js";
 
 // AI-to-AI delegation
-export { AIDelegation, type SubAgent, type DelegationPlan, type DelegationResult } from "./ai-delegation.js";
+export {
+  AIDelegation,
+  type SubAgent,
+  type DelegationPlan,
+  type DelegationResult,
+} from "./ai-delegation.js";
 
 // Security & Cybersecurity Suite
 export {

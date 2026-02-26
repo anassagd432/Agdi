@@ -43,14 +43,17 @@ export async function executeDeviceAction(
     }
 
     case "device_click_image": {
-      if (!action.imageTemplatePath) throw new Error("device_click_image requires imageTemplatePath");
+      if (!action.imageTemplatePath)
+        throw new Error("device_click_image requires imageTemplatePath");
       await sleep(humanDelay(50, 150));
       const match = await controller.findImageOnScreen(action.imageTemplatePath, 0.8);
       if (match.match && match.x !== undefined && match.y !== undefined) {
-         await controller.click(match.x, match.y);
-         await sleep(humanDelay(200, 500));
+        await controller.click(match.x, match.y);
+        await sleep(humanDelay(200, 500));
       } else {
-         throw new Error(`Vision Match Failed: Template ${action.imageTemplatePath} not found on screen`);
+        throw new Error(
+          `Vision Match Failed: Template ${action.imageTemplatePath} not found on screen`,
+        );
       }
       break;
     }

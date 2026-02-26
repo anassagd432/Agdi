@@ -16,8 +16,7 @@ export function registerNodesCli(program: Command) {
     .description("Manage gateway-owned node pairing")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/nodes", "docs.agdi.ai/cli/nodes")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/nodes", "docs.agdi.ai/cli/nodes")}\n`,
     );
 
   registerNodesStatusCommands(nodes);

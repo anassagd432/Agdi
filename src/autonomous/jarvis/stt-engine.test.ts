@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { SttProcessor, DEFAULT_STT_CONFIG } from "./stt-engine.js";
 import type { SttConfig } from "./stt-engine.js";
+import { SttProcessor, DEFAULT_STT_CONFIG } from "./stt-engine.js";
 
 describe("SttProcessor", () => {
   describe("constructor", () => {

@@ -75,9 +75,7 @@ export async function runGatewayLoop(params: {
 
         // Stop autonomous agent before closing the server
         try {
-          const { stopAutonomous } = await import(
-            "../../autonomous/autonomous-gateway-hook.js"
-          );
+          const { stopAutonomous } = await import("../../autonomous/autonomous-gateway-hook.js");
           await stopAutonomous();
         } catch {
           // autonomous module not available — skip

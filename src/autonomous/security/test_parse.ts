@@ -6,15 +6,15 @@ PORT     STATE SERVICE VERSION
 22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.11`;
 
 const ports = [];
-const lines = nmapOutput.split('\n');
+const lines = nmapOutput.split("\n");
 for (const line of lines) {
-    const match = line.match(/^(\d+)\/([a-z]+)\s+open\s+([\w-]+)\s+(.*)$/i);
-    if (match) {
-        ports.push({
-            port: parseInt(match[1], 10),
-            service: match[3],
-            version: match[4].trim()
-        });
-    }
+  const match = line.match(/^(\d+)\/([a-z]+)\s+open\s+([\w-]+)\s+(.*)$/i);
+  if (match) {
+    ports.push({
+      port: parseInt(match[1], 10),
+      service: match[3],
+      version: match[4].trim(),
+    });
+  }
 }
 console.log(ports);

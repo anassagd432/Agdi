@@ -62,10 +62,7 @@ function accountsHaveKeys(value: unknown, keys: string[]): boolean {
   return false;
 }
 
-function resolveChannelConfig(
-  cfg: AGDIConfig,
-  channelId: string,
-): Record<string, unknown> | null {
+function resolveChannelConfig(cfg: AGDIConfig, channelId: string): Record<string, unknown> | null {
   const channels = cfg.channels as Record<string, unknown> | undefined;
   const entry = channels?.[channelId];
   return isRecord(entry) ? entry : null;
@@ -309,10 +306,7 @@ function isProviderConfigured(cfg: AGDIConfig, providerId: string): boolean {
   return false;
 }
 
-function resolveConfiguredPlugins(
-  cfg: AGDIConfig,
-  env: NodeJS.ProcessEnv,
-): PluginEnableChange[] {
+function resolveConfiguredPlugins(cfg: AGDIConfig, env: NodeJS.ProcessEnv): PluginEnableChange[] {
   const changes: PluginEnableChange[] = [];
   const channelIds = new Set(CHANNEL_PLUGIN_IDS);
   const configuredChannels = cfg.channels as Record<string, unknown> | undefined;

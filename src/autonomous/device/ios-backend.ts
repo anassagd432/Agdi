@@ -24,10 +24,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 
 const log = createSubsystemLogger("ios");
@@ -67,9 +67,15 @@ async function httpRequest(
       },
       (res) => {
         let data = "";
-        res.on("data", (chunk) => { data += chunk; });
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
         res.on("end", () => {
-          try { resolve(JSON.parse(data || "{}")); } catch { resolve({ raw: data }); }
+          try {
+            resolve(JSON.parse(data || "{}"));
+          } catch {
+            resolve({ raw: data });
+          }
         });
       },
     );
@@ -176,7 +182,13 @@ export class IOSBackend {
             connectionType: "usb",
           });
         } catch {
-          devices.push({ udid: id, name: "Unknown", model: "Unknown", iosVersion: "", connectionType: "usb" });
+          devices.push({
+            udid: id,
+            name: "Unknown",
+            model: "Unknown",
+            iosVersion: "",
+            connectionType: "usb",
+          });
         }
       }
       return devices;
@@ -184,7 +196,12 @@ export class IOSBackend {
       // Fallback: try tidevice
       try {
         const output = await run("tidevice", ["list", "--json"]);
-        const parsed = JSON.parse(output) as Array<{ udid: string; name: string; model: string; version: string }>;
+        const parsed = JSON.parse(output) as Array<{
+          udid: string;
+          name: string;
+          model: string;
+          version: string;
+        }>;
         return parsed.map((d) => ({
           udid: d.udid,
           name: d.name,
@@ -220,15 +237,29 @@ export class IOSBackend {
   async longPress(x: number, y: number, durationS: number = 1): Promise<void> {
     this.requireWDA();
     log.info(`long press (${x}, ${y}) ${durationS}s`);
-    await httpRequest(`${this.wdaBaseUrl}/session/0/wda/touchAndHold`, "POST", { x, y, duration: durationS });
+    await httpRequest(`${this.wdaBaseUrl}/session/0/wda/touchAndHold`, "POST", {
+      x,
+      y,
+      duration: durationS,
+    });
   }
 
   /** Swipe from one point to another. */
-  async swipe(fromX: number, fromY: number, toX: number, toY: number, durationS: number = 0.3): Promise<void> {
+  async swipe(
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    durationS: number = 0.3,
+  ): Promise<void> {
     this.requireWDA();
     log.info(`swipe (${fromX},${fromY}) → (${toX},${toY})`);
     await httpRequest(`${this.wdaBaseUrl}/session/0/wda/dragfromtoforduration`, "POST", {
-      fromX, fromY, toX, toY, duration: durationS,
+      fromX,
+      fromY,
+      toX,
+      toY,
+      duration: durationS,
     });
   }
 
@@ -291,7 +322,11 @@ export class IOSBackend {
   async listApps(): Promise<IOSAppInfo[]> {
     try {
       const output = await run("ideviceinstaller", ["-u", this.udid!, "-l", "-o", "json"]);
-      const parsed = JSON.parse(output) as Array<{ CFBundleIdentifier: string; CFBundleName: string; CFBundleShortVersionString?: string }>;
+      const parsed = JSON.parse(output) as Array<{
+        CFBundleIdentifier: string;
+        CFBundleName: string;
+        CFBundleShortVersionString?: string;
+      }>;
       return parsed.map((app) => ({
         bundleId: app.CFBundleIdentifier,
         name: app.CFBundleName,
@@ -301,10 +336,13 @@ export class IOSBackend {
       // Fallback: tidevice
       try {
         const output = await run("tidevice", ["-u", this.udid!, "applist"]);
-        return output.split("\n").filter(Boolean).map((line) => {
-          const match = line.match(/^(\S+)\s+(.*)/);
-          return { bundleId: match?.[1] ?? line, name: match?.[2] ?? "" };
-        });
+        return output
+          .split("\n")
+          .filter(Boolean)
+          .map((line) => {
+            const match = line.match(/^(\S+)\s+(.*)/);
+            return { bundleId: match?.[1] ?? line, name: match?.[2] ?? "" };
+          });
       } catch {
         return [];
       }
@@ -383,9 +421,14 @@ export class IOSBackend {
   async getDeviceInfo(): Promise<Record<string, string>> {
     const info: Record<string, string> = {};
     const keys = [
-      "DeviceName", "ProductType", "ProductVersion",
-      "HardwareModel", "UniqueDeviceID", "WiFiAddress",
-      "SerialNumber", "CPUArchitecture",
+      "DeviceName",
+      "ProductType",
+      "ProductVersion",
+      "HardwareModel",
+      "UniqueDeviceID",
+      "WiFiAddress",
+      "SerialNumber",
+      "CPUArchitecture",
     ];
 
     for (const key of keys) {
@@ -401,8 +444,22 @@ export class IOSBackend {
   /** Get battery info. */
   async getBattery(): Promise<IOSBatteryInfo> {
     try {
-      const levelStr = await run("ideviceinfo", ["-u", this.udid!, "-q", "com.apple.mobile.battery", "-k", "BatteryCurrentCapacity"]);
-      const statusStr = await run("ideviceinfo", ["-u", this.udid!, "-q", "com.apple.mobile.battery", "-k", "BatteryIsCharging"]);
+      const levelStr = await run("ideviceinfo", [
+        "-u",
+        this.udid!,
+        "-q",
+        "com.apple.mobile.battery",
+        "-k",
+        "BatteryCurrentCapacity",
+      ]);
+      const statusStr = await run("ideviceinfo", [
+        "-u",
+        this.udid!,
+        "-q",
+        "com.apple.mobile.battery",
+        "-k",
+        "BatteryIsCharging",
+      ]);
       return {
         level: parseInt(levelStr, 10) || 0,
         state: statusStr.toLowerCase().includes("true") ? "charging" : "unplugged",
@@ -421,7 +478,12 @@ export class IOSBackend {
     const output = await run("ifuse", ["--list-apps"]).catch(() => "");
     // AFC access is limited — only Documents folders of apps and media
     try {
-      const result = await run("ideviceinfo", ["-u", this.udid!, "-q", "com.apple.mobile.file_relay"]);
+      const result = await run("ideviceinfo", [
+        "-u",
+        this.udid!,
+        "-q",
+        "com.apple.mobile.file_relay",
+      ]);
       return result.split("\n").filter(Boolean);
     } catch {
       return [`AFC access limited. Use: ifuse /mount/point -u ${this.udid}`];
@@ -472,12 +534,21 @@ export class IOSBackend {
   // -------------------------------------------------------------------------
 
   /** Check which iOS tools are available. */
-  async checkDependencies(): Promise<{ available: boolean; missing: string[]; tools: Record<string, boolean> }> {
+  async checkDependencies(): Promise<{
+    available: boolean;
+    missing: string[];
+    tools: Record<string, boolean>;
+  }> {
     const tools: Record<string, boolean> = {};
     const checks = [
-      "idevice_id", "ideviceinfo", "idevicescreenshot",
-      "ideviceinstaller", "idevicename", "idevicediagnostics",
-      "idevicesyslog", "tidevice",
+      "idevice_id",
+      "ideviceinfo",
+      "idevicescreenshot",
+      "ideviceinstaller",
+      "idevicename",
+      "idevicediagnostics",
+      "idevicesyslog",
+      "tidevice",
     ];
 
     const missing: string[] = [];
@@ -507,7 +578,7 @@ export class IOSBackend {
     if (!this.wdaBaseUrl) {
       throw new Error(
         "WebDriverAgent (WDA) not available. Touch control requires WDA.\n" +
-        "Start it via Xcode or: tidevice wdaproxy --port 8100"
+          "Start it via Xcode or: tidevice wdaproxy --port 8100",
       );
     }
   }

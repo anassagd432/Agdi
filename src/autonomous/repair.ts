@@ -26,12 +26,7 @@ const ERROR_PATTERNS: Array<{ type: ErrorType; patterns: RegExp[] }> = [
   },
   {
     type: "TIMEOUT",
-    patterns: [
-      /timeout/i,
-      /timed?\s*out/i,
-      /exceeded.*time/i,
-      /waiting.*exceeded/i,
-    ],
+    patterns: [/timeout/i, /timed?\s*out/i, /exceeded.*time/i, /waiting.*exceeded/i],
   },
   {
     type: "AUTH_EXPIRED",
@@ -201,10 +196,7 @@ export type RepairResult = {
  *
  * @returns RepairResult indicating whether the repair succeeded and what changes to apply.
  */
-export async function attemptRepair(
-  diagnosis: RepairDiagnosis,
-  goal: Goal,
-): Promise<RepairResult> {
+export async function attemptRepair(diagnosis: RepairDiagnosis, goal: Goal): Promise<RepairResult> {
   switch (diagnosis.type) {
     case "NETWORK_ERROR": {
       // Exponential backoff: 2^retries seconds

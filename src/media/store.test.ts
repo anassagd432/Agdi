@@ -13,13 +13,7 @@ describe("media store", () => {
   let envSnapshot: ReturnType<typeof captureEnv>;
 
   beforeAll(async () => {
-    envSnapshot = captureEnv([
-      "HOME",
-      "USERPROFILE",
-      "HOMEDRIVE",
-      "HOMEPATH",
-      "AGDI_STATE_DIR",
-    ]);
+    envSnapshot = captureEnv(["HOME", "USERPROFILE", "HOMEDRIVE", "HOMEPATH", "AGDI_STATE_DIR"]);
     home = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-test-home-"));
     process.env.HOME = home;
     process.env.USERPROFILE = home;

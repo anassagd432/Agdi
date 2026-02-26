@@ -5,9 +5,9 @@
  * across agent restarts so that authenticated sessions survive.
  */
 
+import type { BrowserContext, Page } from "playwright-core";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { BrowserContext, Page } from "playwright-core";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -111,7 +111,9 @@ export class AuthManager {
           // Navigate to origin temporarily to set localStorage
           const currentUrl = page.url();
           if (!currentUrl.startsWith(origin)) {
-            await page.goto(origin, { waitUntil: "domcontentloaded", timeout: 5000 }).catch(() => {});
+            await page
+              .goto(origin, { waitUntil: "domcontentloaded", timeout: 5000 })
+              .catch(() => {});
           }
           await page.evaluate((data: Record<string, string>) => {
             for (const [key, value] of Object.entries(data)) {

@@ -251,10 +251,7 @@ export type AGDIPluginApi = {
   pluginConfig?: Record<string, unknown>;
   runtime: PluginRuntime;
   logger: PluginLogger;
-  registerTool: (
-    tool: AnyAgentTool | AGDIPluginToolFactory,
-    opts?: AGDIPluginToolOptions,
-  ) => void;
+  registerTool: (tool: AnyAgentTool | AGDIPluginToolFactory, opts?: AGDIPluginToolOptions) => void;
   registerHook: (
     events: string | string[],
     handler: InternalHookHandler,

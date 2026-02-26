@@ -16,11 +16,7 @@ const oauthFixture = {
 
 describe("getApiKeyForModel", () => {
   it("migrates legacy oauth.json into auth-profiles.json", async () => {
-    const envSnapshot = captureEnv([
-      "AGDI_STATE_DIR",
-      "AGDI_AGENT_DIR",
-      "PI_CODING_AGENT_DIR",
-    ]);
+    const envSnapshot = captureEnv(["AGDI_STATE_DIR", "AGDI_AGENT_DIR", "PI_CODING_AGENT_DIR"]);
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-oauth-"));
 
     try {

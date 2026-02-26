@@ -82,8 +82,7 @@ session-memory/
 name: my-hook
 description: "Short description"
 homepage: https://docs.agdi.ai/automation/hooks#my-hook
-metadata:
-  { "agdi": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+metadata: { "agdi": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 # Hook Title
 

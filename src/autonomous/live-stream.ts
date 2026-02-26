@@ -6,14 +6,14 @@
  * for the "watch mode" feature.
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { DeviceController } from "./device-controller.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("live-stream");
 
 export type LiveStreamFrame = {
   type: "desktop_frame";
-  data: string;          // base64 JPEG
+  data: string; // base64 JPEG
   timestamp: number;
   width: number;
   height: number;
@@ -22,17 +22,17 @@ export type LiveStreamFrame = {
 
 export type LiveStreamOverlay = {
   type: "agent_overlay";
-  thinking: string;      // Current agent reasoning
-  action: string;        // Current or next action description
+  thinking: string; // Current agent reasoning
+  action: string; // Current or next action description
   confidence: number;
-  state: string;         // Agent state (planning, executing, etc.)
+  state: string; // Agent state (planning, executing, etc.)
   timestamp: number;
 };
 
 export type StreamConfig = {
-  fps: number;           // Frames per second (1-10)
-  quality: number;       // JPEG quality (10-100)
-  maxWidth: number;      // Max frame width (resize if larger)
+  fps: number; // Frames per second (1-10)
+  quality: number; // JPEG quality (10-100)
+  maxWidth: number; // Max frame width (resize if larger)
   enabled: boolean;
 };
 
@@ -94,7 +94,11 @@ export class DesktopLiveStream {
       ...overlay,
     };
     for (const listener of Array.from(this.listeners)) {
-      try { listener(msg); } catch { /* skip */ }
+      try {
+        listener(msg);
+      } catch {
+        /* skip */
+      }
     }
   }
 
@@ -146,7 +150,11 @@ export class DesktopLiveStream {
       };
 
       for (const listener of Array.from(this.listeners)) {
-        try { listener(frame); } catch { /* skip failed listeners */ }
+        try {
+          listener(frame);
+        } catch {
+          /* skip failed listeners */
+        }
       }
     } catch (err) {
       // Don't spam logs — screenshot can fail if screen is locked etc.

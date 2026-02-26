@@ -244,9 +244,7 @@ function formatLocalSetupError(err: unknown): string {
     missing && detail ? `Detail: ${detail}` : null,
     "To enable local embeddings:",
     "1) Use Node 22 LTS (recommended for installs/updates)",
-    missing
-      ? "2) Reinstall AGDI (this should install node-llama-cpp): npm i -g agdi@latest"
-      : null,
+    missing ? "2) Reinstall AGDI (this should install node-llama-cpp): npm i -g agdi@latest" : null,
     "3) If you use pnpm: pnpm approve-builds (select node-llama-cpp), then pnpm rebuild node-llama-cpp",
     ...REMOTE_EMBEDDING_PROVIDER_IDS.map(
       (provider) => `Or set agents.defaults.memorySearch.provider = "${provider}" (remote).`,

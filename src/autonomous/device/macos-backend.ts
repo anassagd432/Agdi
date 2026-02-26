@@ -9,10 +9,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import type {
   DeviceBackend,
   KeyModifier,
@@ -58,12 +58,35 @@ function osascript(script: string): Promise<string> {
 // ---------------------------------------------------------------------------
 
 const KEY_CODE_MAP: Record<string, number> = {
-  return: 36, enter: 36, tab: 48, escape: 53, esc: 53,
-  delete: 51, backspace: 51, forwarddelete: 117,
-  space: 49, up: 126, down: 125, left: 123, right: 124,
-  home: 115, end: 119, pageup: 116, pagedown: 121,
-  f1: 122, f2: 120, f3: 99, f4: 118, f5: 96, f6: 97,
-  f7: 98, f8: 100, f9: 101, f10: 109, f11: 103, f12: 111,
+  return: 36,
+  enter: 36,
+  tab: 48,
+  escape: 53,
+  esc: 53,
+  delete: 51,
+  backspace: 51,
+  forwarddelete: 117,
+  space: 49,
+  up: 126,
+  down: 125,
+  left: 123,
+  right: 124,
+  home: 115,
+  end: 119,
+  pageup: 116,
+  pagedown: 121,
+  f1: 122,
+  f2: 120,
+  f3: 99,
+  f4: 118,
+  f5: 96,
+  f6: 97,
+  f7: 98,
+  f8: 100,
+  f9: 101,
+  f10: 109,
+  f11: 103,
+  f12: 111,
 };
 
 const MODIFIER_MAP: Record<KeyModifier, string> = {
@@ -76,9 +99,12 @@ const MODIFIER_MAP: Record<KeyModifier, string> = {
 
 function buttonArg(button?: MouseButton): string {
   switch (button) {
-    case "right": return "rc";
-    case "middle": return "mc";
-    default: return "c";
+    case "right":
+      return "rc";
+    case "middle":
+      return "mc";
+    default:
+      return "c";
   }
 }
 
@@ -119,7 +145,7 @@ export class MacOSBackend implements DeviceBackend {
     await osascript(`
       tell application "System Events"
         repeat ${Math.abs(delta)} times
-          ${direction === "up" || direction === "left" ? 'key code 126 using {option down}' : 'key code 125 using {option down}'}
+          ${direction === "up" || direction === "left" ? "key code 126 using {option down}" : "key code 125 using {option down}"}
         end repeat
       end tell
     `).catch(async () => {
@@ -223,7 +249,9 @@ export class MacOSBackend implements DeviceBackend {
     `;
     const output = await osascript(script);
     const lines = output.split("\n").filter(Boolean);
-    const frontApp = await osascript('tell application "System Events" to get name of first process whose frontmost is true').catch(() => "");
+    const frontApp = await osascript(
+      'tell application "System Events" to get name of first process whose frontmost is true',
+    ).catch(() => "");
 
     return lines.map((line, idx) => {
       const [appName, title, bounds] = line.split("|||");
@@ -299,7 +327,8 @@ export class MacOSBackend implements DeviceBackend {
     try {
       await exec("screencapture", [
         "-x",
-        "-R", `${region.x},${region.y},${region.width},${region.height}`,
+        "-R",
+        `${region.x},${region.y},${region.width},${region.height}`,
         tmpPath,
       ]);
       return await readFile(tmpPath);
@@ -325,13 +354,25 @@ export class MacOSBackend implements DeviceBackend {
     const missing: string[] = [];
 
     // cliclick is required for mouse control
-    try { await exec("which", ["cliclick"]); } catch { missing.push("cliclick"); }
+    try {
+      await exec("which", ["cliclick"]);
+    } catch {
+      missing.push("cliclick");
+    }
 
     // osascript is built into macOS
-    try { await exec("which", ["osascript"]); } catch { missing.push("osascript"); }
+    try {
+      await exec("which", ["osascript"]);
+    } catch {
+      missing.push("osascript");
+    }
 
     // screencapture is built into macOS
-    try { await exec("which", ["screencapture"]); } catch { missing.push("screencapture"); }
+    try {
+      await exec("which", ["screencapture"]);
+    } catch {
+      missing.push("screencapture");
+    }
 
     return { available: missing.length === 0, missing };
   }

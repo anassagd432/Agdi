@@ -160,7 +160,9 @@ export class MicListener extends EventEmitter {
       });
 
       this.emit("listening");
-      log.info(`Mic listener active (rate=${this.config.sampleRate}, vad=${this.config.vadThreshold})`);
+      log.info(
+        `Mic listener active (rate=${this.config.sampleRate}, vad=${this.config.vadThreshold})`,
+      );
     } catch (err) {
       this.running = false;
       const error = err instanceof Error ? err : new Error(String(err));
@@ -283,7 +285,9 @@ export class MicListener extends EventEmitter {
       peakEnergy: this.peakEnergy,
     };
 
-    log.info(`Speech segment: ${durationMs}ms, ${audio.length} bytes, peak=${this.peakEnergy.toFixed(4)}`);
+    log.info(
+      `Speech segment: ${durationMs}ms, ${audio.length} bytes, peak=${this.peakEnergy.toFixed(4)}`,
+    );
     this.emit("speech", segment);
     this.emit("silence");
   }

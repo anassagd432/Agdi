@@ -43,10 +43,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["agdi status --all", "Full diagnosis (read-only)."],
           ["agdi status --json", "Machine-readable output."],
           ["agdi status --usage", "Show model provider usage/quota snapshots."],
-          [
-            "agdi status --deep",
-            "Run channel probes (WA + Telegram + Discord + Slack + Signal).",
-          ],
+          ["agdi status --deep", "Run channel probes (WA + Telegram + Discord + Slack + Signal)."],
           ["agdi status --deep --timeout 5000", "Tighten probe timeout."],
         ])}`,
     )

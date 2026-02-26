@@ -27,8 +27,7 @@ function killGatewayListeners(port: number): PortProcess[] {
 
 function runTests() {
   const isolatedLock =
-    process.env.AGDI_GATEWAY_LOCK ??
-    path.join(os.tmpdir(), `agdi-gateway.lock.test.${Date.now()}`);
+    process.env.AGDI_GATEWAY_LOCK ?? path.join(os.tmpdir(), `agdi-gateway.lock.test.${Date.now()}`);
   const result = spawnSync("pnpm", ["vitest", "run"], {
     stdio: "inherit",
     env: {

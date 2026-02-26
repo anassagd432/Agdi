@@ -8,9 +8,9 @@
  */
 
 import { execFile } from "node:child_process";
+import { readFile, writeFile, mkdir, access, constants } from "node:fs/promises";
 import { homedir, platform } from "node:os";
 import { join } from "node:path";
-import { readFile, writeFile, mkdir, access, constants } from "node:fs/promises";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 
 const log = createSubsystemLogger("setup");
@@ -32,9 +32,9 @@ export type SetupResult = {
 
 export type DepCheck = {
   name: string;
-  command: string;            // Command to check if installed
-  installCmd?: string;        // Command to auto-install
-  required: boolean;          // Block startup if missing?
+  command: string; // Command to check if installed
+  installCmd?: string; // Command to auto-install
+  required: boolean; // Block startup if missing?
   description: string;
 };
 
@@ -46,14 +46,16 @@ const LINUX_DEPS: DepCheck[] = [
   {
     name: "xdotool",
     command: "which xdotool",
-    installCmd: "sudo apt-get install -y xdotool || sudo dnf install -y xdotool || sudo pacman -S --noconfirm xdotool",
+    installCmd:
+      "sudo apt-get install -y xdotool || sudo dnf install -y xdotool || sudo pacman -S --noconfirm xdotool",
     required: true,
     description: "Mouse/keyboard control",
   },
   {
     name: "scrot",
     command: "which scrot",
-    installCmd: "sudo apt-get install -y scrot || sudo dnf install -y scrot || sudo pacman -S --noconfirm scrot",
+    installCmd:
+      "sudo apt-get install -y scrot || sudo dnf install -y scrot || sudo pacman -S --noconfirm scrot",
     required: true,
     description: "Screenshot capture",
   },
@@ -114,7 +116,7 @@ function exec(cmd: string): Promise<{ stdout: string; stderr: string; exitCode: 
       resolve({
         stdout: (stdout ?? "").trim(),
         stderr: (stderr ?? error?.message ?? "").trim(),
-        exitCode: error ? (error as any).code ?? 1 : 0,
+        exitCode: error ? ((error as any).code ?? 1) : 0,
       });
     });
   });
@@ -151,9 +153,7 @@ export async function runAgentSetup(opts?: {
   console.log("");
 
   // 1. Check & install dependencies
-  const deps = os === "linux" ? LINUX_DEPS
-    : os === "darwin" ? MACOS_DEPS
-    : [];
+  const deps = os === "linux" ? LINUX_DEPS : os === "darwin" ? MACOS_DEPS : [];
 
   if (deps.length === 0 && os === "win32") {
     console.log("  ✅ Windows — using built-in PowerShell (no extra deps needed)");

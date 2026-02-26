@@ -12,12 +12,7 @@
  * consumes to evolve the agent's behaviour.
  */
 
-import type {
-  EpisodicEntry,
-  LearnedProcedure,
-  FailurePattern,
-  AgentMemory,
-} from "./memory.js";
+import type { EpisodicEntry, LearnedProcedure, FailurePattern, AgentMemory } from "./memory.js";
 import type { ErrorType, Goal, GoalPriority } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -109,9 +104,7 @@ export function analyzePerformance(
   const allEpisodes = getEpisodesInWindow(memory, goals, from);
 
   // --- Goal metrics ---
-  const windowGoals = goals.filter(
-    (g) => new Date(g.updatedAt).getTime() >= now - windowMs,
-  );
+  const windowGoals = goals.filter((g) => new Date(g.updatedAt).getTime() >= now - windowMs);
   const completedGoals = windowGoals.filter((g) => g.status === "completed");
   const failedGoals = windowGoals.filter((g) => g.status === "failed");
   const totalGoals = windowGoals.length;
@@ -250,11 +243,7 @@ export function summarizeReport(report: PerformanceReport): string {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-function getEpisodesInWindow(
-  memory: AgentMemory,
-  goals: Goal[],
-  fromIso: string,
-): EpisodicEntry[] {
+function getEpisodesInWindow(memory: AgentMemory, goals: Goal[], fromIso: string): EpisodicEntry[] {
   const fromTime = new Date(fromIso).getTime();
   const all: EpisodicEntry[] = [];
   for (const g of goals) {
@@ -292,14 +281,8 @@ function computeGoalDurations(episodes: EpisodicEntry[]): Map<string, number> {
   return durations;
 }
 
-function buildDomainProfiles(
-  episodes: EpisodicEntry[],
-  memory: AgentMemory,
-): DomainProfile[] {
-  const domainMap = new Map<
-    string,
-    { total: number; successes: number; goalIds: Set<string> }
-  >();
+function buildDomainProfiles(episodes: EpisodicEntry[], memory: AgentMemory): DomainProfile[] {
+  const domainMap = new Map<string, { total: number; successes: number; goalIds: Set<string> }>();
 
   for (const ep of episodes) {
     const domain = ep.url ? extractDomain(ep.url) : "unknown";
@@ -333,10 +316,7 @@ function buildDomainProfiles(
   return profiles.sort((a, b) => a.successRate - b.successRate);
 }
 
-function scoreStrategies(
-  episodes: EpisodicEntry[],
-  goals: Goal[],
-): StrategyScore[] {
+function scoreStrategies(episodes: EpisodicEntry[], goals: Goal[]): StrategyScore[] {
   // Extract strategies from goal context (repair strategies leave traces)
   const strategyData = new Map<
     string,
@@ -465,7 +445,8 @@ function detectBottlenecks(
       area: "Efficiency",
       severity: "medium",
       description: `Goals require ${avgActions.toFixed(0)} actions on average — may be over-stepping`,
-      suggestion: "Break complex goals into sub-goals. Use learned procedures for repeated patterns.",
+      suggestion:
+        "Break complex goals into sub-goals. Use learned procedures for repeated patterns.",
     });
   }
 
@@ -518,14 +499,14 @@ function generateInsights(
 
   if (domainProfiles.length > 3) {
     const diversityScore = domainProfiles.length;
-    insights.push(
-      `Operating across ${diversityScore} domains — good breadth of capability.`,
-    );
+    insights.push(`Operating across ${diversityScore} domains — good breadth of capability.`);
   }
 
   // If no insights were generated, add a neutral one
   if (insights.length === 0) {
-    insights.push("Insufficient data for meaningful insights. Continue operating to build history.");
+    insights.push(
+      "Insufficient data for meaningful insights. Continue operating to build history.",
+    );
   }
 
   return insights;
@@ -549,15 +530,9 @@ function buildMetric(label: string, current: number, previous?: number): Metric 
 
   if (delta > threshold) {
     // For success rate: higher = improving. For retries: higher = declining
-    trend =
-      label.includes("Retries") || label.includes("Duration")
-        ? "declining"
-        : "improving";
+    trend = label.includes("Retries") || label.includes("Duration") ? "declining" : "improving";
   } else if (delta < -threshold) {
-    trend =
-      label.includes("Retries") || label.includes("Duration")
-        ? "improving"
-        : "declining";
+    trend = label.includes("Retries") || label.includes("Duration") ? "improving" : "declining";
   }
 
   return { current, previous: prev, trend, label };

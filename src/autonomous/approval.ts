@@ -11,8 +11,8 @@
  * - DENY:     Never allow without explicit override (shutdown, reboot, delete)
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { DeviceAction, DeviceActionType } from "./device/types.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 import { auditLog } from "./security-hardening.js";
 
 const log = createSubsystemLogger("approval");
@@ -35,7 +35,7 @@ export type ApprovalRequest = {
 };
 
 export type ApprovalRule = {
-  pattern: string;        // Action type or pattern
+  pattern: string; // Action type or pattern
   level: ApprovalLevel;
 };
 
@@ -73,8 +73,8 @@ const DEFAULT_RISK: Record<DeviceActionType, ApprovalLevel> = {
 export class ApprovalGate {
   private riskMap: Record<string, ApprovalLevel>;
   private pending: Map<string, ApprovalRequest> = new Map();
-  private allowList: Set<string> = new Set();  // "Always Allow" patterns
-  private denyList: Set<string> = new Set();   // "Always Deny" patterns
+  private allowList: Set<string> = new Set(); // "Always Allow" patterns
+  private denyList: Set<string> = new Set(); // "Always Deny" patterns
   private history: ApprovalRequest[] = [];
   private onPrompt: ((request: ApprovalRequest) => void) | null = null;
   private resolvers: Map<string, (approved: boolean) => void> = new Map();
@@ -140,7 +140,14 @@ export class ApprovalGate {
         } else {
           // SECURITY: No handler registered — DENY by default
           log.warn(`no approval handler — DENYING by default: ${request.description}`);
-          await auditLog.record({ category: "security", action: "approval_denied_no_handler", detail: request.description, source: "agent", riskLevel: "high", approved: false });
+          await auditLog.record({
+            category: "security",
+            action: "approval_denied_no_handler",
+            detail: request.description,
+            source: "agent",
+            riskLevel: "high",
+            approved: false,
+          });
           return false;
         }
 
@@ -254,12 +261,18 @@ export class ApprovalGate {
 
   private getActionKey(action: DeviceAction): string {
     switch (action.action) {
-      case "device_open_app": return `device_open_app:${action.appName}`;
-      case "device_open_file": return `device_open_file:${action.filePath}`;
-      case "device_open_url": return `device_open_url:${action.url}`;
-      case "device_focus_window": return `device_focus_window:${action.windowTitle}`;
-      case "device_close_window": return `device_close_window:${action.windowTitle}`;
-      default: return action.action;
+      case "device_open_app":
+        return `device_open_app:${action.appName}`;
+      case "device_open_file":
+        return `device_open_file:${action.filePath}`;
+      case "device_open_url":
+        return `device_open_url:${action.url}`;
+      case "device_focus_window":
+        return `device_focus_window:${action.windowTitle}`;
+      case "device_close_window":
+        return `device_close_window:${action.windowTitle}`;
+      default:
+        return action.action;
     }
   }
 
@@ -280,14 +293,22 @@ export class ApprovalGate {
 
   private describeAction(action: DeviceAction): string {
     switch (action.action) {
-      case "device_open_app": return `Open application: ${action.appName}`;
-      case "device_open_file": return `Open file: ${action.filePath}`;
-      case "device_open_url": return `Open URL: ${action.url}`;
-      case "device_close_window": return `Close window: ${action.windowTitle || "active window"}`;
-      case "device_click": return `Click at (${action.coordinates?.x}, ${action.coordinates?.y})`;
-      case "device_type": return `Type: "${action.text?.slice(0, 50)}"`;
-      case "device_hotkey": return `Hotkey: ${action.modifiers?.join("+")}+${action.key}`;
-      default: return `${action.action}: ${action.reasoning}`;
+      case "device_open_app":
+        return `Open application: ${action.appName}`;
+      case "device_open_file":
+        return `Open file: ${action.filePath}`;
+      case "device_open_url":
+        return `Open URL: ${action.url}`;
+      case "device_close_window":
+        return `Close window: ${action.windowTitle || "active window"}`;
+      case "device_click":
+        return `Click at (${action.coordinates?.x}, ${action.coordinates?.y})`;
+      case "device_type":
+        return `Type: "${action.text?.slice(0, 50)}"`;
+      case "device_hotkey":
+        return `Hotkey: ${action.modifiers?.join("+")}+${action.key}`;
+      default:
+        return `${action.action}: ${action.reasoning}`;
     }
   }
 }

@@ -31,11 +31,7 @@ function setIMessageDmPolicy(cfg: AGDIConfig, dmPolicy: DmPolicy) {
   };
 }
 
-function setIMessageAllowFrom(
-  cfg: AGDIConfig,
-  accountId: string,
-  allowFrom: string[],
-): AGDIConfig {
+function setIMessageAllowFrom(cfg: AGDIConfig, accountId: string, allowFrom: string[]): AGDIConfig {
   if (accountId === DEFAULT_ACCOUNT_ID) {
     return {
       ...cfg,

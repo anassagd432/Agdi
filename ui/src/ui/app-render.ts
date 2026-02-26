@@ -1,6 +1,7 @@
 import { html, nothing } from "lit";
 import type { AppViewState } from "./app-view-state.ts";
 import { parseAgentSessionKey } from "../../../src/routing/session-key.js";
+import "./components/index.ts";
 import { refreshChatAvatar } from "./app-chat.ts";
 import { renderUsageTab } from "./app-render-usage-tab.ts";
 import { renderChatControls, renderTab, renderThemeToggle } from "./app-render.helpers.ts";
@@ -132,11 +133,33 @@ export function renderApp(state: AppViewState) {
           </div>
         </div>
         <div class="topbar-status">
-          <div class="pill">
-            <span class="statusDot ${state.connected ? "ok" : ""}"></span>
-            <span>Health</span>
-            <span class="mono">${state.connected ? "OK" : "Offline"}</span>
-          </div>
+          ${
+            state.jarvisAvailable
+              ? html`
+                  <button
+                    class="jarvis-toggle ${state.jarvisState === "listening" || state.jarvisState === "speaking" || state.jarvisState === "processing" ? "jarvis-toggle--active" : ""}"
+                    @click=${() => state.handleJarvisToggle()}
+                    title="Jarvis Voice Module"
+                  >
+                    <span class="jarvis-toggle__icon">${icons.mic}</span>
+                    <span class="jarvis-toggle__text">
+                      ${
+                        state.jarvisState === "listening"
+                          ? "Listening"
+                          : state.jarvisState === "speaking"
+                            ? "Speaking"
+                            : state.jarvisState === "processing"
+                              ? "Processing"
+                              : "Jarvis Core"
+                      }
+                    </span>
+                  </button>
+                `
+              : nothing
+          }
+          <agdi-badge status="${state.connected ? "ok" : "danger"}">
+            Gateway: ${state.connected ? "Online" : "Offline"}
+          </agdi-badge>
           ${renderThemeToggle(state)}
         </div>
       </header>

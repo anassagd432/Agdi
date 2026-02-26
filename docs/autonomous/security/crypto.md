@@ -30,7 +30,7 @@ const types = crypto.identifyHash("5f4dcc3b5aa765d61d8327deb882cf99");
 const result = await crypto.crackWithHashcat(
   "5f4dcc3b5aa765d61d8327deb882cf99",
   0, // MD5 mode
-  "/usr/share/wordlists/rockyou.txt"
+  "/usr/share/wordlists/rockyou.txt",
 );
 
 // Crack with John the Ripper
@@ -40,11 +40,11 @@ const results = await crypto.crackWithJohn("/tmp/hashes.txt");
 ## Encoding / Decoding
 
 ```typescript
-crypto.base64Encode("hello");    // → "aGVsbG8="
+crypto.base64Encode("hello"); // → "aGVsbG8="
 crypto.base64Decode("aGVsbG8="); // → "hello"
-crypto.hexEncode("hello");       // → "68656c6c6f"
-crypto.urlEncode("a b&c");       // → "a%20b%26c"
-crypto.rot13("Hello");           // → "Uryyb"
+crypto.hexEncode("hello"); // → "68656c6c6f"
+crypto.urlEncode("a b&c"); // → "a%20b%26c"
+crypto.rot13("Hello"); // → "Uryyb"
 ```
 
 ## Password Generation

@@ -115,9 +115,9 @@ describe("control UI assets helpers (fs-mocked)", () => {
     const { resolveControlUiDistIndexPath } = await import("./control-ui-assets.js");
 
     const pkgRoot = abs("fixtures/agdi");
-    (
-      agdiRoot.resolveAGDIPackageRoot as unknown as ReturnType<typeof vi.fn>
-    ).mockResolvedValueOnce(pkgRoot);
+    (agdiRoot.resolveAGDIPackageRoot as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      pkgRoot,
+    );
 
     await expect(resolveControlUiDistIndexPath(abs("fixtures/bin/agdi"))).resolves.toBe(
       path.join(pkgRoot, "dist", "control-ui", "index.html"),

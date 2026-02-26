@@ -31,10 +31,7 @@ vi.mock("../runtime.js", () => ({
   },
 }));
 
-function buildSnapshot(params: {
-  resolved: AGDIConfig;
-  config: AGDIConfig;
-}): ConfigFileSnapshot {
+function buildSnapshot(params: { resolved: AGDIConfig; config: AGDIConfig }): ConfigFileSnapshot {
   return {
     path: "/tmp/agdi.json",
     exists: true,

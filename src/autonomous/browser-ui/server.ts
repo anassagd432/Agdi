@@ -11,16 +11,16 @@
  * Starts on a local port and opens in the user's default browser.
  */
 
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
+import type { Page } from "playwright-core";
 import { readFileSync } from "node:fs";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { join, extname } from "node:path";
 import { WebSocketServer, WebSocket } from "ws";
-import type { Page } from "playwright-core";
 import type { AutonomousAgent } from "../loop.js";
-import type { AgentUI } from "../user-interface.js";
 import type { AgentMemory } from "../memory.js";
 import type { SelfImprover } from "../self-improve.js";
 import type { AgentEvent, AgentState, Goal } from "../types.js";
+import type { AgentUI } from "../user-interface.js";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -266,7 +266,9 @@ export class BrowserDashboard {
       case "navigate": {
         const navUrl = String(msg.url ?? "");
         if (navUrl && this.page) {
-          await this.page.goto(navUrl, { waitUntil: "domcontentloaded", timeout: 15_000 }).catch(() => {});
+          await this.page
+            .goto(navUrl, { waitUntil: "domcontentloaded", timeout: 15_000 })
+            .catch(() => {});
         }
         break;
       }

@@ -80,16 +80,13 @@ export async function noteMacLaunchctlGatewayEnvOverrides(
     const lines = [
       "- Deprecated launchctl environment variables detected (ignored).",
       ...deprecatedLaunchctlEntries.map(
-        ([key]) =>
-          `- \`${key}\` is set; use \`AGDI_${key.slice(key.indexOf("_") + 1)}\` instead.`,
+        ([key]) => `- \`${key}\` is set; use \`AGDI_${key.slice(key.indexOf("_") + 1)}\` instead.`,
       ),
     ];
     (deps?.noteFn ?? note)(lines.join("\n"), "Gateway (macOS)");
   }
 
-  const tokenEntries = [
-    ["AGDI_GATEWAY_TOKEN", await getenv("AGDI_GATEWAY_TOKEN")],
-  ] as const;
+  const tokenEntries = [["AGDI_GATEWAY_TOKEN", await getenv("AGDI_GATEWAY_TOKEN")]] as const;
   const passwordEntries = [
     ["AGDI_GATEWAY_PASSWORD", await getenv("AGDI_GATEWAY_PASSWORD")],
   ] as const;

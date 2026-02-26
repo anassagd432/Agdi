@@ -8,9 +8,9 @@
  * Uses in-process timers (no cron dependency) so it works everywhere.
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { NLCommander } from "./nl-commander.js";
 import type { WorkflowReplay } from "./workflow-replay.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("scheduler");
 
@@ -22,7 +22,7 @@ export type ScheduledTask = {
   id: string;
   name: string;
   type: "command" | "workflow";
-  payload: string;       // NL command or workflow ID
+  payload: string; // NL command or workflow ID
   schedule: TaskSchedule;
   enabled: boolean;
   lastRun?: number;
@@ -75,10 +75,19 @@ export class TaskScheduler {
   }
 
   /** Add a scheduled task. */
-  add(name: string, type: "command" | "workflow", payload: string, schedule: TaskSchedule): ScheduledTask {
+  add(
+    name: string,
+    type: "command" | "workflow",
+    payload: string,
+    schedule: TaskSchedule,
+  ): ScheduledTask {
     const id = `task-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const task: ScheduledTask = {
-      id, name, type, payload, schedule,
+      id,
+      name,
+      type,
+      payload,
+      schedule,
       enabled: true,
       nextRun: this.calculateNextRun(schedule),
       runCount: 0,
@@ -102,7 +111,13 @@ export class TaskScheduler {
   }
 
   /** Convenience: schedule a weekly command. */
-  weekly(dayOfWeek: number, hour: number, minute: number, name: string, command: string): ScheduledTask {
+  weekly(
+    dayOfWeek: number,
+    hour: number,
+    minute: number,
+    name: string,
+    command: string,
+  ): ScheduledTask {
     return this.add(name, "command", command, { type: "weekly", dayOfWeek, hour, minute });
   }
 
@@ -141,7 +156,9 @@ export class TaskScheduler {
       .slice(0, limit);
   }
 
-  get running(): boolean { return this._running; }
+  get running(): boolean {
+    return this._running;
+  }
 
   // -------------------------------------------------------------------------
   // Private
@@ -206,7 +223,9 @@ export class TaskScheduler {
         const next = new Date(now);
         next.setHours(schedule.hour, schedule.minute, 0, 0);
         const daysUntil = (schedule.dayOfWeek - next.getDay() + 7) % 7;
-        next.setDate(next.getDate() + (daysUntil === 0 && next.getTime() <= Date.now() ? 7 : daysUntil));
+        next.setDate(
+          next.getDate() + (daysUntil === 0 && next.getTime() <= Date.now() ? 7 : daysUntil),
+        );
         return next.getTime();
       }
 

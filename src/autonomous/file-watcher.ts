@@ -11,8 +11,8 @@
 import { watch, type FSWatcher } from "node:fs";
 import { stat, readdir } from "node:fs/promises";
 import { join, extname, basename } from "node:path";
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { NLCommander } from "./nl-commander.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("file-watcher");
 
@@ -23,14 +23,14 @@ const log = createSubsystemLogger("file-watcher");
 export type FileWatchRule = {
   id: string;
   directory: string;
-  pattern?: string;          // Glob pattern (e.g. "*.pdf")
-  extensions?: string[];     // File extensions (e.g. [".pdf", ".doc"])
+  pattern?: string; // Glob pattern (e.g. "*.pdf")
+  extensions?: string[]; // File extensions (e.g. [".pdf", ".doc"])
   event: "create" | "change" | "delete" | "any";
-  action: string;            // NL command to execute (supports {file} placeholder)
+  action: string; // NL command to execute (supports {file} placeholder)
   enabled: boolean;
   triggerCount: number;
   lastTriggered?: number;
-  cooldownMs: number;        // Min time between triggers
+  cooldownMs: number; // Min time between triggers
 };
 
 export type FileEvent = {
@@ -65,13 +65,16 @@ export class FileWatcher {
    *     action: "open file {file}",
    *   });
    */
-  async addRule(directory: string, opts: {
-    pattern?: string;
-    extensions?: string[];
-    event?: "create" | "change" | "delete" | "any";
-    action: string;
-    cooldownMs?: number;
-  }): Promise<FileWatchRule> {
+  async addRule(
+    directory: string,
+    opts: {
+      pattern?: string;
+      extensions?: string[];
+      event?: "create" | "change" | "delete" | "any";
+      action: string;
+      cooldownMs?: number;
+    },
+  ): Promise<FileWatchRule> {
     const id = `watch-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const rule: FileWatchRule = {
       id,
@@ -189,7 +192,7 @@ export class FileWatcher {
       }
 
       // Cooldown
-      if (rule.lastTriggered && (Date.now() - rule.lastTriggered) < rule.cooldownMs) continue;
+      if (rule.lastTriggered && Date.now() - rule.lastTriggered < rule.cooldownMs) continue;
 
       // Execute
       rule.triggerCount++;

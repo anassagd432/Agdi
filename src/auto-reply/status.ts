@@ -301,10 +301,7 @@ const formatMediaUnderstandingLine = (decisions?: MediaUnderstandingDecision[]) 
   return `📎 Media: ${parts.join(" · ")}`;
 };
 
-const formatVoiceModeLine = (
-  config?: AGDIConfig,
-  sessionEntry?: SessionEntry,
-): string | null => {
+const formatVoiceModeLine = (config?: AGDIConfig, sessionEntry?: SessionEntry): string | null => {
   if (!config) {
     return null;
   }

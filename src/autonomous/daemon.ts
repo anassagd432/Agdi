@@ -6,34 +6,33 @@
  * startup + shutdown and state persistence.
  */
 
+import type { Browser, Page } from "playwright-core";
+import { mkdirSync, existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { mkdirSync, existsSync } from "node:fs";
 import { chromium } from "playwright-core";
-import type { Browser, Page } from "playwright-core";
-
-import { AutonomousAgent } from "./loop.js";
-import { GoalQueue } from "./goal-queue.js";
-import { MessageQueue } from "./message-queue.js";
-import { AgentUI } from "./user-interface.js";
-import { SelfImprover } from "./self-improve.js";
-import { analyzePerformance, summarizeReport } from "./self-analyze.js";
 import type { PerformanceReport } from "./self-analyze.js";
-import { AgentMemory } from "./memory.js";
-import { analyzeScreenshot } from "./vision.js";
-import { addGridOverlay } from "./grid-overlay.js";
-import { executeVisualAction } from "./visual-actions.js";
-import { diagnose, attemptRepair } from "./repair.js";
-import { decideStrategy } from "./decision.js";
 import type { Action, AutonomousConfig, Goal, VisionAnalysis } from "./types.js";
-import { DEFAULT_CONFIG } from "./types.js";
-import { BrowserDashboard } from "./browser-ui/server.js";
-import { TabManager } from "./tab-manager.js";
 import { AuthManager } from "./auth-manager.js";
-import { GoalScheduler } from "./scheduler.js";
+import { BrowserDashboard } from "./browser-ui/server.js";
+import { decideStrategy } from "./decision.js";
+import { GoalQueue } from "./goal-queue.js";
+import { addGridOverlay } from "./grid-overlay.js";
+import { JarvisDaemon } from "./jarvis/jarvis-daemon.js";
+import { AutonomousAgent } from "./loop.js";
+import { AgentMemory } from "./memory.js";
+import { MessageQueue } from "./message-queue.js";
 import { PluginRegistry, createApiPlugin, createFilePlugin } from "./plugins.js";
 import { TaskRecorder } from "./recorder.js";
-import { JarvisDaemon } from "./jarvis/jarvis-daemon.js";
+import { diagnose, attemptRepair } from "./repair.js";
+import { GoalScheduler } from "./scheduler.js";
+import { analyzePerformance, summarizeReport } from "./self-analyze.js";
+import { SelfImprover } from "./self-improve.js";
+import { TabManager } from "./tab-manager.js";
+import { DEFAULT_CONFIG } from "./types.js";
+import { AgentUI } from "./user-interface.js";
+import { analyzeScreenshot } from "./vision.js";
+import { executeVisualAction } from "./visual-actions.js";
 import { VoiceController } from "./voice.js";
 
 // ---------------------------------------------------------------------------
@@ -166,7 +165,10 @@ export class AutonomousDaemon {
           this.goalsCompletedSinceLastAnalysis += 1;
           break;
         case "goal_failed":
-          this.ui!.sendNotification("error", `Failed: "${event.goal.description}" — ${event.error}`);
+          this.ui!.sendNotification(
+            "error",
+            `Failed: "${event.goal.description}" — ${event.error}`,
+          );
           this.goalsCompletedSinceLastAnalysis += 1;
           break;
         case "user_escalation":
@@ -207,7 +209,10 @@ export class AutonomousDaemon {
       });
       this.ui.sendNotification("success", `🌐 Agent browser: ${dashUrl}`);
     } catch (err) {
-      this.ui.sendNotification("warning", `Dashboard failed to start: ${err instanceof Error ? err.message : String(err)}`);
+      this.ui.sendNotification(
+        "warning",
+        `Dashboard failed to start: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
   }
 
@@ -308,7 +313,12 @@ export class AutonomousDaemon {
     this.ui?.sendNotification("info", "🧬 Running self-analysis & improvement cycle...");
 
     const allGoals = this.agent.goals.list();
-    const report = analyzePerformance(this.memory, allGoals, 24 * 60 * 60 * 1000, this.lastReport ?? undefined);
+    const report = analyzePerformance(
+      this.memory,
+      allGoals,
+      24 * 60 * 60 * 1000,
+      this.lastReport ?? undefined,
+    );
 
     this.ui?.sendNotification("info", summarizeReport(report));
 
@@ -317,7 +327,10 @@ export class AutonomousDaemon {
     this.goalsCompletedSinceLastAnalysis = 0;
 
     if (summary.changesApplied > 0) {
-      this.ui?.sendNotification("success", `🧬 Self-improved: ${summary.changesApplied} changes (v${summary.version})`);
+      this.ui?.sendNotification(
+        "success",
+        `🧬 Self-improved: ${summary.changesApplied} changes (v${summary.version})`,
+      );
       for (const change of summary.changes.slice(0, 5)) {
         this.ui?.sendNotification("info", `  → ${change}`);
       }
@@ -405,35 +418,29 @@ export class AutonomousDaemon {
 
     // --- OBSERVER ---
     // Takes a screenshot and asks Gemini to evaluate progress
-    agent.setObserver(
-      async (screenshot: Buffer, goal: Goal): Promise<VisionAnalysis> => {
-        // Add grid overlay if we're having precision issues
-        let imageToAnalyze = screenshot;
-        if (goal.retries > 0) {
-          imageToAnalyze = await addGridOverlay(screenshot);
-        }
+    agent.setObserver(async (screenshot: Buffer, goal: Goal): Promise<VisionAnalysis> => {
+      // Add grid overlay if we're having precision issues
+      let imageToAnalyze = screenshot;
+      if (goal.retries > 0) {
+        imageToAnalyze = await addGridOverlay(screenshot);
+      }
 
-        const history = memory.getRecentActionsSummary(goal.id);
-        const analysis = await analyzeScreenshot(imageToAnalyze, goal, config, {
-          history,
-          useFastModel: goal.retries === 0, // Use fast model first, pro on retries
-        });
+      const history = memory.getRecentActionsSummary(goal.id);
+      const analysis = await analyzeScreenshot(imageToAnalyze, goal, config, {
+        history,
+        useFastModel: goal.retries === 0, // Use fast model first, pro on retries
+      });
 
-        // Log the observation
-        memory.logAction(goal, analysis.suggestedAction, "success", analysis.observation);
+      // Log the observation
+      memory.logAction(goal, analysis.suggestedAction, "success", analysis.observation);
 
-        return analysis;
-      },
-    );
+      return analysis;
+    });
 
     // --- REPAIRER ---
     // Diagnoses errors and attempts self-repair
     agent.setRepairer(
-      async (
-        goal: Goal,
-        error: Error,
-        context?: VisionAnalysis,
-      ): Promise<boolean> => {
+      async (goal: Goal, error: Error, context?: VisionAnalysis): Promise<boolean> => {
         const diagnosis = diagnose(error, goal, context);
         const repairResult = await attemptRepair(diagnosis, goal);
 
@@ -458,9 +465,7 @@ export class AutonomousDaemon {
 let daemon: AutonomousDaemon | null = null;
 
 /** Start the global daemon instance. */
-export async function startDaemon(
-  config?: Partial<AutonomousConfig>,
-): Promise<AutonomousDaemon> {
+export async function startDaemon(config?: Partial<AutonomousConfig>): Promise<AutonomousDaemon> {
   if (daemon?.isRunning) {
     throw new Error("Autonomous daemon is already running");
   }

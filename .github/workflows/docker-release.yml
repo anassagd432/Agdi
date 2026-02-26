@@ -147,3 +147,28 @@ jobs:
             ${{ needs.build-arm64.outputs.image-digest }}
         env:
           DOCKER_METADATA_OUTPUT_JSON: ${{ steps.meta.outputs.json }}
+
+  # Generate SBOM for the release
+  sbom:
+    runs-on: ubuntu-latest
+    needs: [create-manifest]
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Generate SBOM (CycloneDX)
+        run: npx --yes @cyclonedx/cyclonedx-npm --output-file sbom.cdx.json --output-format JSON
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-release-sbom
+          path: sbom.cdx.json
+          retention-days: 90

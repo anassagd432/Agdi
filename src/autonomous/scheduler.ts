@@ -133,11 +133,7 @@ export class GoalScheduler {
   }
 
   /** Add a recurring scheduled goal. */
-  add(opts: {
-    description: string;
-    priority?: GoalPriority;
-    schedule: string;
-  }): ScheduledGoal {
+  add(opts: { description: string; priority?: GoalPriority; schedule: string }): ScheduledGoal {
     // Validate the cron expression first
     parseCron(opts.schedule);
 

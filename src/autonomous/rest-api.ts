@@ -22,12 +22,12 @@
  */
 
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { createSubsystemLogger } from "../logging/subsystem.js";
+import type { ApprovalGate } from "./approval.js";
 import type { DeviceController } from "./device-controller.js";
 import type { NLCommander } from "./nl-commander.js";
-import type { ApprovalGate } from "./approval.js";
 import type { UserProfile } from "./user-profile.js";
 import type { WorkflowReplay } from "./workflow-replay.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 import { SECURITY_HEADERS, CommandGuard, auditLog } from "./security-hardening.js";
 
 const log = createSubsystemLogger("rest-api");
@@ -39,11 +39,11 @@ const MAX_BODY_BYTES = 1_048_576; // 1 MB
 
 export type ApiConfig = {
   port: number;
-  token?: string;          // Bearer token for auth
+  token?: string; // Bearer token for auth
   cors: boolean;
-  corsOrigins?: string[];  // Allowed CORS origins (empty = no wildcard)
-  rateLimit: number;       // Max requests per minute
-  requireAuth: boolean;    // Deny all requests without token
+  corsOrigins?: string[]; // Allowed CORS origins (empty = no wildcard)
+  rateLimit: number; // Max requests per minute
+  requireAuth: boolean; // Deny all requests without token
 };
 
 const DEFAULT_CONFIG: ApiConfig = {
@@ -127,7 +127,9 @@ export class AgentRestApi {
     if (this.config.cors) {
       const origin = req.headers.origin ?? "";
       const allowed = this.config.corsOrigins?.length
-        ? this.config.corsOrigins.includes(origin) ? origin : ""
+        ? this.config.corsOrigins.includes(origin)
+          ? origin
+          : ""
         : "*";
       if (allowed) {
         res.setHeader("Access-Control-Allow-Origin", allowed);
@@ -135,7 +137,11 @@ export class AgentRestApi {
         res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         res.setHeader("Vary", "Origin");
       }
-      if (req.method === "OPTIONS") { res.writeHead(204); res.end(); return; }
+      if (req.method === "OPTIONS") {
+        res.writeHead(204);
+        res.end();
+        return;
+      }
     }
 
     // Auth — deny-by-default when requireAuth is true
@@ -147,7 +153,14 @@ export class AgentRestApi {
         return;
       }
       if (!auth || auth !== `Bearer ${this.config.token}`) {
-        await auditLog.record({ category: "auth", action: "auth_failed", detail: `IP: ${req.socket.remoteAddress}`, source: req.socket.remoteAddress ?? "unknown", riskLevel: "high", approved: false });
+        await auditLog.record({
+          category: "auth",
+          action: "auth_failed",
+          detail: `IP: ${req.socket.remoteAddress}`,
+          source: req.socket.remoteAddress ?? "unknown",
+          riskLevel: "high",
+          approved: false,
+        });
         this.json(res, 401, { error: "Unauthorized" });
         return;
       }
@@ -168,14 +181,22 @@ export class AgentRestApi {
       // GET routes
       if (method === "GET") {
         switch (url) {
-          case "/api/health": return this.json(res, 200, { status: "ok", timestamp: Date.now() });
-          case "/api/status": return this.json(res, 200, await this.getStatus());
-          case "/api/goals": return this.json(res, 200, { goals: [] }); // TODO: wire to goal queue
-          case "/api/screenshot": return await this.handleScreenshot(res);
-          case "/api/windows": return await this.handleListWindows(res);
-          case "/api/profile": return this.handleGetProfile(res);
-          case "/api/workflows": return this.handleListWorkflows(res);
-          default: return this.json(res, 404, { error: "Not found" });
+          case "/api/health":
+            return this.json(res, 200, { status: "ok", timestamp: Date.now() });
+          case "/api/status":
+            return this.json(res, 200, await this.getStatus());
+          case "/api/goals":
+            return this.json(res, 200, { goals: [] }); // TODO: wire to goal queue
+          case "/api/screenshot":
+            return await this.handleScreenshot(res);
+          case "/api/windows":
+            return await this.handleListWindows(res);
+          case "/api/profile":
+            return this.handleGetProfile(res);
+          case "/api/workflows":
+            return this.handleListWorkflows(res);
+          default:
+            return this.json(res, 404, { error: "Not found" });
         }
       }
 
@@ -183,16 +204,26 @@ export class AgentRestApi {
       if (method === "POST") {
         const body = await this.readBody(req);
         switch (url) {
-          case "/api/command": return await this.handleCommand(body, res);
-          case "/api/goal": return this.handleAddGoal(body, res);
-          case "/api/click": return await this.handleClick(body, res);
-          case "/api/type": return await this.handleType(body, res);
-          case "/api/hotkey": return await this.handleHotkey(body, res);
-          case "/api/open": return await this.handleOpen(body, res);
-          case "/api/shell": return await this.handleShell(body, res);
-          case "/api/approval": return this.handleApproval(body, res);
-          case "/api/workflow/replay": return await this.handleWorkflowReplay(body, res);
-          default: return this.json(res, 404, { error: "Not found" });
+          case "/api/command":
+            return await this.handleCommand(body, res);
+          case "/api/goal":
+            return this.handleAddGoal(body, res);
+          case "/api/click":
+            return await this.handleClick(body, res);
+          case "/api/type":
+            return await this.handleType(body, res);
+          case "/api/hotkey":
+            return await this.handleHotkey(body, res);
+          case "/api/open":
+            return await this.handleOpen(body, res);
+          case "/api/shell":
+            return await this.handleShell(body, res);
+          case "/api/approval":
+            return this.handleApproval(body, res);
+          case "/api/workflow/replay":
+            return await this.handleWorkflowReplay(body, res);
+          default:
+            return this.json(res, 404, { error: "Not found" });
         }
       }
 
@@ -285,26 +316,44 @@ export class AgentRestApi {
 
   private async handleOpen(body: Record<string, unknown>, res: ServerResponse): Promise<void> {
     if (!this.controller) return this.json(res, 503, { error: "Controller not ready" });
-    if (body.app) { await this.controller.openApp(body.app as string); }
-    else if (body.url) { await this.controller.openUrl(body.url as string); }
-    else if (body.file) { await this.controller.openFile(body.file as string); }
-    else return this.json(res, 400, { error: "Provide app, url, or file" });
+    if (body.app) {
+      await this.controller.openApp(body.app as string);
+    } else if (body.url) {
+      await this.controller.openUrl(body.url as string);
+    } else if (body.file) {
+      await this.controller.openFile(body.file as string);
+    } else return this.json(res, 400, { error: "Provide app, url, or file" });
     this.json(res, 200, { status: "opened" });
   }
 
   private async handleShell(body: Record<string, unknown>, res: ServerResponse): Promise<void> {
-    if (!this.controller?.system) return this.json(res, 503, { error: "System controller not available" });
+    if (!this.controller?.system)
+      return this.json(res, 503, { error: "System controller not available" });
     const command = body.command as string;
     if (!command) return this.json(res, 400, { error: "Missing 'command'" });
 
     // Command injection guard
     const check = CommandGuard.isSafe(command);
     if (!check.safe) {
-      await auditLog.record({ category: "security", action: "shell_blocked", detail: `${check.reason}: ${command.slice(0, 100)}`, source: "api", riskLevel: "critical", approved: false });
+      await auditLog.record({
+        category: "security",
+        action: "shell_blocked",
+        detail: `${check.reason}: ${command.slice(0, 100)}`,
+        source: "api",
+        riskLevel: "critical",
+        approved: false,
+      });
       return this.json(res, 403, { error: `Blocked: ${check.reason}` });
     }
 
-    await auditLog.record({ category: "shell", action: "exec", detail: command.slice(0, 200), source: "api", riskLevel: "high", approved: true });
+    await auditLog.record({
+      category: "shell",
+      action: "exec",
+      detail: command.slice(0, 200),
+      source: "api",
+      riskLevel: "high",
+      approved: true,
+    });
     const result = await this.controller.system.exec(command);
     this.json(res, 200, result);
   }
@@ -313,7 +362,8 @@ export class AgentRestApi {
     if (!this.approval) return this.json(res, 503, { error: "Approval gate not available" });
     const requestId = body.requestId as string;
     const approved = body.approved as boolean;
-    if (!requestId || approved === undefined) return this.json(res, 400, { error: "Missing requestId, approved" });
+    if (!requestId || approved === undefined)
+      return this.json(res, 400, { error: "Missing requestId, approved" });
     this.approval.resolve(requestId, approved, body.alwaysAllow as boolean);
     this.json(res, 200, { status: approved ? "approved" : "denied" });
   }
@@ -328,7 +378,10 @@ export class AgentRestApi {
     this.json(res, 200, { workflows: this.workflows.list() });
   }
 
-  private async handleWorkflowReplay(body: Record<string, unknown>, res: ServerResponse): Promise<void> {
+  private async handleWorkflowReplay(
+    body: Record<string, unknown>,
+    res: ServerResponse,
+  ): Promise<void> {
     if (!this.workflows) return this.json(res, 503, { error: "Workflows not available" });
     const id = body.workflowId as string;
     if (!id) return this.json(res, 400, { error: "Missing workflowId" });
@@ -359,7 +412,11 @@ export class AgentRestApi {
         body += chunk;
       });
       req.on("end", () => {
-        try { resolve(JSON.parse(body || "{}")); } catch { resolve({}); }
+        try {
+          resolve(JSON.parse(body || "{}"));
+        } catch {
+          resolve({});
+        }
       });
       req.on("error", reject);
     });

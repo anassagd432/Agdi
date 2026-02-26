@@ -10,10 +10,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import type {
   DeviceBackend,
   KeyModifier,
@@ -71,9 +71,18 @@ const KEY_MAP: Record<string, string> = {
   end: "End",
   pageup: "Prior",
   pagedown: "Next",
-  f1: "F1", f2: "F2", f3: "F3", f4: "F4",
-  f5: "F5", f6: "F6", f7: "F7", f8: "F8",
-  f9: "F9", f10: "F10", f11: "F11", f12: "F12",
+  f1: "F1",
+  f2: "F2",
+  f3: "F3",
+  f4: "F4",
+  f5: "F5",
+  f6: "F6",
+  f7: "F7",
+  f8: "F8",
+  f9: "F9",
+  f10: "F10",
+  f11: "F11",
+  f12: "F12",
 };
 
 const MODIFIER_MAP: Record<KeyModifier, string> = {
@@ -90,9 +99,12 @@ function mapKey(key: string): string {
 
 function mapButton(button?: MouseButton): string {
   switch (button) {
-    case "right": return "3";
-    case "middle": return "2";
-    default: return "1";
+    case "right":
+      return "3";
+    case "middle":
+      return "2";
+    default:
+      return "1";
   }
 }
 
@@ -111,15 +123,27 @@ export class LinuxBackend implements DeviceBackend {
 
   async mouseClick(x: number, y: number, button?: MouseButton): Promise<void> {
     await exec("xdotool", [
-      "mousemove", "--sync", String(x), String(y),
-      "click", mapButton(button),
+      "mousemove",
+      "--sync",
+      String(x),
+      String(y),
+      "click",
+      mapButton(button),
     ]);
   }
 
   async mouseDoubleClick(x: number, y: number): Promise<void> {
     await exec("xdotool", [
-      "mousemove", "--sync", String(x), String(y),
-      "click", "--repeat", "2", "--delay", "80", "1",
+      "mousemove",
+      "--sync",
+      String(x),
+      String(y),
+      "click",
+      "--repeat",
+      "2",
+      "--delay",
+      "80",
+      "1",
     ]);
   }
 
@@ -129,8 +153,12 @@ export class LinuxBackend implements DeviceBackend {
 
   async mouseDrag(from: Point, to: Point): Promise<void> {
     await exec("xdotool", [
-      "mousemove", "--sync", String(from.x), String(from.y),
-      "mousedown", "1",
+      "mousemove",
+      "--sync",
+      String(from.x),
+      String(from.y),
+      "mousedown",
+      "1",
     ]);
     // Smooth drag in steps
     const steps = 10;
@@ -144,8 +172,8 @@ export class LinuxBackend implements DeviceBackend {
   }
 
   async mouseScroll(direction: ScrollDirection, amount: number = 3): Promise<void> {
-    const button = direction === "up" ? "4" : direction === "down" ? "5"
-      : direction === "left" ? "6" : "7";
+    const button =
+      direction === "up" ? "4" : direction === "down" ? "5" : direction === "left" ? "6" : "7";
     await exec("xdotool", ["click", "--repeat", String(amount), button]);
   }
 
@@ -160,10 +188,7 @@ export class LinuxBackend implements DeviceBackend {
   }
 
   async hotkey(modifiers: KeyModifier[], key: string): Promise<void> {
-    const combo = [
-      ...modifiers.map((m) => MODIFIER_MAP[m]),
-      mapKey(key),
-    ].join("+");
+    const combo = [...modifiers.map((m) => MODIFIER_MAP[m]), mapKey(key)].join("+");
     await exec("xdotool", ["key", "--clearmodifiers", combo]);
   }
 
@@ -298,7 +323,12 @@ export class LinuxBackend implements DeviceBackend {
     const geometry = `${region.width}x${region.height}+${region.x}+${region.y}`;
     try {
       try {
-        await exec("scrot", ["-a", `${region.x},${region.y},${region.width},${region.height}`, "-o", tmpPath]);
+        await exec("scrot", [
+          "-a",
+          `${region.x},${region.y},${region.width},${region.height}`,
+          "-o",
+          tmpPath,
+        ]);
       } catch {
         await exec("import", ["-window", "root", "-crop", geometry, tmpPath]);
       }

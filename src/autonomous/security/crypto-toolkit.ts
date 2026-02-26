@@ -4,24 +4,45 @@
  */
 
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import * as crypto from "node:crypto";
+import { promisify } from "node:util";
 
 const run = promisify(execFile);
 
-export interface HashResult { original: string; hash: string; algorithm: string; }
-export interface CrackResult { cracked: boolean; hash: string; plaintext?: string; algorithm?: string; }
-export interface PasswordConfig { length?: number; uppercase?: boolean; lowercase?: boolean; digits?: boolean; symbols?: boolean; count?: number; }
+export interface HashResult {
+  original: string;
+  hash: string;
+  algorithm: string;
+}
+export interface CrackResult {
+  cracked: boolean;
+  hash: string;
+  plaintext?: string;
+  algorithm?: string;
+}
+export interface PasswordConfig {
+  length?: number;
+  uppercase?: boolean;
+  lowercase?: boolean;
+  digits?: boolean;
+  symbols?: boolean;
+  count?: number;
+}
 
 export class CryptoToolkit {
-
   // ── Hashing ───────────────────────────────────────────────
   hash(input: string, algo: string = "sha256"): HashResult {
-    return { original: input, hash: crypto.createHash(algo).update(input).digest("hex"), algorithm: algo };
+    return {
+      original: input,
+      hash: crypto.createHash(algo).update(input).digest("hex"),
+      algorithm: algo,
+    };
   }
 
   hashAll(input: string): HashResult[] {
-    return ["md5", "sha1", "sha256", "sha512", "sha3-256", "sha3-512"].map(a => this.hash(input, a));
+    return ["md5", "sha1", "sha256", "sha512", "sha3-256", "sha3-512"].map((a) =>
+      this.hash(input, a),
+    );
   }
 
   identifyHash(hash: string): string[] {
@@ -43,15 +64,28 @@ export class CryptoToolkit {
   }
 
   // ── Cracking ──────────────────────────────────────────────
-  async crackWithHashcat(hash: string, mode: number, wordlist = "/usr/share/wordlists/rockyou.txt"): Promise<CrackResult> {
+  async crackWithHashcat(
+    hash: string,
+    mode: number,
+    wordlist = "/usr/share/wordlists/rockyou.txt",
+  ): Promise<CrackResult> {
     try {
-      const { stdout } = await run("hashcat", ["-m", String(mode), "-a", "0", hash, wordlist, "--force", "--quiet"], { timeout: 300_000 });
+      const { stdout } = await run(
+        "hashcat",
+        ["-m", String(mode), "-a", "0", hash, wordlist, "--force", "--quiet"],
+        { timeout: 300_000 },
+      );
       const match = stdout.match(new RegExp(`${hash.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:(.+)`));
       return { cracked: !!match, hash, plaintext: match?.[1], algorithm: `hashcat mode ${mode}` };
-    } catch { return { cracked: false, hash }; }
+    } catch {
+      return { cracked: false, hash };
+    }
   }
 
-  async crackWithJohn(hashFile: string, wordlist = "/usr/share/wordlists/rockyou.txt"): Promise<CrackResult[]> {
+  async crackWithJohn(
+    hashFile: string,
+    wordlist = "/usr/share/wordlists/rockyou.txt",
+  ): Promise<CrackResult[]> {
     const results: CrackResult[] = [];
     try {
       await run("john", ["--wordlist=" + wordlist, hashFile], { timeout: 300_000 }).catch(() => {});
@@ -65,17 +99,40 @@ export class CryptoToolkit {
   }
 
   // ── Encoding ──────────────────────────────────────────────
-  base64Encode(input: string): string { return Buffer.from(input).toString("base64"); }
-  base64Decode(input: string): string { return Buffer.from(input, "base64").toString("utf-8"); }
-  hexEncode(input: string): string { return Buffer.from(input).toString("hex"); }
-  hexDecode(input: string): string { return Buffer.from(input, "hex").toString("utf-8"); }
-  urlEncode(input: string): string { return encodeURIComponent(input); }
-  urlDecode(input: string): string { return decodeURIComponent(input); }
-  rot13(input: string): string { return input.replace(/[a-zA-Z]/g, c => String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < "n" ? 13 : -13))); }
+  base64Encode(input: string): string {
+    return Buffer.from(input).toString("base64");
+  }
+  base64Decode(input: string): string {
+    return Buffer.from(input, "base64").toString("utf-8");
+  }
+  hexEncode(input: string): string {
+    return Buffer.from(input).toString("hex");
+  }
+  hexDecode(input: string): string {
+    return Buffer.from(input, "hex").toString("utf-8");
+  }
+  urlEncode(input: string): string {
+    return encodeURIComponent(input);
+  }
+  urlDecode(input: string): string {
+    return decodeURIComponent(input);
+  }
+  rot13(input: string): string {
+    return input.replace(/[a-zA-Z]/g, (c) =>
+      String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < "n" ? 13 : -13)),
+    );
+  }
 
   // ── Password Generation ───────────────────────────────────
   generatePasswords(config: PasswordConfig = {}): string[] {
-    const { length = 16, uppercase = true, lowercase = true, digits = true, symbols = true, count = 5 } = config;
+    const {
+      length = 16,
+      uppercase = true,
+      lowercase = true,
+      digits = true,
+      symbols = true,
+      count = 5,
+    } = config;
     let charset = "";
     if (uppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (lowercase) charset += "abcdefghijklmnopqrstuvwxyz";
@@ -85,7 +142,11 @@ export class CryptoToolkit {
     const passwords: string[] = [];
     for (let i = 0; i < count; i++) {
       const bytes = crypto.randomBytes(length);
-      passwords.push(Array.from(bytes).map(b => charset[b % charset.length]).join(""));
+      passwords.push(
+        Array.from(bytes)
+          .map((b) => charset[b % charset.length])
+          .join(""),
+      );
     }
     return passwords;
   }
@@ -93,15 +154,29 @@ export class CryptoToolkit {
   // ── Certificate Tools ─────────────────────────────────────
   async inspectCert(host: string, port = 443): Promise<string> {
     try {
-      const { stdout } = await run("openssl", ["s_client", "-connect", `${host}:${port}`, "-servername", host], { timeout: 10_000 });
+      const { stdout } = await run(
+        "openssl",
+        ["s_client", "-connect", `${host}:${port}`, "-servername", host],
+        { timeout: 10_000 },
+      );
       return stdout;
-    } catch (e) { return `Error: ${e}`; }
+    } catch (e) {
+      return `Error: ${e}`;
+    }
   }
 
   async checkDependencies(): Promise<{ available: string[]; missing: string[] }> {
     const tools = ["hashcat", "john", "openssl", "base64"];
-    const available: string[] = []; const missing: string[] = [];
-    for (const t of tools) { try { await run("which", [t]); available.push(t); } catch { missing.push(t); } }
+    const available: string[] = [];
+    const missing: string[] = [];
+    for (const t of tools) {
+      try {
+        await run("which", [t]);
+        available.push(t);
+      } catch {
+        missing.push(t);
+      }
+    }
     return { available, missing };
   }
 }

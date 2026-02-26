@@ -220,6 +220,11 @@ export type AppViewState = {
   logsMaxBytes: number;
   logsAtBottom: boolean;
   client: GatewayBrowserClient | null;
+  jarvisState: "off" | "idle" | "listening" | "processing" | "speaking" | "error" | "unknown";
+  jarvisMessage: string | null;
+  jarvisAvailable: boolean;
+  handleJarvisToggle: () => Promise<void>;
+  loadJarvisStatus: () => Promise<void>;
   refreshSessionsAfterChat: Set<string>;
   connect: () => void;
   setTab: (tab: Tab) => void;

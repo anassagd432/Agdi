@@ -52,10 +52,7 @@ export function resolveDefaultSlackAccountId(cfg: AGDIConfig): string {
   return ids[0] ?? DEFAULT_ACCOUNT_ID;
 }
 
-function resolveAccountConfig(
-  cfg: AGDIConfig,
-  accountId: string,
-): SlackAccountConfig | undefined {
+function resolveAccountConfig(cfg: AGDIConfig, accountId: string): SlackAccountConfig | undefined {
   const accounts = cfg.channels?.slack?.accounts;
   if (!accounts || typeof accounts !== "object") {
     return undefined;

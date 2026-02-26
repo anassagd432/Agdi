@@ -23,11 +23,7 @@ import {
 } from "./list.errors.js";
 import { isLocalBaseUrl, modelKey } from "./shared.js";
 
-const hasAuthForProvider = (
-  provider: string,
-  cfg?: AGDIConfig,
-  authStore?: AuthProfileStore,
-) => {
+const hasAuthForProvider = (provider: string, cfg?: AGDIConfig, authStore?: AuthProfileStore) => {
   if (!cfg || !authStore) {
     return false;
   }

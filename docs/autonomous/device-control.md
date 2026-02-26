@@ -9,13 +9,13 @@ AGDI controls devices at the OS level — no browser automation, no accessibilit
 
 ## Supported Platforms
 
-| Platform | Backend | Mouse | Keyboard | Screen | Apps | Windows |
-|----------|---------|-------|----------|--------|------|---------|
-| **Linux** | X11 / xdotool | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **macOS** | osascript / cliclick | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Windows** | PowerShell / P/Invoke | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Android** | ADB | ✅ | ✅ | ✅ | ✅ | — |
-| **iOS** | libimobiledevice + WDA | ✅ | ✅ | ✅ | ✅ | — |
+| Platform    | Backend                | Mouse | Keyboard | Screen | Apps | Windows |
+| ----------- | ---------------------- | ----- | -------- | ------ | ---- | ------- |
+| **Linux**   | X11 / xdotool          | ✅    | ✅       | ✅     | ✅   | ✅      |
+| **macOS**   | osascript / cliclick   | ✅    | ✅       | ✅     | ✅   | ✅      |
+| **Windows** | PowerShell / P/Invoke  | ✅    | ✅       | ✅     | ✅   | ✅      |
+| **Android** | ADB                    | ✅    | ✅       | ✅     | ✅   | —       |
+| **iOS**     | libimobiledevice + WDA | ✅    | ✅       | ✅     | ✅   | —       |
 
 ## Usage
 
@@ -107,9 +107,9 @@ import { ScreenOCR } from "agdi/autonomous";
 const ocr = new ScreenOCR();
 const result = await ocr.readScreen();
 
-console.log(result.text);          // Full text
-console.log(result.words);         // Individual words with positions
-console.log(result.confidence);    // OCR confidence score
+console.log(result.text); // Full text
+console.log(result.words); // Individual words with positions
+console.log(result.confidence); // OCR confidence score
 
 // Find specific text on screen
 const location = await ocr.findText("Submit");

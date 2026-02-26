@@ -254,10 +254,7 @@ export function resolveOAuthPath(
   return path.join(resolveOAuthDir(env, stateDir), OAUTH_FILENAME);
 }
 
-export function resolveGatewayPort(
-  cfg?: AGDIConfig,
-  env: NodeJS.ProcessEnv = process.env,
-): number {
+export function resolveGatewayPort(cfg?: AGDIConfig, env: NodeJS.ProcessEnv = process.env): number {
   const envRaw = env.AGDI_GATEWAY_PORT?.trim();
   if (envRaw) {
     const parsed = Number.parseInt(envRaw, 10);

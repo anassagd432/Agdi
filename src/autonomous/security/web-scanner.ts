@@ -136,16 +136,52 @@ const XSS_PAYLOADS = [
 // ── Common directories ────────────────────────────────────────────
 
 const COMMON_PATHS = [
-  "admin", "login", "dashboard", "api", "wp-admin", "wp-login.php",
-  "phpmyadmin", ".git", ".env", ".htaccess", "robots.txt", "sitemap.xml",
-  "backup", "db", "database", "config", "configuration", "setup",
-  "install", "test", "debug", "server-status", "server-info",
-  "phpinfo.php", "info.php", "wp-config.php.bak", "web.config",
-  ".svn", ".hg", ".DS_Store", "Thumbs.db", "crossdomain.xml",
-  "clientaccesspolicy.xml", "elmah.axd", "trace.axd",
-  "console", "actuator", "health", "metrics", "swagger",
-  "api-docs", "graphql", "graphiql", "playground",
-  ".well-known/security.txt", "security.txt",
+  "admin",
+  "login",
+  "dashboard",
+  "api",
+  "wp-admin",
+  "wp-login.php",
+  "phpmyadmin",
+  ".git",
+  ".env",
+  ".htaccess",
+  "robots.txt",
+  "sitemap.xml",
+  "backup",
+  "db",
+  "database",
+  "config",
+  "configuration",
+  "setup",
+  "install",
+  "test",
+  "debug",
+  "server-status",
+  "server-info",
+  "phpinfo.php",
+  "info.php",
+  "wp-config.php.bak",
+  "web.config",
+  ".svn",
+  ".hg",
+  ".DS_Store",
+  "Thumbs.db",
+  "crossdomain.xml",
+  "clientaccesspolicy.xml",
+  "elmah.axd",
+  "trace.axd",
+  "console",
+  "actuator",
+  "health",
+  "metrics",
+  "swagger",
+  "api-docs",
+  "graphql",
+  "graphiql",
+  "playground",
+  ".well-known/security.txt",
+  "security.txt",
 ];
 
 // ── Web Security Scanner ──────────────────────────────────────────
@@ -186,11 +222,18 @@ export class WebSecurityScanner {
     ];
 
     for (let i = 0; i < phases.length; i++) {
-      this.emit({ kind: "progress", phase: phases[i].name, percent: Math.round((i / phases.length) * 100) });
+      this.emit({
+        kind: "progress",
+        phase: phases[i].name,
+        percent: Math.round((i / phases.length) * 100),
+      });
       try {
         await phases[i].fn();
       } catch (err) {
-        this.emit({ kind: "error", message: `${phases[i].name} failed: ${err instanceof Error ? err.message : String(err)}` });
+        this.emit({
+          kind: "error",
+          message: `${phases[i].name} failed: ${err instanceof Error ? err.message : String(err)}`,
+        });
       }
     }
 
@@ -205,13 +248,37 @@ export class WebSecurityScanner {
     const headers = await this.fetchHeaders(url, options);
 
     const checks: Array<{ header: string; severity: Severity; rec: string }> = [
-      { header: "Strict-Transport-Security", severity: "high", rec: "Add HSTS header with max-age ≥ 31536000" },
-      { header: "Content-Security-Policy", severity: "high", rec: "Implement a strong CSP to prevent XSS" },
-      { header: "X-Content-Type-Options", severity: "medium", rec: "Add 'X-Content-Type-Options: nosniff'" },
-      { header: "X-Frame-Options", severity: "medium", rec: "Add 'X-Frame-Options: DENY' or 'SAMEORIGIN'" },
+      {
+        header: "Strict-Transport-Security",
+        severity: "high",
+        rec: "Add HSTS header with max-age ≥ 31536000",
+      },
+      {
+        header: "Content-Security-Policy",
+        severity: "high",
+        rec: "Implement a strong CSP to prevent XSS",
+      },
+      {
+        header: "X-Content-Type-Options",
+        severity: "medium",
+        rec: "Add 'X-Content-Type-Options: nosniff'",
+      },
+      {
+        header: "X-Frame-Options",
+        severity: "medium",
+        rec: "Add 'X-Frame-Options: DENY' or 'SAMEORIGIN'",
+      },
       { header: "X-XSS-Protection", severity: "low", rec: "Add 'X-XSS-Protection: 1; mode=block'" },
-      { header: "Referrer-Policy", severity: "low", rec: "Add 'Referrer-Policy: strict-origin-when-cross-origin'" },
-      { header: "Permissions-Policy", severity: "low", rec: "Add Permissions-Policy to restrict browser features" },
+      {
+        header: "Referrer-Policy",
+        severity: "low",
+        rec: "Add 'Referrer-Policy: strict-origin-when-cross-origin'",
+      },
+      {
+        header: "Permissions-Policy",
+        severity: "low",
+        rec: "Add Permissions-Policy to restrict browser features",
+      },
     ];
 
     for (const check of checks) {
@@ -370,8 +437,14 @@ export class WebSecurityScanner {
         const { stdout } = await run(
           "curl",
           [
-            "-s", "-o", "/dev/null", "-w", "%{http_code}",
-            "-L", "--max-time", "5",
+            "-s",
+            "-o",
+            "/dev/null",
+            "-w",
+            "%{http_code}",
+            "-L",
+            "--max-time",
+            "5",
             ...(options?.insecure ? ["-k"] : []),
             ...(options?.userAgent ? ["-A", options.userAgent] : []),
             ...(options?.authToken ? ["-H", `Authorization: Bearer ${options.authToken}`] : []),
@@ -384,9 +457,10 @@ export class WebSecurityScanner {
           found.push(fullUrl);
           this.addFinding({
             type: "directory-found",
-            severity: path.startsWith(".") || ["admin", "phpmyadmin", "debug", "console"].includes(path)
-              ? "high"
-              : "info",
+            severity:
+              path.startsWith(".") || ["admin", "phpmyadmin", "debug", "console"].includes(path)
+                ? "high"
+                : "info",
             url: fullUrl,
             description: `Accessible path found: /${path} (HTTP ${status})`,
             remediation: "Restrict access to sensitive paths",
@@ -415,11 +489,9 @@ export class WebSecurityScanner {
 
     for (const origin of origins) {
       try {
-        const { stdout } = await run(
-          "curl",
-          ["-s", "-I", "-H", `Origin: ${origin}`, url],
-          { timeout: 10_000 },
-        );
+        const { stdout } = await run("curl", ["-s", "-I", "-H", `Origin: ${origin}`, url], {
+          timeout: 10_000,
+        });
         const acao = stdout.match(/access-control-allow-origin:\s*(.+)/i);
         if (acao) {
           const value = acao[1].trim();
@@ -441,7 +513,19 @@ export class WebSecurityScanner {
   // ── Open Redirect ─────────────────────────────────────────────
 
   async checkOpenRedirect(url: string, options?: WebScanOptions): Promise<void> {
-    const redirectParams = ["url", "redirect", "next", "return", "returnTo", "goto", "dest", "destination", "redir", "redirect_uri", "continue"];
+    const redirectParams = [
+      "url",
+      "redirect",
+      "next",
+      "return",
+      "returnTo",
+      "goto",
+      "dest",
+      "destination",
+      "redir",
+      "redirect_uri",
+      "continue",
+    ];
     const evilUrl = "https://evil.com/pwned";
 
     for (const param of redirectParams) {
@@ -451,7 +535,17 @@ export class WebSecurityScanner {
       try {
         const { stdout } = await run(
           "curl",
-          ["-s", "-o", "/dev/null", "-w", "%{redirect_url}", "-L", "--max-redirs", "1", testUrl.toString()],
+          [
+            "-s",
+            "-o",
+            "/dev/null",
+            "-w",
+            "%{redirect_url}",
+            "-L",
+            "--max-redirs",
+            "1",
+            testUrl.toString(),
+          ],
           { timeout: 10_000 },
         );
         if (stdout.includes("evil.com")) {
@@ -590,10 +684,7 @@ export class WebSecurityScanner {
 
   // ── HTTP Helpers ──────────────────────────────────────────────
 
-  private async fetchHeaders(
-    url: string,
-    options?: WebScanOptions,
-  ): Promise<Map<string, string>> {
+  private async fetchHeaders(url: string, options?: WebScanOptions): Promise<Map<string, string>> {
     const headers = new Map<string, string>();
     try {
       const args = ["-s", "-I", "--max-time", "10"];

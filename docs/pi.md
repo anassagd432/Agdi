@@ -33,7 +33,7 @@ AGDI uses the pi SDK to embed an AI coding agent into its messaging gateway arch
 | `pi-ai`           | Core LLM abstractions: `Model`, `streamSimple`, message types, provider APIs                           |
 | `pi-agent-core`   | Agent loop, tool execution, `AgentMessage` types                                                       |
 | `pi-coding-agent` | High-level SDK: `createAgentSession`, `SessionManager`, `AuthStorage`, `ModelRegistry`, built-in tools |
-| `pi-tui`          | Terminal UI components (used in AGDI's local TUI mode)                                             |
+| `pi-tui`          | Terminal UI components (used in AGDI's local TUI mode)                                                 |
 
 ## File Structure
 
@@ -511,15 +511,15 @@ This provides the interactive terminal experience similar to pi's native mode.
 
 ## Key Differences from Pi CLI
 
-| Aspect          | Pi CLI                  | AGDI Embedded                                                                              |
-| --------------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
-| Invocation      | `pi` command / RPC      | SDK via `createAgentSession()`                                                                 |
-| Tools           | Default coding tools    | Custom AGDI tool suite                                                                     |
-| System prompt   | AGENTS.md + prompts     | Dynamic per-channel/context                                                                    |
+| Aspect          | Pi CLI                  | AGDI Embedded                                                                          |
+| --------------- | ----------------------- | -------------------------------------------------------------------------------------- |
+| Invocation      | `pi` command / RPC      | SDK via `createAgentSession()`                                                         |
+| Tools           | Default coding tools    | Custom AGDI tool suite                                                                 |
+| System prompt   | AGENTS.md + prompts     | Dynamic per-channel/context                                                            |
 | Session storage | `~/.pi/agent/sessions/` | `~/.agdi/agents/<agentId>/sessions/` (or `$AGDI_STATE_DIR/agents/<agentId>/sessions/`) |
-| Auth            | Single credential       | Multi-profile with rotation                                                                    |
-| Extensions      | Loaded from disk        | Programmatic + disk paths                                                                      |
-| Event handling  | TUI rendering           | Callback-based (onBlockReply, etc.)                                                            |
+| Auth            | Single credential       | Multi-profile with rotation                                                            |
+| Extensions      | Loaded from disk        | Programmatic + disk paths                                                              |
+| Event handling  | TUI rendering           | Callback-based (onBlockReply, etc.)                                                    |
 
 ## Future Considerations
 

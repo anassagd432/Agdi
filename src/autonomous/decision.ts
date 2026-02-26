@@ -24,10 +24,7 @@ export type InteractionStrategy = "dom" | "vision" | "hybrid";
  * - If the page uses canvas/WebGL → vision
  * - Default → hybrid (try DOM first, fall back to vision)
  */
-export async function decideStrategy(
-  page: Page,
-  goal: Goal,
-): Promise<InteractionStrategy> {
+export async function decideStrategy(page: Page, goal: Goal): Promise<InteractionStrategy> {
   // If the goal context explicitly says to use vision-only
   if (goal.context.some((c) => c.includes("vision-only") || c.includes("coordinate-based"))) {
     return "vision";

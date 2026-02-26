@@ -13,10 +13,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { writeFile, readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { writeFile, readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("ocr");
@@ -50,11 +50,11 @@ export type TextLocation = {
 };
 
 export type OcrConfig = {
-  language: string;        // Tesseract language (e.g. "eng", "fra+eng")
-  psm: number;             // Page segmentation mode (3=auto, 6=single block)
-  oem: number;             // OCR Engine Mode (1=LSTM, 3=default)
-  dpi: number;             // Assumed DPI for input
-  whitelist?: string;      // Only recognize these characters
+  language: string; // Tesseract language (e.g. "eng", "fra+eng")
+  psm: number; // Page segmentation mode (3=auto, 6=single block)
+  oem: number; // OCR Engine Mode (1=LSTM, 3=default)
+  dpi: number; // Assumed DPI for input
+  whitelist?: string; // Only recognize these characters
 };
 
 const DEFAULT_CONFIG: OcrConfig = {
@@ -125,12 +125,17 @@ export class ScreenOCR {
 
       // Run Tesseract with TSV output for word-level data
       const args = [
-        inputPath, outputBase,
-        "-l", cfg.language,
-        "--psm", String(cfg.psm),
-        "--oem", String(cfg.oem),
-        "--dpi", String(cfg.dpi),
-        "tsv",  // Tab-separated output with bounding boxes
+        inputPath,
+        outputBase,
+        "-l",
+        cfg.language,
+        "--psm",
+        String(cfg.psm),
+        "--oem",
+        String(cfg.oem),
+        "--dpi",
+        String(cfg.dpi),
+        "tsv", // Tab-separated output with bounding boxes
       ];
 
       if (cfg.whitelist) {
@@ -144,12 +149,18 @@ export class ScreenOCR {
       const words = this.parseTsv(tsvContent);
 
       // Also get plain text
-      await exec("tesseract", [inputPath, outputBase, "-l", cfg.language, "--psm", String(cfg.psm)]);
+      await exec("tesseract", [
+        inputPath,
+        outputBase,
+        "-l",
+        cfg.language,
+        "--psm",
+        String(cfg.psm),
+      ]);
       const fullText = await readFile(`${outputBase}.txt`, "utf-8");
 
-      const avgConfidence = words.length > 0
-        ? words.reduce((sum, w) => sum + w.confidence, 0) / words.length
-        : 0;
+      const avgConfidence =
+        words.length > 0 ? words.reduce((sum, w) => sum + w.confidence, 0) / words.length : 0;
 
       const result: OcrResult = {
         text: fullText.trim(),
@@ -161,7 +172,6 @@ export class ScreenOCR {
 
       log.info(`OCR: ${words.length} words, ${result.lines.length} lines, ${result.durationMs}ms`);
       return result;
-
     } finally {
       await unlink(inputPath).catch(() => {});
       await unlink(`${outputBase}.tsv`).catch(() => {});
@@ -205,10 +215,16 @@ export class ScreenOCR {
           const x = firstWord.bbox.x;
           const y = Math.min(firstWord.bbox.y, lastWord.bbox.y);
           const right = lastWord.bbox.x + lastWord.bbox.width;
-          const bottom = Math.max(firstWord.bbox.y + firstWord.bbox.height, lastWord.bbox.y + lastWord.bbox.height);
+          const bottom = Math.max(
+            firstWord.bbox.y + firstWord.bbox.height,
+            lastWord.bbox.y + lastWord.bbox.height,
+          );
 
           matches.push({
-            text: result.words.slice(i, i + searchWords.length).map((w) => w.text).join(" "),
+            text: result.words
+              .slice(i, i + searchWords.length)
+              .map((w) => w.text)
+              .join(" "),
             x,
             y,
             width: right - x,
@@ -229,7 +245,10 @@ export class ScreenOCR {
    */
   async extractRegion(
     imageBuffer: Buffer,
-    x: number, y: number, width: number, height: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
   ): Promise<OcrResult> {
     // Use ImageMagick to crop the region, then OCR the crop
     const inputPath = join(tmpdir(), `ocr-full-${randomUUID()}.png`);
@@ -238,7 +257,11 @@ export class ScreenOCR {
     try {
       await writeFile(inputPath, imageBuffer);
       await exec("convert", [
-        inputPath, "-crop", `${width}x${height}+${x}+${y}`, "+repage", croppedPath,
+        inputPath,
+        "-crop",
+        `${width}x${height}+${x}+${y}`,
+        "+repage",
+        croppedPath,
       ]);
       const cropped = await readFile(croppedPath);
       return this.extractText(cropped);

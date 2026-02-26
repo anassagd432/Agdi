@@ -5,8 +5,8 @@
  * search through past clipboard entries and paste them.
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import type { DeviceController } from "./device-controller.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("clipboard");
 
@@ -18,7 +18,7 @@ export type ClipboardEntry = {
   id: string;
   text: string;
   timestamp: number;
-  source?: string;       // App that copied it
+  source?: string; // App that copied it
   tags: string[];
   pinned: boolean;
 };
@@ -60,7 +60,9 @@ export class SmartClipboard {
           this.lastContent = current;
           this.addEntry(current);
         }
-      } catch { /* ignore polling errors */ }
+      } catch {
+        /* ignore polling errors */
+      }
     }, intervalMs);
 
     log.info("clipboard monitoring started");
@@ -99,9 +101,8 @@ export class SmartClipboard {
   /** Search clipboard history. */
   search(query: string): ClipboardEntry[] {
     const lower = query.toLowerCase();
-    return this.history.filter((e) =>
-      e.text.toLowerCase().includes(lower) ||
-      e.tags.some((t) => t.includes(lower))
+    return this.history.filter(
+      (e) => e.text.toLowerCase().includes(lower) || e.tags.some((t) => t.includes(lower)),
     );
   }
 
@@ -157,7 +158,8 @@ export class SmartClipboard {
     if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(text)) tags.push("email");
     if (/^\d+$/.test(text.trim())) tags.push("number");
     if (/\{[\s\S]*\}/.test(text) || /\[[\s\S]*\]/.test(text)) tags.push("json");
-    if (text.includes("function ") || text.includes("const ") || text.includes("import ")) tags.push("code");
+    if (text.includes("function ") || text.includes("const ") || text.includes("import "))
+      tags.push("code");
     if (/^\/[\w/.-]+$/.test(text.trim())) tags.push("path");
     if (text.length > 500) tags.push("long");
     return tags;

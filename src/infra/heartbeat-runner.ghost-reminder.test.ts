@@ -31,9 +31,7 @@ afterEach(() => {
 });
 
 describe("Ghost reminder bug (issue #13317)", () => {
-  const createConfig = async (
-    tmpDir: string,
-  ): Promise<{ cfg: AGDIConfig; sessionKey: string }> => {
+  const createConfig = async (tmpDir: string): Promise<{ cfg: AGDIConfig; sessionKey: string }> => {
     const storePath = path.join(tmpDir, "sessions.json");
     const cfg: AGDIConfig = {
       agents: {

@@ -6,8 +6,8 @@
  * Integrates with the MessageQueue for incoming user messages.
  */
 
-import { MessageQueue } from "./message-queue.js";
 import type { AgentEvent, AgentState, Goal, UserMessage } from "./types.js";
+import { MessageQueue } from "./message-queue.js";
 
 // ---------------------------------------------------------------------------
 // Agent UI
@@ -28,10 +28,7 @@ export class AgentUI {
   private eventLog: AgentEvent[] = [];
   private maxEventLog = 100;
 
-  constructor(opts: {
-    messageQueue: MessageQueue;
-    output?: NodeJS.WritableStream;
-  }) {
+  constructor(opts: { messageQueue: MessageQueue; output?: NodeJS.WritableStream }) {
     this.messageQueue = opts.messageQueue;
     this.output = opts.output ?? process.stdout;
   }

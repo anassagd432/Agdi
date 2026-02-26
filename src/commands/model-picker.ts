@@ -504,10 +504,7 @@ export function applyModelAllowlist(cfg: AGDIConfig, models: string[]): AGDIConf
   };
 }
 
-export function applyModelFallbacksFromSelection(
-  cfg: AGDIConfig,
-  selection: string[],
-): AGDIConfig {
+export function applyModelFallbacksFromSelection(cfg: AGDIConfig, selection: string[]): AGDIConfig {
   const normalized = normalizeModelKeys(selection);
   if (normalized.length <= 1) {
     return cfg;

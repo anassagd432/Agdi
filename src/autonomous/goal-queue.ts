@@ -6,9 +6,9 @@
  * by creation time (oldest first within the same priority).
  */
 
+import { randomUUID } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { randomUUID } from "node:crypto";
 import type { Goal, GoalPriority, GoalStatus, GoalType } from "./types.js";
 
 const PRIORITY_ORDER: Record<GoalPriority, number> = {

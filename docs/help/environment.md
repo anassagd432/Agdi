@@ -76,10 +76,10 @@ See [Configuration: Env var substitution](/gateway/configuration#env-var-substit
 
 ## Path-related env vars
 
-| Variable               | Purpose                                                                                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable           | Purpose                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `AGDI_HOME`        | Override the home directory used for all internal path resolution (`~/.agdi/`, agent dirs, sessions, credentials). Useful when running AGDI as a dedicated service user. |
-| `AGDI_STATE_DIR`   | Override the state directory (default `~/.agdi`).                                                                                                                            |
+| `AGDI_STATE_DIR`   | Override the state directory (default `~/.agdi`).                                                                                                                        |
 | `AGDI_CONFIG_PATH` | Override the config file path (default `~/.agdi/agdi.json`).                                                                                                             |
 
 ### `AGDI_HOME`

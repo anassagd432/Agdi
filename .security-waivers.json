@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Security vulnerability waivers with expiry dates. Each waiver documents an accepted risk.",
+  "waivers": [
+    {
+      "id": "GHSA-p8p7-x288-28g6",
+      "package": "request",
+      "severity": "moderate",
+      "reason": "Transitive dependency via optional Matrix extension (@vector-im/matrix-bot-sdk). Extension is not enabled by default and requires explicit configuration. The deprecated `request` package has no fix available.",
+      "scope": "extensions/matrix",
+      "expires": "2026-08-26",
+      "addedBy": "audit-2026-02-26"
+    },
+    {
+      "id": "GHSA-2g4f-4pwh-qvx6",
+      "package": "ajv",
+      "severity": "moderate",
+      "reason": "Transitive via request → har-validator → ajv in optional Matrix extension. Same chain as request waiver.",
+      "scope": "extensions/matrix",
+      "expires": "2026-08-26",
+      "addedBy": "audit-2026-02-26"
+    },
+    {
+      "id": "GHSA-gq3j-xvxp-8hrf",
+      "package": "hono",
+      "severity": "low",
+      "reason": "Timing comparison hardening in basicAuth/bearerAuth. Used internally by @buape/carbon for Discord bot auth, not user-facing gateway auth. Timing attacks are impractical in this context.",
+      "scope": "discord-channel",
+      "expires": "2026-08-26",
+      "addedBy": "audit-2026-02-26"
+    },
+    {
+      "id": "GHSA-mw96-cpmx-2vgc",
+      "package": "rollup",
+      "severity": "high",
+      "reason": "Dev-only dependency (ui → vite → rollup). Not present in production runtime. Path traversal requires malicious build input.",
+      "scope": "devDependencies",
+      "expires": "2026-08-26",
+      "addedBy": "audit-2026-02-26"
+    }
+  ]
+}

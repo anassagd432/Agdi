@@ -16,15 +16,15 @@ const log = createSubsystemLogger("multi-monitor");
 // ---------------------------------------------------------------------------
 
 export type Monitor = {
-  name: string;           // e.g. "HDMI-1", "eDP-1"
+  name: string; // e.g. "HDMI-1", "eDP-1"
   primary: boolean;
   connected: boolean;
   width: number;
   height: number;
-  x: number;              // position in virtual screen
+  x: number; // position in virtual screen
   y: number;
   refreshRate: number;
-  resolutions: string[];  // Available resolutions
+  resolutions: string[]; // Available resolutions
 };
 
 export type VirtualScreen = {
@@ -51,7 +51,6 @@ function exec(cmd: string, args: string[]): Promise<string> {
 // ---------------------------------------------------------------------------
 
 export class MultiMonitorManager {
-
   /** Detect all connected monitors and their configuration. */
   async detect(): Promise<VirtualScreen> {
     const output = await exec("xrandr", ["--current"]);
@@ -68,10 +67,11 @@ export class MultiMonitorManager {
   /** Get the monitor at a given coordinate. */
   async getMonitorAt(x: number, y: number): Promise<Monitor | null> {
     const screen = await this.detect();
-    return screen.monitors.find((m) =>
-      x >= m.x && x < m.x + m.width &&
-      y >= m.y && y < m.y + m.height
-    ) ?? null;
+    return (
+      screen.monitors.find(
+        (m) => x >= m.x && x < m.x + m.width && y >= m.y && y < m.y + m.height,
+      ) ?? null
+    );
   }
 
   /** Get the primary monitor. */
@@ -81,7 +81,11 @@ export class MultiMonitorManager {
   }
 
   /** Convert coordinates relative to a monitor to virtual screen coordinates. */
-  async toVirtualCoords(monitorName: string, localX: number, localY: number): Promise<{ x: number; y: number }> {
+  async toVirtualCoords(
+    monitorName: string,
+    localX: number,
+    localY: number,
+  ): Promise<{ x: number; y: number }> {
     const screen = await this.detect();
     const monitor = screen.monitors.find((m) => m.name === monitorName);
     if (!monitor) throw new Error(`Monitor not found: ${monitorName}`);
@@ -96,14 +100,24 @@ export class MultiMonitorManager {
 
     try {
       // Use wmctrl to move window
-      await exec("wmctrl", ["-r", windowTitle, "-e", `0,${monitor.x},${monitor.y},${monitor.width},${monitor.height}`]);
+      await exec("wmctrl", [
+        "-r",
+        windowTitle,
+        "-e",
+        `0,${monitor.x},${monitor.y},${monitor.width},${monitor.height}`,
+      ]);
     } catch {
       // Fallback: use xdotool
       const windowId = await exec("xdotool", ["search", "--name", windowTitle]);
       const id = windowId.trim().split("\n")[0];
       if (id) {
         await exec("xdotool", ["windowmove", id, String(monitor.x + 50), String(monitor.y + 50)]);
-        await exec("xdotool", ["windowsize", id, String(monitor.width - 100), String(monitor.height - 100)]);
+        await exec("xdotool", [
+          "windowsize",
+          id,
+          String(monitor.width - 100),
+          String(monitor.height - 100),
+        ]);
       }
     }
     log.info(`moved "${windowTitle}" to ${monitorName}`);
@@ -121,7 +135,9 @@ export class MultiMonitorManager {
 
     for (const line of lines) {
       // Monitor line: "HDMI-1 connected primary 1920x1080+0+0 ..."
-      const monitorMatch = line.match(/^(\S+)\s+(connected|disconnected)\s*(primary)?\s*(?:(\d+)x(\d+)\+(\d+)\+(\d+))?/);
+      const monitorMatch = line.match(
+        /^(\S+)\s+(connected|disconnected)\s*(primary)?\s*(?:(\d+)x(\d+)\+(\d+)\+(\d+))?/,
+      );
       if (monitorMatch) {
         if (currentMonitor?.name) {
           monitors.push(currentMonitor as Monitor);

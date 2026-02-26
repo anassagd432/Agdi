@@ -12,8 +12,8 @@
  */
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { join } from "node:path";
 import { homedir } from "node:os";
+import { join } from "node:path";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("user-profile");
@@ -26,19 +26,19 @@ export type AppUsage = {
   name: string;
   launchCount: number;
   totalMinutes: number;
-  lastUsed: number;      // timestamp
-  timeSlots: number[];   // 24-hour histogram (0-23)
+  lastUsed: number; // timestamp
+  timeSlots: number[]; // 24-hour histogram (0-23)
 };
 
 export type WorkflowPattern = {
   id: string;
   description: string;
-  steps: string[];        // Sequence of action descriptions
-  frequency: number;      // Times observed
-  timeOfDay?: number;     // Typical hour (0-23)
-  dayOfWeek?: number;     // 0=Sun, 6=Sat
+  steps: string[]; // Sequence of action descriptions
+  frequency: number; // Times observed
+  timeOfDay?: number; // Typical hour (0-23)
+  dayOfWeek?: number; // 0=Sun, 6=Sat
   lastSeen: number;
-  confidence: number;     // 0-1
+  confidence: number; // 0-1
 };
 
 export type UserPreference = {
@@ -85,7 +85,9 @@ export class UserProfile {
     try {
       const raw = await readFile(filePath, "utf-8");
       this.data = JSON.parse(raw);
-      log.info(`loaded profile: ${this.data.totalSessions} sessions, ${Object.keys(this.data.apps).length} apps tracked`);
+      log.info(
+        `loaded profile: ${this.data.totalSessions} sessions, ${Object.keys(this.data.apps).length} apps tracked`,
+      );
     } catch {
       log.info("no existing profile — starting fresh");
       this.data = this.createEmpty();
@@ -196,9 +198,10 @@ export class UserProfile {
 
     return this.data.workflows
       .filter((w) => w.confidence >= 0.5 && w.frequency >= 3)
-      .filter((w) =>
-        (w.timeOfDay === undefined || Math.abs(w.timeOfDay - h) <= 1) &&
-        (w.dayOfWeek === undefined || w.dayOfWeek === d)
+      .filter(
+        (w) =>
+          (w.timeOfDay === undefined || Math.abs(w.timeOfDay - h) <= 1) &&
+          (w.dayOfWeek === undefined || w.dayOfWeek === d),
       )
       .sort((a, b) => b.confidence - a.confidence)
       .slice(0, 5);

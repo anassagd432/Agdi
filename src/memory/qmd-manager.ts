@@ -105,11 +105,7 @@ export class QmdMemoryManager implements MemorySearchManager {
   private lastEmbedAt: number | null = null;
   private attemptedNullByteCollectionRepair = false;
 
-  private constructor(params: {
-    cfg: AGDIConfig;
-    agentId: string;
-    resolved: ResolvedQmdConfig;
-  }) {
+  private constructor(params: { cfg: AGDIConfig; agentId: string; resolved: ResolvedQmdConfig }) {
     this.cfg = params.cfg;
     this.agentId = params.agentId;
     this.qmd = params.resolved;

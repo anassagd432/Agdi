@@ -134,8 +134,7 @@ Hook 包可以附带依赖；它们将安装在 `~/.agdi/hooks/<id>` 下。
 name: my-hook
 description: "Short description of what this hook does"
 homepage: https://docs.agdi.ai/automation/hooks#my-hook
-metadata:
-  { "agdi": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+metadata: { "agdi": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 
 # My Hook

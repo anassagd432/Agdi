@@ -17,10 +17,7 @@ import sharp from "sharp";
  * @param gridSize - Grid cell size in pixels. Default 100.
  * @returns Buffer with the grid overlay drawn on top.
  */
-export async function addGridOverlay(
-  buffer: Buffer,
-  gridSize: number = 100,
-): Promise<Buffer> {
+export async function addGridOverlay(buffer: Buffer, gridSize: number = 100): Promise<Buffer> {
   const metadata = await sharp(buffer).metadata();
   const width = metadata.width ?? 1280;
   const height = metadata.height ?? 720;
@@ -48,9 +45,7 @@ export async function addGridOverlay(
 function buildGridSvg(width: number, height: number, gridSize: number): string {
   const lines: string[] = [];
 
-  lines.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`,
-  );
+  lines.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`);
 
   // Semi-transparent overlay for grid lines
   const lineColor = "rgba(255, 0, 0, 0.25)";

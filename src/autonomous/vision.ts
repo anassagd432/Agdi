@@ -5,8 +5,8 @@
  * understanding and returns structured action recommendations.
  */
 
-import { normalizeBrowserScreenshot } from "../browser/screenshot.js";
 import type { Action, AutonomousConfig, Goal, VisionAnalysis } from "./types.js";
+import { normalizeBrowserScreenshot } from "../browser/screenshot.js";
 
 // ---------------------------------------------------------------------------
 // Vision prompt templates
@@ -214,7 +214,10 @@ export async function quickObserve(
 function parseVisionResponse(raw: string): VisionAnalysis {
   try {
     // Strip markdown code fences if present
-    const cleaned = raw.replace(/^```json?\s*/i, "").replace(/\s*```$/i, "").trim();
+    const cleaned = raw
+      .replace(/^```json?\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
     const parsed = JSON.parse(cleaned) as Record<string, unknown>;
 
     const suggestedAction = parsed.suggestedAction as Record<string, unknown> | undefined;
@@ -232,8 +235,7 @@ function parseVisionResponse(raw: string): VisionAnalysis {
     if (suggestedAction?.text) action.text = String(suggestedAction.text);
     if (suggestedAction?.url) action.url = String(suggestedAction.url);
     if (suggestedAction?.key) action.key = String(suggestedAction.key);
-    if (suggestedAction?.direction)
-      action.direction = suggestedAction.direction as "up" | "down";
+    if (suggestedAction?.direction) action.direction = suggestedAction.direction as "up" | "down";
     if (suggestedAction?.durationMs) action.durationMs = Number(suggestedAction.durationMs);
 
     return {
@@ -265,11 +267,7 @@ function parseVisionResponse(raw: string): VisionAnalysis {
 // ---------------------------------------------------------------------------
 
 function resolveGeminiApiKey(): string | undefined {
-  return (
-    process.env.GEMINI_API_KEY?.trim() ||
-    process.env.GOOGLE_API_KEY?.trim() ||
-    undefined
-  );
+  return process.env.GEMINI_API_KEY?.trim() || process.env.GOOGLE_API_KEY?.trim() || undefined;
 }
 
 export { buildUserPrompt, resolveGeminiApiKey };

@@ -287,9 +287,8 @@ async function runGatewayCommand(opts: GatewayRunOpts) {
 
         // Start autonomous agent alongside the gateway if enabled
         try {
-          const { maybeStartAutonomous } = await import(
-            "../../autonomous/autonomous-gateway-hook.js"
-          );
+          const { maybeStartAutonomous } =
+            await import("../../autonomous/autonomous-gateway-hook.js");
           await maybeStartAutonomous(cfg.autonomous, {
             forceEnabled: opts.autonomous === true ? true : undefined,
             forceDisabled: opts.autonomous === false ? true : undefined,

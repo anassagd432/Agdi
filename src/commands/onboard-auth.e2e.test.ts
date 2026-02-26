@@ -89,11 +89,7 @@ describe("writeOAuthCredentials", () => {
 });
 
 describe("setMinimaxApiKey", () => {
-  const envSnapshot = captureEnv([
-    "AGDI_STATE_DIR",
-    "AGDI_AGENT_DIR",
-    "PI_CODING_AGENT_DIR",
-  ]);
+  const envSnapshot = captureEnv(["AGDI_STATE_DIR", "AGDI_AGENT_DIR", "PI_CODING_AGENT_DIR"]);
   let tempStateDir: string | null = null;
 
   afterEach(async () => {

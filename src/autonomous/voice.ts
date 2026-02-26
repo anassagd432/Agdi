@@ -10,9 +10,9 @@
  * The client-side (mic + speaker) lives in the dashboard HTML.
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
-import type { NLCommander } from "./nl-commander.js";
 import type { DesktopLiveStream } from "./live-stream.js";
+import type { NLCommander } from "./nl-commander.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("voice");
 
@@ -31,12 +31,12 @@ export type VoiceCommand = {
 
 export type VoiceConfig = {
   enabled: boolean;
-  language: string;          // BCP-47 language tag (e.g. "en-US")
-  activationWord?: string;   // Wake word (e.g. "hey agent")
-  autoListen: boolean;       // Keep listening after command
-  ttsEnabled: boolean;       // Speak responses back
-  ttsVoice?: string;         // Preferred TTS voice name
-  ttsRate: number;           // Speech rate (0.5 - 2.0)
+  language: string; // BCP-47 language tag (e.g. "en-US")
+  activationWord?: string; // Wake word (e.g. "hey agent")
+  autoListen: boolean; // Keep listening after command
+  ttsEnabled: boolean; // Speak responses back
+  ttsVoice?: string; // Preferred TTS voice name
+  ttsRate: number; // Speech rate (0.5 - 2.0)
 };
 
 const DEFAULT_CONFIG: VoiceConfig = {

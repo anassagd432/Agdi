@@ -15,7 +15,7 @@ const sniffer = new PacketSniffer();
 await sniffer.startCapture({
   iface: "eth0",
   filter: "port 80 or port 443",
-  duration: 30,  // seconds
+  duration: 30, // seconds
   outputFile: "/tmp/capture.pcap",
 });
 
@@ -56,7 +56,7 @@ const queries = await sniffer.dnsQueries("/tmp/capture.pcap");
 
 ## Dependencies
 
-| Tool | Purpose |
-|------|---------|
-| `tcpdump` | Live packet capture |
-| `tshark` | Advanced PCAP analysis |
+| Tool      | Purpose                |
+| --------- | ---------------------- |
+| `tcpdump` | Live packet capture    |
+| `tshark`  | Advanced PCAP analysis |

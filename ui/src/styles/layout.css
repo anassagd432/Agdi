@@ -1,24 +1,25 @@
 /* ===========================================
-   Shell Layout
+   Shell Layout (AGDI Horizontal Top-Nav Architecture)
    =========================================== */
 
 .shell {
-  --shell-pad: 16px;
-  --shell-gap: 16px;
-  --shell-nav-width: 220px;
-  --shell-topbar-height: 56px;
-  --shell-focus-duration: 200ms;
-  --shell-focus-ease: var(--ease-out);
+  --shell-pad: 24px;
+  --shell-gap: 24px;
+  --shell-topbar-height: 64px;
+  --shell-nav-height: 56px;
+  --shell-focus-duration: 250ms;
+  --shell-focus-ease: var(--ease-spring);
   height: 100vh;
   display: grid;
-  grid-template-columns: var(--shell-nav-width) minmax(0, 1fr);
-  grid-template-rows: var(--shell-topbar-height) 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: var(--shell-topbar-height) var(--shell-nav-height) 1fr;
   grid-template-areas:
-    "topbar topbar"
-    "nav content";
+    "topbar"
+    "nav"
+    "content";
   gap: 0;
-  animation: dashboard-enter 0.4s var(--ease-out);
-  transition: grid-template-columns var(--shell-focus-duration) var(--shell-focus-ease);
+  animation: dashboard-enter 0.5s var(--ease-spring);
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -40,31 +41,29 @@
   }
 }
 
+/* Nav collapsed logic is disabled for horizontal top-nav, but keep classes to avoid breaks */
 .shell--nav-collapsed {
-  grid-template-columns: 0px minmax(0, 1fr);
+  grid-template-rows: var(--shell-topbar-height) var(--shell-nav-height) 1fr;
 }
 
 .shell--chat-focus {
-  grid-template-columns: 0px minmax(0, 1fr);
+  grid-template-rows: 0px 0px 1fr;
 }
 
 .shell--onboarding {
-  grid-template-rows: 0 1fr;
+  grid-template-rows: 0 0 1fr;
 }
 
-.shell--onboarding .topbar {
+.shell--onboarding .topbar,
+.shell--onboarding .nav {
   display: none;
-}
-
-.shell--onboarding .content {
-  padding-top: 0;
 }
 
 .shell--chat-focus .content {
   padding-top: 0;
 }
 
-.shell--chat-focus .content>*+* {
+.shell--chat-focus .content > * + * {
   margin-top: 0;
 }
 
@@ -96,19 +95,15 @@
 }
 
 .topbar .nav-collapse-toggle {
-  width: 36px;
-  height: 36px;
-  margin-bottom: 0;
+  display: none !important;
 }
 
 .topbar .nav-collapse-toggle__icon {
-  width: 20px;
-  height: 20px;
+  display: none !important;
 }
 
 .topbar .nav-collapse-toggle__icon svg {
-  width: 20px;
-  height: 20px;
+  display: none !important;
 }
 
 /* Brand */
@@ -193,25 +188,28 @@
 }
 
 /* ===========================================
-   Navigation Sidebar
+   Navigation (Horizontal Top-Nav)
    =========================================== */
 
 .nav {
   grid-area: nav;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px 12px;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--border);
+  border-right: none;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   scrollbar-width: none;
   /* Firefox */
   transition:
-    width var(--shell-focus-duration) var(--shell-focus-ease),
-    padding var(--shell-focus-duration) var(--shell-focus-ease),
+    height var(--shell-focus-duration) var(--shell-focus-ease),
     opacity var(--shell-focus-duration) var(--shell-focus-ease);
-  min-height: 0;
+  z-index: 30;
 }
 
 .nav::-webkit-scrollbar {
@@ -220,160 +218,81 @@
 }
 
 .shell--chat-focus .nav {
-  width: 0;
+  height: 0;
   padding: 0;
-  border-width: 0;
+  border-bottom-width: 0;
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
 }
 
+/* We don't collapse horizontal nav ever */
 .nav--collapsed {
-  width: 0;
-  min-width: 0;
-  padding: 0;
-  overflow: hidden;
-  border: none;
-  opacity: 0;
-  pointer-events: none;
+  height: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* Nav collapse toggle */
+/* Nav collapse toggle is hidden in AGDI top nav */
 .nav-collapse-toggle {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition:
-    background var(--duration-fast) ease,
-    border-color var(--duration-fast) ease;
-  margin-bottom: 16px;
+  display: none;
 }
 
-.nav-collapse-toggle:hover {
-  background: var(--bg-hover);
-  border-color: var(--border);
-}
-
-.nav-collapse-toggle__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  color: var(--muted);
-  transition: color var(--duration-fast) ease;
-}
-
-.nav-collapse-toggle__icon svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.nav-collapse-toggle:hover .nav-collapse-toggle__icon {
-  color: var(--text);
-}
-
-/* Nav groups */
+/* Nav groups now flow horizontally */
 .nav-group {
-  margin-bottom: 20px;
-  display: grid;
-  gap: 2px;
-}
-
-.nav-group:last-child {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 0;
 }
 
 .nav-group__items {
-  display: grid;
-  gap: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.nav-group--collapsed .nav-group__items {
-  display: none;
-}
-
-/* Nav label */
+/* Hide the toggle chevrons and adjust nav labels as dividers */
 .nav-label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  width: 100%;
-  padding: 6px 10px;
+  padding: 0;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--muted);
-  margin-bottom: 4px;
-  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: none;
   border: none;
-  cursor: pointer;
-  text-align: left;
-  border-radius: var(--radius-sm);
-  transition:
-    color var(--duration-fast) ease,
-    background var(--duration-fast) ease;
-}
-
-.nav-label:hover {
-  color: var(--text);
-  background: var(--bg-hover);
-}
-
-.nav-label--static {
   cursor: default;
 }
 
-.nav-label--static:hover {
+.nav-label:hover {
+  background: none;
   color: var(--muted);
-  background: transparent;
-}
-
-.nav-label__text {
-  flex: 1;
 }
 
 .nav-label__chevron {
-  font-size: 10px;
-  opacity: 0.5;
-  transition: transform var(--duration-fast) ease;
-}
-
-.nav-group--collapsed .nav-label__chevron {
-  transform: rotate(-90deg);
+  display: none;
 }
 
 /* Nav items */
 .nav-item {
-  position: relative;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 99px;
-  /* Pill shape */
-  border: 1px solid transparent;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition:
-    border-color var(--duration-fast) ease,
-    background var(--duration-fast) ease,
-    color var(--duration-fast) ease,
-    box-shadow var(--duration-fast) ease;
+  border: 1px solid transparent;
+  transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
 }
 
 .nav-item__icon {
@@ -382,9 +301,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   opacity: 0.7;
-  transition: opacity var(--duration-fast) ease;
 }
 
 .nav-item__icon svg {
@@ -397,32 +314,25 @@
   stroke-linejoin: round;
 }
 
-.nav-item__text {
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
 .nav-item:hover {
-  color: var(--text);
+  color: var(--text-strong);
   background: var(--bg-hover);
-  text-decoration: none;
-}
-
-.nav-item:hover .nav-item__icon {
-  opacity: 1;
+  border-color: var(--border);
 }
 
 .nav-item.active {
   color: #fff;
   background: var(--accent);
-  box-shadow: 0 0 15px var(--accent-glow);
   border-color: var(--accent-hover);
+  box-shadow: 0 2px 10px var(--accent-glow);
 }
 
 .nav-item.active .nav-item__icon {
   opacity: 1;
-  color: #fff;
+}
+
+.nav-group--links {
+  margin-left: auto;
 }
 
 /* ===========================================
@@ -438,7 +348,7 @@
   overflow-x: hidden;
 }
 
-.content>*+* {
+.content > * + * {
   margin-top: 24px;
 }
 
@@ -454,7 +364,7 @@
   padding-bottom: 0;
 }
 
-.content--chat>*+* {
+.content--chat > * + * {
   margin-top: 0;
 }
 
@@ -512,7 +422,7 @@
   gap: 16px;
 }
 
-.content--chat .content-header>div:first-child {
+.content--chat .content-header > div:first-child {
   text-align: left;
 }
 
@@ -573,7 +483,7 @@
 }
 
 /* ===========================================
-   Responsive - Tablet
+   Responsive - Tablet (Horizontal Nav fallback)
    =========================================== */
 
 @media (max-width: 1100px) {
@@ -589,23 +499,11 @@
   }
 
   .nav {
-    position: static;
-    max-height: none;
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
     padding: 10px 14px;
-    background: var(--panel);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
   }
 
   .nav-group {
-    grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    margin-bottom: 0;
+    gap: 8px;
   }
 
   .grid-cols-2,
@@ -614,7 +512,6 @@
   }
 
   .topbar {
-    position: static;
     padding: 12px 14px;
     gap: 10px;
   }

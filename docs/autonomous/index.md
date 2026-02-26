@@ -59,19 +59,19 @@ agdi agent --rest-api --port 7778
 
 ## Features at a Glance
 
-| Feature | Description |
-|---------|-------------|
-| **Native Device Control** | Mouse, keyboard, screen capture via OS-level APIs |
-| **5-Platform Support** | Linux (X11), macOS (osascript), Windows (P/Invoke), Android (ADB), iOS (WDA) |
-| **Screen OCR** | Read text from the screen with Tesseract — zero API costs |
-| **Natural Language Commands** | Plain English → device actions without LLM overhead |
-| **Security Suite** | Full offensive security toolkit with 100+ Kali tools |
-| **Workflow Record/Replay** | Capture workflows and replay them on demand |
-| **Task Scheduler** | Cron-like scheduling for automated tasks |
-| **File Watcher** | Trigger actions when files change |
-| **Smart Clipboard** | AI-powered clipboard with history and semantic search |
-| **AI-to-AI Delegation** | Parallel sub-agents for complex multi-part tasks |
-| **REST API** | Control the agent remotely via HTTP |
-| **Live Stream** | Real-time screen streaming to the dashboard |
-| **Persistent Memory** | Learns your environment and preferences over time |
-| **Trust & Safety Gate** | Risk-based action approval system |
+| Feature                       | Description                                                                  |
+| ----------------------------- | ---------------------------------------------------------------------------- |
+| **Native Device Control**     | Mouse, keyboard, screen capture via OS-level APIs                            |
+| **5-Platform Support**        | Linux (X11), macOS (osascript), Windows (P/Invoke), Android (ADB), iOS (WDA) |
+| **Screen OCR**                | Read text from the screen with Tesseract — zero API costs                    |
+| **Natural Language Commands** | Plain English → device actions without LLM overhead                          |
+| **Security Suite**            | Full offensive security toolkit with 100+ Kali tools                         |
+| **Workflow Record/Replay**    | Capture workflows and replay them on demand                                  |
+| **Task Scheduler**            | Cron-like scheduling for automated tasks                                     |
+| **File Watcher**              | Trigger actions when files change                                            |
+| **Smart Clipboard**           | AI-powered clipboard with history and semantic search                        |
+| **AI-to-AI Delegation**       | Parallel sub-agents for complex multi-part tasks                             |
+| **REST API**                  | Control the agent remotely via HTTP                                          |
+| **Live Stream**               | Real-time screen streaming to the dashboard                                  |
+| **Persistent Memory**         | Learns your environment and preferences over time                            |
+| **Trust & Safety Gate**       | Risk-based action approval system                                            |

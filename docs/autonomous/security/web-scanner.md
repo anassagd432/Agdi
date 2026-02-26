@@ -9,16 +9,16 @@ Automated web application vulnerability scanner with detection for the OWASP Top
 
 ## Scan Types
 
-| Scan | Severity | What it detects |
-|------|----------|----------------|
-| **SQL Injection** | Critical | Error-based, blind, time-based, NoSQL injection |
-| **XSS** | High | Reflected XSS via 12 payload vectors |
-| **Directory Brute** | Medium—High | Hidden admin panels, .git, .env, config files |
-| **Header Audit** | Medium | Missing HSTS, CSP, X-Frame-Options, etc. |
-| **SSL/TLS** | High | Weak ciphers, old protocols, self-signed certs |
-| **CORS** | Medium—High | Misconfigured Access-Control-Allow-Origin |
-| **Open Redirect** | Medium | Unvalidated redirect parameters |
-| **WAF Detection** | Info | Cloudflare, Akamai, ModSecurity, AWS WAF, etc. |
+| Scan                | Severity    | What it detects                                 |
+| ------------------- | ----------- | ----------------------------------------------- |
+| **SQL Injection**   | Critical    | Error-based, blind, time-based, NoSQL injection |
+| **XSS**             | High        | Reflected XSS via 12 payload vectors            |
+| **Directory Brute** | Medium—High | Hidden admin panels, .git, .env, config files   |
+| **Header Audit**    | Medium      | Missing HSTS, CSP, X-Frame-Options, etc.        |
+| **SSL/TLS**         | High        | Weak ciphers, old protocols, self-signed certs  |
+| **CORS**            | Medium—High | Misconfigured Access-Control-Allow-Origin       |
+| **Open Redirect**   | Medium      | Unvalidated redirect parameters                 |
+| **WAF Detection**   | Info        | Cloudflare, Akamai, ModSecurity, AWS WAF, etc.  |
 
 ## Usage
 

@@ -1267,9 +1267,9 @@ Related: [Agent workspace](/concepts/agent-workspace), [Memory](/concepts/memory
 
 Everything lives under `$AGDI_STATE_DIR` (default: `~/.agdi`):
 
-| Path                                                            | Purpose                                                      |
-| --------------------------------------------------------------- | ------------------------------------------------------------ |
-| `$AGDI_STATE_DIR/agdi.json`                             | Main config (JSON5)                                          |
+| Path                                                        | Purpose                                                      |
+| ----------------------------------------------------------- | ------------------------------------------------------------ |
+| `$AGDI_STATE_DIR/agdi.json`                                 | Main config (JSON5)                                          |
 | `$AGDI_STATE_DIR/credentials/oauth.json`                    | Legacy OAuth import (copied into auth profiles on first use) |
 | `$AGDI_STATE_DIR/agents/<agentId>/agent/auth-profiles.json` | Auth profiles (OAuth + API keys)                             |
 | `$AGDI_STATE_DIR/agents/<agentId>/agent/auth.json`          | Runtime auth cache (managed automatically)                   |

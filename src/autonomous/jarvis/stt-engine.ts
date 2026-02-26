@@ -106,7 +106,10 @@ export class SttProcessor {
   // -------------------------------------------------------------------------
 
   private async transcribeLocal(pcmAudio: Buffer, startMs: number): Promise<TranscriptResult> {
-    let whisper: (filePath: string, opts?: Record<string, unknown>) => Promise<Array<{ speech: string }>>;
+    let whisper: (
+      filePath: string,
+      opts?: Record<string, unknown>,
+    ) => Promise<Array<{ speech: string }>>;
     try {
       // @ts-expect-error — whisper-node is an optional peer dependency
       const mod = await import("whisper-node");

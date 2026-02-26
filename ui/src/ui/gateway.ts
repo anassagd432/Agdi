@@ -299,6 +299,24 @@ export class GatewayBrowserClient {
     return p;
   }
 
+  // ---------------------------------------------------------------------------
+  // Jarvis RPC Methods
+  // ---------------------------------------------------------------------------
+
+  async getJarvisStatus(): Promise<
+    { state: string; available?: boolean; message?: string } & Record<string, unknown>
+  > {
+    return this.request("jarvis.status");
+  }
+
+  async startJarvis(): Promise<{ state: string; message?: string } & Record<string, unknown>> {
+    return this.request("jarvis.start");
+  }
+
+  async stopJarvis(): Promise<{ state: string; message?: string } & Record<string, unknown>> {
+    return this.request("jarvis.stop");
+  }
+
   private queueConnect() {
     this.connectNonce = null;
     this.connectSent = false;

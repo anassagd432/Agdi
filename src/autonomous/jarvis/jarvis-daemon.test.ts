@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import {
-  JarvisDaemon,
-  DEFAULT_JARVIS_CONFIG,
-  type JarvisConfig,
-} from "./jarvis-daemon.js";
+import { JarvisDaemon, DEFAULT_JARVIS_CONFIG, type JarvisConfig } from "./jarvis-daemon.js";
 
 // We test the public API + the extractCommand logic via status inspection.
 // MicListener/SttProcessor/TtsSpeaker are mocked at construction level via default configs.

@@ -12,8 +12,8 @@
  */
 
 import * as crypto from "node:crypto";
-import * as path from "node:path";
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("security");
@@ -120,7 +120,12 @@ export class FileSandbox {
 
   /** Check if a path is within the sandbox (non-throwing). */
   isAllowed(filePath: string): boolean {
-    try { this.resolve(filePath); return true; } catch { return false; }
+    try {
+      this.resolve(filePath);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /** Add a new allowed root directory. */
@@ -147,10 +152,10 @@ export type AuditEntry = {
   category: "device" | "api" | "security" | "shell" | "network" | "file" | "auth";
   action: string;
   detail: string;
-  source: string;          // Who initiated (API IP, user, agent)
+  source: string; // Who initiated (API IP, user, agent)
   riskLevel: "low" | "medium" | "high" | "critical";
   approved: boolean;
-  hash?: string;           // HMAC of previous entry (chain of trust)
+  hash?: string; // HMAC of previous entry (chain of trust)
 };
 
 export class AuditLog {
@@ -217,18 +222,24 @@ export class AuditLog {
   }
 
   /** Get total entry count. */
-  get count(): number { return this.entries.length; }
+  get count(): number {
+    return this.entries.length;
+  }
 
   /** Verify the chain integrity. */
   verify(): { valid: boolean; brokenAt?: number } {
     let prev = "genesis";
     for (let i = 0; i < this.entries.length; i++) {
-      const expected = crypto.createHmac("sha256", this.hmacKey)
-        .update(prev + JSON.stringify({
-          category: this.entries[i].category,
-          action: this.entries[i].action,
-          detail: this.entries[i].detail,
-        }))
+      const expected = crypto
+        .createHmac("sha256", this.hmacKey)
+        .update(
+          prev +
+            JSON.stringify({
+              category: this.entries[i].category,
+              action: this.entries[i].action,
+              detail: this.entries[i].detail,
+            }),
+        )
         .digest("hex");
       if (this.entries[i].hash !== expected) {
         return { valid: false, brokenAt: i };
@@ -239,12 +250,16 @@ export class AuditLog {
   }
 
   private computeHash(entry: Omit<AuditEntry, "id" | "timestamp" | "hash">): string {
-    return crypto.createHmac("sha256", this.hmacKey)
-      .update(this.lastHash + JSON.stringify({
-        category: entry.category,
-        action: entry.action,
-        detail: entry.detail,
-      }))
+    return crypto
+      .createHmac("sha256", this.hmacKey)
+      .update(
+        this.lastHash +
+          JSON.stringify({
+            category: entry.category,
+            action: entry.action,
+            detail: entry.detail,
+          }),
+      )
       .digest("hex");
   }
 }
@@ -265,7 +280,8 @@ export class SessionManager {
   private sessions: Map<string, SessionToken> = new Map();
   private readonly ttlMs: number;
 
-  constructor(ttlMs: number = 3600_000) {  // 1 hour default
+  constructor(ttlMs: number = 3600_000) {
+    // 1 hour default
     this.ttlMs = ttlMs;
 
     // Periodic cleanup every 5 minutes
@@ -378,30 +394,48 @@ export class RateLimiter {
 
 /** Commands that must NEVER be executed by the agent without explicit approval. */
 const BLOCKED_COMMANDS = new Set([
-  "rm -rf /", "rm -rf /*", "rm -rf ~", "rm -rf ~/",
-  "mkfs", "dd if=/dev/zero", "dd if=/dev/random",
-  ":(){:|:&};:", "fork bomb",
-  "chmod -R 777 /", "chown -R",
-  "shutdown", "reboot", "poweroff", "halt", "init 0", "init 6",
-  "kill -9 -1", "killall",
-  "iptables -F", "iptables --flush",
-  "echo '' > /etc/passwd", "echo '' > /etc/shadow",
-  "curl | sh", "curl | bash", "wget | sh", "wget | bash",
+  "rm -rf /",
+  "rm -rf /*",
+  "rm -rf ~",
+  "rm -rf ~/",
+  "mkfs",
+  "dd if=/dev/zero",
+  "dd if=/dev/random",
+  ":(){:|:&};:",
+  "fork bomb",
+  "chmod -R 777 /",
+  "chown -R",
+  "shutdown",
+  "reboot",
+  "poweroff",
+  "halt",
+  "init 0",
+  "init 6",
+  "kill -9 -1",
+  "killall",
+  "iptables -F",
+  "iptables --flush",
+  "echo '' > /etc/passwd",
+  "echo '' > /etc/shadow",
+  "curl | sh",
+  "curl | bash",
+  "wget | sh",
+  "wget | bash",
 ]);
 
 /** Patterns that indicate dangerous intent. */
 const DANGEROUS_PATTERNS = [
-  /rm\s+(-\w+\s+)*\//,           // rm anything starting with /
-  />\s*\/etc\//,                   // Redirect to /etc
-  />\s*\/dev\//,                   // Redirect to /dev
-  /dd\s+.*of=\/dev/,              // dd to devices
-  /mkfs\./,                        // Format filesystem
-  /:()\s*\{/,                      // Fork bomb
-  /chmod\s+.*777\s+\//,           // Chmod 777 on root paths
-  /\|\s*(ba)?sh/,                  // Pipe to shell
-  /eval\s/,                        // eval command
-  /python\d?\s+-c.*__import__/,   // Python code injection
-  /node\s+-e/,                     // Node eval
+  /rm\s+(-\w+\s+)*\//, // rm anything starting with /
+  />\s*\/etc\//, // Redirect to /etc
+  />\s*\/dev\//, // Redirect to /dev
+  /dd\s+.*of=\/dev/, // dd to devices
+  /mkfs\./, // Format filesystem
+  /:()\s*\{/, // Fork bomb
+  /chmod\s+.*777\s+\//, // Chmod 777 on root paths
+  /\|\s*(ba)?sh/, // Pipe to shell
+  /eval\s/, // eval command
+  /python\d?\s+-c.*__import__/, // Python code injection
+  /node\s+-e/, // Node eval
 ];
 
 export class CommandGuard {
@@ -449,7 +483,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
   "Cache-Control": "no-store, no-cache, must-revalidate",
-  "Pragma": "no-cache",
+  Pragma: "no-cache",
 };
 
 // ---------------------------------------------------------------------------

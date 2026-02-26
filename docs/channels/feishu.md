@@ -374,8 +374,8 @@ agdi pairing list feishu
 
 ## Gateway management commands
 
-| Command                    | Description                   |
-| -------------------------- | ----------------------------- |
+| Command                | Description                   |
+| ---------------------- | ----------------------------- |
 | `agdi gateway status`  | Show gateway status           |
 | `agdi gateway install` | Install/start gateway service |
 | `agdi gateway stop`    | Stop gateway service          |

@@ -142,12 +142,34 @@ jobs:
       - name: Build dist
         run: pnpm build
 
+      - name: Write provenance metadata
+        run: |
+          cat > dist/BUILD_PROVENANCE.json <<EOF
+          {
+            "commitSha": "${{ github.sha }}",
+            "buildTimestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "version": "$(node -e "console.log(require('./package.json').version)")",
+            "ref": "${{ github.ref }}",
+            "runner": "${{ runner.os }}"
+          }
+          EOF
+
+      - name: Generate SBOM (CycloneDX)
+        run: npx --yes @cyclonedx/cyclonedx-npm --output-file dist/sbom.cdx.json --output-format JSON
+
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-build
           path: dist/
           retention-days: 1
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: dist/sbom.cdx.json
+          retention-days: 90
 
   # Validate npm pack contents after build (only on push to main, not PRs).
   release-check:

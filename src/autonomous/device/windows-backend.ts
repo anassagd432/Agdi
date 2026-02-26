@@ -9,10 +9,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import type {
   DeviceBackend,
   KeyModifier,
@@ -145,21 +145,41 @@ public class DeviceInput {
 // ---------------------------------------------------------------------------
 
 const SENDKEYS_MAP: Record<string, string> = {
-  enter: "{ENTER}", return: "{ENTER}", tab: "{TAB}",
-  escape: "{ESC}", esc: "{ESC}", backspace: "{BACKSPACE}",
-  delete: "{DELETE}", space: " ", up: "{UP}", down: "{DOWN}",
-  left: "{LEFT}", right: "{RIGHT}", home: "{HOME}", end: "{END}",
-  pageup: "{PGUP}", pagedown: "{PGDN}",
-  f1: "{F1}", f2: "{F2}", f3: "{F3}", f4: "{F4}",
-  f5: "{F5}", f6: "{F6}", f7: "{F7}", f8: "{F8}",
-  f9: "{F9}", f10: "{F10}", f11: "{F11}", f12: "{F12}",
+  enter: "{ENTER}",
+  return: "{ENTER}",
+  tab: "{TAB}",
+  escape: "{ESC}",
+  esc: "{ESC}",
+  backspace: "{BACKSPACE}",
+  delete: "{DELETE}",
+  space: " ",
+  up: "{UP}",
+  down: "{DOWN}",
+  left: "{LEFT}",
+  right: "{RIGHT}",
+  home: "{HOME}",
+  end: "{END}",
+  pageup: "{PGUP}",
+  pagedown: "{PGDN}",
+  f1: "{F1}",
+  f2: "{F2}",
+  f3: "{F3}",
+  f4: "{F4}",
+  f5: "{F5}",
+  f6: "{F6}",
+  f7: "{F7}",
+  f8: "{F8}",
+  f9: "{F9}",
+  f10: "{F10}",
+  f11: "{F11}",
+  f12: "{F12}",
 };
 
 const MODIFIER_PREFIX: Record<KeyModifier, string> = {
   ctrl: "^",
   alt: "%",
   shift: "+",
-  meta: "^{ESC}",  // Windows key approximation
+  meta: "^{ESC}", // Windows key approximation
   super: "^{ESC}",
 };
 
@@ -177,8 +197,8 @@ export class WindowsBackend implements DeviceBackend {
   }
 
   async mouseClick(x: number, y: number, button?: MouseButton): Promise<void> {
-    const method = button === "right" ? "RightClick"
-      : button === "middle" ? "MiddleClick" : "Click";
+    const method =
+      button === "right" ? "RightClick" : button === "middle" ? "MiddleClick" : "Click";
     await powershell(`${ADD_TYPE_INPUT}\n[DeviceInput]::${method}(${x}, ${y})`);
   }
 
@@ -209,7 +229,7 @@ for ($i = 1; $i -le $steps; $i++) {
   }
 
   async mouseScroll(direction: ScrollDirection, amount: number = 3): Promise<void> {
-    const delta = (direction === "up" || direction === "left") ? amount : -amount;
+    const delta = direction === "up" || direction === "left" ? amount : -amount;
     await powershell(`${ADD_TYPE_INPUT}\n[DeviceInput]::Scroll(${delta})`);
   }
 
@@ -295,17 +315,20 @@ $callback = [DeviceInput+EnumWindowsProc]{
 [DeviceInput]::EnumWindows($callback, [IntPtr]::Zero)
     `);
 
-    return output.split("\n").filter(Boolean).map((line) => {
-      const [id, title, bounds, focused] = line.split("|||");
-      const [x, y, w, h] = (bounds ?? "0,0,0,0").split(",").map(Number);
-      return {
-        id: id ?? "0",
-        title: title ?? "",
-        appName: (title ?? "").split(" - ").pop() ?? title ?? "",
-        bounds: { x: x ?? 0, y: y ?? 0, width: w ?? 0, height: h ?? 0 },
-        focused: focused === "1",
-      };
-    });
+    return output
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [id, title, bounds, focused] = line.split("|||");
+        const [x, y, w, h] = (bounds ?? "0,0,0,0").split(",").map(Number);
+        return {
+          id: id ?? "0",
+          title: title ?? "",
+          appName: (title ?? "").split(" - ").pop() ?? title ?? "",
+          bounds: { x: x ?? 0, y: y ?? 0, width: w ?? 0, height: h ?? 0 },
+          focused: focused === "1",
+        };
+      });
   }
 
   async focusWindow(titleOrId: string): Promise<void> {

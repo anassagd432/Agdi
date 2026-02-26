@@ -53,10 +53,7 @@ const isInboundAudioContext = (ctx: FinalizedMsgContext): boolean => {
   return AUDIO_HEADER_RE.test(trimmed);
 };
 
-const resolveSessionTtsAuto = (
-  ctx: FinalizedMsgContext,
-  cfg: AGDIConfig,
-): string | undefined => {
+const resolveSessionTtsAuto = (ctx: FinalizedMsgContext, cfg: AGDIConfig): string | undefined => {
   const targetSessionKey =
     ctx.CommandSource === "native" ? ctx.CommandTargetSessionKey?.trim() : undefined;
   const sessionKey = (targetSessionKey ?? ctx.SessionKey)?.trim();

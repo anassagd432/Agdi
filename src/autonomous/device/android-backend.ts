@@ -15,10 +15,10 @@
  */
 
 import { execFile } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { readFile, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readFile, unlink } from "node:fs/promises";
-import { randomUUID } from "node:crypto";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 
 const log = createSubsystemLogger("android");
@@ -86,7 +86,8 @@ export class AndroidBackend {
       this.serial = serial;
     }
     const devices = await this.listDevices();
-    if (devices.length === 0) throw new Error("No Android devices found. Connect via USB or run: adb connect <ip>:5555");
+    if (devices.length === 0)
+      throw new Error("No Android devices found. Connect via USB or run: adb connect <ip>:5555");
     if (!this.serial) {
       this.serial = devices[0]!.serial;
     }
@@ -112,7 +113,10 @@ export class AndroidBackend {
   /** List connected Android devices. */
   async listDevices(): Promise<AndroidDevice[]> {
     const output = await adb(["devices", "-l"]);
-    const lines = output.split("\n").slice(1).filter((l) => l.trim());
+    const lines = output
+      .split("\n")
+      .slice(1)
+      .filter((l) => l.trim());
 
     return lines.map((line) => {
       const parts = line.split(/\s+/);
@@ -151,7 +155,13 @@ export class AndroidBackend {
   }
 
   /** Swipe from one point to another. */
-  async swipe(fromX: number, fromY: number, toX: number, toY: number, durationMs: number = 300): Promise<void> {
+  async swipe(
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    durationMs: number = 300,
+  ): Promise<void> {
     log.info(`swipe (${fromX},${fromY}) → (${toX},${toY})`);
     await this.shell(`input swipe ${fromX} ${fromY} ${toX} ${toY} ${durationMs}`);
   }
@@ -179,7 +189,9 @@ export class AndroidBackend {
   async pinch(centerX: number, centerY: number, direction: "in" | "out"): Promise<void> {
     const offset = direction === "out" ? 200 : -200;
     // Simulate two-finger gesture
-    await this.shell(`input swipe ${centerX - offset} ${centerY} ${centerX + offset} ${centerY} 300`);
+    await this.shell(
+      `input swipe ${centerX - offset} ${centerY} ${centerX + offset} ${centerY} 300`,
+    );
   }
 
   // -------------------------------------------------------------------------
@@ -196,13 +208,28 @@ export class AndroidBackend {
   /** Press a key (home, back, menu, enter, etc.). */
   async pressKey(keyCode: string | number): Promise<void> {
     const KEY_MAP: Record<string, number> = {
-      home: 3, back: 4, menu: 82, enter: 66, tab: 61,
-      delete: 67, space: 62, up: 19, down: 20, left: 21, right: 22,
-      volumeup: 24, volumedown: 25, power: 26, camera: 27,
-      search: 84, mute: 164, escape: 111,
-      recentapps: 187, appswitcher: 187,
+      home: 3,
+      back: 4,
+      menu: 82,
+      enter: 66,
+      tab: 61,
+      delete: 67,
+      space: 62,
+      up: 19,
+      down: 20,
+      left: 21,
+      right: 22,
+      volumeup: 24,
+      volumedown: 25,
+      power: 26,
+      camera: 27,
+      search: 84,
+      mute: 164,
+      escape: 111,
+      recentapps: 187,
+      appswitcher: 187,
     };
-    const code = typeof keyCode === "number" ? keyCode : KEY_MAP[keyCode.toLowerCase()] ?? 0;
+    const code = typeof keyCode === "number" ? keyCode : (KEY_MAP[keyCode.toLowerCase()] ?? 0);
     log.info(`key: ${keyCode} (code ${code})`);
     await this.shell(`input keyevent ${code}`);
   }
@@ -226,7 +253,8 @@ export class AndroidBackend {
   /** List installed apps. */
   async listApps(filter?: string): Promise<string[]> {
     const output = await this.shell("pm list packages");
-    const packages = output.split("\n")
+    const packages = output
+      .split("\n")
       .map((l) => l.replace("package:", "").trim())
       .filter(Boolean);
     if (filter) return packages.filter((p) => p.includes(filter));
@@ -320,7 +348,9 @@ export class AndroidBackend {
     const temp = parseInt(output.match(/temperature: (\d+)/)?.[1] ?? "0", 10);
     return {
       level,
-      status: ["unknown", "charging", "discharging", "not charging", "full"][parseInt(status)] ?? "unknown",
+      status:
+        ["unknown", "charging", "discharging", "not charging", "full"][parseInt(status)] ??
+        "unknown",
       charging: status === "2" || status === "5",
       temperature: temp / 10,
     };
@@ -344,7 +374,10 @@ export class AndroidBackend {
   }
 
   /** Set volume (0-15 for most streams). */
-  async setVolume(stream: "music" | "ring" | "alarm" | "notification" = "music", level: number): Promise<void> {
+  async setVolume(
+    stream: "music" | "ring" | "alarm" | "notification" = "music",
+    level: number,
+  ): Promise<void> {
     const streamMap = { music: 3, ring: 2, alarm: 4, notification: 5 };
     await this.shell(`media volume --stream ${streamMap[stream]} --set ${level}`);
   }

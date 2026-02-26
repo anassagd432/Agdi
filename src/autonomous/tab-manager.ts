@@ -156,9 +156,7 @@ export class TabManager {
 
   /** Close all tabs except the active one. */
   async closeOthers(): Promise<void> {
-    const toClose = Array.from(this.tabs.entries()).filter(
-      ([id]) => id !== this.activeTabId,
-    );
+    const toClose = Array.from(this.tabs.entries()).filter(([id]) => id !== this.activeTabId);
     for (const [id, tab] of toClose) {
       await tab.page.close().catch(() => {});
       this.tabs.delete(id);

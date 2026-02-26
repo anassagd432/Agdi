@@ -6,9 +6,9 @@
  * custom browser actions, and more.
  */
 
+import type { Page } from "playwright-core";
 import { readFile, readdir } from "node:fs/promises";
 import { join, extname } from "node:path";
-import type { Page } from "playwright-core";
 import type { Action, Goal } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -140,7 +140,12 @@ export class PluginRegistry {
   }
 
   /** List registered plugins. */
-  listPlugins(): Array<{ name: string; version: string; description: string; actionCount: number }> {
+  listPlugins(): Array<{
+    name: string;
+    version: string;
+    description: string;
+    actionCount: number;
+  }> {
     return Array.from(this.plugins.values()).map((p) => ({
       name: p.name,
       version: p.version,
@@ -194,7 +199,9 @@ export class PluginRegistry {
         lines.push(`- **${action.name}**: ${action.description}`);
         if (action.parameters) {
           for (const [param, info] of Object.entries(action.parameters)) {
-            lines.push(`  - \`${param}\` (${info.type}${info.required ? ", required" : ""}): ${info.description}`);
+            lines.push(
+              `  - \`${param}\` (${info.type}${info.required ? ", required" : ""}): ${info.description}`,
+            );
           }
         }
       }
@@ -230,7 +237,11 @@ export function createApiPlugin(): AgentPlugin {
         description: "Make an HTTP request to an API endpoint",
         parameters: {
           url: { type: "string", description: "URL to fetch", required: true },
-          method: { type: "string", description: "HTTP method (GET, POST, PUT, DELETE)", required: false },
+          method: {
+            type: "string",
+            description: "HTTP method (GET, POST, PUT, DELETE)",
+            required: false,
+          },
           body: { type: "string", description: "Request body (JSON string)", required: false },
           headers: { type: "object", description: "Additional headers", required: false },
         },
@@ -239,7 +250,7 @@ export function createApiPlugin(): AgentPlugin {
           const method = String(params.method ?? "GET").toUpperCase();
           const headers: Record<string, string> = {
             "Content-Type": "application/json",
-            ...(params.headers as Record<string, string> ?? {}),
+            ...((params.headers as Record<string, string>) ?? {}),
           };
 
           try {
@@ -280,7 +291,11 @@ export function createFilePlugin(): AgentPlugin {
         name: "read",
         description: "Read a file from the agent's data directory",
         parameters: {
-          path: { type: "string", description: "Relative file path within data dir", required: true },
+          path: {
+            type: "string",
+            description: "Relative file path within data dir",
+            required: true,
+          },
         },
         execute: async (params, ctx) => {
           const filePath = join(ctx.dataDir, String(params.path));
@@ -292,7 +307,10 @@ export function createFilePlugin(): AgentPlugin {
             const content = await readFile(filePath, "utf-8");
             return { success: true, output: content.slice(0, 5000), data: content };
           } catch (err) {
-            return { success: false, output: `Read error: ${err instanceof Error ? err.message : String(err)}` };
+            return {
+              success: false,
+              output: `Read error: ${err instanceof Error ? err.message : String(err)}`,
+            };
           }
         },
       },
@@ -300,7 +318,11 @@ export function createFilePlugin(): AgentPlugin {
         name: "write",
         description: "Write a file to the agent's data directory",
         parameters: {
-          path: { type: "string", description: "Relative file path within data dir", required: true },
+          path: {
+            type: "string",
+            description: "Relative file path within data dir",
+            required: true,
+          },
           content: { type: "string", description: "File content to write", required: true },
         },
         execute: async (params, ctx) => {
@@ -315,7 +337,10 @@ export function createFilePlugin(): AgentPlugin {
             await wf(filePath, String(params.content));
             return { success: true, output: `Written to ${params.path}` };
           } catch (err) {
-            return { success: false, output: `Write error: ${err instanceof Error ? err.message : String(err)}` };
+            return {
+              success: false,
+              output: `Write error: ${err instanceof Error ? err.message : String(err)}`,
+            };
           }
         },
       },

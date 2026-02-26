@@ -170,10 +170,7 @@ export function applyMoonshotProviderConfigCn(cfg: AGDIConfig): AGDIConfig {
   return applyMoonshotProviderConfigWithBaseUrl(cfg, MOONSHOT_CN_BASE_URL);
 }
 
-function applyMoonshotProviderConfigWithBaseUrl(
-  cfg: AGDIConfig,
-  baseUrl: string,
-): AGDIConfig {
+function applyMoonshotProviderConfigWithBaseUrl(cfg: AGDIConfig, baseUrl: string): AGDIConfig {
   const models = { ...cfg.agents?.defaults?.models };
   models[MOONSHOT_DEFAULT_MODEL_REF] = {
     ...models[MOONSHOT_DEFAULT_MODEL_REF],

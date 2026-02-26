@@ -89,11 +89,7 @@ async function readSessionEntry(storePath: string, key: string) {
   return store[key];
 }
 
-function makeCfg(
-  home: string,
-  storePath: string,
-  overrides: Partial<AGDIConfig> = {},
-): AGDIConfig {
+function makeCfg(home: string, storePath: string, overrides: Partial<AGDIConfig> = {}): AGDIConfig {
   const base: AGDIConfig = {
     agents: {
       defaults: {

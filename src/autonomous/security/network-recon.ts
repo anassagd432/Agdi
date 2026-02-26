@@ -13,9 +13,9 @@
  */
 
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import * as dns from "node:dns";
 import * as net from "node:net";
+import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const dnsResolve = promisify(dns.resolve);
@@ -105,9 +105,7 @@ export class NetworkRecon {
       });
       const lines = stdout.split("\n");
       for (const line of lines) {
-        const match = line.match(
-          /Host:\s+(\S+)\s+\(([^)]*)\)\s+Status:\s+Up/,
-        );
+        const match = line.match(/Host:\s+(\S+)\s+\(([^)]*)\)\s+Status:\s+Up/);
         if (match) {
           const host: HostResult = {
             ip: match[1],
@@ -148,9 +146,7 @@ export class NetworkRecon {
     try {
       const { stdout } = await run("arp-scan", args, { timeout: 30_000 });
       for (const line of stdout.split("\n")) {
-        const match = line.match(
-          /^(\d+\.\d+\.\d+\.\d+)\s+([0-9a-f:]+)\s+(.*)/i,
-        );
+        const match = line.match(/^(\d+\.\d+\.\d+\.\d+)\s+([0-9a-f:]+)\s+(.*)/i);
         if (match) {
           const host: HostResult = {
             ip: match[1],
@@ -312,7 +308,7 @@ export class NetworkRecon {
 
     for (const type of types) {
       try {
-        const results = await dnsResolve(domain, type) as unknown[];
+        const results = (await dnsResolve(domain, type)) as unknown[];
         for (const r of results) {
           const value = typeof r === "string" ? r : JSON.stringify(r);
           records.push({ type, value });
@@ -381,11 +377,9 @@ export class NetworkRecon {
   async traceroute(target: string): Promise<TracerouteHop[]> {
     const hops: TracerouteHop[] = [];
     try {
-      const { stdout } = await run(
-        "traceroute",
-        ["-n", "-w", "2", "-q", "3", target],
-        { timeout: 60_000 },
-      );
+      const { stdout } = await run("traceroute", ["-n", "-w", "2", "-q", "3", target], {
+        timeout: 60_000,
+      });
       for (const line of stdout.split("\n")) {
         const match = line.match(
           /^\s*(\d+)\s+(\S+)\s+([\d.]+)\s*ms\s+([\d.]+)\s*ms\s+([\d.]+)\s*ms/,
@@ -394,11 +388,7 @@ export class NetworkRecon {
           hops.push({
             hop: parseInt(match[1]),
             ip: match[2],
-            rttMs: [
-              parseFloat(match[3]),
-              parseFloat(match[4]),
-              parseFloat(match[5]),
-            ],
+            rttMs: [parseFloat(match[3]), parseFloat(match[4]), parseFloat(match[5])],
           });
         }
       }
@@ -451,15 +441,7 @@ export class NetworkRecon {
     available: string[];
     missing: string[];
   }> {
-    const tools = [
-      "nmap",
-      "masscan",
-      "arp-scan",
-      "traceroute",
-      "host",
-      "dig",
-      "whois",
-    ];
+    const tools = ["nmap", "masscan", "arp-scan", "traceroute", "host", "dig", "whois"];
     const available: string[] = [];
     const missing: string[] = [];
 

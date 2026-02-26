@@ -8,8 +8,6 @@
  */
 
 import { EventEmitter } from "node:events";
-import { GoalQueue } from "./goal-queue.js";
-import { MessageQueue } from "./message-queue.js";
 import type {
   Action,
   AgentEvent,
@@ -20,6 +18,8 @@ import type {
   UserMessage,
   VisionAnalysis,
 } from "./types.js";
+import { GoalQueue } from "./goal-queue.js";
+import { MessageQueue } from "./message-queue.js";
 
 export class AutonomousAgent extends EventEmitter {
   private state: AgentState = "idle";
@@ -67,9 +67,7 @@ export class AutonomousAgent extends EventEmitter {
   }
 
   /** Register the self-repair module. Returns true if repair succeeded. */
-  setRepairer(
-    fn: (goal: Goal, error: Error, context?: VisionAnalysis) => Promise<boolean>,
-  ): void {
+  setRepairer(fn: (goal: Goal, error: Error, context?: VisionAnalysis) => Promise<boolean>): void {
     this.repairer = fn;
   }
 
@@ -182,7 +180,11 @@ export class AutonomousAgent extends EventEmitter {
         // Execute the action
         this.setState("executing");
         const result = await this.execute(action);
-        this.emitEvent({ type: "action_executed", action, screenshot: result.screenshot ?? undefined });
+        this.emitEvent({
+          type: "action_executed",
+          action,
+          screenshot: result.screenshot ?? undefined,
+        });
 
         // If this was the final action, we're done
         if (action.action === "done") {
@@ -257,11 +259,7 @@ export class AutonomousAgent extends EventEmitter {
     return this.observer(screenshot, goal);
   }
 
-  private async tryRepair(
-    goal: Goal,
-    error: Error,
-    context?: VisionAnalysis,
-  ): Promise<boolean> {
+  private async tryRepair(goal: Goal, error: Error, context?: VisionAnalysis): Promise<boolean> {
     this.setState("repairing");
 
     // Check if we've exceeded retry limit
@@ -283,7 +281,12 @@ export class AutonomousAgent extends EventEmitter {
     // Try the repairer if registered
     if (this.repairer) {
       try {
-        const diagnosis = { type: "LOGIC_ERROR" as const, insight: error.message, suggestedFix: "", canAutoRepair: true };
+        const diagnosis = {
+          type: "LOGIC_ERROR" as const,
+          insight: error.message,
+          suggestedFix: "",
+          canAutoRepair: true,
+        };
         this.emitEvent({ type: "repair_attempt", diagnosis, goalId: goal.id });
 
         const repaired = await this.repairer(goal, error, context);

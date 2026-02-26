@@ -35,21 +35,24 @@ const delegation = new AIDelegation();
 
 // Delegate a complex task
 const result = await delegation.delegate(
-  "Research the top 5 JavaScript frameworks, compare their performance, AND create a summary table"
+  "Research the top 5 JavaScript frameworks, compare their performance, AND create a summary table",
 );
 
-console.log(result.subtasks);    // Individual results
+console.log(result.subtasks); // Individual results
 console.log(result.synthesized); // Merged final output
-console.log(result.durationMs);  // Total execution time
+console.log(result.durationMs); // Total execution time
 ```
 
 ## Examples
 
 **Multi-part research:**
+
 > "Find the cheapest flights to Tokyo AND the best hotels near Shibuya AND top-rated restaurants"
 
 **Parallel automation:**
+
 > "Backup my documents to S3 AND update the database schema AND send the weekly report"
 
 **Combined analysis:**
+
 > "Scan the network for open ports AND check the web app for vulnerabilities AND audit the SSL configuration"

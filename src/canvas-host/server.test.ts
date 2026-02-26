@@ -282,9 +282,7 @@ describe("canvas host", () => {
       expect(html).toContain("agdi-a2ui-host");
       expect(html).toContain("agdiCanvasA2UIAction");
 
-      const bundleRes = await fetch(
-        `http://127.0.0.1:${server.port}/__agdi__/a2ui/a2ui.bundle.js`,
-      );
+      const bundleRes = await fetch(`http://127.0.0.1:${server.port}/__agdi__/a2ui/a2ui.bundle.js`);
       const js = await bundleRes.text();
       expect(bundleRes.status).toBe(200);
       expect(js).toContain("agdiA2UI");

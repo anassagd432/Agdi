@@ -4,16 +4,35 @@
  */
 
 import { execFile, spawn, ChildProcess } from "node:child_process";
-import { promisify } from "node:util";
 import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import * as os from "node:os";
+import * as path from "node:path";
+import { promisify } from "node:util";
 
 const run = promisify(execFile);
 
-export interface Packet { timestamp: string; src: string; dst: string; protocol: string; length: number; info: string; }
-export interface CaptureOptions { iface?: string; filter?: string; count?: number; duration?: number; outputFile?: string; promiscuous?: boolean; }
-export interface TrafficStats { totalPackets: number; protocols: Record<string, number>; topSources: [string, number][]; topDests: [string, number][]; }
+export interface Packet {
+  timestamp: string;
+  src: string;
+  dst: string;
+  protocol: string;
+  length: number;
+  info: string;
+}
+export interface CaptureOptions {
+  iface?: string;
+  filter?: string;
+  count?: number;
+  duration?: number;
+  outputFile?: string;
+  promiscuous?: boolean;
+}
+export interface TrafficStats {
+  totalPackets: number;
+  protocols: Record<string, number>;
+  topSources: [string, number][];
+  topDests: [string, number][];
+}
 
 export type SnifferEvent =
   | { kind: "packet"; packet: Packet }
@@ -27,14 +46,24 @@ export class PacketSniffer {
   private captureProcess: ChildProcess | null = null;
   private captureDir = path.join(os.tmpdir(), "agdi-captures");
 
-  on(l: SnifferListener): void { this.listeners.push(l); }
-  private emit(e: SnifferEvent): void { for (const l of this.listeners) l(e); }
+  on(l: SnifferListener): void {
+    this.listeners.push(l);
+  }
+  private emit(e: SnifferEvent): void {
+    for (const l of this.listeners) l(e);
+  }
 
   async getInterfaces(): Promise<string[]> {
     try {
       const { stdout } = await run("ip", ["link", "show"], { timeout: 5000 });
-      return stdout.split("\n").filter(l => /^\d+:/.test(l)).map(l => l.match(/^\d+:\s+(\S+):/)?.[1] ?? "").filter(Boolean);
-    } catch { return []; }
+      return stdout
+        .split("\n")
+        .filter((l) => /^\d+:/.test(l))
+        .map((l) => l.match(/^\d+:\s+(\S+):/)?.[1] ?? "")
+        .filter(Boolean);
+    } catch {
+      return [];
+    }
   }
 
   // ── Live Capture ──────────────────────────────────────────
@@ -71,7 +100,28 @@ export class PacketSniffer {
   // ── Read PCAP ─────────────────────────────────────────────
   async readPcap(pcapFile: string, filter?: string, maxPackets = 100): Promise<Packet[]> {
     const packets: Packet[] = [];
-    const args = ["-r", pcapFile, "-T", "fields", "-e", "frame.time", "-e", "ip.src", "-e", "ip.dst", "-e", "frame.protocols", "-e", "frame.len", "-e", "_ws.col.Info", "-E", "separator=|", "-c", String(maxPackets)];
+    const args = [
+      "-r",
+      pcapFile,
+      "-T",
+      "fields",
+      "-e",
+      "frame.time",
+      "-e",
+      "ip.src",
+      "-e",
+      "ip.dst",
+      "-e",
+      "frame.protocols",
+      "-e",
+      "frame.len",
+      "-e",
+      "_ws.col.Info",
+      "-E",
+      "separator=|",
+      "-c",
+      String(maxPackets),
+    ];
     if (filter) args.push("-Y", filter);
 
     try {
@@ -79,7 +129,14 @@ export class PacketSniffer {
       for (const line of stdout.split("\n")) {
         if (!line.trim()) continue;
         const [ts, src, dst, proto, len, info] = line.split("|");
-        packets.push({ timestamp: ts ?? "", src: src ?? "", dst: dst ?? "", protocol: proto?.split(":").pop() ?? "", length: parseInt(len ?? "0"), info: info ?? "" });
+        packets.push({
+          timestamp: ts ?? "",
+          src: src ?? "",
+          dst: dst ?? "",
+          protocol: proto?.split(":").pop() ?? "",
+          length: parseInt(len ?? "0"),
+          info: info ?? "",
+        });
       }
     } catch {
       // Fallback: tcpdump
@@ -90,7 +147,15 @@ export class PacketSniffer {
         for (const line of stdout.split("\n")) {
           if (!line.trim()) continue;
           const m = line.match(/^(\S+)\s+IP\s+(\S+)\s+>\s+(\S+?):\s+(.+)/);
-          if (m) packets.push({ timestamp: m[1], src: m[2], dst: m[3], protocol: "TCP/IP", length: 0, info: m[4] });
+          if (m)
+            packets.push({
+              timestamp: m[1],
+              src: m[2],
+              dst: m[3],
+              protocol: "TCP/IP",
+              length: 0,
+              info: m[4],
+            });
         }
       } catch {}
     }
@@ -111,9 +176,16 @@ export class PacketSniffer {
     }
 
     const topN = (obj: Record<string, number>, n = 10): [string, number][] =>
-      Object.entries(obj).sort((a, b) => b[1] - a[1]).slice(0, n);
+      Object.entries(obj)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, n);
 
-    const stats: TrafficStats = { totalPackets: packets.length, protocols, topSources: topN(sources), topDests: topN(dests) };
+    const stats: TrafficStats = {
+      totalPackets: packets.length,
+      protocols,
+      topSources: topN(sources),
+      topDests: topN(dests),
+    };
     this.emit({ kind: "stats", stats });
     return stats;
   }
@@ -123,10 +195,29 @@ export class PacketSniffer {
     const creds: string[] = [];
     try {
       // HTTP auth
-      const { stdout: http } = await run("tshark", ["-r", pcapFile, "-Y", "http.authbasic", "-T", "fields", "-e", "http.authbasic"], { timeout: 30_000 });
+      const { stdout: http } = await run(
+        "tshark",
+        ["-r", pcapFile, "-Y", "http.authbasic", "-T", "fields", "-e", "http.authbasic"],
+        { timeout: 30_000 },
+      );
       for (const l of http.split("\n")) if (l.trim()) creds.push(`HTTP Basic: ${l.trim()}`);
       // FTP
-      const { stdout: ftp } = await run("tshark", ["-r", pcapFile, "-Y", "ftp.request.command == USER || ftp.request.command == PASS", "-T", "fields", "-e", "ftp.request.command", "-e", "ftp.request.arg"], { timeout: 30_000 });
+      const { stdout: ftp } = await run(
+        "tshark",
+        [
+          "-r",
+          pcapFile,
+          "-Y",
+          "ftp.request.command == USER || ftp.request.command == PASS",
+          "-T",
+          "fields",
+          "-e",
+          "ftp.request.command",
+          "-e",
+          "ftp.request.arg",
+        ],
+        { timeout: 30_000 },
+      );
       for (const l of ftp.split("\n")) if (l.trim()) creds.push(`FTP: ${l.trim()}`);
     } catch {}
     return creds;
@@ -134,15 +225,36 @@ export class PacketSniffer {
 
   async dnsQueries(pcapFile: string): Promise<string[]> {
     try {
-      const { stdout } = await run("tshark", ["-r", pcapFile, "-Y", "dns.qry.name", "-T", "fields", "-e", "dns.qry.name"], { timeout: 30_000 });
-      return [...new Set(stdout.split("\n").map(l => l.trim()).filter(Boolean))];
-    } catch { return []; }
+      const { stdout } = await run(
+        "tshark",
+        ["-r", pcapFile, "-Y", "dns.qry.name", "-T", "fields", "-e", "dns.qry.name"],
+        { timeout: 30_000 },
+      );
+      return [
+        ...new Set(
+          stdout
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean),
+        ),
+      ];
+    } catch {
+      return [];
+    }
   }
 
   async checkDependencies(): Promise<{ available: string[]; missing: string[] }> {
     const tools = ["tcpdump", "tshark", "wireshark", "capinfos"];
-    const available: string[] = []; const missing: string[] = [];
-    for (const t of tools) { try { await run("which", [t]); available.push(t); } catch { missing.push(t); } }
+    const available: string[] = [];
+    const missing: string[] = [];
+    for (const t of tools) {
+      try {
+        await run("which", [t]);
+        available.push(t);
+      } catch {
+        missing.push(t);
+      }
+    }
     return { available, missing };
   }
 }

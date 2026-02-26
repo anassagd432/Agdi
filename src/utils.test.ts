@@ -170,9 +170,9 @@ describe("shortenHomeInString", () => {
     vi.stubEnv("AGDI_HOME", "/srv/agdi-home");
     vi.stubEnv("HOME", "/home/other");
 
-    expect(
-      shortenHomeInString(`config: ${path.resolve("/srv/agdi-home")}/.agdi/agdi.json`),
-    ).toBe("config: $AGDI_HOME/.agdi/agdi.json");
+    expect(shortenHomeInString(`config: ${path.resolve("/srv/agdi-home")}/.agdi/agdi.json`)).toBe(
+      "config: $AGDI_HOME/.agdi/agdi.json",
+    );
 
     vi.unstubAllEnvs();
   });

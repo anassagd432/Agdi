@@ -54,11 +54,7 @@ function setSignalDmPolicy(cfg: AGDIConfig, dmPolicy: DmPolicy) {
   };
 }
 
-function setSignalAllowFrom(
-  cfg: AGDIConfig,
-  accountId: string,
-  allowFrom: string[],
-): AGDIConfig {
+function setSignalAllowFrom(cfg: AGDIConfig, accountId: string, allowFrom: string[]): AGDIConfig {
   if (accountId === DEFAULT_ACCOUNT_ID) {
     return {
       ...cfg,

@@ -54,7 +54,7 @@ export type ConfigMutation = {
 
 /** A goal decomposition template. */
 export type GoalTemplate = {
-  pattern: string;  // regex-like pattern matching goal descriptions
+  pattern: string; // regex-like pattern matching goal descriptions
   subGoals: Array<{
     description: string;
     priority: GoalPriority;
@@ -184,7 +184,10 @@ export class SelfImprover {
     // Domain-specific hints
     if (goal) {
       for (const [domain, hints] of Object.entries(this.state.domainHints)) {
-        if (goal.description.toLowerCase().includes(domain) || goal.context.some(c => c.includes(domain))) {
+        if (
+          goal.description.toLowerCase().includes(domain) ||
+          goal.context.some((c) => c.includes(domain))
+        ) {
           lines.push(`\nDOMAIN HINTS (${domain}):`);
           for (const hint of hints.slice(0, 5)) {
             lines.push(`  • ${hint}`);
@@ -203,9 +206,7 @@ export class SelfImprover {
 
     // Blacklisted strategies
     if (this.state.blacklistedStrategies.length > 0) {
-      lines.push(
-        `\nAVOID these approaches: ${this.state.blacklistedStrategies.join(", ")}`,
-      );
+      lines.push(`\nAVOID these approaches: ${this.state.blacklistedStrategies.join(", ")}`);
     }
 
     return lines.join("\n");
@@ -215,9 +216,7 @@ export class SelfImprover {
    * Check if a goal should be decomposed into sub-goals.
    * Returns the sub-goals if a matching template exists, or null.
    */
-  getGoalDecomposition(
-    goalDescription: string,
-  ): GoalTemplate["subGoals"] | null {
+  getGoalDecomposition(goalDescription: string): GoalTemplate["subGoals"] | null {
     const descLower = goalDescription.toLowerCase();
 
     for (const template of this.state.goalTemplates) {
@@ -278,8 +277,11 @@ export class SelfImprover {
         id: `rule-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
         source: "analysis",
         rule: `${bottleneck.suggestion} (discovered: ${bottleneck.description})`,
-        confidence: bottleneck.severity === "high" ? 0.9 : bottleneck.severity === "medium" ? 0.7 : 0.5,
-        appliesTo: bottleneck.area.startsWith("Domain:") ? bottleneck.area.replace("Domain: ", "") : "*",
+        confidence:
+          bottleneck.severity === "high" ? 0.9 : bottleneck.severity === "medium" ? 0.7 : 0.5,
+        appliesTo: bottleneck.area.startsWith("Domain:")
+          ? bottleneck.area.replace("Domain: ", "")
+          : "*",
         createdAt: new Date().toISOString(),
         usageCount: 0,
         effectivenessScore: 0.5, // Neutral starting point
@@ -291,13 +293,8 @@ export class SelfImprover {
 
     // Learn from insights too
     for (const insight of report.insights) {
-      if (
-        insight.includes("Extract procedures") ||
-        insight.includes("best performing")
-      ) {
-        const existing = this.state.promptAdditions.find((p) =>
-          p.includes(insight.split(":")[0]!),
-        );
+      if (insight.includes("Extract procedures") || insight.includes("best performing")) {
+        const existing = this.state.promptAdditions.find((p) => p.includes(insight.split(":")[0]!));
         if (!existing) {
           this.state.promptAdditions.push(insight);
           changes.push(`New prompt addition from insight`);
@@ -384,10 +381,7 @@ export class SelfImprover {
     return changes;
   }
 
-  private discoverGoalTemplates(
-    report: PerformanceReport,
-    memory: AgentMemory,
-  ): string[] {
+  private discoverGoalTemplates(report: PerformanceReport, memory: AgentMemory): string[] {
     const changes: string[] = [];
 
     // Look for goals that failed but might succeed if decomposed
@@ -399,8 +393,7 @@ export class SelfImprover {
       const rule: LearnedRule = {
         id: `decomp-${Date.now()}`,
         source: "self-discovered",
-        rule:
-          "Goals are taking too many retries. Break complex goals into smaller, sequential sub-goals. For multi-step web tasks, separate navigation, form-filling, and verification into distinct goals.",
+        rule: "Goals are taking too many retries. Break complex goals into smaller, sequential sub-goals. For multi-step web tasks, separate navigation, form-filling, and verification into distinct goals.",
         confidence: 0.8,
         appliesTo: "*",
         createdAt: new Date().toISOString(),
@@ -425,9 +418,7 @@ export class SelfImprover {
       report.overview.overallSuccessRate.current >= 0.9 &&
       report.overview.avgRetriesPerGoal.current <= 0.5
     ) {
-      const existing = this.state.configMutations.find(
-        (m) => m.parameter === "activeTickMs",
-      );
+      const existing = this.state.configMutations.find((m) => m.parameter === "activeTickMs");
       if (!existing) {
         this.state.configMutations.push({
           parameter: "activeTickMs",
@@ -446,9 +437,7 @@ export class SelfImprover {
       report.overview.overallSuccessRate.current < 0.5 &&
       report.overview.avgRetriesPerGoal.current > 2
     ) {
-      const existing = this.state.configMutations.find(
-        (m) => m.parameter === "minConfidence",
-      );
+      const existing = this.state.configMutations.find((m) => m.parameter === "minConfidence");
       if (!existing) {
         this.state.configMutations.push({
           parameter: "minConfidence",

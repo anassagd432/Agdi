@@ -9,10 +9,10 @@
  * - Scheduling: can schedule replays via cron (Linux system controller)
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
+import type { ApprovalGate } from "./approval.js";
 import type { DeviceController } from "./device-controller.js";
 import type { DeviceAction } from "./device/types.js";
-import type { ApprovalGate } from "./approval.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("workflow-replay");
 
@@ -23,9 +23,9 @@ const log = createSubsystemLogger("workflow-replay");
 export type WorkflowStep = {
   index: number;
   action: DeviceAction;
-  timestamp: number;       // Relative to workflow start (ms)
-  delayFromPrev: number;   // Delay from previous step (ms)
-  screenshot?: string;     // Base64 screenshot after action (for verification)
+  timestamp: number; // Relative to workflow start (ms)
+  delayFromPrev: number; // Delay from previous step (ms)
+  screenshot?: string; // Base64 screenshot after action (for verification)
 };
 
 export type SavedWorkflow = {
@@ -51,7 +51,7 @@ export type ReplayResult = {
 };
 
 export type WorkflowReplayConfig = {
-  speedMultiplier: number;  // 1.0 = original speed, 2.0 = 2x faster
+  speedMultiplier: number; // 1.0 = original speed, 2.0 = 2x faster
   pauseBetweenSteps: boolean;
   captureScreenshots: boolean;
   requireApproval: boolean;
@@ -106,9 +106,10 @@ export class WorkflowReplay {
 
     const now = Date.now();
     const timestamp = now - this.recordingStartTime;
-    const prevTimestamp = this.currentRecording.length > 0
-      ? this.currentRecording[this.currentRecording.length - 1]!.timestamp
-      : 0;
+    const prevTimestamp =
+      this.currentRecording.length > 0
+        ? this.currentRecording[this.currentRecording.length - 1]!.timestamp
+        : 0;
 
     this.currentRecording.push({
       index: this.currentRecording.length,
@@ -124,9 +125,10 @@ export class WorkflowReplay {
     if (!this.recording) throw new Error("Not recording");
 
     const id = `wf-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const totalDurationMs = this.currentRecording.length > 0
-      ? this.currentRecording[this.currentRecording.length - 1]!.timestamp
-      : 0;
+    const totalDurationMs =
+      this.currentRecording.length > 0
+        ? this.currentRecording[this.currentRecording.length - 1]!.timestamp
+        : 0;
 
     const workflow: SavedWorkflow = {
       id,
@@ -179,7 +181,9 @@ export class WorkflowReplay {
     const screenshots: Buffer[] = [];
     let stepsCompleted = 0;
 
-    log.info(`replaying "${workflow.name}": ${workflow.steps.length} steps at ${opts.speedMultiplier}x speed`);
+    log.info(
+      `replaying "${workflow.name}": ${workflow.steps.length} steps at ${opts.speedMultiplier}x speed`,
+    );
 
     try {
       for (const step of workflow.steps) {
@@ -231,7 +235,6 @@ export class WorkflowReplay {
 
       log.info(`replay complete: ${stepsCompleted} steps in ${result.durationMs}ms`);
       return result;
-
     } catch (err) {
       return {
         workflowId,

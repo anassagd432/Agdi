@@ -94,10 +94,7 @@ async function main() {
   }
 
   const bindRaw =
-    argValue(args, "--bind") ??
-    process.env.AGDI_GATEWAY_BIND ??
-    cfg.gateway?.bind ??
-    "loopback";
+    argValue(args, "--bind") ?? process.env.AGDI_GATEWAY_BIND ?? cfg.gateway?.bind ?? "loopback";
   const bind =
     bindRaw === "loopback" ||
     bindRaw === "lan" ||

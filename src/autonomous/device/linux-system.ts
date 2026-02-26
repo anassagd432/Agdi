@@ -20,13 +20,34 @@
  */
 
 import { exec as execCb, execFile, spawn } from "node:child_process";
-import { promisify } from "node:util";
 import {
-  readFile, writeFile, readdir, stat, mkdir, rm, rename, copyFile,
-  chmod, chown, access, constants,
+  readFile,
+  writeFile,
+  readdir,
+  stat,
+  mkdir,
+  rm,
+  rename,
+  copyFile,
+  chmod,
+  chown,
+  access,
+  constants,
 } from "node:fs/promises";
-import { homedir, hostname, userInfo, cpus, totalmem, freemem, uptime, platform, arch, release } from "node:os";
+import {
+  homedir,
+  hostname,
+  userInfo,
+  cpus,
+  totalmem,
+  freemem,
+  uptime,
+  platform,
+  arch,
+  release,
+} from "node:os";
 import { join, resolve, dirname, basename } from "node:path";
+import { promisify } from "node:util";
 import { createSubsystemLogger } from "../../logging/subsystem.js";
 
 const log = createSubsystemLogger("linux-system");
@@ -36,7 +57,10 @@ const execAsync = promisify(execCb);
 // Helper
 // ---------------------------------------------------------------------------
 
-async function run(cmd: string, timeoutMs: number = 30_000): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+async function run(
+  cmd: string,
+  timeoutMs: number = 30_000,
+): Promise<{ stdout: string; stderr: string; exitCode: number }> {
   try {
     const { stdout, stderr } = await execAsync(cmd, {
       timeout: timeoutMs,
@@ -144,8 +168,12 @@ type PkgManager = "apt" | "dnf" | "yum" | "pacman" | "zypper" | "apk" | "unknown
 
 async function detectPkgManager(): Promise<PkgManager> {
   const managers: Array<[string, PkgManager]> = [
-    ["apt", "apt"], ["dnf", "dnf"], ["yum", "yum"],
-    ["pacman", "pacman"], ["zypper", "zypper"], ["apk", "apk"],
+    ["apt", "apt"],
+    ["dnf", "dnf"],
+    ["yum", "yum"],
+    ["pacman", "pacman"],
+    ["zypper", "zypper"],
+    ["apk", "apk"],
   ];
   for (const [cmd, name] of managers) {
     const result = await run(`which ${cmd}`);
@@ -159,13 +187,15 @@ async function detectPkgManager(): Promise<PkgManager> {
 // ===========================================================================
 
 export class LinuxSystemController {
-
   // -------------------------------------------------------------------------
   // 1. Terminal / Shell
   // -------------------------------------------------------------------------
 
   /** Run a shell command and return stdout/stderr/exitCode. */
-  async exec(command: string, timeoutMs: number = 30_000): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  async exec(
+    command: string,
+    timeoutMs: number = 30_000,
+  ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     log.info(`exec: ${command.slice(0, 100)}`);
     return run(command, timeoutMs);
   }
@@ -189,8 +219,13 @@ export class LinuxSystemController {
   /** Open a new terminal window running a command. */
   async openTerminal(command?: string): Promise<void> {
     const terminals = [
-      "gnome-terminal", "konsole", "xfce4-terminal",
-      "mate-terminal", "xterm", "alacritty", "kitty",
+      "gnome-terminal",
+      "konsole",
+      "xfce4-terminal",
+      "mate-terminal",
+      "xterm",
+      "alacritty",
+      "kitty",
     ];
 
     for (const term of terminals) {
@@ -263,7 +298,13 @@ export class LinuxSystemController {
         results.push({
           name: entry.name,
           path: fullPath,
-          type: entry.isDirectory() ? "directory" : entry.isSymbolicLink() ? "symlink" : entry.isFile() ? "file" : "other",
+          type: entry.isDirectory()
+            ? "directory"
+            : entry.isSymbolicLink()
+              ? "symlink"
+              : entry.isFile()
+                ? "file"
+                : "other",
           size: s.size,
           permissions: parts[0] ?? "",
           owner: parts[1] ?? "",
@@ -290,7 +331,9 @@ export class LinuxSystemController {
 
   /** Search for files matching a pattern. */
   async findFiles(directory: string, pattern: string, maxDepth: number = 5): Promise<string[]> {
-    const { stdout } = await run(`find "${resolve(directory)}" -maxdepth ${maxDepth} -name "${pattern}" 2>/dev/null | head -50`);
+    const { stdout } = await run(
+      `find "${resolve(directory)}" -maxdepth ${maxDepth} -name "${pattern}" 2>/dev/null | head -50`,
+    );
     return stdout.split("\n").filter(Boolean);
   }
 
@@ -306,18 +349,23 @@ export class LinuxSystemController {
 
   /** Get disk usage. */
   async getDiskUsage(): Promise<DiskUsage[]> {
-    const { stdout } = await run("df -h --output=source,size,used,avail,pcent,target 2>/dev/null | tail -n +2");
-    return stdout.split("\n").filter(Boolean).map((line) => {
-      const parts = line.trim().split(/\s+/);
-      return {
-        filesystem: parts[0] ?? "",
-        size: parts[1] ?? "",
-        used: parts[2] ?? "",
-        available: parts[3] ?? "",
-        usePercent: parts[4] ?? "",
-        mountpoint: parts[5] ?? "",
-      };
-    });
+    const { stdout } = await run(
+      "df -h --output=source,size,used,avail,pcent,target 2>/dev/null | tail -n +2",
+    );
+    return stdout
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const parts = line.trim().split(/\s+/);
+        return {
+          filesystem: parts[0] ?? "",
+          size: parts[1] ?? "",
+          used: parts[2] ?? "",
+          available: parts[3] ?? "",
+          usePercent: parts[4] ?? "",
+          mountpoint: parts[5] ?? "",
+        };
+      });
   }
 
   // -------------------------------------------------------------------------
@@ -331,17 +379,21 @@ export class LinuxSystemController {
       : `ps aux --sort=-%cpu | head -30`;
     const { stdout } = await run(cmd);
 
-    return stdout.split("\n").filter(Boolean).slice(1).map((line) => {
-      const parts = line.trim().split(/\s+/);
-      return {
-        pid: parseInt(parts[1] ?? "0", 10),
-        user: parts[0] ?? "",
-        cpu: parseFloat(parts[2] ?? "0"),
-        mem: parseFloat(parts[3] ?? "0"),
-        started: parts[8] ?? "",
-        command: parts.slice(10).join(" "),
-      };
-    });
+    return stdout
+      .split("\n")
+      .filter(Boolean)
+      .slice(1)
+      .map((line) => {
+        const parts = line.trim().split(/\s+/);
+        return {
+          pid: parseInt(parts[1] ?? "0", 10),
+          user: parts[0] ?? "",
+          cpu: parseFloat(parts[2] ?? "0"),
+          mem: parseFloat(parts[3] ?? "0"),
+          started: parts[8] ?? "",
+          command: parts.slice(10).join(" "),
+        };
+      });
   }
 
   /** Kill a process by PID. */
@@ -358,7 +410,9 @@ export class LinuxSystemController {
 
   /** Get process info by PID. */
   async getProcess(pid: number): Promise<ProcessInfo | null> {
-    const { stdout, exitCode } = await run(`ps -p ${pid} -o user,%cpu,%mem,start,command --no-headers`);
+    const { stdout, exitCode } = await run(
+      `ps -p ${pid} -o user,%cpu,%mem,start,command --no-headers`,
+    );
     if (exitCode !== 0 || !stdout) return null;
     const parts = stdout.trim().split(/\s+/);
     return {
@@ -484,7 +538,9 @@ export class LinuxSystemController {
 
   /** Get the status of a service. */
   async serviceStatus(name: string): Promise<ServiceStatus> {
-    const { stdout } = await run(`systemctl show ${name} --no-pager -p ActiveState,UnitFileState,Description 2>/dev/null`);
+    const { stdout } = await run(
+      `systemctl show ${name} --no-pager -p ActiveState,UnitFileState,Description 2>/dev/null`,
+    );
     const props: Record<string, string> = {};
     for (const line of stdout.split("\n")) {
       const [k, v] = line.split("=");
@@ -534,17 +590,20 @@ export class LinuxSystemController {
       : `systemctl list-units --type=service --no-pager --no-legend | head -30`;
     const { stdout } = await run(cmd);
 
-    return stdout.split("\n").filter(Boolean).map((line) => {
-      const parts = line.trim().split(/\s+/);
-      const name = (parts[0] ?? "").replace(".service", "");
-      return {
-        name,
-        active: parts[2] === "active",
-        enabled: false, // Would need separate query
-        status: parts[3] ?? "unknown",
-        description: parts.slice(4).join(" "),
-      };
-    });
+    return stdout
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const parts = line.trim().split(/\s+/);
+        const name = (parts[0] ?? "").replace(".service", "");
+        return {
+          name,
+          active: parts[2] === "active",
+          enabled: false, // Would need separate query
+          status: parts[3] ?? "unknown",
+          description: parts.slice(4).join(" "),
+        };
+      });
   }
 
   // -------------------------------------------------------------------------
@@ -592,26 +651,33 @@ export class LinuxSystemController {
 
   /** Do a DNS lookup. */
   async dnsLookup(domain: string): Promise<string[]> {
-    const { stdout } = await run(`dig +short ${domain} 2>/dev/null || nslookup ${domain} | grep "Address" | tail -n +2`);
+    const { stdout } = await run(
+      `dig +short ${domain} 2>/dev/null || nslookup ${domain} | grep "Address" | tail -n +2`,
+    );
     return stdout.split("\n").filter(Boolean);
   }
 
   /** List open network ports. */
-  async listOpenPorts(): Promise<Array<{ protocol: string; port: number; pid: number; process: string }>> {
+  async listOpenPorts(): Promise<
+    Array<{ protocol: string; port: number; pid: number; process: string }>
+  > {
     const { stdout } = await run("ss -tlnp 2>/dev/null | tail -n +2");
-    return stdout.split("\n").filter(Boolean).map((line) => {
-      const parts = line.trim().split(/\s+/);
-      const addr = parts[3] ?? "";
-      const portMatch = addr.match(/:(\d+)$/);
-      const pidMatch = (parts[5] ?? "").match(/pid=(\d+)/);
-      const procMatch = (parts[5] ?? "").match(/\("([^"]+)"/);
-      return {
-        protocol: parts[0] ?? "tcp",
-        port: parseInt(portMatch?.[1] ?? "0", 10),
-        pid: parseInt(pidMatch?.[1] ?? "0", 10),
-        process: procMatch?.[1] ?? "",
-      };
-    });
+    return stdout
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const parts = line.trim().split(/\s+/);
+        const addr = parts[3] ?? "";
+        const portMatch = addr.match(/:(\d+)$/);
+        const pidMatch = (parts[5] ?? "").match(/pid=(\d+)/);
+        const procMatch = (parts[5] ?? "").match(/\("([^"]+)"/);
+        return {
+          protocol: parts[0] ?? "tcp",
+          port: parseInt(portMatch?.[1] ?? "0", 10),
+          pid: parseInt(pidMatch?.[1] ?? "0", 10),
+          process: procMatch?.[1] ?? "",
+        };
+      });
   }
 
   /** Download a file from a URL. */
@@ -626,7 +692,9 @@ export class LinuxSystemController {
 
   /** Copy text to clipboard. */
   async clipboardCopy(text: string): Promise<void> {
-    const result = await run(`echo -n "${text.replace(/"/g, '\\"')}" | xclip -selection clipboard 2>/dev/null || echo -n "${text.replace(/"/g, '\\"')}" | xsel --clipboard --input`);
+    const result = await run(
+      `echo -n "${text.replace(/"/g, '\\"')}" | xclip -selection clipboard 2>/dev/null || echo -n "${text.replace(/"/g, '\\"')}" | xsel --clipboard --input`,
+    );
     if (result.exitCode !== 0) {
       // Fallback: wl-copy for Wayland
       await run(`echo -n "${text.replace(/"/g, '\\"')}" | wl-copy`);
@@ -635,7 +703,9 @@ export class LinuxSystemController {
 
   /** Paste text from clipboard. */
   async clipboardPaste(): Promise<string> {
-    const { stdout, exitCode } = await run("xclip -selection clipboard -o 2>/dev/null || xsel --clipboard --output 2>/dev/null || wl-paste 2>/dev/null");
+    const { stdout, exitCode } = await run(
+      "xclip -selection clipboard -o 2>/dev/null || xsel --clipboard --output 2>/dev/null || wl-paste 2>/dev/null",
+    );
     return stdout;
   }
 
@@ -644,7 +714,11 @@ export class LinuxSystemController {
   // -------------------------------------------------------------------------
 
   /** Send a desktop notification. */
-  async notify(title: string, body: string, urgency: "low" | "normal" | "critical" = "normal"): Promise<void> {
+  async notify(
+    title: string,
+    body: string,
+    urgency: "low" | "normal" | "critical" = "normal",
+  ): Promise<void> {
     await run(`notify-send -u ${urgency} "${title}" "${body}"`);
   }
 
@@ -654,7 +728,9 @@ export class LinuxSystemController {
 
   /** Get current volume percentage. */
   async getVolume(): Promise<number> {
-    const { stdout } = await run("pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -oP '\\d+%' | head -1");
+    const { stdout } = await run(
+      "pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -oP '\\d+%' | head -1",
+    );
     return parseInt(stdout.replace("%", ""), 10) || 0;
   }
 
@@ -679,7 +755,9 @@ export class LinuxSystemController {
       const { stdout: max } = await run("brightnessctl max");
       return Math.round((parseInt(stdout, 10) / parseInt(max, 10)) * 100);
     } catch {
-      const { stdout } = await run("xrandr --verbose | grep -i brightness | head -1 | cut -d' ' -f2");
+      const { stdout } = await run(
+        "xrandr --verbose | grep -i brightness | head -1 | cut -d' ' -f2",
+      );
       return Math.round(parseFloat(stdout) * 100);
     }
   }
@@ -690,7 +768,9 @@ export class LinuxSystemController {
     try {
       await run(`brightnessctl set ${clamped}%`);
     } catch {
-      await run(`xrandr --output $(xrandr | grep " connected" | head -1 | cut -d' ' -f1) --brightness ${clamped / 100}`);
+      await run(
+        `xrandr --output $(xrandr | grep " connected" | head -1 | cut -d' ' -f1) --brightness ${clamped / 100}`,
+      );
     }
   }
 
@@ -717,7 +797,9 @@ export class LinuxSystemController {
     try {
       const { stdout } = await run("cat /etc/os-release | grep PRETTY_NAME | cut -d'\"' -f2");
       if (stdout) distro = stdout;
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     return {
       hostname: hostname(),
@@ -743,13 +825,23 @@ export class LinuxSystemController {
   }
 
   /** Get memory usage. */
-  async getMemoryUsage(): Promise<{ totalMB: number; usedMB: number; freeMB: number; percent: number }> {
+  async getMemoryUsage(): Promise<{
+    totalMB: number;
+    usedMB: number;
+    freeMB: number;
+    percent: number;
+  }> {
     const { stdout } = await run("free -m | grep Mem");
     const parts = stdout.trim().split(/\s+/);
     const total = parseInt(parts[1] ?? "0", 10);
     const used = parseInt(parts[2] ?? "0", 10);
     const free = parseInt(parts[3] ?? "0", 10);
-    return { totalMB: total, usedMB: used, freeMB: free, percent: total > 0 ? Math.round((used / total) * 100) : 0 };
+    return {
+      totalMB: total,
+      usedMB: used,
+      freeMB: free,
+      percent: total > 0 ? Math.round((used / total) * 100) : 0,
+    };
   }
 
   // -------------------------------------------------------------------------
@@ -785,7 +877,8 @@ export class LinuxSystemController {
   async listCronJobs(): Promise<CronJob[]> {
     const { stdout, exitCode } = await run("crontab -l 2>/dev/null");
     if (exitCode !== 0) return [];
-    return stdout.split("\n")
+    return stdout
+      .split("\n")
       .filter((l) => l.trim() && !l.startsWith("#"))
       .map((line) => {
         const parts = line.trim().split(/\s+/);
@@ -819,7 +912,9 @@ export class LinuxSystemController {
 
   /** Lock the screen. */
   async lockScreen(): Promise<void> {
-    await run("loginctl lock-session 2>/dev/null || xdg-screensaver lock 2>/dev/null || gnome-screensaver-command -l");
+    await run(
+      "loginctl lock-session 2>/dev/null || xdg-screensaver lock 2>/dev/null || gnome-screensaver-command -l",
+    );
   }
 
   /** Suspend the system. */
@@ -847,9 +942,25 @@ export class LinuxSystemController {
   /** Check which optional tools are installed. */
   async checkTools(): Promise<Record<string, boolean>> {
     const tools = [
-      "xdotool", "xdg-open", "wmctrl", "scrot", "xclip", "xsel", "wl-copy",
-      "notify-send", "pactl", "brightnessctl", "curl", "wget",
-      "git", "docker", "snap", "flatpak", "pip", "npm", "node",
+      "xdotool",
+      "xdg-open",
+      "wmctrl",
+      "scrot",
+      "xclip",
+      "xsel",
+      "wl-copy",
+      "notify-send",
+      "pactl",
+      "brightnessctl",
+      "curl",
+      "wget",
+      "git",
+      "docker",
+      "snap",
+      "flatpak",
+      "pip",
+      "npm",
+      "node",
     ];
     const result: Record<string, boolean> = {};
     for (const tool of tools) {

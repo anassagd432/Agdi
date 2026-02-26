@@ -238,7 +238,8 @@
   width: var(--theme-item);
   height: var(--theme-item);
   border-radius: var(--radius-full);
-  transform: translateY(-50%) translateX(calc(var(--theme-index, 0) * (var(--theme-item) + var(--theme-gap))));
+  transform: translateY(-50%)
+    translateX(calc(var(--theme-index, 0) * (var(--theme-item) + var(--theme-gap))));
   background: var(--accent);
   transition: transform var(--duration-normal) var(--ease-out);
   z-index: 0;
@@ -279,6 +280,76 @@
   stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* ===========================================
+   Jarvis Voice Toggle
+   =========================================== */
+
+.jarvis-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--card-highlight);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  transition: all 0.2s var(--ease-out);
+  cursor: pointer;
+}
+
+.jarvis-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+  border-color: var(--text-dim);
+}
+
+.jarvis-toggle--active {
+  background: rgba(0, 213, 255, 0.1);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.jarvis-toggle__icon {
+  width: 14px;
+  height: 14px;
+  display: flex;
+}
+
+.jarvis-toggle__icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.jarvis-toggle--active .jarvis-toggle__icon {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
 }
 
 /* ===========================================
@@ -948,7 +1019,9 @@
   background: var(--card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: border-color var(--duration-fast) ease, background var(--duration-fast) ease;
+  transition:
+    border-color var(--duration-fast) ease,
+    background var(--duration-fast) ease;
 }
 
 .table-row:hover {
@@ -1269,7 +1342,6 @@
 }
 
 @keyframes chatStreamPulse {
-
   0%,
   100% {
     border-color: var(--border);
@@ -1304,7 +1376,7 @@
   height: 12px;
 }
 
-.chat-reading-indicator__dots>span {
+.chat-reading-indicator__dots > span {
   display: inline-block;
   width: 6px;
   height: 6px;
@@ -1316,16 +1388,15 @@
   will-change: transform, opacity;
 }
 
-.chat-reading-indicator__dots>span:nth-child(2) {
+.chat-reading-indicator__dots > span:nth-child(2) {
   animation-delay: 0.15s;
 }
 
-.chat-reading-indicator__dots>span:nth-child(3) {
+.chat-reading-indicator__dots > span:nth-child(3) {
   animation-delay: 0.3s;
 }
 
 @keyframes chatReadingDot {
-
   0%,
   80%,
   100% {
@@ -1340,7 +1411,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chat-reading-indicator__dots>span {
+  .chat-reading-indicator__dots > span {
     animation: none;
     opacity: 0.6;
   }
@@ -1865,7 +1936,7 @@
   min-width: 0;
 }
 
-.agent-kv>div {
+.agent-kv > div {
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -2045,7 +2116,7 @@
   gap: 8px;
 }
 
-.agent-skills-header>span:last-child {
+.agent-skills-header > span:last-child {
   margin-left: auto;
 }
 

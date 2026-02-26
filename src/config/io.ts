@@ -875,11 +875,7 @@ export function createConfigIO(overrides: ConfigIoDeps = {}) {
           // TOCTOU issues where env changes between load and write. Falls back to
           // live env if no snapshot exists (e.g., first write before any load).
           const envForRestore = options.envSnapshotForRestore ?? deps.env;
-          cfgToWrite = restoreEnvVarRefs(
-            cfgToWrite,
-            parsedRes.parsed,
-            envForRestore,
-          ) as AGDIConfig;
+          cfgToWrite = restoreEnvVarRefs(cfgToWrite, parsedRes.parsed, envForRestore) as AGDIConfig;
         }
       }
     } catch {

@@ -114,3 +114,16 @@ Run locally:
 pip install detect-secrets==1.5.0
 detect-secrets scan --baseline .secrets.baseline
 ```
+
+## Vulnerability Waivers
+
+Accepted risks are documented in `.security-waivers.json` with 6-month expiry dates.
+See `docs/security/README.md` for the full vulnerability acceptance policy and waiver mechanism.
+
+## CI Security Gates
+
+- **Required checks**: types, lint (ceiling-based), format, tests, secret detection
+- **Weekly scheduled scans**: `pnpm audit`, `gitleaks`, `trivy fs`, `osv-scanner`
+- **SBOM**: CycloneDX SBOM generated on every build, attached as CI artifact
+
+For full details, see `docs/security/README.md`.

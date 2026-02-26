@@ -23,8 +23,7 @@ export function registerNodeCli(program: Command) {
     .description("Run a headless node host (system.run/system.which)")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/node", "docs.agdi.ai/cli/node")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/node", "docs.agdi.ai/cli/node")}\n`,
     );
 
   node

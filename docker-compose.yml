@@ -17,15 +17,7 @@ services:
     init: true
     restart: unless-stopped
     command:
-      [
-        "node",
-        "dist/index.js",
-        "gateway",
-        "--bind",
-        "${AGDI_GATEWAY_BIND:-lan}",
-        "--port",
-        "18789",
-      ]
+      ["node", "dist/index.js", "gateway", "--bind", "${AGDI_GATEWAY_BIND:-lan}", "--port", "18789"]
 
   agdi-cli:
     image: ${AGDI_IMAGE:-agdi:local}

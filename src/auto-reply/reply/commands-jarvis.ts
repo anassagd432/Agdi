@@ -11,10 +11,10 @@
  * Works from WhatsApp, Telegram, Discord, web chat, TUI — any channel.
  */
 
-import type { CommandHandler } from "./commands-types.js";
 import type { ReplyPayload } from "../types.js";
-import { logVerbose } from "../../globals.js";
+import type { CommandHandler } from "./commands-types.js";
 import { getDaemon } from "../../autonomous/daemon.js";
+import { logVerbose } from "../../globals.js";
 
 type ParsedJarvisCommand = {
   action: string;
@@ -123,7 +123,7 @@ export const handleJarvisCommands: CommandHandler = async (params, allowTextComm
       await jarvis.start();
       return {
         shouldContinue: false,
-        reply: { text: "🟢 Jarvis activated! Listening for wake word \"Agdi\"..." },
+        reply: { text: '🟢 Jarvis activated! Listening for wake word "Agdi"...' },
       };
     } catch (err) {
       return {

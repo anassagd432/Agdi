@@ -1,6 +1,7 @@
 import { html, nothing } from "lit";
 import type { ChannelAccountSnapshot, NostrStatus } from "../types.ts";
 import type { ChannelsProps } from "./channels.types.ts";
+import { BrandIcons } from "../components/index.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
 import {
@@ -8,7 +9,6 @@ import {
   type NostrProfileFormState,
   type NostrProfileFormCallbacks,
 } from "./channels.nostr-profile-form.ts";
-import { BrandIcons } from "../components/index.ts";
 
 /**
  * Truncate a pubkey for display (shows first and last 8 chars)

@@ -1,0 +1,132 @@
+name: Security Scans
+
+on:
+  schedule:
+    # Weekly on Monday at 06:00 UTC
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup Node environment
+        uses: ./.github/actions/setup-node-env
+        with:
+          install-bun: "false"
+
+      - name: pnpm audit (prod)
+        run: |
+          set +e
+          pnpm audit --prod --json > audit-results.json 2>&1
+          AUDIT_EXIT=$?
+          set -e
+
+          # Parse results
+          HIGH_CRIT=$(node -e "
+            const r = require('./audit-results.json');
+            const meta = r.metadata || {};
+            const h = (meta.vulnerabilities?.high || 0) + (meta.vulnerabilities?.critical || 0);
+            console.log(h);
+          " 2>/dev/null || echo "0")
+
+          echo "High/Critical vulnerabilities: $HIGH_CRIT"
+
+          # Check against waiver file
+          if [ -f .security-waivers.json ]; then
+            WAIVED=$(node -e "
+              const w = require('./.security-waivers.json');
+              const now = new Date().toISOString().slice(0,10);
+              const active = (w.waivers || []).filter(x => x.expires >= now);
+              console.log(active.length);
+            ")
+            echo "Active waivers: $WAIVED"
+          fi
+
+          # Always upload results
+          echo "audit_exit=$AUDIT_EXIT" >> "$GITHUB_ENV"
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-results
+          path: audit-results.json
+          retention-days: 30
+
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  trivy-scan:
+    name: Trivy Filesystem Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: 0
+          format: table
+          output: trivy-results.txt
+
+      - name: Upload Trivy results
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan-results
+          path: trivy-results.txt
+          retention-days: 30
+
+  osv-scan:
+    name: OSV Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Run OSV Scanner
+        uses: google/osv-scanner-action/osv-scanner-action@v2
+        continue-on-error: true
+        with:
+          scan-args: |-
+            --recursive
+            --format=json
+            --output=osv-results.json
+            .
+
+      - name: Upload OSV results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osv-scan-results
+          path: osv-results.json
+          retention-days: 30

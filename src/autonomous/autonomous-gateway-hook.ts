@@ -22,18 +22,20 @@ let autonomousDaemon: any = null;
  * @param opts - Optional overrides (e.g. from CLI flags)
  */
 export async function maybeStartAutonomous(
-  autonomousConfig: {
-    enabled?: boolean;
-    headless?: boolean;
-    dashboardPort?: number;
-    visionModel?: string;
-    fastModel?: string;
-    dataDir?: string;
-    selfImprove?: boolean;
-    recording?: boolean;
-    scheduler?: boolean;
-    plugins?: boolean;
-  } | undefined,
+  autonomousConfig:
+    | {
+        enabled?: boolean;
+        headless?: boolean;
+        dashboardPort?: number;
+        visionModel?: string;
+        fastModel?: string;
+        dataDir?: string;
+        selfImprove?: boolean;
+        recording?: boolean;
+        scheduler?: boolean;
+        plugins?: boolean;
+      }
+    | undefined,
   opts?: { forceEnabled?: boolean; forceDisabled?: boolean },
 ): Promise<void> {
   // CLI flag overrides
@@ -60,7 +62,9 @@ export async function maybeStartAutonomous(
     const port = autonomousConfig?.dashboardPort ?? 7700;
     log.info(`autonomous agent active — dashboard: http://localhost:${port}`);
   } catch (err) {
-    log.error(`failed to start autonomous agent: ${err instanceof Error ? err.message : String(err)}`);
+    log.error(
+      `failed to start autonomous agent: ${err instanceof Error ? err.message : String(err)}`,
+    );
     // Don't crash the gateway — autonomous is best-effort
   }
 }
@@ -80,7 +84,9 @@ export async function stopAutonomous(): Promise<void> {
     autonomousDaemon = null;
     log.info("autonomous agent stopped");
   } catch (err) {
-    log.error(`error stopping autonomous agent: ${err instanceof Error ? err.message : String(err)}`);
+    log.error(
+      `error stopping autonomous agent: ${err instanceof Error ? err.message : String(err)}`,
+    );
   }
 }
 

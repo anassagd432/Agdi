@@ -12,14 +12,15 @@
  *   const screenshot = await controller.captureScreen();
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { writeFileSync, unlinkSync } from "node:fs";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { promisify } from "node:util";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const run = promisify(execFile);
+import type { LinuxSystemController } from "./device/linux-system.js";
 import {
   detectPlatform,
   type DeviceBackend,
@@ -31,7 +32,6 @@ import {
   type ScrollDirection,
   type WindowInfo,
 } from "./device/types.js";
-import type { LinuxSystemController } from "./device/linux-system.js";
 
 const log = createSubsystemLogger("device-control");
 
@@ -88,7 +88,7 @@ export class DeviceController {
     if (!deps.available) {
       log.warn(
         `missing native tools for ${platform}: ${deps.missing.join(", ")}. ` +
-        `some device control features may not work.`
+          `some device control features may not work.`,
       );
     } else {
       log.info(`device control ready on ${platform}`);
@@ -244,35 +244,44 @@ export class DeviceController {
   // Computer Vision (Track 1)
   // -------------------------------------------------------------------------
 
-  /** 
-   * Finds a template image on the current screen using Python OpenCV. 
+  /**
+   * Finds a template image on the current screen using Python OpenCV.
    * Returns the center {x, y} coordinates for clicking if found.
    */
-  async findImageOnScreen(templatePath: string, threshold = 0.8): Promise<{ match: boolean; x?: number; y?: number; confidence: number }> {
+  async findImageOnScreen(
+    templatePath: string,
+    threshold = 0.8,
+  ): Promise<{ match: boolean; x?: number; y?: number; confidence: number }> {
     log.info(`vision: searching for ${templatePath}`);
     const screenBuffer = await this.captureScreen();
-    
+
     // Write screenshot to temp file for Python consumption
     const screenPic = join(tmpdir(), `agdi_screen_${Date.now()}.png`);
     writeFileSync(screenPic, screenBuffer);
 
     try {
       const matcherScript = new URL("./device/vision-matcher.py", import.meta.url).pathname;
-      const { stdout } = await run("python3", [matcherScript, screenPic, templatePath, threshold.toString()]);
+      const { stdout } = await run("python3", [
+        matcherScript,
+        screenPic,
+        templatePath,
+        threshold.toString(),
+      ]);
       const result = JSON.parse(stdout.trim());
-      
+
       if (result.match) {
-         log.info(`vision: found target at (${result.x}, ${result.y}) cov: ${result.confidence}`);
+        log.info(`vision: found target at (${result.x}, ${result.y}) cov: ${result.confidence}`);
       } else {
-         log.info(`vision: template not found globally (cov: ${result.confidence})`);
+        log.info(`vision: template not found globally (cov: ${result.confidence})`);
       }
       return result;
-      
     } catch (err: any) {
       log.error(`vision matching failed: ${err.message}`);
       return { match: false, confidence: 0 };
     } finally {
-      try { unlinkSync(screenPic); } catch {}
+      try {
+        unlinkSync(screenPic);
+      } catch {}
     }
   }
 

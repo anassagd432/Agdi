@@ -54,9 +54,9 @@ const ports = await recon.masscan("10.0.0.0/24", "1-65535", 10000);
 
 ## Dependencies
 
-| Tool | Required | Fallback |
-|------|----------|----------|
-| nmap | Recommended | Native TCP connect scan |
-| masscan | Optional | — |
-| arp-scan | Optional | Ping sweep |
-| traceroute | Optional | — |
+| Tool       | Required    | Fallback                |
+| ---------- | ----------- | ----------------------- |
+| nmap       | Recommended | Native TCP connect scan |
+| masscan    | Optional    | —                       |
+| arp-scan   | Optional    | Ping sweep              |
+| traceroute | Optional    | —                       |

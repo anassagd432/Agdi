@@ -9,10 +9,7 @@ import { captureEnv } from "../test-utils/env.js";
 const bundledPluginsDirSnapshot = captureEnv(["AGDI_BUNDLED_PLUGINS_DIR"]);
 
 beforeAll(() => {
-  process.env.AGDI_BUNDLED_PLUGINS_DIR = path.join(
-    os.tmpdir(),
-    "agdi-test-no-bundled-extensions",
-  );
+  process.env.AGDI_BUNDLED_PLUGINS_DIR = path.join(os.tmpdir(), "agdi-test-no-bundled-extensions");
 });
 
 afterAll(() => {

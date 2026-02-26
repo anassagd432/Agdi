@@ -22,11 +22,7 @@ import type {
 
 export type ChannelSetupAdapter = {
   resolveAccountId?: (params: { cfg: AGDIConfig; accountId?: string }) => string;
-  applyAccountName?: (params: {
-    cfg: AGDIConfig;
-    accountId: string;
-    name?: string;
-  }) => AGDIConfig;
+  applyAccountName?: (params: { cfg: AGDIConfig; accountId: string; name?: string }) => AGDIConfig;
   applyAccountConfig: (params: {
     cfg: AGDIConfig;
     accountId: string;
@@ -188,11 +184,7 @@ export type ChannelLogoutContext<ResolvedAccount = unknown> = {
 export type ChannelPairingAdapter = {
   idLabel: string;
   normalizeAllowEntry?: (entry: string) => string;
-  notifyApproval?: (params: {
-    cfg: AGDIConfig;
-    id: string;
-    runtime?: RuntimeEnv;
-  }) => Promise<void>;
+  notifyApproval?: (params: { cfg: AGDIConfig; id: string; runtime?: RuntimeEnv }) => Promise<void>;
 };
 
 export type ChannelGatewayAdapter<ResolvedAccount = unknown> = {

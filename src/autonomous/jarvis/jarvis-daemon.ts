@@ -11,12 +11,17 @@
  * Integrates with the existing autonomous daemon infrastructure.
  */
 
-import { createSubsystemLogger } from "../../logging/subsystem.js";
+import type { VoiceController } from "../voice.js";
 import { loadVoiceWakeConfig } from "../../infra/voicewake.js";
-import { MicListener, type MicListenerConfig, type SpeechSegment, DEFAULT_MIC_CONFIG } from "./mic-listener.js";
+import { createSubsystemLogger } from "../../logging/subsystem.js";
+import {
+  MicListener,
+  type MicListenerConfig,
+  type SpeechSegment,
+  DEFAULT_MIC_CONFIG,
+} from "./mic-listener.js";
 import { SttProcessor, type SttConfig, DEFAULT_STT_CONFIG } from "./stt-engine.js";
 import { TtsSpeaker, type TtsConfig, DEFAULT_TTS_CONFIG } from "./tts-speaker.js";
-import type { VoiceController } from "../voice.js";
 
 const log = createSubsystemLogger("jarvis");
 
@@ -265,7 +270,9 @@ export class JarvisDaemon {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       log.error(`Command processing error: ${error.message}`);
-      await this.tts.speak("Sorry, I encountered an error processing that command.").catch(() => {});
+      await this.tts
+        .speak("Sorry, I encountered an error processing that command.")
+        .catch(() => {});
     } finally {
       this.processing = false;
       if (this.mic.isListening()) {

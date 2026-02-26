@@ -11,9 +11,9 @@
  *     both report back when done.
  */
 
-import { createSubsystemLogger } from "../logging/subsystem.js";
-import type { NLCommander, CommandResult } from "./nl-commander.js";
 import type { DeviceController } from "./device-controller.js";
+import type { NLCommander, CommandResult } from "./nl-commander.js";
+import { createSubsystemLogger } from "../logging/subsystem.js";
 
 const log = createSubsystemLogger("delegation");
 
@@ -93,16 +93,18 @@ export class AIDelegation {
         totalAgents: 1,
         completedAgents: result?.success ? 1 : 0,
         failedAgents: result?.success ? 0 : 1,
-        results: [{
-          id: `agent-0`,
-          name: "Main Agent",
-          task: command,
-          status: result?.success ? "completed" : "failed",
-          result: result ?? undefined,
-          startedAt: startTime,
-          completedAt: Date.now(),
-          error: result?.error,
-        }],
+        results: [
+          {
+            id: `agent-0`,
+            name: "Main Agent",
+            task: command,
+            status: result?.success ? "completed" : "failed",
+            result: result ?? undefined,
+            startedAt: startTime,
+            completedAt: Date.now(),
+            error: result?.error,
+          },
+        ],
         durationMs: Date.now() - startTime,
       };
     }
@@ -145,7 +147,9 @@ export class AIDelegation {
       durationMs: Date.now() - startTime,
     };
 
-    log.info(`delegation complete: ${completed}/${results.length} succeeded in ${delegationResult.durationMs}ms`);
+    log.info(
+      `delegation complete: ${completed}/${results.length} succeeded in ${delegationResult.durationMs}ms`,
+    );
     return delegationResult;
   }
 

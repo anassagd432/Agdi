@@ -19,7 +19,9 @@ export function registerAutonomousCli(program: Command): void {
   const auto = program
     .command("autonomous")
     .alias("auto")
-    .description("Autonomous browser agent — starts automatically with the gateway when enabled in config");
+    .description(
+      "Autonomous browser agent — starts automatically with the gateway when enabled in config",
+    );
 
   // ---------------------------------------------------------------------------
   // status
@@ -60,18 +62,28 @@ export function registerAutonomousCli(program: Command): void {
       const goals = agent.goals;
 
       if (opts.json) {
-        console.log(JSON.stringify({
-          active: true,
-          state,
-          activeGoal: goal,
-          activeCount: goals.activeCount,
-          totalCount: goals.totalCount,
-        }, null, 2));
+        console.log(
+          JSON.stringify(
+            {
+              active: true,
+              state,
+              activeGoal: goal,
+              activeCount: goals.activeCount,
+              totalCount: goals.totalCount,
+            },
+            null,
+            2,
+          ),
+        );
         return;
       }
 
       const stateIcons: Record<string, string> = {
-        idle: "😴", planning: "🧠", executing: "⚡", observing: "👁️", repairing: "🔧",
+        idle: "😴",
+        planning: "🧠",
+        executing: "⚡",
+        observing: "👁️",
+        repairing: "🔧",
       };
 
       console.log(`🤖 Autonomous mode: ACTIVE`);
@@ -98,7 +110,9 @@ export function registerAutonomousCli(program: Command): void {
       const { getDaemon } = await import("../autonomous/index.js");
       const daemon = getDaemon();
       if (!daemon) {
-        console.log("⚠️  Autonomous mode is not active. Enable it in config or with `--autonomous`.");
+        console.log(
+          "⚠️  Autonomous mode is not active. Enable it in config or with `--autonomous`.",
+        );
         return;
       }
       const description = descriptionParts.join(" ");
@@ -126,9 +140,12 @@ export function registerAutonomousCli(program: Command): void {
       }
       const agent = daemon.getAgent()!;
       const all = agent.goals.list();
-      const display = opts.all ? all : all.filter((g: any) =>
-        g.status === "pending" || g.status === "in-progress" || g.status === "paused"
-      );
+      const display = opts.all
+        ? all
+        : all.filter(
+            (g: any) =>
+              g.status === "pending" || g.status === "in-progress" || g.status === "paused",
+          );
 
       if (opts.json) {
         console.log(JSON.stringify(display, null, 2));
@@ -141,12 +158,18 @@ export function registerAutonomousCli(program: Command): void {
       }
 
       const statusIcons: Record<string, string> = {
-        pending: "⏳", "in-progress": "⚡", completed: "✅", failed: "❌", paused: "⏸️",
+        pending: "⏳",
+        "in-progress": "⚡",
+        completed: "✅",
+        failed: "❌",
+        paused: "⏸️",
       };
 
       for (const g of display) {
         console.log(`  ${statusIcons[g.status] ?? "❓"} [${g.priority}] ${g.description}`);
-        console.log(`     ID: ${g.id} | Status: ${g.status} | Retries: ${g.retries}/${g.maxRetries}`);
+        console.log(
+          `     ID: ${g.id} | Status: ${g.status} | Retries: ${g.retries}/${g.maxRetries}`,
+        );
       }
     });
 

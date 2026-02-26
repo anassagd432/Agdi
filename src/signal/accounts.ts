@@ -35,10 +35,7 @@ export function resolveDefaultSignalAccountId(cfg: AGDIConfig): string {
   return ids[0] ?? DEFAULT_ACCOUNT_ID;
 }
 
-function resolveAccountConfig(
-  cfg: AGDIConfig,
-  accountId: string,
-): SignalAccountConfig | undefined {
+function resolveAccountConfig(cfg: AGDIConfig, accountId: string): SignalAccountConfig | undefined {
   const accounts = cfg.channels?.signal?.accounts;
   if (!accounts || typeof accounts !== "object") {
     return undefined;

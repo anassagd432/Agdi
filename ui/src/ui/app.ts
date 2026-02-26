@@ -320,9 +320,20 @@ export class AgdiApp extends LitElement {
   @state() logsTruncated = false;
   @state() logsCursor: number | null = null;
   @state() logsLastFetchAt: number | null = null;
-  @state() logsLimit = 500;
   @state() logsMaxBytes = 250_000;
   @state() logsAtBottom = true;
+
+  @state() jarvisState:
+    | "off"
+    | "idle"
+    | "listening"
+    | "processing"
+    | "speaking"
+    | "error"
+    | "unknown" = "unknown";
+  @state() jarvisMessage: string | null = null;
+  @state() jarvisAvailable = false;
+  private jarvisPollInterval: number | null = null;
 
   client: GatewayBrowserClient | null = null;
   private chatScrollFrame: number | null = null;
@@ -351,6 +362,9 @@ export class AgdiApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     handleConnected(this as unknown as Parameters<typeof handleConnected>[0]);
+    this.jarvisPollInterval = window.setInterval(() => {
+      void this.loadJarvisStatus();
+    }, 3000);
   }
 
   protected firstUpdated() {
@@ -359,6 +373,10 @@ export class AgdiApp extends LitElement {
 
   disconnectedCallback() {
     handleDisconnected(this as unknown as Parameters<typeof handleDisconnected>[0]);
+    if (this.jarvisPollInterval !== null) {
+      clearInterval(this.jarvisPollInterval);
+      this.jarvisPollInterval = null;
+    }
     super.disconnectedCallback();
   }
 
@@ -563,6 +581,46 @@ export class AgdiApp extends LitElement {
     const newRatio = Math.max(0.4, Math.min(0.7, ratio));
     this.splitRatio = newRatio;
     this.applySettings({ ...this.settings, splitRatio: newRatio });
+  }
+
+  async loadJarvisStatus() {
+    if (!this.client?.connected) {
+      this.jarvisAvailable = false;
+      this.jarvisState = "unknown";
+      return;
+    }
+    try {
+      const status = await this.client.getJarvisStatus();
+      this.jarvisAvailable = status.available === true;
+      this.jarvisState =
+        (status.state as "off" | "idle" | "listening" | "processing" | "speaking" | "error") ||
+        "off";
+    } catch {
+      this.jarvisAvailable = false;
+      this.jarvisState = "unknown";
+    }
+  }
+
+  async handleJarvisToggle() {
+    if (!this.client?.connected || !this.jarvisAvailable) {
+      return;
+    }
+    type JarvisState = typeof this.jarvisState;
+    try {
+      if (
+        this.jarvisState === "off" ||
+        this.jarvisState === "unknown" ||
+        this.jarvisState === "error"
+      ) {
+        const res = await this.client.startJarvis();
+        this.jarvisState = (res.state as JarvisState) || "idle";
+      } else {
+        const res = await this.client.stopJarvis();
+        this.jarvisState = (res.state as JarvisState) || "off";
+      }
+    } catch (err: unknown) {
+      this.lastError = `Jarvis toggle failed: ${err instanceof Error ? err.message : String(err)}`;
+    }
   }
 
   render() {

@@ -40,10 +40,7 @@ export function applyOnboardAuthAgentModelsAndProviders(
   };
 }
 
-export function applyAgentDefaultModelPrimary(
-  cfg: AGDIConfig,
-  primary: string,
-): AGDIConfig {
+export function applyAgentDefaultModelPrimary(cfg: AGDIConfig, primary: string): AGDIConfig {
   const existingFallbacks = extractAgentDefaultModelFallbacks(cfg.agents?.defaults?.model);
   return {
     ...cfg,

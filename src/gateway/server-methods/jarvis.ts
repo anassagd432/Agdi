@@ -28,7 +28,11 @@ export const jarvisHandlers: GatewayRequestHandlers = {
     try {
       const jarvis = context.getJarvis?.();
       if (!jarvis) {
-        respond(false, undefined, errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"));
+        respond(
+          false,
+          undefined,
+          errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"),
+        );
         return;
       }
       if (jarvis.isRunning()) {
@@ -46,7 +50,11 @@ export const jarvisHandlers: GatewayRequestHandlers = {
     try {
       const jarvis = context.getJarvis?.();
       if (!jarvis) {
-        respond(false, undefined, errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"));
+        respond(
+          false,
+          undefined,
+          errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"),
+        );
         return;
       }
       await jarvis.stop();
@@ -60,7 +68,11 @@ export const jarvisHandlers: GatewayRequestHandlers = {
     try {
       const jarvis = context.getJarvis?.();
       if (!jarvis) {
-        respond(false, undefined, errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"));
+        respond(
+          false,
+          undefined,
+          errorShape(ErrorCodes.UNAVAILABLE, "Jarvis module not initialized"),
+        );
         return;
       }
 

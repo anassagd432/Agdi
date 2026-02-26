@@ -183,9 +183,7 @@ describeLive("live models (profile keys)", () => {
       const cfg = loadConfig();
       await ensureAGDIModelsJson(cfg);
       if (!DIRECT_ENABLED) {
-        logProgress(
-          "[live-models] skipping (set AGDI_LIVE_MODELS=modern|all|<list>; all=modern)",
-        );
+        logProgress("[live-models] skipping (set AGDI_LIVE_MODELS=modern|all|<list>; all=modern)");
         return;
       }
       const anthropicKeys = collectAnthropicApiKeys();

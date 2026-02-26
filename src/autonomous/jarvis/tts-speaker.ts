@@ -130,7 +130,8 @@ export class TtsSpeaker {
         // Windows — PowerShell SAPI
         const rate = Math.round((this.config.rate - 1) * 10); // -10 to +10 scale
         const vol = Math.round(this.config.volume * 100);
-        command = `powershell -NoProfile -Command "` +
+        command =
+          `powershell -NoProfile -Command "` +
           `$s = New-Object -ComObject SAPI.SpVoice; ` +
           `$s.Rate = ${rate}; ` +
           `$s.Volume = ${vol}; ` +
@@ -141,7 +142,8 @@ export class TtsSpeaker {
         // Linux — espeak or piper
         const speed = Math.round(this.config.rate * 175);
         const amplitude = Math.round(this.config.volume * 200);
-        command = `espeak -s ${speed} -a ${amplitude} "${escaped}" 2>/dev/null || ` +
+        command =
+          `espeak -s ${speed} -a ${amplitude} "${escaped}" 2>/dev/null || ` +
           `piper --output-raw <<< "${escaped}" | aplay -r 22050 -f S16_LE -t raw 2>/dev/null || ` +
           `echo "No TTS engine (espeak/piper) found"`;
         break;

@@ -18,10 +18,7 @@ import {
   ensureProfileCleanExit,
   isProfileDecorated,
 } from "./chrome.profile-decoration.js";
-import {
-  DEFAULT_AGDI_BROWSER_COLOR,
-  DEFAULT_AGDI_BROWSER_PROFILE_NAME,
-} from "./constants.js";
+import { DEFAULT_AGDI_BROWSER_COLOR, DEFAULT_AGDI_BROWSER_PROFILE_NAME } from "./constants.js";
 
 const log = createSubsystemLogger("browser").child("chrome");
 

@@ -59,9 +59,7 @@ describe("shared/frontmatter", () => {
 
   test("resolveAGDIManifestBlock returns undefined for invalid input", () => {
     expect(resolveAGDIManifestBlock({ frontmatter: {} })).toBeUndefined();
-    expect(
-      resolveAGDIManifestBlock({ frontmatter: { metadata: "not-json5" } }),
-    ).toBeUndefined();
+    expect(resolveAGDIManifestBlock({ frontmatter: { metadata: "not-json5" } })).toBeUndefined();
     expect(
       resolveAGDIManifestBlock({ frontmatter: { metadata: "{ nope: { a: 1 } }" } }),
     ).toBeUndefined();

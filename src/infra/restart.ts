@@ -229,10 +229,7 @@ export function triggerAGDIRestart(): RestartAttempt {
   const tried: string[] = [];
   if (process.platform !== "darwin") {
     if (process.platform === "linux") {
-      const unit = normalizeSystemdUnit(
-        process.env.AGDI_SYSTEMD_UNIT,
-        process.env.AGDI_PROFILE,
-      );
+      const unit = normalizeSystemdUnit(process.env.AGDI_SYSTEMD_UNIT, process.env.AGDI_PROFILE);
       const userArgs = ["--user", "restart", unit];
       tried.push(`systemctl ${userArgs.join(" ")}`);
       const userRestart = spawnSync("systemctl", userArgs, {
@@ -265,8 +262,7 @@ export function triggerAGDIRestart(): RestartAttempt {
   }
 
   const label =
-    process.env.AGDI_LAUNCHD_LABEL ||
-    resolveGatewayLaunchAgentLabel(process.env.AGDI_PROFILE);
+    process.env.AGDI_LAUNCHD_LABEL || resolveGatewayLaunchAgentLabel(process.env.AGDI_PROFILE);
   const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
   const target = uid !== undefined ? `gui/${uid}/${label}` : label;
   const args = ["kickstart", "-k", target];
