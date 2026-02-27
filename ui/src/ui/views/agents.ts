@@ -77,6 +77,7 @@ export type AgentsProps = {
   onConfigSave: () => void;
   onModelChange: (agentId: string, modelId: string | null) => void;
   onModelFallbacksChange: (agentId: string, fallbacks: string[]) => void;
+  onSpawnAgent?: (agentId: string) => void;
   onChannelsRefresh: () => void;
   onCronRefresh: () => void;
   onSkillsFilterChange: (next: string) => void;
@@ -180,6 +181,7 @@ export function renderAgents(props: AgentsProps) {
                         onConfigSave: props.onConfigSave,
                         onModelChange: props.onModelChange,
                         onModelFallbacksChange: props.onModelFallbacksChange,
+                        onSpawnAgent: props.onSpawnAgent,
                       })
                     : nothing
                 }
@@ -352,6 +354,7 @@ function renderAgentOverview(params: {
   onConfigSave: () => void;
   onModelChange: (agentId: string, modelId: string | null) => void;
   onModelFallbacksChange: (agentId: string, fallbacks: string[]) => void;
+  onSpawnAgent?: (agentId: string) => void;
 }) {
   const {
     agent,
@@ -367,6 +370,7 @@ function renderAgentOverview(params: {
     onConfigSave,
     onModelChange,
     onModelFallbacksChange,
+    onSpawnAgent,
   } = params;
   const config = resolveAgentConfig(configForm, agent.id);
   const workspaceFromFiles =
@@ -471,7 +475,17 @@ function renderAgentOverview(params: {
             />
           </label>
         </div>
-        <div class="row" style="justify-content: flex-end; gap: 8px;">
+        <div class="row" style="justify-content: flex-end; gap: 8px; margin-top: 16px; align-items: center; border-top: 1px solid var(--border); padding-top: 16px;">
+          <div style="flex: 1;">
+            <button
+              class="btn btn--sm"
+              ?disabled=${!onSpawnAgent}
+              @click=${() => onSpawnAgent?.(agent.id)}
+              title="Spawn a new child session of this agent"
+            >
+              Spawn Sub-Agent
+            </button>
+          </div>
           <button class="btn btn--sm" ?disabled=${configLoading} @click=${onConfigReload}>
             Reload Config
           </button>

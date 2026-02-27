@@ -287,4 +287,5 @@ export type AppViewState = {
   handleOpenSidebar: (content: string) => void;
   handleCloseSidebar: () => void;
   handleSplitRatioChange: (ratio: number) => void;
+  handleSpawnAgent: (agentId: string) => Promise<void>;
 };

@@ -624,6 +624,24 @@ export class AgdiApp extends LitElement {
     }
   }
 
+  async handleSpawnAgent(agentId: string) {
+    if (!this.client?.connected) {
+      this.lastError = "Cannot spawn agent: Not connected to gateway.";
+      return;
+    }
+    try {
+      const res = await this.client.request("agents.spawn", { id: agentId });
+      const session =
+        res && typeof res === "object" ? (res as Record<string, unknown>).session : null;
+      if (typeof session === "string") {
+        this.sessionKey = session;
+        this.setTab("chat");
+      }
+    } catch (err: unknown) {
+      this.lastError = `Failed to spawn agent: ${err instanceof Error ? err.message : String(err)}`;
+    }
+  }
+
   render() {
     return renderApp(this as unknown as AppViewState);
   }

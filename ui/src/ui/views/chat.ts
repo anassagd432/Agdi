@@ -370,6 +370,44 @@ export function renderChat(props: ChatProps) {
 
       <div class="chat-compose">
         ${renderAttachmentPreview(props)}
+        <div class="chat-quick-actions" style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; padding: 0 12px;">
+          <button
+            class="btn btn--sm"
+            type="button"
+            title="Open a new canvas artifact"
+            ?disabled=${!props.connected}
+            @click=${() => {
+              const text = "Open a new canvas artifact for ";
+              props.onDraftChange((props.draft || "") + text);
+            }}
+          >
+            ${icons.fileText} Canvas
+          </button>
+          <button
+            class="btn btn--sm"
+            type="button"
+            title="Run a command in the sandbox"
+            ?disabled=${!props.connected}
+            @click=${() => {
+              const text = "Run the following shell command:\n```bash\n\n```";
+              props.onDraftChange((props.draft || "") + text);
+            }}
+          >
+            ${icons.zap} Run Command
+          </button>
+          <button
+            class="btn btn--sm"
+            type="button"
+            title="Navigate to a URL"
+            ?disabled=${!props.connected}
+            @click=${() => {
+              const text = "Navigate to the following URL in the browser: ";
+              props.onDraftChange((props.draft || "") + text);
+            }}
+          >
+            ${icons.globe} Browse
+          </button>
+        </div>
         <div class="chat-compose__row">
           <label class="field chat-compose__field">
             <span>Message</span>
