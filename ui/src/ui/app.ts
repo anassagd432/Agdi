@@ -320,6 +320,7 @@ export class AgdiApp extends LitElement {
   @state() logsTruncated = false;
   @state() logsCursor: number | null = null;
   @state() logsLastFetchAt: number | null = null;
+  @state() logsLimit = 200;
   @state() logsMaxBytes = 250_000;
   @state() logsAtBottom = true;
 

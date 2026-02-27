@@ -18,9 +18,7 @@ describe("control-ui HTTP smoke tests", () => {
 
   // buildControlUiCspHeader is the source of truth for CSP
   it("CSP header blocks unsafe-eval and unsafe-inline in scripts", async () => {
-    const { buildControlUiCspHeader } = await import(
-      "../src/gateway/control-ui-csp.js"
-    );
+    const { buildControlUiCspHeader } = await import("../src/gateway/control-ui-csp.js");
     const csp = buildControlUiCspHeader();
     expect(csp).toContain("script-src 'self'");
     expect(csp).not.toContain("unsafe-eval");
@@ -31,17 +29,13 @@ describe("control-ui HTTP smoke tests", () => {
   });
 
   it("CSP header blocks framing (frame-ancestors 'none')", async () => {
-    const { buildControlUiCspHeader } = await import(
-      "../src/gateway/control-ui-csp.js"
-    );
+    const { buildControlUiCspHeader } = await import("../src/gateway/control-ui-csp.js");
     const csp = buildControlUiCspHeader();
     expect(csp).toContain("frame-ancestors 'none'");
   });
 
   it("CSP header allows WebSocket connections", async () => {
-    const { buildControlUiCspHeader } = await import(
-      "../src/gateway/control-ui-csp.js"
-    );
+    const { buildControlUiCspHeader } = await import("../src/gateway/control-ui-csp.js");
     const csp = buildControlUiCspHeader();
     expect(csp).toContain("connect-src 'self' ws: wss:");
   });
@@ -90,9 +84,7 @@ describe("gateway net: IP resolution", () => {
 
 describe("navigation: tab routing", () => {
   it("all 13 tabs have valid paths", async () => {
-    const { TAB_GROUPS, pathForTab, tabFromPath } = await import(
-      "../ui/src/ui/navigation.ts"
-    );
+    const { TAB_GROUPS, pathForTab, tabFromPath } = await import("../ui/src/ui/navigation.ts");
     const allTabs = TAB_GROUPS.flatMap((g) => [...g.tabs]);
     expect(allTabs.length).toBe(13);
 
