@@ -1,0 +1,30 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+  Γû▓ Next.js 15.0.0
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/5) ...
+   Generating static pages (1/5) 
+   Generating static pages (2/5) 
+   Generating static pages (3/5) 
+ Γ£ô Generating static pages (5/5)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+Γöî Γùï /                                    15.1 kB         157 kB
+Γö£ Γùï /_not-found                          896 B           100 kB
+Γöö Γùï /status                              1.6 kB          143 kB
++ First Load JS shared by all            99.2 kB
+  Γö£ chunks/984-89ced75fd95ce00a.js       44.6 kB
+  Γö£ chunks/f4f464d2-3849ebab4df59891.js  52.6 kB
+  Γöö other shared chunks (total)          1.91 kB
+
+
+Γùï  (Static)  prerendered as static content
+

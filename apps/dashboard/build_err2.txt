@@ -1,0 +1,28 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+  Γû▓ Next.js 15.0.0
+
+   Creating an optimized production build ...
+Failed to compile.
+System.Management.Automation.RemoteException
+./src/components/ui/button.tsx
+Module not found: Can't resolve '@radix-ui/react-slot'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+Import trace for requested module:
+./src/components/home/Hero.tsx
+System.Management.Automation.RemoteException
+./src/lib/db.ts
+Module not found: Can't resolve '@prisma/client'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+Import trace for requested module:
+./src/app/api/health/route.ts
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+> Build failed because of webpack errors
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

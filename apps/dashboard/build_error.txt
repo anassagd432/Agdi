@@ -1,0 +1,6 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.
+ΓÇëWARNΓÇë  Local package.json exists, but node_modules missing, did you mean to install?

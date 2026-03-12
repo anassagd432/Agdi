@@ -1,0 +1,26 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+  Γû▓ Next.js 15.0.0
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+System.Management.Automation.RemoteException
+./src/components/layout/Header.tsx:7:24
+Type error: Already included file name 'C:/Users/anass/Documents/GitHub/Agdi/apps/dashboard/src/components/ui/button.tsx' differs from file name 'C:/Users/anass/Documents/GitHub/Agdi/apps/dashboard/src/components/ui/Button.tsx' only in casing.
+  The file is in the program because:
+    Imported via '@/components/ui/button' from file 'C:/Users/anass/Documents/GitHub/Agdi/apps/dashboard/src/components/layout/Header.tsx'
+    Imported via '@/components/ui/button' from file 'C:/Users/anass/Documents/GitHub/Agdi/apps/dashboard/src/components/home/Hero.tsx'
+    Root file specified for compilation
+System.Management.Automation.RemoteException
+[0m [90m  5 |[39m [36mimport[39m { [33mMenu[39m[33m,[39m [33mX[39m[33m,[39m [33mRocket[39m } [36mfrom[39m [32m'lucide-react'[39m[33m;[39m[0m
+[0m [90m  6 |[39m [36mimport[39m { motion[33m,[39m [33mAnimatePresence[39m } [36mfrom[39m [32m'framer-motion'[39m[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m[33m;[39m[0m
+[0m [90m    |[39m                        [31m[1m^[22m[39m[0m
+[0m [90m  8 |[39m [36mimport[39m { cn } [36mfrom[39m [32m'@/lib/utils'[39m[33m;[39m[0m
+[0m [90m  9 |[39m[0m
+[0m [90m 10 |[39m [36minterface[39m [33mNavItem[39m {[0m
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

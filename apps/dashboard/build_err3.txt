@@ -1,0 +1,10 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+  Γû▓ Next.js 15.0.0
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

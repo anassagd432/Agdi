@@ -1,0 +1,37 @@
+﻿
+> @agdi/dashboard@0.1.0 build C:\Users\anass\Documents\GitHub\Agdi\apps\dashboard
+> next build
+
+  Γû▓ Next.js 15.0.0
+
+   Creating an optimized production build ...
+Failed to compile.
+System.Management.Automation.RemoteException
+./src/app/api/demo/route.ts
+Module not found: Can't resolve '@/lib/api-response'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+./src/app/api/health/route.ts
+Module not found: Can't resolve '@/lib/db'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+./src/app/page.tsx
+Module not found: Can't resolve '@/components/layout/Header'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+./src/app/page.tsx
+Module not found: Can't resolve '@/components/home/Hero'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+./src/app/page.tsx
+Module not found: Can't resolve '@/components/layout/Footer'
+System.Management.Automation.RemoteException
+https://nextjs.org/docs/messages/module-not-found
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+> Build failed because of webpack errors
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.
