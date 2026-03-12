@@ -12,7 +12,16 @@ import {
   X,
   LogOut,
   Globe,
-  Palette
+  Palette,
+  MessageSquare,
+  Network,
+  Smartphone,
+  Blocks,
+  Activity,
+  Database,
+  BarChart,
+  ShieldCheck,
+  GitMerge
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -43,6 +52,51 @@ const sidebarNavItems = [
     title: "Canvas",
     href: "/dashboard/canvas",
     icon: Palette,
+  },
+  {
+    title: "Channels",
+    href: "/dashboard/channels",
+    icon: MessageSquare,
+  },
+  {
+    title: "Automations",
+    href: "/dashboard/automations",
+    icon: Network,
+  },
+  {
+    title: "Nodes",
+    href: "/dashboard/nodes",
+    icon: Smartphone,
+  },
+  {
+    title: "Skills",
+    href: "/dashboard/skills",
+    icon: Blocks,
+  },
+  {
+    title: "Traces",
+    href: "/dashboard/traces",
+    icon: Activity,
+  },
+  {
+    title: "Knowledge",
+    href: "/dashboard/knowledge",
+    icon: Database,
+  },
+  {
+    title: "Analytics",
+    href: "/dashboard/analytics",
+    icon: BarChart,
+  },
+  {
+    title: "Approvals",
+    href: "/dashboard/approvals",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Workflows",
+    href: "/dashboard/workflows",
+    icon: GitMerge,
   },
   {
     title: "Settings",
