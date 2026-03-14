@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Network, Play, Pause, Power, Clock, Settings, Zap, History } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 interface Automation {
   id: string;
@@ -14,25 +15,66 @@ interface Automation {
 }
 
 export default function AutomationsPage() {
-  const [automations, setAutomations] = useState<Automation[]>([
-    { id: 'auto-1', name: 'Daily Standup Report', type: 'cron', trigger: '0 9 * * 1-5', status: 'active', lastRun: '2 hours ago' },
-    { id: 'auto-2', name: 'GitHub PR Summarizer', type: 'webhook', trigger: '/api/webhook/github_pr', status: 'active', lastRun: '15 mins ago' },
-    { id: 'auto-3', name: 'Support Inbox Scraper', type: 'pubsub', trigger: 'Gmail Label: Urgent', status: 'paused', lastRun: '3 days ago' },
-  ]);
+  const [automations, setAutomations] = useState<Automation[]>([]);
 
-  const toggleStatus = (id: string, name: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'active' ? 'paused' : 'active';
-    setAutomations(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
-    
-    if (newStatus === 'active') {
-      toast.success(`${name} is now active and listening.`);
-    } else {
-      toast.info(`${name} has been paused.`);
+  const fetchCrons = async () => {
+    try {
+      const res = await agdi.call("cron.list");
+      if (res && res.jobs) {
+        const mapped: Automation[] = res.jobs.map((c: any) => ({
+          id: c.id,
+          name: c.name || c.id,
+          type: 'cron',
+          trigger: c.schedule || '* * * * *',
+          status: c.enabled === false ? 'paused' : 'active',
+          lastRun: c.lastRun ? new Date(c.lastRun).toLocaleString() : 'Never'
+        }));
+        setAutomations(mapped.length ? mapped : getFallbackMocks());
+      } else {
+        setAutomations(getFallbackMocks());
+      }
+    } catch(e) {
+      console.warn("Agdi RPC error:", e);
+      setAutomations(getFallbackMocks());
     }
   };
 
-  const manuallyRun = (name: string) => {
-    toast.success(`Triggering manual execution for ${name}...`);
+  useEffect(() => {
+    fetchCrons();
+  }, []);
+
+  const getFallbackMocks = (): Automation[] => [
+    { id: 'auto-1', name: 'Daily Standup Report', type: 'cron', trigger: '0 9 * * 1-5', status: 'active', lastRun: '2 hours ago' },
+    { id: 'auto-2', name: 'GitHub PR Summarizer', type: 'webhook', trigger: '/api/webhook/github_pr', status: 'active', lastRun: '15 mins ago' },
+    { id: 'auto-3', name: 'Support Inbox Scraper', type: 'pubsub', trigger: 'Gmail Label: Urgent', status: 'paused', lastRun: '3 days ago' },
+  ];
+
+  const toggleStatus = async (id: string, name: string, currentStatus: string) => {
+    const isActivating = currentStatus === 'paused';
+    try {
+      await agdi.call("cron.update", { id, enabled: isActivating });
+      if (isActivating) {
+        toast.success(`${name} is now active and listening.`);
+      } else {
+        toast.info(`${name} has been paused.`);
+      }
+      fetchCrons();
+    } catch(e: any) {
+      toast.error(`Update failed: ${e.message || String(e)}`);
+      // Update local state optimistic if RPC missing
+      setAutomations(prev => prev.map(a => a.id === id ? { ...a, status: isActivating ? 'active' : 'paused' } : a));
+    }
+  };
+
+  const manuallyRun = async (id: string, name: string) => {
+    toast.info(`Triggering manual execution for ${name}...`);
+    try {
+      await agdi.call("cron.run", { id });
+      toast.success(`${name} executed successfully.`);
+      fetchCrons();
+    } catch(e: any) {
+      toast.error(`Run failed: ${e.message || String(e)}`);
+    }
   };
 
   return (
@@ -92,7 +134,7 @@ export default function AutomationsPage() {
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-end gap-2">
                     <button 
-                      onClick={() => manuallyRun(item.name)}
+                      onClick={() => manuallyRun(item.id, item.name)}
                       className="p-1.5 bg-white/5 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition-colors"
                       title="Run Now"
                     >

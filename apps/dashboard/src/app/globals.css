@@ -93,13 +93,27 @@
   }
 }
 
-/* Glassmorphism Utilities */
+/* Glassmorphism Utilities — theme-aware */
 .glass {
-  @apply bg-card/40 backdrop-blur-md border border-white/10 shadow-lg;
+  @apply bg-card/60 backdrop-blur-md border shadow-lg;
+  border-color: var(--border);
 }
 .glass-panel {
-  @apply bg-secondary/30 backdrop-blur-lg border border-white/5 rounded-xl shadow-2xl;
+  @apply backdrop-blur-lg rounded-xl shadow-2xl;
+  background: hsl(var(--secondary) / 0.3);
+  border: 1px solid hsl(var(--border) / 0.5);
 }
 .glass-button {
-  @apply bg-primary/80 hover:bg-primary backdrop-blur-md border border-primary/50 text-primary-foreground transition-all duration-300 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)];
+  @apply bg-primary/80 hover:bg-primary backdrop-blur-md border border-primary/50 text-primary-foreground transition-all duration-300;
+}
+
+/* Dark-mode-specific glass enhancements */
+.dark .glass {
+  @apply bg-card/40 border-white/10;
+}
+.dark .glass-panel {
+  @apply bg-secondary/30 border-white/5;
+}
+.dark .glass-button {
+  @apply shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.5)];
 }

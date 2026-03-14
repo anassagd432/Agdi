@@ -1,149 +1,367 @@
 "use client";
 
-import React from 'react';
-import { GitMerge, Plus, Play, MoreHorizontal, Settings, FileBox, Database, Globe, PenTool } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  GitMerge,
+  Play,
+  Pause,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Loader2,
+  Zap,
+  AlertCircle,
+} from "lucide-react";
+import { toast } from "sonner";
+import {
+  listWorkflows,
+  listExecutions,
+  toggleWorkflow,
+  executeWorkflow,
+  type N8nWorkflow,
+  type N8nExecution,
+} from "@/lib/n8n-client";
 
 export default function WorkflowsPage() {
-  
-  // Simulated UI representing a node-based workflow
-  // For a real app, you would use ReactFlow for this. We will simulate a visual pipeline.
+  const [workflows, setWorkflows] = useState<N8nWorkflow[]>([]);
+  const [executions, setExecutions] = useState<N8nExecution[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [executing, setExecuting] = useState<string | null>(null);
+
+  const fetchWorkflows = useCallback(async () => {
+    try {
+      const wfs = await listWorkflows();
+      setWorkflows(Array.isArray(wfs) ? wfs : []);
+      setError(null);
+      if (!selectedId && wfs.length > 0) {
+        setSelectedId(wfs[0].id);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to connect to n8n.");
+      setWorkflows([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedId]);
+
+  const fetchExecutions = useCallback(async () => {
+    if (!selectedId) return;
+    try {
+      const execs = await listExecutions(selectedId, 10);
+      setExecutions(Array.isArray(execs) ? execs : []);
+    } catch {
+      setExecutions([]);
+    }
+  }, [selectedId]);
+
+  useEffect(() => {
+    fetchWorkflows();
+  }, [fetchWorkflows]);
+
+  useEffect(() => {
+    fetchExecutions();
+  }, [fetchExecutions]);
+
+  // Auto-refresh executions every 10s
+  useEffect(() => {
+    const iv = setInterval(fetchExecutions, 10000);
+    return () => clearInterval(iv);
+  }, [fetchExecutions]);
+
+  const handleToggle = async (wf: N8nWorkflow) => {
+    try {
+      await toggleWorkflow(wf.id, !wf.active);
+      toast.success(`${wf.name} ${wf.active ? "deactivated" : "activated"}.`);
+      fetchWorkflows();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to toggle workflow.");
+    }
+  };
+
+  const handleExecute = async (wf: N8nWorkflow) => {
+    setExecuting(wf.id);
+    try {
+      await executeWorkflow(wf.id);
+      toast.success(`${wf.name} triggered successfully.`);
+      setTimeout(fetchExecutions, 1000);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to execute workflow.");
+    } finally {
+      setExecuting(null);
+    }
+  };
+
+  const selectedWorkflow = workflows.find((w) => w.id === selectedId);
+
+  const formatDate = (d: string) => {
+    try {
+      return new Date(d).toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return d;
+    }
+  };
+
+  const statusIcon = (status: N8nExecution["status"]) => {
+    switch (status) {
+      case "success":
+        return <CheckCircle2 className="w-4 h-4 text-emerald-400" />;
+      case "error":
+        return <XCircle className="w-4 h-4 text-red-400" />;
+      case "running":
+        return <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />;
+      case "waiting":
+        return <Clock className="w-4 h-4 text-amber-400" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-400" />;
+    }
+  };
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] animate-in fade-in duration-500 max-w-7xl mx-auto space-y-6">
-      
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
-            <GitMerge className="w-8 h-8 text-cyan-400" /> Multi-Agent Workflows
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+            <GitMerge className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" />{" "}
+            n8n Workflows
           </h1>
-          <p className="text-muted-foreground mt-2">
-            Design and monitor complex pipelines where agents pass context and data between each other.
+          <p className="text-muted-foreground mt-2 text-sm">
+            Manage, trigger, and monitor your{" "}
+            <span className="text-pink-400 font-semibold">n8n automations</span>{" "}
+            from the dashboard.
           </p>
         </div>
-        
-        <div className="flex space-x-3">
-          <button className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-sm font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
-            <Play className="w-4 h-4 fill-current" /> Execute Pipeline
-          </button>
-          <button className="bg-cyan-500 hover:bg-cyan-400 text-black text-sm font-semibold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors">
-            <Plus className="w-4 h-4" /> New Workflow
-          </button>
-        </div>
+
+        <button
+          onClick={() => fetchWorkflows()}
+          disabled={loading}
+          className="glass-button px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
+        >
+          <RefreshCw
+            className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+          />{" "}
+          Refresh
+        </button>
       </div>
 
-      <div className="flex gap-6 h-full mt-6">
-        
-        {/* Sidebar Sidebar : List of Pipelines */}
-        <div className="w-64 flex-shrink-0 flex flex-col gap-2">
-           <div className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2 mb-2">My Pipelines</div>
-           
-           <div className="glass-panel p-3 rounded-lg border border-cyan-500/30 bg-cyan-500/5 cursor-pointer">
-              <div className="font-semibold text-white text-sm">Content Research & Draft</div>
-              <div className="text-xs text-gray-400 mt-1 flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Active (3 agents)</div>
-           </div>
-
-           <div className="p-3 rounded-lg border border-transparent hover:border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
-              <div className="font-medium text-gray-300 text-sm">Automated Code Review</div>
-              <div className="text-xs text-gray-500 mt-1 flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-gray-600"></span> Draft (2 agents)</div>
-           </div>
-
-           <div className="p-3 rounded-lg border border-transparent hover:border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
-              <div className="font-medium text-gray-300 text-sm">Support Ticket Triaging</div>
-              <div className="text-xs text-gray-500 mt-1 flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400"></span> Paused (4 agents)</div>
-           </div>
+      {/* Error state */}
+      {error && (
+        <div className="glass-panel p-4 border-amber-500/30 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+          <div>
+            <p className="text-sm text-amber-200">{error}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Make sure n8n is running and{" "}
+              <code className="text-gray-400">N8N_API_URL</code> +{" "}
+              <code className="text-gray-400">N8N_API_KEY</code> are set.
+            </p>
+          </div>
         </div>
+      )}
 
-        {/* Visual Pipeline Editor Container */}
-        <div className="flex-1 glass-panel rounded-xl border border-white/5 relative bg-[url('https://transparenttextures.com/patterns/cubes.png')] bg-repeat relative overflow-hidden">
-           {/* Grid Background Mock */}
-           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-           
-           {/* Editor Toolbar */}
-           <div className="absolute top-4 right-4 flex bg-black/50 backdrop-blur-md border border-white/10 rounded-lg p-1 z-10">
-              <button className="p-2 text-gray-400 hover:text-white transition-colors" title="Settings"><Settings className="w-4 h-4" /></button>
-              <button className="p-2 text-gray-400 hover:text-white transition-colors" title="Export as JSON"><FileBox className="w-4 h-4" /></button>
-           </div>
+      {/* Loading */}
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
+        </div>
+      )}
 
-           {/* Workflow Nodes (Simulated ReactFlow) */}
-           <div className="absolute inset-0 flex items-center justify-center p-12">
-              <div className="relative w-full max-w-4xl h-full flex items-center gap-12 ml-16">
-                 
-                 {/* Node 1 */}
-                 <div className="glass-panel p-4 rounded-xl border border-purple-500/30 w-64 shadow-[0_0_20px_rgba(168,85,247,0.1)] relative z-10 bg-black/60">
-                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6]"></div> {/* Input Port */}
-                    <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_10px_#22d3ee]"></div> {/* Output Port */}
-                    
-                    <div className="flex items-center gap-3 mb-3 border-b border-white/10 pb-3">
-                       <div className="p-2 bg-purple-500/20 rounded-lg"><Globe className="w-5 h-5 text-purple-400" /></div>
-                       <div>
-                          <div className="font-bold text-white text-sm">Researcher Agent</div>
-                          <div className="text-xs text-gray-400">GPT-4o</div>
-                       </div>
-                    </div>
-                    <div className="text-xs text-gray-300">
-                      Gathers context from Arxiv and internal docs based on initial prompt.
-                    </div>
-                 </div>
+      {/* Main content */}
+      {!loading && (
+        <div className="flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+          {/* Workflow List */}
+          <div className="flex md:flex-col md:w-72 flex-shrink-0 gap-2 overflow-x-auto md:overflow-y-auto md:overflow-x-visible pb-2 md:pb-0">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-2 mb-2 whitespace-nowrap">
+              Workflows ({workflows.length})
+            </div>
 
-                 {/* Connection Line */}
-                 <div className="flex-1 h-[2px] bg-gradient-to-r from-cyan-500/50 to-orange-500/50 relative">
-                    {/* Animated Data Particle */}
-                    <div className="absolute top-1/2 left-0 w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#fff] -translate-y-1/2 animate-[ping_2s_infinite]"></div>
-                    <div className="absolute top-1/2 left-0 w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#fff] -translate-y-1/2 animate-[pulse_2s_infinite]" style={{ animationDuration: '2s', left: '50%' }}></div>
-                 </div>
-
-                 {/* Node 2 */}
-                 <div className="glass-panel p-4 rounded-xl border border-orange-500/30 w-64 shadow-[0_0_20px_rgba(249,115,22,0.1)] relative z-10 bg-black/60 translate-y-20">
-                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_10px_#22d3ee]"></div> {/* Input Port */}
-                    <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></div> {/* Output Port */}
-                    
-                    <div className="flex items-center gap-3 mb-3 border-b border-white/10 pb-3">
-                       <div className="p-2 bg-orange-500/20 rounded-lg"><PenTool className="w-5 h-5 text-orange-400" /></div>
-                       <div>
-                          <div className="font-bold text-white text-sm">Writer Agent</div>
-                          <div className="text-xs text-gray-400">Claude 3.5 Sonnet</div>
-                       </div>
-                    </div>
-                    <div className="text-xs text-gray-300">
-                      Compiles research payload into a formatted technical draft.
-                    </div>
-                 </div>
-
-                 {/* Connection Line */}
-                 <div className="flex-1 h-[2px] bg-gradient-to-r from-emerald-500/50 to-blue-500/50 relative translate-y-10 -rotate-12">
-                 </div>
-
-                 {/* Node 3 */}
-                 <div className="glass-panel p-4 rounded-xl border border-blue-500/30 w-64 shadow-[0_0_20px_rgba(59,130,246,0.1)] relative z-10 bg-black/60">
-                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></div> {/* Input Port */}
-                    <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-gray-500"></div> {/* Output Port */}
-                    
-                    <div className="flex items-center gap-3 mb-3 border-b border-white/10 pb-3">
-                       <div className="p-2 bg-blue-500/20 rounded-lg"><Database className="w-5 h-5 text-blue-400" /></div>
-                       <div>
-                          <div className="font-bold text-white text-sm">Storage Tool</div>
-                          <div className="text-xs text-gray-400">Integration API</div>
-                       </div>
-                    </div>
-                    <div className="text-xs text-gray-300">
-                      Saves the final draft to Notion Workspace / Docs.
-                    </div>
-                 </div>
-
+            {workflows.length === 0 && !error && (
+              <div className="text-sm text-muted-foreground px-2">
+                No workflows found in n8n.
               </div>
-           </div>
+            )}
 
-           {/* Zoom Controls Overlay */}
-           <div className="absolute bottom-4 left-4 flex bg-black/50 backdrop-blur-md border border-white/10 rounded-lg p-1 z-10 shadow-lg text-sm text-gray-400">
-              <button className="px-3 py-1 hover:text-white transition-colors border-r border-white/10">-</button>
-              <div className="px-3 py-1 font-mono text-xs flex items-center">100%</div>
-              <button className="px-3 py-1 hover:text-white transition-colors border-l border-white/10">+</button>
-           </div>
+            {workflows.map((wf) => (
+              <button
+                key={wf.id}
+                onClick={() => setSelectedId(wf.id)}
+                className={`p-3 rounded-lg border cursor-pointer transition-colors text-left min-w-[200px] md:min-w-0 ${
+                  selectedId === wf.id
+                    ? "border-cyan-500/30 bg-cyan-500/5 glass-panel"
+                    : "border-transparent hover:border-white/5 hover:bg-white/5"
+                }`}
+              >
+                <div
+                  className={`text-sm ${
+                    selectedId === wf.id
+                      ? "font-semibold text-white"
+                      : "font-medium text-gray-300"
+                  }`}
+                >
+                  {wf.name}
+                </div>
+                <div className="text-xs text-gray-400 mt-1 flex items-center gap-1.5">
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      wf.active ? "bg-emerald-500" : "bg-gray-600"
+                    }`}
+                  />
+                  {wf.active ? "Active" : "Inactive"}
+                  {wf.tags && wf.tags.length > 0 && (
+                    <span className="text-gray-600">
+                      • {wf.tags.map((t) => t.name).join(", ")}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Workflow Detail */}
+          {selectedWorkflow ? (
+            <div className="flex-1 glass-panel rounded-xl border border-white/5 p-6 space-y-6 overflow-y-auto">
+              {/* Workflow header */}
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white">
+                    {selectedWorkflow.name}
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    ID: {selectedWorkflow.id} • Updated:{" "}
+                    {formatDate(selectedWorkflow.updatedAt)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleToggle(selectedWorkflow)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+                      selectedWorkflow.active
+                        ? "bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20"
+                        : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20"
+                    }`}
+                  >
+                    {selectedWorkflow.active ? (
+                      <>
+                        <Pause className="w-4 h-4" /> Deactivate
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" /> Activate
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleExecute(selectedWorkflow)}
+                    disabled={executing === selectedWorkflow.id}
+                    className="bg-cyan-500 hover:bg-cyan-400 text-black px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50"
+                  >
+                    {executing === selectedWorkflow.id ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Running…
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-4 h-4" /> Execute
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Nodes preview */}
+              {selectedWorkflow.nodes &&
+                selectedWorkflow.nodes.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-white mb-3">
+                      Nodes ({selectedWorkflow.nodes.length})
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedWorkflow.nodes.map((node: any, i: number) => (
+                        <div
+                          key={i}
+                          className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs flex items-center gap-2"
+                        >
+                          <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                          <span className="text-white/80">
+                            {node.name || node.type}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Recent executions */}
+              <div>
+                <h3 className="text-sm font-semibold text-white mb-3">
+                  Recent Executions
+                </h3>
+                {executions.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No executions yet for this workflow.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {executions.map((exec) => (
+                      <div
+                        key={exec.id}
+                        className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-colors"
+                      >
+                        {statusIcon(exec.status)}
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm text-white/80">
+                            Execution #{exec.id}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {formatDate(exec.startedAt)}
+                            {exec.stoppedAt && (
+                              <span>
+                                {" "}
+                                →{" "}
+                                {formatDate(exec.stoppedAt)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span
+                          className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                            exec.status === "success"
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : exec.status === "error"
+                                ? "bg-red-500/10 text-red-400"
+                                : exec.status === "running"
+                                  ? "bg-cyan-500/10 text-cyan-400"
+                                  : "bg-gray-500/10 text-gray-400"
+                          }`}
+                        >
+                          {exec.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="flex-1 glass-panel rounded-xl border border-white/5 flex items-center justify-center text-muted-foreground">
+              <div className="text-center">
+                <GitMerge className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="text-sm">
+                  Select a workflow to view details
+                </p>
+              </div>
+            </div>
+          )}
         </div>
-
-      </div>
-
+      )}
     </div>
   );
 }

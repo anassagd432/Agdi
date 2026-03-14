@@ -574,6 +574,13 @@ export const AGDISchema = z
       })
       .strict()
       .optional(),
+    n8n: z
+      .object({
+        webhookUrl: z.string().url().optional(),
+        authHeader: z.string().optional().register(sensitive),
+      })
+      .strict()
+      .optional(),
     skills: z
       .object({
         allowBundled: z.array(z.string()).optional(),

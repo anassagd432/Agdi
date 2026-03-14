@@ -208,6 +208,13 @@ export function attachGatewayWsMessageHandler(params: {
           parsed.method !== "connect" ||
           !validateConnectParams(parsed.params)
         ) {
+          if (!validateConnectParams(parsed.params)) {
+            console.warn(
+              "DIAGNOSTIC CONNECT PARAMS FAIL:",
+              JSON.stringify(parsed.params),
+              JSON.stringify(validateConnectParams.errors),
+            );
+          }
           const handshakeError = isRequestFrame
             ? parsed.method === "connect"
               ? `invalid connect params: ${formatValidationErrors(validateConnectParams.errors)}`
@@ -220,6 +227,7 @@ export function attachGatewayWsMessageHandler(params: {
             frameId,
             handshakeError,
           });
+          console.warn("DIAGNOSTIC CLOSE:", "invalid-handshake", handshakeError);
           if (isRequestFrame) {
             const req = parsed;
             send({
@@ -692,6 +700,7 @@ export function attachGatewayWsMessageHandler(params: {
                 requestId: pairing.request.requestId,
                 reason,
               });
+              console.warn("DIAGNOSTIC CLOSE:", "pairing-required");
               send({
                 type: "res",
                 id: frame.id,

@@ -1,0 +1,93 @@
+# ────────────────────────────────────────────────────────────────────────────
+#  Agdi Full-Stack Dev Environment
+#
+#  Starts three services with one command:
+#    • agdi-gateway  — the Agdi AI daemon         → ws://localhost:18789
+#    • agdi-dashboard — the Next.js control panel  → http://localhost:3000
+#    • n8n            — workflow automation engine  → http://localhost:5678
+#
+#  Usage:
+#    1. Copy .env.dev.example to .env.dev and fill in your values
+#    2. docker compose -f docker-compose.dev.yml up --build
+# ────────────────────────────────────────────────────────────────────────────
+
+name: agdi-dev
+
+services:
+
+  # ── Agdi Gateway ───────────────────────────────────────────────────────────
+  agdi-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env.dev
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+    volumes:
+      # Mount your local agdi config so the daemon keeps its state
+      - agdi-config:/home/node/.agdi
+      - agdi-workspace:/home/node/.agdi/workspace
+    ports:
+      - "18789:18789"   # WebSocket API  (dashboard connects here)
+      - "18790:18790"   # Bridge port
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:18789/healthz', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    command:
+      ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789", "--allow-unconfigured"]
+    networks:
+      - agdi-net
+
+  # ── Agdi Dashboard (Next.js) ───────────────────────────────────────────────
+  agdi-dashboard:
+    build:
+      context: ./apps/dashboard
+      dockerfile: Dockerfile
+    env_file: .env.dev
+    environment:
+      NEXT_PUBLIC_WS_URL: "ws://agdi-gateway:18789/ws"
+      NEXT_PUBLIC_GATEWAY_TOKEN: "${AGDI_GATEWAY_TOKEN:-local-dev-token}"
+    ports:
+      - "3000:3000"
+    depends_on:
+      agdi-gateway:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - agdi-net
+
+  # ── n8n Workflow Automation ────────────────────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    environment:
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: "${N8N_USER:-admin}"
+      N8N_BASIC_AUTH_PASSWORD: "${N8N_PASSWORD:-agdi-local}"
+      WEBHOOK_URL: "http://localhost:5678/"
+      # Allow the Agdi gateway to reach n8n and vice versa
+      N8N_HOST: "0.0.0.0"
+      GENERIC_TIMEZONE: "Europe/Paris"
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n-data:/home/node/.n8n
+    restart: unless-stopped
+    networks:
+      - agdi-net
+
+# ── Named volumes ──────────────────────────────────────────────────────────
+volumes:
+  agdi-config:
+  agdi-workspace:
+  n8n-data:
+
+# ── Shared network (services communicate by service name) ──────────────────
+networks:
+  agdi-net:
+    driver: bridge

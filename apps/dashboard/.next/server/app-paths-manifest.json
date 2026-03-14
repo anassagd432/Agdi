@@ -1,12 +1,3 @@
 {
-  "/dashboard/automations/page": "app/dashboard/automations/page.js",
-  "/dashboard/browser/page": "app/dashboard/browser/page.js",
-  "/dashboard/canvas/page": "app/dashboard/canvas/page.js",
-  "/dashboard/skills/page": "app/dashboard/skills/page.js",
-  "/dashboard/nodes/page": "app/dashboard/nodes/page.js",
-  "/dashboard/knowledge/page": "app/dashboard/knowledge/page.js",
-  "/dashboard/traces/page": "app/dashboard/traces/page.js",
-  "/dashboard/approvals/page": "app/dashboard/approvals/page.js",
-  "/dashboard/analytics/page": "app/dashboard/analytics/page.js",
-  "/dashboard/workflows/page": "app/dashboard/workflows/page.js"
+  "/login/page": "app/login/page.js"
 }

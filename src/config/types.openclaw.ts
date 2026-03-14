@@ -99,6 +99,10 @@ export type AGDIConfig = {
   gateway?: GatewayConfig;
   memory?: MemoryConfig;
   autonomous?: AutonomousAgentConfig;
+  n8n?: {
+    webhookUrl?: string;
+    authHeader?: string;
+  };
 };
 
 export type ConfigValidationIssue = {

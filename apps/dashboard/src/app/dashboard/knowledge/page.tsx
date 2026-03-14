@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Database, UploadCloud, Link as LinkIcon, FileText, Globe, RefreshCcw, Search, Trash2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 interface VectorDocument {
   id: string;
@@ -15,27 +16,60 @@ interface VectorDocument {
 }
 
 export default function KnowledgePage() {
-  const [documents, setDocuments] = useState<VectorDocument[]>([
-    { id: 'doc-1', name: 'Agdi Onboarding Manual', type: 'pdf', status: 'embedded', tokens: '45.2k', lastSynced: '2 hrs ago', source: 'uploads/agdi_manual.pdf' },
-    { id: 'doc-2', name: 'API Reference v4', type: 'url', status: 'embedded', tokens: '128.4k', lastSynced: '1 day ago', source: 'https://docs.agdi.ai/reference' },
-    { id: 'doc-3', name: 'Stripe Integration Guide', type: 'md', status: 'processing', tokens: '...', lastSynced: 'Syncing', source: 'github:agdi/core/docs/stripe' },
-  ]);
-
+  const [documents, setDocuments] = useState<VectorDocument[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const forceSync = () => {
-    setIsSyncing(true);
-    toast.info("Re-indexing Vector Database...");
-    setTimeout(() => {
-      setIsSyncing(false);
-      setDocuments(prev => prev.map(d => d.status === 'processing' ? { ...d, status: 'embedded', tokens: '12.1k', lastSynced: 'Just now' } : d));
-      toast.success("All knowledge sources successfully embedded and synced to Pinecone.");
-    }, 2500);
+  const fetchKnowledge = async () => {
+    try {
+      const res = await agdi.call("knowledge.list");
+      if (res && res.documents) {
+        const mapped: VectorDocument[] = res.documents.map((d: any) => ({
+          id: d.id,
+          name: d.name || d.id,
+          type: d.type === 'url' ? 'url' : (d.type === 'pdf' ? 'pdf' : 'md'),
+          status: d.status || 'embedded',
+          tokens: d.tokens ? d.tokens.toLocaleString() : 'N/A',
+          lastSynced: d.lastSynced ? new Date(d.lastSynced).toLocaleString() : 'Unknown',
+          source: d.source || 'Upload'
+        }));
+        setDocuments(mapped);
+      } else {
+        setDocuments([]);
+      }
+    } catch(e) {
+      console.warn("knowledge.list error:", e);
+      setDocuments([]);
+    }
   };
 
-  const removeDoc = (id: string, name: string) => {
-    setDocuments(prev => prev.filter(d => d.id !== id));
-    toast.error(`Removed ${name} from Agent Context.`);
+  useEffect(() => {
+    fetchKnowledge();
+    const intv = setInterval(fetchKnowledge, 10000);
+    return () => clearInterval(intv);
+  }, []);
+
+  const forceSync = async () => {
+    setIsSyncing(true);
+    toast.info("Re-indexing Vector Database...");
+    try {
+      await agdi.call("knowledge.sync");
+      fetchKnowledge();
+      toast.success("Knowledge sources synced successfully.");
+    } catch(e: any) {
+      toast.error(`Sync error: ${e.message || String(e)}`);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const removeDoc = async (id: string, name: string) => {
+    try {
+      await agdi.call("knowledge.remove", { id });
+      setDocuments(prev => prev.filter(d => d.id !== id));
+      toast.success(`Removed ${name} from knowledge base.`);
+    } catch(e: any) {
+      toast.error(`Failed to remove ${name}: ${e.message || String(e)}`);
+    }
   };
 
   const getIcon = (type: string) => {
@@ -51,12 +85,12 @@ export default function KnowledgePage() {
     <div className="flex flex-col h-full animate-in fade-in duration-500 max-w-7xl mx-auto space-y-6">
       
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
-            <Database className="w-8 h-8 text-cyan-400" /> Knowledge Base & RAG
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+            <Database className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" /> Knowledge Base & RAG
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 text-sm">
             Manage the long-term vector memory and document embeddings for your AI Agents.
           </p>
         </div>
@@ -110,9 +144,9 @@ export default function KnowledgePage() {
         <div className="lg:col-span-2 glass-panel overflow-hidden rounded-xl border border-white/10 flex flex-col h-[500px]">
            
            {/* Top Bar */}
-           <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/40">
+           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border-b border-white/10 bg-black/40 gap-3">
              <h3 className="font-semibold text-white">Embedded Sources</h3>
-             <div className="relative w-64">
+             <div className="relative w-full sm:w-64">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input 
                   type="text" 
@@ -124,13 +158,13 @@ export default function KnowledgePage() {
 
            {/* Table */}
            <div className="flex-1 overflow-auto">
-             <table className="w-full text-left border-collapse whitespace-nowrap">
+             <table className="w-full text-left border-collapse">
                <thead className="bg-black/20 text-xs text-muted-foreground uppercase sticky top-0 backdrop-blur-md">
                  <tr>
                    <th className="py-3 px-6 font-medium">Document Name</th>
                    <th className="py-3 px-6 font-medium">Status</th>
-                   <th className="py-3 px-6 font-medium">Tokens</th>
-                   <th className="py-3 px-6 font-medium">Last Synced</th>
+                   <th className="py-3 px-3 sm:px-6 font-medium hidden sm:table-cell">Tokens</th>
+                   <th className="py-3 px-3 sm:px-6 font-medium hidden md:table-cell">Last Synced</th>
                    <th className="py-3 px-6 font-medium text-right">Actions</th>
                  </tr>
                </thead>
@@ -157,16 +191,16 @@ export default function KnowledgePage() {
                           {doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}
                         </span>
                      </td>
-                     <td className="py-3 px-6 text-gray-400 font-mono text-xs">
+                     <td className="py-3 px-3 sm:px-6 text-gray-400 font-mono text-xs hidden sm:table-cell">
                         {doc.tokens}
                      </td>
-                     <td className="py-3 px-6 text-gray-400 text-xs">
+                     <td className="py-3 px-3 sm:px-6 text-gray-400 text-xs hidden md:table-cell">
                         {doc.lastSynced}
                      </td>
                      <td className="py-3 px-6 text-right">
                        <button 
                          onClick={() => removeDoc(doc.id, doc.name)}
-                         className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded transition-colors opacity-0 group-hover:opacity-100"
+                         className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded transition-colors sm:opacity-0 sm:group-hover:opacity-100"
                          title="Delete from Vector DB"
                        >
                          <Trash2 className="w-4 h-4" />

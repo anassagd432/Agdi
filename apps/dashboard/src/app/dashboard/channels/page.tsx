@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { MessageSquare, Phone, MessageCircle, Hash, Zap, Plus, RefreshCw, Key, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MessageSquare, Phone, MessageCircle, Hash, Plus, RefreshCw, Key } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 interface Channel {
   id: string;
@@ -15,31 +16,55 @@ interface Channel {
 }
 
 export default function ChannelsPage() {
-  const [channels, setChannels] = useState<Channel[]>([
-    { id: 'wh-1', name: 'WhatsApp Primary', provider: 'WhatsApp', status: 'connected', icon: Phone, colorClass: 'text-green-400', description: 'Primary business number routing to Support Agent.' },
-    { id: 'tg-1', name: 'Telegram Bot', provider: 'Telegram', status: 'connected', icon: MessageCircle, colorClass: 'text-blue-400', description: 'Public facing bot (@agdi_bot).' },
-    { id: 'dc-1', name: 'Discord Dev Server', provider: 'Discord', status: 'disconnected', icon: Hash, colorClass: 'text-indigo-400', description: 'Internal team server integration.' },
-    { id: 'sl-1', name: 'Slack Workspace', provider: 'Slack', status: 'disconnected', icon: Hash, colorClass: 'text-orange-400', description: '#general channel observer.' },
-  ]);
-
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isPairing, setIsPairing] = useState<string | null>(null);
 
-  const toggleConnection = (channelId: string) => {
-    setIsPairing(channelId);
-    
-    // Simulate connection process
-    setTimeout(() => {
-      setChannels(prev => prev.map(ch => {
-        if (ch.id === channelId) {
-          const newStatus = ch.status === 'connected' ? 'disconnected' : 'connected';
-          if (newStatus === 'connected') toast.success(`${ch.name} connected successfully!`);
-          else toast.info(`${ch.name} disconnected.`);
-          return { ...ch, status: newStatus };
-        }
-        return ch;
+  const fetchChannels = async () => {
+    try {
+      const res = await agdi.call("channels.status");
+      const mapped: Channel[] = Object.entries(res.channels || {}).map(([id, data]: [string, any]) => ({
+        id,
+        name: data.displayName || id,
+        provider: data.provider || id,
+        status: data.connected ? 'connected' : 'disconnected',
+        icon: data.provider === 'whatsapp' ? Phone : (data.provider === 'telegram' ? MessageCircle : Hash),
+        colorClass: data.connected ? 'text-green-400' : 'text-gray-400',
+        description: data.description || 'Remote integration channel.'
       }));
+      setChannels(mapped);
+    } catch (e) {
+      console.warn("channels.status error:", e);
+      setChannels([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchChannels();
+    const intv = setInterval(fetchChannels, 5000);
+    return () => clearInterval(intv);
+  }, []);
+
+  const toggleConnection = async (channelId: string) => {
+    const ch = channels.find(c => c.id === channelId);
+    if (!ch) return;
+    
+    setIsPairing(channelId);
+    try {
+      if (ch.status === 'connected') {
+        toast.info(`Disconnecting ${ch.name}...`);
+        await agdi.call("channels.logout", { channel: channelId });
+      } else {
+        toast.info(`Auth flow for ${ch.name} would open here.`);
+      }
+      setTimeout(fetchChannels, 1000); // refresh after action
+    } catch(e: any) {
+      toast.error(`Error: ${e.message || String(e)}`);
+    } finally {
       setIsPairing(null);
-    }, 1500);
+    }
   };
 
   return (

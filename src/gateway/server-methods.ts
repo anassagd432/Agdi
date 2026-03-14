@@ -74,6 +74,9 @@ const READ_METHODS = new Set([
   "cron.status",
   "cron.runs",
   "system-presence",
+  "system.status",
+  "knowledge.list",
+  "memory.messages.list",
   "last-heartbeat",
   "node.list",
   "node.describe",
@@ -85,6 +88,9 @@ const WRITE_METHODS = new Set([
   "send",
   "agent",
   "agent.wait",
+  "agents.start",
+  "agents.stop",
+  "agents.kill",
   "wake",
   "talk.mode",
   "tts.enable",
@@ -98,6 +104,8 @@ const WRITE_METHODS = new Set([
   "jarvis.config",
   "chat.send",
   "chat.abort",
+  "knowledge.sync",
+  "knowledge.remove",
   "browser.request",
 ]);
 
@@ -157,6 +165,14 @@ function authorizeGatewayMethod(method: string, client: GatewayRequestOptions["c
     method === "agents.create" ||
     method === "agents.update" ||
     method === "agents.delete" ||
+    method === "agents.start" ||
+    method === "agents.stop" ||
+    method === "agents.kill" ||
+    method === "system.status" ||
+    method === "knowledge.list" ||
+    method === "knowledge.sync" ||
+    method === "knowledge.remove" ||
+    method === "memory.messages.list" ||
     method === "skills.install" ||
     method === "skills.update" ||
     method === "cron.add" ||

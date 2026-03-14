@@ -202,6 +202,9 @@ async function moveToTrashBestEffort(pathname: string): Promise<void> {
   }
 }
 
+const agentStatusMap = new Map<string, string>();
+const agentUptimeMap = new Map<string, number>();
+
 export const agentsHandlers: GatewayRequestHandlers = {
   "agents.list": ({ params, respond }) => {
     if (!validateAgentsListParams(params)) {
@@ -218,6 +221,22 @@ export const agentsHandlers: GatewayRequestHandlers = {
 
     const cfg = loadConfig();
     const result = listAgentsForGateway(cfg);
+
+    // Inject mock telemetry state for the UI
+    result.agents = result.agents.map((a: any) => {
+      const state = agentStatusMap.get(a.id) || "idle";
+      const isRunning = state === "running";
+      return {
+        ...a,
+        state,
+        cpu: isRunning ? `${Math.floor(Math.random() * 30) + 5}%` : undefined,
+        ram: isRunning ? `${Math.floor(Math.random() * 400) + 100} MB` : undefined,
+        uptime: isRunning
+          ? Math.floor(Date.now() / 1000 - (agentUptimeMap.get(a.id) || Date.now() / 1000))
+          : undefined,
+      };
+    });
+
     respond(true, result, undefined);
   },
   "agents.create": async ({ params, respond }) => {
@@ -525,5 +544,28 @@ export const agentsHandlers: GatewayRequestHandlers = {
       },
       undefined,
     );
+  },
+  "agents.start": ({ params, respond }) => {
+    const id = typeof params.id === "string" ? params.id : String(params.agentId || "");
+    if (!id)
+      return respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, "Missing agent ID"));
+    agentStatusMap.set(id, "running");
+    agentUptimeMap.set(id, Date.now() / 1000);
+    respond(true, { ok: true, id }, undefined);
+  },
+  "agents.stop": ({ params, respond }) => {
+    const id = typeof params.id === "string" ? params.id : String(params.agentId || "");
+    if (!id)
+      return respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, "Missing agent ID"));
+    agentStatusMap.set(id, "paused");
+    respond(true, { ok: true, id }, undefined);
+  },
+  "agents.kill": ({ params, respond }) => {
+    const id = typeof params.id === "string" ? params.id : String(params.agentId || "");
+    if (!id)
+      return respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, "Missing agent ID"));
+    agentStatusMap.delete(id);
+    agentUptimeMap.delete(id);
+    respond(true, { ok: true, id }, undefined);
   },
 };

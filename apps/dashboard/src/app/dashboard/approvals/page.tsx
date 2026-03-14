@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Check, X, AlertTriangle, ArrowRight, FileDiff, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 interface ApprovalRequest {
   id: string;
@@ -20,49 +21,54 @@ interface ApprovalRequest {
 }
 
 export default function ApprovalsPage() {
-  const [requests, setRequests] = useState<ApprovalRequest[]>([
-    {
-      id: 'req-1',
-      agentName: 'DevOps Auto-Deployer',
-      riskLevel: 'critical',
-      task: 'Merge and Deploy to Production',
-      description: 'Agent wants to merge PR #412 and trigger the Vercel production deployment. Code changes affect the core payments module.',
-      timestamp: '5 mins ago',
-      status: 'pending',
-      details: {
-        impact: 'Updates Stripe webhook handling logic.',
-        diff: '+ function handlePayment(amt, curr)\n- function process(amount)'
-      }
-    },
-    {
-      id: 'req-2',
-      agentName: 'FinOps Optimization Bot',
-      riskLevel: 'high',
-      task: 'Scale Up EC2 Instances',
-      description: 'Agent recommends purchasing 5 additional `t3.xlarge` AWS Reserved Instances based on next month\'s projected load.',
-      timestamp: '15 mins ago',
-      status: 'pending',
-      details: {
-        cost: 'Estimated $1,450.00 upfront commitment.',
-      }
-    },
-    {
-      id: 'req-3',
-      agentName: 'Bulk Email Outreach',
-      riskLevel: 'medium',
-      task: 'Send 5,000 Marketing Emails',
-      description: 'Agent has drafted campaign "Summer Sale 2026" and is ready to fire through SendGrid.',
-      timestamp: '1 hour ago',
-      status: 'approved',
-    }
-  ]);
+  const [requests, setRequests] = useState<ApprovalRequest[]>([]);
 
-  const handleAction = (id: string, action: 'approved' | 'rejected') => {
-    setRequests(prev => prev.map(req => req.id === id ? { ...req, status: action } : req));
-    if (action === 'approved') {
-      toast.success(`Action Approved: Agent has resumed execution.`);
-    } else {
-      toast.error(`Action Rejected: Agent task aborted.`);
+  const fetchApprovals = async () => {
+    try {
+      const res = await agdi.call("exec.approvals.get");
+      if (res && res.approvals) {
+        const mapped: ApprovalRequest[] = res.approvals.map((a: any) => ({
+          id: a.id,
+          agentName: a.agentId || 'Unknown Agent',
+          riskLevel: a.risk || 'medium',
+          task: a.action || 'Execute Action',
+          description: a.summary || JSON.stringify(a.context),
+          timestamp: new Date(a.requestedAt || Date.now()).toLocaleString(),
+          status: a.status || 'pending',
+          details: {
+            diff: a.diff,
+            impact: a.impact
+          }
+        }));
+        setRequests(mapped);
+      } else {
+        setRequests([]);
+      }
+    } catch(e) {
+      console.warn("exec.approvals.get error:", e);
+      setRequests([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchApprovals();
+    const intv = setInterval(fetchApprovals, 5000);
+    return () => clearInterval(intv);
+  }, []);
+
+  const handleAction = async (id: string, action: 'approved' | 'rejected') => {
+    const isApproved = action === 'approved';
+    try {
+      await agdi.call("exec.approval.resolve", { 
+        id, 
+        approved: isApproved, 
+        comment: `User ${action} via Dashboard` 
+      });
+      if (isApproved) toast.success(`Action Approved: Agent has resumed execution.`);
+      else toast.error(`Action Rejected: Agent task aborted.`);
+      fetchApprovals();
+    } catch(e: any) {
+      toast.error(`Error resolving approval: ${e.message || String(e)}`);
     }
   };
 

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Blocks, Search, Download, Trash2, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Blocks, Search, Download, Trash2, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 interface Skill {
   id: string;
@@ -15,30 +16,53 @@ interface Skill {
 }
 
 export default function SkillsPage() {
-  const [skills, setSkills] = useState<Skill[]>([
-    { id: 'sk-1', name: 'GitHub PR Reviewer', author: '@agdi-core', description: 'Automatically fetches, reads, and comments on GitHub Pull Requests based on defined style guides.', installed: true, downloads: '12.4k', verified: true },
-    { id: 'sk-2', name: 'Make.com Deployer', author: '@agdi-core', description: 'Connects directly to your Make.com account to map out and deploy blueprint architectures.', installed: true, downloads: '8.2k', verified: true },
-    { id: 'sk-3', name: 'Stripe API Navigator', author: '@fintech-dao', description: 'Advanced graph traversal for Stripe subscriptions and invoice generation.', installed: false, downloads: '3.1k', verified: false },
-    { id: 'sk-4', name: 'Figma to React', author: '@design-bots', description: 'Extracts node data from Figma URLs and structures raw reactant UI trees.', installed: false, downloads: '25.6k', verified: true },
-    { id: 'sk-5', name: 'Browser Scraper Pro', author: '@agdi-core', description: 'Headless computer-use specialized for passing Cloudflare checks.', installed: false, downloads: '45k', verified: true },
-    { id: 'sk-6', name: 'Notion Sync', author: '@community', description: 'Bi-directional sync between agent memory and Notion databases.', installed: false, downloads: '1.2k', verified: false },
-  ]);
-
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [installing, setInstalling] = useState<string | null>(null);
 
-  const toggleInstall = (skillId: string, skillName: string, currentlyInstalled: boolean) => {
+  const fetchSkills = async () => {
+    try {
+      const res = await agdi.call("skills.status");
+      if (res && res.skills) {
+        const mapped: Skill[] = res.skills.map((s: any) => ({
+           id: s.id,
+           name: s.name || s.id,
+           author: s.author || '@community',
+           description: s.description || 'No description provided.',
+           installed: s.installed === true,
+           downloads: s.downloads || '—',
+           verified: !!s.verified
+        }));
+        setSkills(mapped);
+      } else {
+        setSkills([]);
+      }
+    } catch(e) {
+      console.warn("skills.status error:", e);
+      setSkills([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchSkills();
+  }, []);
+
+  const toggleInstall = async (skillId: string, skillName: string, currentlyInstalled: boolean) => {
     if (currentlyInstalled) {
-      setSkills(prev => prev.map(s => s.id === skillId ? { ...s, installed: false } : s));
       toast.error(`${skillName} removed from Workspace.`);
+      setSkills(prev => prev.map(s => s.id === skillId ? { ...s, installed: false } : s));
+      // agdi.call("skills.uninstall") missing from RPC, mock state sync
     } else {
       setInstalling(skillId);
       toast.info(`Downloading ${skillName} from ClawHub...`);
-      
-      setTimeout(() => {
-        setSkills(prev => prev.map(s => s.id === skillId ? { ...s, installed: true } : s));
-        setInstalling(null);
+      try {
+        await agdi.call("skills.install", { skill: skillId });
         toast.success(`${skillName} installed successfully!`);
-      }, 2000);
+        fetchSkills(); // refresh server state
+      } catch(e: any) {
+        toast.error(`Install failed: ${e.message || String(e)}`);
+      } finally {
+        setInstalling(null);
+      }
     }
   };
 
@@ -75,7 +99,7 @@ export default function SkillsPage() {
                <div>
                   <h3 className="font-semibold text-lg text-white flex items-center gap-2">
                     {skill.name} 
-                    {skill.verified && <ShieldCheck className="w-4 h-4 text-cyan-400" title="Verified by Agdi Core" />}
+                    {skill.verified && <span title="Verified by Agdi Core"><ShieldCheck className="w-4 h-4 text-cyan-400" /></span>}
                   </h3>
                   <div className="text-xs text-muted-foreground font-mono mt-1">{skill.author}</div>
                </div>

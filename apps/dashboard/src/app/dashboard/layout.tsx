@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   Bot, 
   TerminalSquare, 
@@ -21,11 +21,20 @@ import {
   Database,
   BarChart,
   ShieldCheck,
+  Shield,
   GitMerge
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "sonner";
+import { LogoutButton } from "@/components/auth/LogoutButton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { GatewayStatusBanner } from "@/components/GatewayStatusBanner";
+import { initNotifications } from "@/lib/notifications";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { CommandPalette, useCommandPalette, useCommandItems } from "@/components/CommandPalette";
+import { useTheme } from "@/components/ThemeProvider";
+import { OnboardingWizard, useOnboarding } from "@/components/OnboardingWizard";
 
 const sidebarNavItems = [
   {
@@ -99,6 +108,11 @@ const sidebarNavItems = [
     icon: GitMerge,
   },
   {
+    title: "Security",
+    href: "/dashboard/security",
+    icon: Shield,
+  },
+  {
     title: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
@@ -111,10 +125,25 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { setTheme } = useTheme();
+  const cmdPalette = useCommandPalette();
+  const cmdItems = useCommandItems(router, setTheme);
+  const onboarding = useOnboarding();
+
+  // Initialize real-time push notifications on mount
+  useEffect(() => {
+    const cleanup = initNotifications();
+    return cleanup;
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      {/* Command Palette (⌘K) */}
+      <CommandPalette open={cmdPalette.open} onClose={cmdPalette.onClose} items={cmdItems} />
+      {/* Onboarding Wizard (first run) */}
+      {onboarding.show && <OnboardingWizard onComplete={onboarding.complete} />}
       {/* Desktop Sidebar */}
       <aside className="hidden w-64 md:flex flex-col border-r border-border/40 glass-panel rounded-none">
         <div className="flex h-16 items-center border-b border-border/40 px-6">
@@ -144,11 +173,9 @@ export default function DashboardLayout({
           </nav>
         </div>
 
-        <div className="p-4 border-t border-border/40">
-           <Link href="/" className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all text-muted-foreground hover:text-red-400 hover:bg-card/50">
-             <LogOut className="h-4 w-4" />
-             Exit Dashboard
-           </Link>
+        <div className="p-4 border-t border-border/40 space-y-3">
+           <ThemeToggle />
+           <LogoutButton />
         </div>
       </aside>
 
@@ -188,8 +215,12 @@ export default function DashboardLayout({
           )}
         </AnimatePresence>
 
+        <GatewayStatusBanner />
+
         <div className="p-4 md:p-8">
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </div>
       </main>
       

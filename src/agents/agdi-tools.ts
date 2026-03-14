@@ -11,6 +11,7 @@ import { createCronTool } from "./tools/cron-tool.js";
 import { createGatewayTool } from "./tools/gateway-tool.js";
 import { createImageTool } from "./tools/image-tool.js";
 import { createMessageTool } from "./tools/message-tool.js";
+import { createN8nWebhookTool } from "./tools/n8n-webhook-tool.js";
 import { createNodesTool } from "./tools/nodes-tool.js";
 import { createSessionStatusTool } from "./tools/session-status-tool.js";
 import { createSessionsHistoryTool } from "./tools/sessions-history-tool.js";
@@ -159,6 +160,9 @@ export function createAGDITools(options?: {
     ...(webFetchTool ? [webFetchTool] : []),
     ...(imageTool ? [imageTool] : []),
   ];
+
+  const n8nTool = createN8nWebhookTool({ config: options?.config });
+  if (n8nTool) tools.push(n8nTool);
 
   const pluginTools = resolvePluginTools({
     context: {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Palette, Code2, Play, Eye, Maximize2, Minimize2, Download, Copy, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { agdi } from '@/lib/agdi-client';
 
 export default function CanvasViewPage() {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('preview');
@@ -48,13 +49,17 @@ export default function CanvasViewPage() {
     toast.success("Code copied to clipboard!");
   };
 
-  const handleRegenerate = () => {
+  const handleRegenerate = async () => {
     setIsGenerating(true);
     toast.info("Agent is regenerating the component...");
-    setTimeout(() => {
-      setIsGenerating(false);
+    try {
+      await agdi.call("agents.create", { name: "canvas-regen", task: "Regenerate UI component" });
       toast.success("Component regenerated successfully.");
-    }, 2000);
+    } catch(e: any) {
+      toast.error(`Regeneration failed: ${e.message || String(e)}`);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
