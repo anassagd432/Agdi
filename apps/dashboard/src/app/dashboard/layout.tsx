@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Bot, TerminalSquare, Globe, Brush, MessageSquare, Workflow, Blocks,
   Brain, Activity, BookOpen, BarChart3, CheckSquare, Monitor, Shield, Settings,
-  LayoutDashboard, Menu, X, Zap, Search, Heart,
+  LayoutDashboard, Menu, X, Zap, Search, Heart, Link2,
 } from "lucide-react";
 import { Toaster } from "sonner";
 import { GatewayStatusBanner } from "@/components/GatewayStatusBanner";
@@ -34,6 +34,8 @@ const sidebarNavItems = [
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/approvals", label: "Approvals", icon: CheckSquare },
   { href: "/dashboard/devices", label: "Devices", icon: Monitor },
+  { href: "/dashboard/templates", label: "Templates", icon: Zap },
+  { href: "/dashboard/webhooks", label: "Webhooks", icon: Link2 },
   { href: "/dashboard/health", label: "Health", icon: Heart },
   { href: "/dashboard/security", label: "Security", icon: Shield },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
