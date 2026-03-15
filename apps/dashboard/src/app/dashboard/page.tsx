@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   Bot, Cpu, DollarSign, MessageSquare, BarChart3,
@@ -19,11 +19,57 @@ interface AgentMetric {
   messages: number; uptime: number;
 }
 
+/* ── Animated Counter Hook ───────────────────────────────────────── */
+
+function useAnimatedCounter(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<number>(0);
+
+  useEffect(() => {
+    const start = ref.current;
+    const diff = target - start;
+    if (diff === 0) return;
+    const startTime = performance.now();
+    const step = (time: number) => {
+      const progress = Math.min((time - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const current = Math.round(start + diff * eased);
+      setValue(current);
+      ref.current = current;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [target, duration]);
+
+  return value;
+}
+
+/* ── Mini Sparkline ──────────────────────────────────────────────── */
+
+function Sparkline({ data, color = "#06b6d4" }: { data: number[]; color?: string }) {
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const w = 80;
+  const h = 24;
+  const points = data.map((v, i) =>
+    `${(i / (data.length - 1)) * w},${h - ((v - min) / range) * h}`
+  ).join(" ");
+
+  return (
+    <svg width={w} height={h} className="opacity-60">
+      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <circle cx={(data.length - 1) / (data.length - 1) * w} cy={h - ((data[data.length - 1] - min) / range) * h}
+        r="2" fill={color} />
+    </svg>
+  );
+}
+
 /* ── Metric Card ──────────────────────────────────────────────────── */
 
-function MetricCard({ icon, label, value, sub, color, trend }: {
+function MetricCard({ icon, label, value, sub, color, trend, sparkData, sparkColor }: {
   icon: React.ReactNode; label: string; value: string; sub?: string;
-  color: string; trend?: string;
+  color: string; trend?: string; sparkData?: number[]; sparkColor?: string;
 }) {
   return (
     <div className="glass-panel p-5 border border-white/5 rounded-xl space-y-3 group hover:border-white/10 transition-all">
@@ -31,11 +77,16 @@ function MetricCard({ icon, label, value, sub, color, trend }: {
         <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{label}</span>
         <div className={`p-2 rounded-lg ${color} group-hover:scale-110 transition-transform`}>{icon}</div>
       </div>
-      <div className="flex items-end gap-2">
-        <div className="text-2xl font-bold text-white">{value}</div>
-        {trend && <span className="text-xs text-green-400 font-semibold mb-0.5">+{trend}</span>}
+      <div className="flex items-end justify-between">
+        <div>
+          <div className="text-2xl font-bold text-white">{value}</div>
+          {sub && <div className="text-xs text-gray-500 mt-0.5">{sub}</div>}
+        </div>
+        <div className="flex flex-col items-end gap-1">
+          {sparkData && <Sparkline data={sparkData} color={sparkColor} />}
+          {trend && <span className="text-xs text-green-400 font-semibold">+{trend}</span>}
+        </div>
       </div>
-      {sub && <div className="text-xs text-gray-500">{sub}</div>}
     </div>
   );
 }
@@ -47,7 +98,7 @@ function QuickAction({ href, icon, label, color }: {
 }) {
   return (
     <Link href={href}
-      className={`flex flex-col items-center gap-2 p-4 rounded-xl border border-white/5 hover:border-white/10 transition-all group bg-black/20 hover:bg-white/[0.02]`}>
+      className="flex flex-col items-center gap-2 p-4 rounded-xl border border-white/5 hover:border-white/10 transition-all group bg-black/20 hover:bg-white/[0.02]">
       <div className={`p-2.5 rounded-xl ${color} group-hover:scale-110 transition-transform`}>{icon}</div>
       <span className="text-[11px] text-gray-400 font-semibold group-hover:text-white transition-colors">{label}</span>
     </Link>
@@ -75,11 +126,33 @@ function statusBadge(status: string) {
   );
 }
 
+/* ── Sparkline data generators ────────────────────────────────────── */
+
+function generateSparkData(base: number, variance: number, points = 12): number[] {
+  return Array.from({ length: points }, (_, i) =>
+    base + Math.sin(i * 0.5) * variance * 0.5 + Math.random() * variance
+  );
+}
+
 /* ── Page ─────────────────────────────────────────────────────────── */
 
 export default function DashboardOverview() {
   const [agents, setAgents] = useState<AgentMetric[]>([]);
   const [connected, setConnected] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [sparklines, setSparklines] = useState<{
+    agents: number[]; tokens: number[]; cost: number[]; messages: number[];
+  }>({ agents: [], tokens: [], cost: [], messages: [] });
+
+  useEffect(() => {
+    setMounted(true);
+    setSparklines({
+      agents: generateSparkData(3, 2),
+      tokens: generateSparkData(400000, 100000),
+      cost: generateSparkData(8, 4),
+      messages: generateSparkData(150, 50),
+    });
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -110,6 +183,11 @@ export default function DashboardOverview() {
   const activeAgents = agents.filter((a) => a.status === "running").length;
   const totalMessages = agents.reduce((s, a) => s + a.messages, 0);
 
+  // Animated counters
+  const animTokens = useAnimatedCounter(totalTokens);
+  const animCost = useAnimatedCounter(Math.round(totalCost * 100));
+  const animMessages = useAnimatedCounter(totalMessages);
+
   return (
     <div className="flex flex-col h-full animate-in fade-in duration-500 max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -128,20 +206,24 @@ export default function DashboardOverview() {
         </Link>
       </div>
 
-      {/* Summary Metrics */}
+      {/* Summary Metrics with Animated Counters + Sparklines */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-in">
         <MetricCard icon={<Bot className="w-5 h-5 text-cyan-400" />} label="Active Agents"
           value={`${activeAgents}/${agents.length}`} sub={`${agents.length} total agents`}
-          color="bg-cyan-500/10" trend="2" />
+          color="bg-cyan-500/10" trend="2"
+          sparkData={mounted ? sparklines.agents : undefined} sparkColor="#06b6d4" />
         <MetricCard icon={<Cpu className="w-5 h-5 text-purple-400" />} label="Total Tokens"
-          value={formatTokens(totalTokens)} sub="Input + Output"
-          color="bg-purple-500/10" trend="12%" />
+          value={formatTokens(animTokens)} sub="Input + Output"
+          color="bg-purple-500/10" trend="12%"
+          sparkData={mounted ? sparklines.tokens : undefined} sparkColor="#a855f7" />
         <MetricCard icon={<DollarSign className="w-5 h-5 text-green-400" />} label="Total Cost"
-          value={`$${totalCost.toFixed(2)}`} sub="Estimated spend"
-          color="bg-green-500/10" />
+          value={`$${(animCost / 100).toFixed(2)}`} sub="Estimated spend"
+          color="bg-green-500/10"
+          sparkData={mounted ? sparklines.cost : undefined} sparkColor="#22c55e" />
         <MetricCard icon={<MessageSquare className="w-5 h-5 text-amber-400" />} label="Messages"
-          value={String(totalMessages)} sub="All agents combined"
-          color="bg-amber-500/10" trend="8%" />
+          value={String(animMessages)} sub="All agents combined"
+          color="bg-amber-500/10" trend="8%"
+          sparkData={mounted ? sparklines.messages : undefined} sparkColor="#f59e0b" />
       </div>
 
       {/* Quick Actions */}

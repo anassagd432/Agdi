@@ -111,10 +111,15 @@ export default function AgentChatPage() {
       setMessages((prev) => [...prev, assistantMsg]);
       appendChatMessage(agentId, assistantMsg).catch(() => {});
     } catch {
-      // Fallback response for demo mode
+      // Fallback response for demo mode - showcases rich formatting
+      const demoResponses = [
+        `I received your message! Here's a quick example of what I can do:\n\n**Code generation** — I can write production-quality code:\n\n\`\`\`typescript\nasync function fetchAgents(): Promise<Agent[]> {\n  const res = await fetch('/api/agents');\n  if (!res.ok) throw new Error('Failed to fetch');\n  return res.json();\n}\n\`\`\`\n\nThe gateway connection is simulated — connect your Agdi gateway for real AI responses.`,
+        `Great question! Let me help with that.\n\nHere are the steps:\n1. **Configure** your API keys in Settings\n2. **Connect** the gateway on port \`18789\`\n3. **Deploy** your agents\n\n> 💡 Tip: Use \`agdi gateway run\` to start the gateway.\n\nThis is a demo response — connect your gateway for real AI answers.`,
+        `I'd be happy to analyze that for you.\n\nHere's a quick data summary:\n- **Tokens used**: \`1.2M\` input, \`456K\` output\n- **Cost estimate**: \`$4.23\`\n- **Latency**: \`342ms\` average\n\n\`\`\`python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\nprint(df.describe())\n\`\`\`\n\nConnect your Agdi gateway for real analysis.`,
+      ];
       const fallback: ChatMessage = {
         id: crypto.randomUUID(), role: "assistant",
-        content: "I received your message. The gateway connection is currently simulated — connect your Agdi gateway to get real AI responses.",
+        content: demoResponses[Math.floor(Math.random() * demoResponses.length)],
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, fallback]);
@@ -228,9 +233,17 @@ export default function AgentChatPage() {
         })}
 
         {sending && (
-          <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-            <span>{agentName} is thinking...</span>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-cyan-400" />
+            </div>
+            <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl px-4 py-3">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+              </div>
+            </div>
           </div>
         )}
         <div ref={bottomRef} />
