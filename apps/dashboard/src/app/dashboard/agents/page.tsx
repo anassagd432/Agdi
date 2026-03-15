@@ -27,14 +27,14 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-  const [newAgent, setNewAgent] = useState({ name: "", model: "claude-3.5-sonnet", systemPrompt: "" });
+  const [newAgent, setNewAgent] = useState({ name: "", model: "claude-4-opus", systemPrompt: "" });
 
   useEffect(() => {
     const load = async () => {
       const raw = (await agdi.getAgents()) as Record<string, unknown>[];
       setAgents(raw.map((a, i) => ({
         id: String(a.id || i), name: String(a.name || `Agent ${i + 1}`),
-        model: String(a.model || "claude-3.5-sonnet"),
+        model: String(a.model || "claude-4-opus"),
         status: (a.status as Agent["status"]) || "idle",
         systemPrompt: a.systemPrompt ? String(a.systemPrompt) : undefined,
         messages: Number(a.messages || 0), createdAt: Number(a.createdAt || Date.now()),
@@ -72,12 +72,15 @@ export default function AgentsPage() {
               onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
               className="bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none" />
             <select value={newAgent.model} onChange={(e) => setNewAgent({ ...newAgent, model: e.target.value })}
-              className="bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none">
-              <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-              <option value="claude-3-opus">Claude 3 Opus</option>
-              <option value="gpt-4o">GPT-4o</option>
-              <option value="gpt-4o-mini">GPT-4o Mini</option>
-              <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+              className="bg-[#0a0e17] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none appearance-none cursor-pointer">
+              <option value="claude-4-opus" className="bg-[#0a0e17] text-white">Claude 4 Opus</option>
+              <option value="claude-3.7-sonnet" className="bg-[#0a0e17] text-white">Claude 3.7 Sonnet</option>
+              <option value="gpt-5" className="bg-[#0a0e17] text-white">GPT-5</option>
+              <option value="gpt-4.1" className="bg-[#0a0e17] text-white">GPT-4.1</option>
+              <option value="gemini-2.5-pro" className="bg-[#0a0e17] text-white">Gemini 2.5 Pro</option>
+              <option value="grok-3" className="bg-[#0a0e17] text-white">Grok 3</option>
+              <option value="deepseek-r1" className="bg-[#0a0e17] text-white">DeepSeek R1</option>
+              <option value="llama-4-maverick" className="bg-[#0a0e17] text-white">Llama 4 Maverick</option>
             </select>
           </div>
           <textarea placeholder="System prompt (optional)..." rows={3} value={newAgent.systemPrompt}

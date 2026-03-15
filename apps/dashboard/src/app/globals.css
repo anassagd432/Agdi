@@ -212,3 +212,27 @@ a, button, input, select, textarea {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ── Select / Option dark styling ────────────────────────────────── */
+
+select {
+  background-color: #0a0e17;
+  color: #f8fafc;
+}
+
+select option {
+  background-color: #0a0e17;
+  color: #f8fafc;
+  padding: 8px 12px;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #164e63;
+  color: #ffffff;
+}
+
+select:focus {
+  outline: none;
+}
+

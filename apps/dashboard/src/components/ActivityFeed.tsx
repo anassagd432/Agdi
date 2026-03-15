@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Bot, MessageSquare, Shield, Zap, Download, Globe, Terminal, Bell,
-  Workflow, FileUp, Key, User, Cpu,
+  Bot, MessageSquare, Shield, Zap, Workflow, Cpu,
 } from "lucide-react";
 
 interface ActivityEvent {
@@ -40,16 +39,29 @@ function generateEvent(): ActivityEvent {
 }
 
 export function ActivityFeed({ maxItems = 15 }: { maxItems?: number }) {
-  const [events, setEvents] = useState<ActivityEvent[]>(() =>
-    Array.from({ length: 5 }, () => ({ ...generateEvent(), ts: Date.now() - Math.random() * 300000 })),
-  );
+  // Start empty to avoid SSR hydration mismatch (no random content during SSR)
+  const [events, setEvents] = useState<ActivityEvent[]>([]);
+  const [mounted, setMounted] = useState(false);
 
+  // Populate initial events only on client after mount
   useEffect(() => {
+    setMounted(true);
+    setEvents(
+      Array.from({ length: 5 }, (_, i) => ({
+        ...generateEvent(),
+        ts: Date.now() - (i + 1) * 60000,
+      })),
+    );
+  }, []);
+
+  // Add new events periodically
+  useEffect(() => {
+    if (!mounted) return;
     const interval = setInterval(() => {
       setEvents((prev) => [generateEvent(), ...prev].slice(0, maxItems));
     }, 4000 + Math.random() * 3000);
     return () => clearInterval(interval);
-  }, [maxItems]);
+  }, [mounted, maxItems]);
 
   function timeAgo(ts: number): string {
     const s = Math.floor((Date.now() - ts) / 1000);
@@ -67,6 +79,9 @@ export function ActivityFeed({ maxItems = 15 }: { maxItems?: number }) {
         <span className="text-[10px] text-gray-500">Live</span>
       </div>
       <div className="max-h-[400px] overflow-y-auto">
+        {!mounted && (
+          <div className="px-4 py-8 text-center text-xs text-gray-600">Loading activity...</div>
+        )}
         {events.map((e, i) => (
           <div key={e.id}
             className={`flex items-center gap-3 px-4 py-2.5 border-b border-white/5 hover:bg-white/[0.02] transition-colors ${i === 0 ? "animate-in fade-in duration-300" : ""}`}>

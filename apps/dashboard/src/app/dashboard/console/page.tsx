@@ -31,7 +31,7 @@ const messages: Record<string, string[]> = {
     "Knowledge base indexed 24 files", "Metrics collected: CPU 34%, MEM 12.4GB",
   ],
   warn: [
-    "Rate limit approaching for GPT-4o (85/100)", "High memory usage: 87% utilized",
+    "Rate limit approaching for GPT-5 (85/100)", "High memory usage: 87% utilized",
     "WebSocket reconnection attempt #3", "Stale session detected for user admin",
     "Disk usage above 80% threshold", "LLM provider latency elevated: 2340ms",
   ],

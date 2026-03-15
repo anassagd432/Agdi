@@ -61,7 +61,7 @@ export default function AgentChatPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [agentName, setAgentName] = useState("Agent");
-  const [agentModel, setAgentModel] = useState("claude-3.5-sonnet");
+  const [agentModel, setAgentModel] = useState("claude-4-opus");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -76,7 +76,7 @@ export default function AgentChatPage() {
       const agent = agents.find((a) => String(a.id) === agentId);
       if (agent) {
         setAgentName(String(agent.name || `Agent ${agentId.slice(0, 6)}`));
-        setAgentModel(String(agent.model || "claude-3.5-sonnet"));
+        setAgentModel(String(agent.model || "claude-4-opus"));
       } else {
         setAgentName(`Agent ${agentId.slice(0, 6)}`);
       }

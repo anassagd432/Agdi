@@ -15,9 +15,9 @@ interface Integration {
 }
 
 const integrations: Integration[] = [
-  { id: "openai", name: "OpenAI", description: "GPT-4o, GPT-4o-mini, o1, DALL-E", icon: "🤖", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "3 models active", category: "AI Providers" },
-  { id: "anthropic", name: "Anthropic", description: "Claude 3.5 Sonnet, Claude 3 Opus", icon: "🧠", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "2 models active", category: "AI Providers" },
-  { id: "google", name: "Google AI", description: "Gemini Pro, Gemini Ultra", icon: "✨", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "openai", name: "OpenAI", description: "GPT-5, GPT-4.1, o3, DALL-E 4", icon: "🤖", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "3 models active", category: "AI Providers" },
+  { id: "anthropic", name: "Anthropic", description: "Claude 4 Opus, Claude 3.7 Sonnet", icon: "🧠", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "2 models active", category: "AI Providers" },
+  { id: "google", name: "Google AI", description: "Gemini 2.5 Pro, Gemini 2.5 Flash", icon: "✨", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
   { id: "github", name: "GitHub", description: "Repository access, PR automation, issue tracking", icon: "🐙", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", connected: true, status: "Linked to agdi/agdi", category: "Developer Tools" },
   { id: "slack-int", name: "Slack", description: "Workspace notifications and bot integration", icon: "💬", color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20", connected: true, status: "4 channels", category: "Communication" },
   { id: "discord-int", name: "Discord", description: "Bot presence and event forwarding", icon: "🎮", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20", connected: true, status: "2 servers", category: "Communication" },
