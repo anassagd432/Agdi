@@ -12,7 +12,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [newUser, setNewUser] = useState({ username: "", password: "", role: "viewer" as const });
+  const [newUser, setNewUser] = useState<{ username: string; password: string; role: UserInfo["role"] }>({ username: "", password: "", role: "viewer" });
   const [creating, setCreating] = useState(false);
 
   const fetchUsers = useCallback(async () => {
