@@ -6,7 +6,7 @@ import {
   Bot, TerminalSquare, Globe, Brush, MessageSquare, Workflow, Blocks,
   Brain, Activity, BookOpen, BarChart3, CheckSquare, Monitor, Shield, Settings,
   LayoutDashboard, Menu, X, Zap, Search, Heart, Link2, Code, HardDrive, Calendar, Plug,
-  Archive, Variable,
+  Archive, Variable, ScrollText, Key, Users, TrendingUp,
 } from "lucide-react";
 import { Toaster } from "sonner";
 import { GatewayStatusBanner } from "@/components/GatewayStatusBanner";
@@ -43,6 +43,10 @@ const sidebarNavItems = [
   { href: "/dashboard/integrations", label: "Integrations", icon: Plug },
   { href: "/dashboard/backups", label: "Backups", icon: Archive },
   { href: "/dashboard/environment", label: "Environment", icon: Variable },
+  { href: "/dashboard/usage", label: "Usage", icon: TrendingUp },
+  { href: "/dashboard/keys", label: "API Keys", icon: Key },
+  { href: "/dashboard/team", label: "Team", icon: Users },
+  { href: "/dashboard/audit", label: "Audit Log", icon: ScrollText },
   { href: "/dashboard/health", label: "Health", icon: Heart },
   { href: "/dashboard/security", label: "Security", icon: Shield },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
