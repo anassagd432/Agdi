@@ -15,9 +15,13 @@ interface Integration {
 }
 
 const integrations: Integration[] = [
-  { id: "openai", name: "OpenAI", description: "GPT-5, GPT-4.1, o3, DALL-E 4", icon: "🤖", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "3 models active", category: "AI Providers" },
-  { id: "anthropic", name: "Anthropic", description: "Claude 4 Opus, Claude 3.7 Sonnet", icon: "🧠", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "2 models active", category: "AI Providers" },
-  { id: "google", name: "Google AI", description: "Gemini 2.5 Pro, Gemini 2.5 Flash", icon: "✨", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "openai", name: "OpenAI", description: "GPT-5.4, GPT-5, GPT-4.1, o3, o4-mini", icon: "🤖", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "5 models active", category: "AI Providers" },
+  { id: "anthropic", name: "Anthropic", description: "Claude Opus 4.6, Sonnet 4.6, Haiku 4.5", icon: "🧠", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "3 models active", category: "AI Providers" },
+  { id: "google", name: "Google AI", description: "Gemini 3.1 Pro, 3 Flash, 2.5 Pro", icon: "✨", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: true, status: "3 models active", category: "AI Providers" },
+  { id: "xai", name: "xAI", description: "Grok 4.2, Grok 4.1, Grok 3", icon: "🚀", color: "text-slate-300", bg: "bg-slate-500/10 border-slate-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "deepseek", name: "DeepSeek", description: "V3.2, V3.2-Speciale, R1", icon: "🔬", color: "text-teal-400", bg: "bg-teal-500/10 border-teal-500/20", connected: true, status: "2 models active", category: "AI Providers" },
+  { id: "meta", name: "Meta AI", description: "Llama 4 Maverick, Llama 4 Scout", icon: "🦥", color: "text-blue-300", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "mistral", name: "Mistral AI", description: "Large 3, Codestral, Magistral Medium", icon: "🌊", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", connected: false, status: "Not configured", category: "AI Providers" },
   { id: "github", name: "GitHub", description: "Repository access, PR automation, issue tracking", icon: "🐙", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", connected: true, status: "Linked to agdi/agdi", category: "Developer Tools" },
   { id: "slack-int", name: "Slack", description: "Workspace notifications and bot integration", icon: "💬", color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20", connected: true, status: "4 channels", category: "Communication" },
   { id: "discord-int", name: "Discord", description: "Bot presence and event forwarding", icon: "🎮", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20", connected: true, status: "2 servers", category: "Communication" },

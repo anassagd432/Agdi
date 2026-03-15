@@ -18,7 +18,7 @@ interface Endpoint {
 
 const endpoints: Endpoint[] = [
   { method: "GET", path: "/api/agents", description: "List all agents" },
-  { method: "POST", path: "/api/agents", description: "Spawn a new agent", body: '{\n  "name": "coder",\n  "model": "claude-4-opus",\n  "systemPrompt": "You are a code assistant."\n}' },
+  { method: "POST", path: "/api/agents", description: "Spawn a new agent", body: '{\n  "name": "coder",\n  "model": "claude-opus-4.6",\n  "systemPrompt": "You are a code assistant."\n}' },
   { method: "GET", path: "/api/devices", description: "List all devices" },
   { method: "POST", path: "/api/devices", description: "Register a device", body: '{\n  "action": "register",\n  "name": "My Laptop",\n  "platform": "windows"\n}' },
   { method: "GET", path: "/api/users", description: "List all users" },

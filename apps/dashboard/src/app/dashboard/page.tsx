@@ -90,7 +90,7 @@ export default function DashboardOverview() {
         raw.map((a, i) => ({
           id: String(a.id || i),
           name: String(a.name || `Agent ${i + 1}`),
-          model: String(a.model || "claude-4-opus"),
+          model: String(a.model || "claude-opus-4.6"),
           status: (a.status as AgentMetric["status"]) || "idle",
           tokensIn: Number(a.tokensIn || Math.floor(Math.random() * 500000)),
           tokensOut: Number(a.tokensOut || Math.floor(Math.random() * 200000)),

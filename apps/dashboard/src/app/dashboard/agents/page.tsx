@@ -27,14 +27,14 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-  const [newAgent, setNewAgent] = useState({ name: "", model: "claude-4-opus", systemPrompt: "" });
+  const [newAgent, setNewAgent] = useState({ name: "", model: "claude-opus-4.6", systemPrompt: "" });
 
   useEffect(() => {
     const load = async () => {
       const raw = (await agdi.getAgents()) as Record<string, unknown>[];
       setAgents(raw.map((a, i) => ({
         id: String(a.id || i), name: String(a.name || `Agent ${i + 1}`),
-        model: String(a.model || "claude-4-opus"),
+        model: String(a.model || "claude-opus-4.6"),
         status: (a.status as Agent["status"]) || "idle",
         systemPrompt: a.systemPrompt ? String(a.systemPrompt) : undefined,
         messages: Number(a.messages || 0), createdAt: Number(a.createdAt || Date.now()),
@@ -72,15 +72,40 @@ export default function AgentsPage() {
               onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
               className="bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none" />
             <select value={newAgent.model} onChange={(e) => setNewAgent({ ...newAgent, model: e.target.value })}
-              className="bg-[#0a0e17] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none appearance-none cursor-pointer">
-              <option value="claude-4-opus" className="bg-[#0a0e17] text-white">Claude 4 Opus</option>
-              <option value="claude-3.7-sonnet" className="bg-[#0a0e17] text-white">Claude 3.7 Sonnet</option>
-              <option value="gpt-5" className="bg-[#0a0e17] text-white">GPT-5</option>
-              <option value="gpt-4.1" className="bg-[#0a0e17] text-white">GPT-4.1</option>
-              <option value="gemini-2.5-pro" className="bg-[#0a0e17] text-white">Gemini 2.5 Pro</option>
-              <option value="grok-3" className="bg-[#0a0e17] text-white">Grok 3</option>
-              <option value="deepseek-r1" className="bg-[#0a0e17] text-white">DeepSeek R1</option>
-              <option value="llama-4-maverick" className="bg-[#0a0e17] text-white">Llama 4 Maverick</option>
+              className="bg-[#0a0e17] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none cursor-pointer">
+              <optgroup label="Anthropic" className="bg-[#0a0e17] text-white">
+                <option value="claude-opus-4.6">Claude Opus 4.6</option>
+                <option value="claude-sonnet-4.6">Claude Sonnet 4.6</option>
+                <option value="claude-sonnet-4.5">Claude Sonnet 4.5</option>
+                <option value="claude-haiku-4.5">Claude Haiku 4.5</option>
+              </optgroup>
+              <optgroup label="OpenAI" className="bg-[#0a0e17] text-white">
+                <option value="gpt-5.4">GPT-5.4</option>
+                <option value="gpt-5">GPT-5</option>
+                <option value="gpt-4.1">GPT-4.1</option>
+                <option value="o3">o3 (Reasoning)</option>
+                <option value="o4-mini">o4-mini (Reasoning)</option>
+              </optgroup>
+              <optgroup label="Google" className="bg-[#0a0e17] text-white">
+                <option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
+                <option value="gemini-3-flash">Gemini 3 Flash</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+              </optgroup>
+              <optgroup label="xAI" className="bg-[#0a0e17] text-white">
+                <option value="grok-4.2">Grok 4.2</option>
+              </optgroup>
+              <optgroup label="Meta" className="bg-[#0a0e17] text-white">
+                <option value="llama-4-maverick">Llama 4 Maverick</option>
+                <option value="llama-4-scout">Llama 4 Scout</option>
+              </optgroup>
+              <optgroup label="DeepSeek" className="bg-[#0a0e17] text-white">
+                <option value="deepseek-v3.2">DeepSeek V3.2</option>
+                <option value="deepseek-r1">DeepSeek R1</option>
+              </optgroup>
+              <optgroup label="Mistral" className="bg-[#0a0e17] text-white">
+                <option value="mistral-large-3">Mistral Large 3</option>
+                <option value="codestral">Codestral</option>
+              </optgroup>
             </select>
           </div>
           <textarea placeholder="System prompt (optional)..." rows={3} value={newAgent.systemPrompt}
