@@ -6,6 +6,7 @@ import {
   Bot, TerminalSquare, Globe, Brush, MessageSquare, Workflow, Blocks,
   Brain, Activity, BookOpen, BarChart3, CheckSquare, Monitor, Shield, Settings,
   LayoutDashboard, Menu, X, Zap, Search, Heart, Link2, Code, HardDrive, Calendar, Plug,
+  Archive, Variable,
 } from "lucide-react";
 import { Toaster } from "sonner";
 import { GatewayStatusBanner } from "@/components/GatewayStatusBanner";
@@ -40,6 +41,8 @@ const sidebarNavItems = [
   { href: "/dashboard/files", label: "Files", icon: HardDrive },
   { href: "/dashboard/scheduler", label: "Scheduler", icon: Calendar },
   { href: "/dashboard/integrations", label: "Integrations", icon: Plug },
+  { href: "/dashboard/backups", label: "Backups", icon: Archive },
+  { href: "/dashboard/environment", label: "Environment", icon: Variable },
   { href: "/dashboard/health", label: "Health", icon: Heart },
   { href: "/dashboard/security", label: "Security", icon: Shield },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
