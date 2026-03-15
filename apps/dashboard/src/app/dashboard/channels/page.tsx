@@ -2,14 +2,18 @@
 
 import React from "react";
 import { MessageSquare, Wifi, WifiOff } from "lucide-react";
+import {
+  WhatsAppLogo, DiscordLogo, TelegramLogo,
+  SlackLogo, SignalLogo, IMessageLogo,
+} from "@/components/BrandLogos";
 
 const channels = [
-  { name: "WhatsApp", status: "connected", icon: "💬", color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20", messages: 1240 },
-  { name: "Discord", status: "connected", icon: "🎮", color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/20", messages: 850 },
-  { name: "Telegram", status: "connected", icon: "✈️", color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", messages: 620 },
-  { name: "Slack", status: "disconnected", icon: "📢", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", messages: 0 },
-  { name: "Signal", status: "disconnected", icon: "🔒", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", messages: 0 },
-  { name: "iMessage", status: "disconnected", icon: "🍎", color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/20", messages: 0 },
+  { name: "WhatsApp", status: "connected", icon: <WhatsAppLogo className="w-7 h-7" />, color: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20", messages: 1240 },
+  { name: "Discord", status: "connected", icon: <DiscordLogo className="w-7 h-7" />, color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/20", messages: 850 },
+  { name: "Telegram", status: "connected", icon: <TelegramLogo className="w-7 h-7" />, color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", messages: 620 },
+  { name: "Slack", status: "disconnected", icon: <SlackLogo className="w-7 h-7" />, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", messages: 0 },
+  { name: "Signal", status: "disconnected", icon: <SignalLogo className="w-7 h-7" />, color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", messages: 0 },
+  { name: "iMessage", status: "disconnected", icon: <IMessageLogo className="w-7 h-7" />, color: "text-gray-400", bg: "bg-gray-500/10", border: "border-gray-500/20", messages: 0 },
 ];
 
 export default function ChannelsPage() {
@@ -29,7 +33,9 @@ export default function ChannelsPage() {
           <div key={ch.name} className={`glass-panel p-5 border ${ch.border} rounded-xl space-y-4 hover:bg-white/[0.02] transition-all`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{ch.icon}</span>
+                <div className={`w-10 h-10 rounded-xl ${ch.bg} flex items-center justify-center`}>
+                  {ch.icon}
+                </div>
                 <div>
                   <h3 className="font-semibold text-white text-sm">{ch.name}</h3>
                   <div className="flex items-center gap-1.5 mt-0.5">

@@ -2,35 +2,40 @@
 
 import React, { useState } from "react";
 import {
-  Plug, CheckCircle2, XCircle, ExternalLink, Settings,
-  RefreshCw, Loader2, Zap,
+  Plug, CheckCircle2, XCircle, Loader2, GitBranch,
+  Database, Repeat2, Zap as ZapIcon, Cloud,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  OpenAILogo, AnthropicLogo, GoogleLogo, XaiLogo,
+  MetaLogo, DeepSeekLogo, MistralLogo,
+  SlackLogo, DiscordLogo, TelegramLogo,
+} from "@/components/BrandLogos";
 
 interface Integration {
   id: string; name: string; description: string;
-  icon: string; color: string; bg: string;
+  icon: React.ReactNode; color: string; bg: string;
   connected: boolean; status: string;
-  category: string; url?: string;
+  category: string;
 }
 
 const integrations: Integration[] = [
-  { id: "openai", name: "OpenAI", description: "GPT-5.4, GPT-5, GPT-4.1, o3, o4-mini", icon: "🤖", color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "5 models active", category: "AI Providers" },
-  { id: "anthropic", name: "Anthropic", description: "Claude Opus 4.6, Sonnet 4.6, Haiku 4.5", icon: "🧠", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "3 models active", category: "AI Providers" },
-  { id: "google", name: "Google AI", description: "Gemini 3.1 Pro, 3 Flash, 2.5 Pro", icon: "✨", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: true, status: "3 models active", category: "AI Providers" },
-  { id: "xai", name: "xAI", description: "Grok 4.2, Grok 4.1, Grok 3", icon: "🚀", color: "text-slate-300", bg: "bg-slate-500/10 border-slate-500/20", connected: false, status: "Not configured", category: "AI Providers" },
-  { id: "deepseek", name: "DeepSeek", description: "V3.2, V3.2-Speciale, R1", icon: "🔬", color: "text-teal-400", bg: "bg-teal-500/10 border-teal-500/20", connected: true, status: "2 models active", category: "AI Providers" },
-  { id: "meta", name: "Meta AI", description: "Llama 4 Maverick, Llama 4 Scout", icon: "🦥", color: "text-blue-300", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
-  { id: "mistral", name: "Mistral AI", description: "Large 3, Codestral, Magistral Medium", icon: "🌊", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", connected: false, status: "Not configured", category: "AI Providers" },
-  { id: "github", name: "GitHub", description: "Repository access, PR automation, issue tracking", icon: "🐙", color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", connected: true, status: "Linked to agdi/agdi", category: "Developer Tools" },
-  { id: "slack-int", name: "Slack", description: "Workspace notifications and bot integration", icon: "💬", color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20", connected: true, status: "4 channels", category: "Communication" },
-  { id: "discord-int", name: "Discord", description: "Bot presence and event forwarding", icon: "🎮", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20", connected: true, status: "2 servers", category: "Communication" },
-  { id: "telegram-int", name: "Telegram", description: "Bot commands and message routing", icon: "📨", color: "text-sky-400", bg: "bg-sky-500/10 border-sky-500/20", connected: false, status: "Not configured", category: "Communication" },
-  { id: "vercel", name: "Vercel", description: "Deploy previews and serverless functions", icon: "▲", color: "text-white", bg: "bg-gray-500/10 border-gray-500/20", connected: false, status: "Not configured", category: "Infrastructure" },
-  { id: "supabase", name: "Supabase", description: "Database, auth, and real-time subscriptions", icon: "⚡", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", connected: true, status: "2 tables synced", category: "Infrastructure" },
-  { id: "n8n", name: "n8n", description: "Workflow automation and webhook triggers", icon: "🔄", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", connected: true, status: "5 workflows", category: "Automation" },
-  { id: "zapier", name: "Zapier", description: "Connect to 6,000+ apps with Zaps", icon: "⚡", color: "text-orange-300", bg: "bg-orange-500/10 border-orange-500/20", connected: false, status: "Not configured", category: "Automation" },
-  { id: "s3", name: "AWS S3", description: "Cloud storage for files and backups", icon: "☁️", color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20", connected: false, status: "Not configured", category: "Infrastructure" },
+  { id: "openai", name: "OpenAI", description: "GPT-5.4, GPT-5, GPT-4.1, o3, o4-mini", icon: <OpenAILogo className="w-6 h-6 text-green-400" />, color: "text-green-400", bg: "bg-green-500/10 border-green-500/20", connected: true, status: "5 models active", category: "AI Providers" },
+  { id: "anthropic", name: "Anthropic", description: "Claude Opus 4.6, Sonnet 4.6, Haiku 4.5", icon: <AnthropicLogo className="w-6 h-6 text-amber-400" />, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/20", connected: true, status: "3 models active", category: "AI Providers" },
+  { id: "google", name: "Google AI", description: "Gemini 3.1 Pro, 3 Flash, 2.5 Pro", icon: <GoogleLogo className="w-6 h-6" />, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20", connected: true, status: "3 models active", category: "AI Providers" },
+  { id: "xai", name: "xAI", description: "Grok 4.2, Grok 4.1, Grok 3", icon: <XaiLogo className="w-6 h-6 text-slate-300" />, color: "text-slate-300", bg: "bg-slate-500/10 border-slate-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "deepseek", name: "DeepSeek", description: "V3.2, V3.2-Speciale, R1", icon: <DeepSeekLogo className="w-6 h-6 text-teal-400" />, color: "text-teal-400", bg: "bg-teal-500/10 border-teal-500/20", connected: true, status: "2 models active", category: "AI Providers" },
+  { id: "meta", name: "Meta AI", description: "Llama 4 Maverick, Llama 4 Scout", icon: <MetaLogo className="w-6 h-6 text-blue-400" />, color: "text-blue-300", bg: "bg-blue-500/10 border-blue-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "mistral", name: "Mistral AI", description: "Large 3, Codestral, Magistral Medium", icon: <MistralLogo className="w-6 h-6" />, color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", connected: false, status: "Not configured", category: "AI Providers" },
+  { id: "github", name: "GitHub", description: "Repository access, PR automation, issue tracking", icon: <GitBranch className="w-6 h-6 text-purple-400" />, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/20", connected: true, status: "Linked to agdi/agdi", category: "Developer Tools" },
+  { id: "slack-int", name: "Slack", description: "Workspace notifications and bot integration", icon: <SlackLogo className="w-6 h-6" />, color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/20", connected: true, status: "4 channels", category: "Communication" },
+  { id: "discord-int", name: "Discord", description: "Bot presence and event forwarding", icon: <DiscordLogo className="w-6 h-6" />, color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20", connected: true, status: "2 servers", category: "Communication" },
+  { id: "telegram-int", name: "Telegram", description: "Bot commands and message routing", icon: <TelegramLogo className="w-6 h-6" />, color: "text-sky-400", bg: "bg-sky-500/10 border-sky-500/20", connected: false, status: "Not configured", category: "Communication" },
+  { id: "vercel", name: "Vercel", description: "Deploy previews and serverless functions", icon: <span className="text-xl font-bold text-white">▲</span>, color: "text-white", bg: "bg-gray-500/10 border-gray-500/20", connected: false, status: "Not configured", category: "Infrastructure" },
+  { id: "supabase", name: "Supabase", description: "Database, auth, and real-time subscriptions", icon: <Database className="w-6 h-6 text-emerald-400" />, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20", connected: true, status: "2 tables synced", category: "Infrastructure" },
+  { id: "n8n", name: "n8n", description: "Workflow automation and webhook triggers", icon: <Repeat2 className="w-6 h-6 text-orange-400" />, color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", connected: true, status: "5 workflows", category: "Automation" },
+  { id: "zapier", name: "Zapier", description: "Connect to 6,000+ apps with Zaps", icon: <ZapIcon className="w-6 h-6 text-orange-300" />, color: "text-orange-300", bg: "bg-orange-500/10 border-orange-500/20", connected: false, status: "Not configured", category: "Automation" },
+  { id: "s3", name: "AWS S3", description: "Cloud storage for files and backups", icon: <Cloud className="w-6 h-6 text-yellow-400" />, color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20", connected: false, status: "Not configured", category: "Infrastructure" },
 ];
 
 export default function IntegrationsPage() {
@@ -85,7 +90,9 @@ export default function IntegrationsPage() {
               item.connected ? `${item.bg.split(" ")[1] || "border-white/5"}` : "border-white/5 opacity-70 hover:opacity-100"}`}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">{item.icon}</span>
+                <div className={`w-10 h-10 rounded-xl ${item.bg.split(" ")[0]} flex items-center justify-center`}>
+                  {item.icon}
+                </div>
                 <div>
                   <h3 className="text-sm font-semibold text-white">{item.name}</h3>
                   <p className="text-[10px] text-gray-500">{item.category}</p>
