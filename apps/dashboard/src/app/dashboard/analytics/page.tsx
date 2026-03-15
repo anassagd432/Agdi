@@ -73,7 +73,7 @@ export default function AnalyticsPage() {
               </button>
             ))}
           </div>
-          <button onClick={() => downloadCSV(sliced as Record<string, unknown>[], exportFilename("analytics"))}
+          <button onClick={() => downloadCSV(sliced.map((d) => ({ ...d })) as Record<string, unknown>[], exportFilename("analytics"))}
             className="p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white">
             <Download className="w-4 h-4" />
           </button>

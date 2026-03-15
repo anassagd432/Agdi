@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useRouter, type AppRouterInstance } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Search, LayoutDashboard, Bot, TerminalSquare, Globe, Brush, MessageSquare,
   Workflow, Blocks, Brain, Activity, BookOpen, BarChart3, Shield, Settings,
@@ -25,7 +25,7 @@ export function useCommandPalette() {
   return { open, setOpen, onClose: () => setOpen(false) };
 }
 
-export function useCommandItems(router: AppRouterInstance, setTheme: (t: string) => void): CommandItem[] {
+export function useCommandItems(router: ReturnType<typeof useRouter>, setTheme: (t: string) => void): CommandItem[] {
   return useMemo(() => {
     const nav = (path: string) => () => router.push(path);
     return [
@@ -44,7 +44,7 @@ export function useCommandItems(router: AppRouterInstance, setTheme: (t: string)
       { id: "approvals", label: "Approvals", icon: <CheckSquare className="w-4 h-4" />, category: "navigation" as const, keywords: ["review"], action: nav("/dashboard/approvals") },
       { id: "security", label: "Security", icon: <Shield className="w-4 h-4" />, category: "navigation" as const, keywords: ["audit", "log"], action: nav("/dashboard/security") },
       { id: "settings", label: "Settings", icon: <Settings className="w-4 h-4" />, category: "navigation" as const, keywords: ["config", "preferences"], action: nav("/dashboard/settings") },
-      { id: "signout", label: "Sign Out", icon: <LogOut className="w-4 h-4" />, category: "action" as const, keywords: ["logout", "exit"], action: () => { document.cookie = "agdi-token=; path=/; max-age=0"; router.push("/login"); } },
+      { id: "signout", label: "Sign Out", icon: <LogOut className="w-4 h-4" />, category: "action" as const, keywords: ["logout", "exit"], action: () => { void cookieStore?.delete?.("agdi-token").catch(() => {}); router.push("/login"); } },
       { id: "theme-dark", label: "Dark Mode", icon: <Moon className="w-4 h-4" />, category: "theme" as const, keywords: ["night"], action: () => setTheme("dark") },
       { id: "theme-light", label: "Light Mode", icon: <Sun className="w-4 h-4" />, category: "theme" as const, keywords: ["day", "bright"], action: () => setTheme("light") },
       { id: "theme-system", label: "System Theme", icon: <Monitor className="w-4 h-4" />, category: "theme" as const, keywords: ["auto", "os"], action: () => setTheme("system") },
