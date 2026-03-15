@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bot, TerminalSquare, Globe, Brush, MessageSquare, Workflow, Blocks,
-  Brain, Activity, BookOpen, BarChart3, CheckSquare, Shield, Settings,
+  Brain, Activity, BookOpen, BarChart3, CheckSquare, Monitor, Shield, Settings,
   LayoutDashboard, Menu, X, Zap,
 } from "lucide-react";
 import { Toaster } from "sonner";
@@ -29,6 +29,7 @@ const sidebarNavItems = [
   { href: "/dashboard/knowledge", label: "Knowledge", icon: BookOpen },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/approvals", label: "Approvals", icon: CheckSquare },
+  { href: "/dashboard/devices", label: "Devices", icon: Monitor },
   { href: "/dashboard/security", label: "Security", icon: Shield },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
@@ -39,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { setTheme } = useTheme();
   const cmdPalette = useCommandPalette();
-  const cmdItems = useCommandItems(router, setTheme);
+  const cmdItems = useCommandItems(router, (t: string) => setTheme(t as "dark" | "light" | "system"));
   const onboarding = useOnboarding();
 
   useEffect(() => { initNotifications(); }, []);
