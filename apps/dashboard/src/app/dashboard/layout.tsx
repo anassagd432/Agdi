@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CommandPalette, useCommandPalette, useCommandItems } from "@/components/CommandPalette";
 import { useTheme } from "@/components/ThemeProvider";
 import { OnboardingWizard, useOnboarding } from "@/components/OnboardingWizard";
+import { NotificationCenter } from "@/components/NotificationCenter";
 
 const sidebarNavItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -76,7 +77,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
         <div className="p-3 border-t border-border/40 flex items-center justify-between">
           <GatewayStatusBanner />
-          <ThemeToggle />
+          <div className="flex items-center gap-1">
+            <NotificationCenter />
+            <ThemeToggle />
+          </div>
         </div>
       </aside>
 
