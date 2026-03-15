@@ -15,6 +15,8 @@ import { CommandPalette, useCommandPalette, useCommandItems } from "@/components
 import { useTheme } from "@/components/ThemeProvider";
 import { OnboardingWizard, useOnboarding } from "@/components/OnboardingWizard";
 import { NotificationCenter } from "@/components/NotificationCenter";
+import { UserProfileDropdown } from "@/components/UserProfile";
+import { KeyboardShortcutsModal, useShortcutsModal } from "@/components/KeyboardShortcuts";
 
 const sidebarNavItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -43,6 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const cmdPalette = useCommandPalette();
   const cmdItems = useCommandItems(router, (t: string) => setTheme(t as "dark" | "light" | "system"));
   const onboarding = useOnboarding();
+  const shortcuts = useShortcutsModal();
 
   useEffect(() => { initNotifications(); }, []);
 
@@ -75,6 +78,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
         </nav>
+        <div className="p-2 border-t border-border/40">
+          <UserProfileDropdown />
+        </div>
         <div className="p-3 border-t border-border/40 flex items-center justify-between">
           <GatewayStatusBanner />
           <div className="flex items-center gap-1">
@@ -117,6 +123,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="flex-1 overflow-y-auto p-6 md:p-8 pt-20 md:pt-8">
         {children}
       </main>
+
+      <KeyboardShortcutsModal open={shortcuts.open} onClose={shortcuts.onClose} />
     </div>
   );
 }
