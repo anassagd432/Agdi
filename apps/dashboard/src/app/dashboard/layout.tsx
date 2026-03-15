@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Bot, TerminalSquare, Globe, Brush, MessageSquare, Workflow, Blocks,
   Brain, Activity, BookOpen, BarChart3, CheckSquare, Monitor, Shield, Settings,
-  LayoutDashboard, Menu, X, Zap,
+  LayoutDashboard, Menu, X, Zap, Search, Heart,
 } from "lucide-react";
 import { Toaster } from "sonner";
 import { GatewayStatusBanner } from "@/components/GatewayStatusBanner";
@@ -17,6 +17,7 @@ import { OnboardingWizard, useOnboarding } from "@/components/OnboardingWizard";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { UserProfileDropdown } from "@/components/UserProfile";
 import { KeyboardShortcutsModal, useShortcutsModal } from "@/components/KeyboardShortcuts";
+import { Breadcrumb } from "@/components/Breadcrumb";
 
 const sidebarNavItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -33,6 +34,7 @@ const sidebarNavItems = [
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/approvals", label: "Approvals", icon: CheckSquare },
   { href: "/dashboard/devices", label: "Devices", icon: Monitor },
+  { href: "/dashboard/health", label: "Health", icon: Heart },
   { href: "/dashboard/security", label: "Security", icon: Shield },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
@@ -121,6 +123,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-6 md:p-8 pt-20 md:pt-8">
+        <Breadcrumb />
         {children}
       </main>
 
