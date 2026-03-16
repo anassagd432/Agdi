@@ -89,3 +89,8 @@ build.log
 a2ui-bundle-output.txt
 tsc-errors*.txt
 tsc-src-errors*.txt
+
+# Next.js
+.next
+**/.next/
+
