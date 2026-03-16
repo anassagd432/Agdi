@@ -4,7 +4,7 @@ const PROJECT_ID = "abiding-sunset-479505-r6";
 const LOCATION = "us-central1"; // Vertex genAI models are primarily in us-central1
 const MODEL = "veo-2.0-generate-001"; // Testing the latest available public Veo model
 
-const ENDPOINT = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:predict`;
+const ENDPOINT = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:predictLongRunning`;
 
 async function generateVertexVideo() {
   console.log("🎬 Initializing Vertex AI Video Generation...");
