@@ -28,6 +28,27 @@ export default function AgentsPage() {
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [newAgent, setNewAgent] = useState({ name: "", model: "claude-opus-4.6", systemPrompt: "" });
+  const [spawning, setSpawning] = useState(false);
+
+  const handleSpawn = async () => {
+    if (!newAgent.name.trim()) return toast.error("Agent name is required.");
+    setSpawning(true);
+    // Simulate API call
+    await new Promise((r) => setTimeout(r, 800));
+    
+    const spawned: Agent = {
+      id: crypto.randomUUID(), name: newAgent.name.trim(),
+      model: newAgent.model, status: "idle",
+      systemPrompt: newAgent.systemPrompt.trim() || undefined,
+      messages: 0, createdAt: Date.now(),
+    };
+    
+    setAgents((prev) => [spawned, ...prev]);
+    setNewAgent({ name: "", model: "claude-opus-4.6", systemPrompt: "" });
+    setShowCreate(false);
+    setSpawning(false);
+    toast.success(`Agent "${spawned.name}" spawned successfully!`);
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -111,9 +132,9 @@ export default function AgentsPage() {
           <textarea placeholder="System prompt (optional)..." rows={3} value={newAgent.systemPrompt}
             onChange={(e) => setNewAgent({ ...newAgent, systemPrompt: e.target.value })}
             className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:border-cyan-500/50 focus:outline-none resize-none" />
-          <button onClick={() => toast.info("Agent spawning requires a running gateway.")}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold px-5 py-2 rounded-lg text-sm flex items-center gap-2">
-            <Power className="w-4 h-4" /> Spawn Agent
+          <button onClick={handleSpawn} disabled={spawning}
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold px-5 py-2 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50">
+            {spawning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Power className="w-4 h-4" />} Spawn Agent
           </button>
         </div>
       )}

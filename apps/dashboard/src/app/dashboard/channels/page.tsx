@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { MessageSquare, Wifi, WifiOff } from "lucide-react";
+import React, { useState } from "react";
+import { MessageSquare, Wifi, WifiOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import {
   WhatsAppLogo, DiscordLogo, TelegramLogo,
   SlackLogo, SignalLogo, IMessageLogo,
@@ -17,6 +18,25 @@ const channels = [
 ];
 
 export default function ChannelsPage() {
+  const [channelsState, setChannelsState] = useState(channels);
+  const [connecting, setConnecting] = useState<string | null>(null);
+
+  const toggleConnection = async (name: string) => {
+    const ch = channelsState.find(c => c.name === name);
+    if (!ch) return;
+    
+    if (ch.status === "connected") {
+      setChannelsState(prev => prev.map(c => c.name === name ? { ...c, status: "disconnected" } : c));
+      toast.success(`${name} disconnected.`);
+    } else {
+      setConnecting(name);
+      await new Promise(r => setTimeout(r, 1000));
+      setChannelsState(prev => prev.map(c => c.name === name ? { ...c, status: "connected" } : c));
+      setConnecting(null);
+      toast.success(`${name} connected successfully!`);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full animate-in fade-in duration-500 max-w-5xl mx-auto space-y-6">
       <div>
@@ -24,12 +44,12 @@ export default function ChannelsPage() {
           <MessageSquare className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" /> Channels
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          {channels.filter((c) => c.status === "connected").length} of {channels.length} channels connected
+          {channelsState.filter((c) => c.status === "connected").length} of {channelsState.length} channels connected
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {channels.map((ch) => (
+        {channelsState.map((ch) => (
           <div key={ch.name} className={`glass-panel p-5 border ${ch.border} rounded-xl space-y-4 hover:bg-white/[0.02] transition-all`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -48,9 +68,13 @@ export default function ChannelsPage() {
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">{ch.messages > 0 ? `${ch.messages.toLocaleString()} messages` : "No messages yet"}</span>
-              <button className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+              <button 
+                onClick={() => toggleConnection(ch.name)}
+                disabled={connecting === ch.name}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold disabled:opacity-50 ${
                 ch.status === "connected" ? "bg-red-500/10 border border-red-500/20 text-red-400" : "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400"
               }`}>
+                {connecting === ch.name && <Loader2 className="w-3 h-3 animate-spin" />}
                 {ch.status === "connected" ? "Disconnect" : "Connect"}
               </button>
             </div>

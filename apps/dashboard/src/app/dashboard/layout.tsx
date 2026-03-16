@@ -68,6 +68,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex h-screen overflow-hidden bg-background">
       <CommandPalette open={cmdPalette.open} onClose={cmdPalette.onClose} items={cmdItems} />
       {onboarding.show && <OnboardingWizard onComplete={onboarding.complete} />}
+      {/* @ts-expect-error React 19 types issue with sonner Toaster */}
       <Toaster theme="dark" position="top-right" richColors />
 
       {/* Desktop Sidebar */}
@@ -120,8 +121,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-30 bg-background/95 backdrop-blur-xl pt-14">
-          <nav className="p-4 space-y-1">
+        <div className="md:hidden fixed inset-0 z-30 bg-background/95 backdrop-blur-xl pt-14 flex flex-col">
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             {sidebarNavItems.map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm ${
@@ -131,6 +132,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             ))}
           </nav>
+          <div className="p-4 border-t border-border/40 space-y-4 bg-background">
+            <div className="px-2">
+              <UserProfileDropdown />
+            </div>
+            <div className="flex items-center justify-between px-2 pb-4">
+              <GatewayStatusBanner />
+              <div className="flex items-center gap-2">
+                <NotificationCenter />
+                <ThemeToggle />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
