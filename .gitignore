@@ -90,7 +90,21 @@ a2ui-bundle-output.txt
 tsc-errors*.txt
 tsc-src-errors*.txt
 
+# Exclude generated screenshots and AI scripts
+screenshots/*.png
+screenshots/*.webp
+screenshots/generate_veo.mjs
 # Next.js
 .next
 **/.next/
+
+
+# Generated Screenshots
+screenshots/*.png
+screenshots/*.webp
+
+
+# Generated Screenshots
+screenshots/*.png
+screenshots/*.webp
 
