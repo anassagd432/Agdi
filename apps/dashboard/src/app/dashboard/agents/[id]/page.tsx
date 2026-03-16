@@ -7,7 +7,7 @@ import {
   Cpu, Clock, Sparkles, Wrench, Code, Globe,
 } from "lucide-react";
 import { toast } from "sonner";
-import { agdi } from "@/lib/agdi-client";
+import { useAgdi } from "@/components/AgdiProvider";
 import { appendChatMessage, loadChatHistory, clearChatHistory, type ChatMessage } from "@/lib/chat-history";
 
 /* ── Markdown-lite renderer ───────────────────────────────────────── */
@@ -56,10 +56,12 @@ export default function AgentChatPage() {
   const router = useRouter();
   const agentId = params.id as string;
 
+  const { request, subscribe, unsubscribe, isConnected } = useAgdi();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const [agentName, setAgentName] = useState("Agent");
   const [agentModel, setAgentModel] = useState("claude-opus-4.6");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -67,30 +69,86 @@ export default function AgentChatPage() {
 
   // Load history + agent info
   useEffect(() => {
+    let mounted = true;
     const init = async () => {
+      if (!isConnected) return;
+      
       const history = await loadChatHistory(agentId).catch(() => []);
+      if (!mounted) return;
+      
       setMessages(history);
       setLoading(false);
-      // Try get agent info from gateway
-      const agents = (await agdi.getAgents()) as Record<string, unknown>[];
-      const agent = agents.find((a) => String(a.id) === agentId);
-      if (agent) {
-        setAgentName(String(agent.name || `Agent ${agentId.slice(0, 6)}`));
-        setAgentModel(String(agent.model || "claude-opus-4.6"));
-      } else {
-        setAgentName(`Agent ${agentId.slice(0, 6)}`);
+      
+      try {
+        const res = await request<any>("sessions.list", { limit: 100 });
+        if (!mounted) return;
+        
+        const sessions = res.sessions || [];
+        const defaultModel = res.defaults?.model || "claude-opus-4.6";
+        const session = sessions.find((s: any) => s.key === agentId);
+        
+        if (session) {
+          setAgentName(session.displayName || session.derivedTitle || session.key);
+          setAgentModel(session.model || defaultModel);
+        } else {
+          setAgentName(`Agent ${agentId.slice(0, 6)}`);
+        }
+      } catch (err) {
+        console.error("Failed to fetch session meta:", err);
       }
     };
     init();
-  }, [agentId]);
+    return () => { mounted = false; };
+  }, [agentId, isConnected, request]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Listen for Gateway chat events
+  useEffect(() => {
+    const handleEvent = (data: any) => {
+      if (data.method === "chat" && data.params) {
+        const p = data.params;
+        
+        // Ensure this event matches our current session and active run
+        if (p.sessionKey === agentId && p.state === "final") {
+          setSending(false);
+          setActiveRunId(null);
+          
+          if (p.message && p.message.content) {
+            let text = "";
+            // Handle Pi session message content arrays
+            if (Array.isArray(p.message.content)) {
+              text = p.message.content.map((c: any) => c.text || "").join("");
+            } else {
+              text = String(p.message.content);
+            }
+            
+            if (text.trim()) {
+              const assistantMsg: ChatMessage = {
+                id: crypto.randomUUID(), role: "assistant",
+                content: text, timestamp: p.message.timestamp || Date.now(),
+              };
+              setMessages((prev) => [...prev, assistantMsg]);
+              appendChatMessage(agentId, assistantMsg).catch(() => {});
+            }
+          }
+        } else if (p.sessionKey === agentId && p.state === "error") {
+          setSending(false);
+          setActiveRunId(null);
+          toast.error(p.errorMessage || "Agent encountered an error.");
+        }
+      }
+    };
+
+    subscribe(handleEvent);
+    return () => unsubscribe(handleEvent);
+  }, [agentId, subscribe, unsubscribe]);
+
   const handleSend = useCallback(async () => {
     const text = input.trim();
-    if (!text || sending) return;
+    if (!text || sending || !isConnected) return;
     setInput("");
     setSending(true);
 
@@ -102,33 +160,27 @@ export default function AgentChatPage() {
     appendChatMessage(agentId, userMsg).catch(() => {});
 
     try {
-      const res = await agdi.sendMessage(agentId, text);
-      const reply = (res as Record<string, unknown>).message || (res as Record<string, unknown>).content || JSON.stringify(res);
-      const assistantMsg: ChatMessage = {
-        id: crypto.randomUUID(), role: "assistant",
-        content: String(reply), timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, assistantMsg]);
-      appendChatMessage(agentId, assistantMsg).catch(() => {});
-    } catch {
-      // Fallback response for demo mode - showcases rich formatting
-      const demoResponses = [
-        `I received your message! Here's a quick example of what I can do:\n\n**Code generation** — I can write production-quality code:\n\n\`\`\`typescript\nasync function fetchAgents(): Promise<Agent[]> {\n  const res = await fetch('/api/agents');\n  if (!res.ok) throw new Error('Failed to fetch');\n  return res.json();\n}\n\`\`\`\n\nThe gateway connection is simulated — connect your Agdi gateway for real AI responses.`,
-        `Great question! Let me help with that.\n\nHere are the steps:\n1. **Configure** your API keys in Settings\n2. **Connect** the gateway on port \`18789\`\n3. **Deploy** your agents\n\n> 💡 Tip: Use \`agdi gateway run\` to start the gateway.\n\nThis is a demo response — connect your gateway for real AI answers.`,
-        `I'd be happy to analyze that for you.\n\nHere's a quick data summary:\n- **Tokens used**: \`1.2M\` input, \`456K\` output\n- **Cost estimate**: \`$4.23\`\n- **Latency**: \`342ms\` average\n\n\`\`\`python\nimport pandas as pd\ndf = pd.read_csv('data.csv')\nprint(df.describe())\n\`\`\`\n\nConnect your Agdi gateway for real analysis.`,
-      ];
-      const fallback: ChatMessage = {
-        id: crypto.randomUUID(), role: "assistant",
-        content: demoResponses[Math.floor(Math.random() * demoResponses.length)],
-        timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, fallback]);
-      appendChatMessage(agentId, fallback).catch(() => {});
-    } finally {
+      const runId = crypto.randomUUID();
+      setActiveRunId(runId);
+      
+      const res = await request<any>("chat.send", {
+        sessionKey: agentId,
+        message: text,
+        idempotencyKey: runId,
+      });
+      
+      if (res.status !== "started" && res.status !== "in_flight" && res.status !== "ok") {
+         throw new Error("Failed to start agent run");
+      }
+    } catch (err: any) {
+      console.error("Chat send error:", err);
+      toast.error(err.message || "Failed to send message to Gateway");
       setSending(false);
+      setActiveRunId(null);
+    } finally {
       inputRef.current?.focus();
     }
-  }, [input, sending, agentId]);
+  }, [input, sending, agentId, isConnected, request]);
 
   const handleClear = async () => {
     if (!confirm("Clear all chat history for this agent?")) return;

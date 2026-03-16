@@ -35,6 +35,8 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+import { AgdiProvider } from "@/components/AgdiProvider";
+
 export default function RootLayout({
   children,
 }: {
@@ -44,7 +46,9 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans" suppressHydrationWarning>
         <ThemeProvider>
-          {children}
+          <AgdiProvider>
+            {children}
+          </AgdiProvider>
         </ThemeProvider>
       </body>
     </html>

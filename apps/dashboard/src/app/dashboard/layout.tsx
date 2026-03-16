@@ -19,6 +19,7 @@ import { NotificationCenter } from "@/components/NotificationCenter";
 import { UserProfileDropdown } from "@/components/UserProfile";
 import { KeyboardShortcutsModal, useShortcutsModal } from "@/components/KeyboardShortcuts";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { useAgdi } from "@/components/AgdiProvider";
 
 const sidebarNavItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -61,8 +62,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const cmdItems = useCommandItems(router, (t: string) => setTheme(t as "dark" | "light" | "system"));
   const onboarding = useOnboarding();
   const shortcuts = useShortcutsModal();
+  const { url: gatewayUrl, isConnected, isConnecting } = useAgdi();
 
   useEffect(() => { initNotifications(); }, []);
+
+  useEffect(() => {
+    // If we've mounted and there's no gateway URL in context/storage, force login
+    if (gatewayUrl === null) {
+      router.push("/login");
+    }
+  }, [gatewayUrl, router]);
+
+  // Prevent flashing the dashboard UI before redirect
+  if (gatewayUrl === null) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

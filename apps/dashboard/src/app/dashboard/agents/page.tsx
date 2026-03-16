@@ -6,7 +6,7 @@ import {
   Bot, Plus, Search, Loader2, MessageSquare, Cpu, Power, Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { agdi } from "@/lib/agdi-client";
+import { useAgdi } from "@/components/AgdiProvider";
 
 interface Agent {
   id: string;
@@ -14,7 +14,7 @@ interface Agent {
   model: string;
   status: "running" | "idle" | "stopped";
   systemPrompt?: string;
-  messages: number;
+  tokens: number;
   createdAt: number;
 }
 
@@ -23,6 +23,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AgentsPage() {
+  const { request, isConnected } = useAgdi();
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -33,14 +34,17 @@ export default function AgentsPage() {
   const handleSpawn = async () => {
     if (!newAgent.name.trim()) return toast.error("Agent name is required.");
     setSpawning(true);
-    // Simulate API call
+    // Simulate API call for now (until we want to issue full spawn commands)
     await new Promise((r) => setTimeout(r, 800));
     
     const spawned: Agent = {
-      id: crypto.randomUUID(), name: newAgent.name.trim(),
-      model: newAgent.model, status: "idle",
+      id: newAgent.name.trim().toLowerCase().replace(/\s+/g, '-'), 
+      name: newAgent.name.trim(),
+      model: newAgent.model, 
+      status: "idle",
       systemPrompt: newAgent.systemPrompt.trim() || undefined,
-      messages: 0, createdAt: Date.now(),
+      tokens: 0, 
+      createdAt: Date.now(),
     };
     
     setAgents((prev) => [spawned, ...prev]);
@@ -51,19 +55,36 @@ export default function AgentsPage() {
   };
 
   useEffect(() => {
+    let mounted = true;
     const load = async () => {
-      const raw = (await agdi.getAgents()) as Record<string, unknown>[];
-      setAgents(raw.map((a, i) => ({
-        id: String(a.id || i), name: String(a.name || `Agent ${i + 1}`),
-        model: String(a.model || "claude-opus-4.6"),
-        status: (a.status as Agent["status"]) || "idle",
-        systemPrompt: a.systemPrompt ? String(a.systemPrompt) : undefined,
-        messages: Number(a.messages || 0), createdAt: Number(a.createdAt || Date.now()),
-      })));
-      setLoading(false);
+      if (!isConnected) return;
+      try {
+        setLoading(true);
+        const res = await request<any>("sessions.list", { limit: 100 });
+        if (!mounted) return;
+        
+        const sessions = res.sessions || [];
+        const defaultModel = res.defaults?.model || "claude-opus-4.6";
+        
+        setAgents(sessions.map((s: any) => ({
+          id: s.key,
+          name: s.displayName || s.derivedTitle || s.key,
+          model: s.model || defaultModel,
+          status: s.sessionId ? "running" : "idle",
+          systemPrompt: s.lastMessagePreview || "No recent activity",
+          tokens: s.totalTokens || 0,
+          createdAt: s.updatedAt || Date.now(),
+        })));
+      } catch (e) {
+        console.error("Failed to load sessions:", e);
+        toast.error("Failed to fetch live agents from Gateway.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
     };
     load();
-  }, []);
+    return () => { mounted = false; };
+  }, [isConnected, request]);
 
   const filtered = agents.filter((a) =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -177,7 +198,7 @@ export default function AgentsPage() {
               <p className="text-xs text-gray-500 mb-3 line-clamp-2">{agent.systemPrompt}</p>
             )}
             <div className="flex items-center gap-4 text-xs text-gray-500">
-              <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {agent.messages} msgs</span>
+              <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {agent.tokens} tokens</span>
               <span className="flex items-center gap-1"><Cpu className="w-3 h-3" /> {agent.model.split("-").pop()}</span>
             </div>
           </Link>

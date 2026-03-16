@@ -281,6 +281,12 @@ The Gateway alone delivers a great experience. All apps are optional and add ext
 
 If you plan to build/run companion apps, follow the platform runbooks below.
 
+### Web Dashboard (optional)
+
+- A Next.js-based web frontend providing a richer UI experience to manage your Gateway, view Agents, Channels, and live Canvas infrastructure.
+- Run via `cd apps/dashboard && pnpm install && pnpm dev`.
+- Ensure your gateway is running locally (`agdi gateway --port 18789`).
+
 ### macOS (Agdi.app) (optional)
 
 - Menu bar control for the Gateway and health.

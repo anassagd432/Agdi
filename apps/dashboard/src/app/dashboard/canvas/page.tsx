@@ -4,27 +4,19 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   Brush, Plus, Move, Type, Square, Circle, ArrowRight,
   Trash2, ZoomIn, ZoomOut, Grid3X3, Download, MousePointer,
-  Palette,
+  Palette, Bot
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAgdi } from "@/components/AgdiProvider";
 
 interface CanvasNode {
-  id: string; type: "agent" | "tool" | "data" | "output" | "text";
+  id: string; type: "agent" | "tool" | "data" | "output" | "text" | "gateway";
   x: number; y: number; w: number; h: number;
   label: string; color: string; connected?: string[];
 }
 
-const defaultNodes: CanvasNode[] = [
-  { id: "n1", type: "agent", x: 80, y: 60, w: 160, h: 70, label: "Claude Opus 4.6", color: "#06b6d4", connected: ["n3", "n4"] },
-  { id: "n2", type: "agent", x: 80, y: 200, w: 160, h: 70, label: "GPT-5.4", color: "#22c55e", connected: ["n3"] },
-  { id: "n3", type: "tool", x: 340, y: 120, w: 140, h: 60, label: "Web Search", color: "#a855f7", connected: ["n5"] },
-  { id: "n4", type: "tool", x: 340, y: 220, w: 140, h: 60, label: "Code Exec", color: "#f59e0b", connected: ["n5"] },
-  { id: "n5", type: "data", x: 560, y: 150, w: 130, h: 60, label: "Merge Results", color: "#3b82f6", connected: ["n6"] },
-  { id: "n6", type: "output", x: 760, y: 150, w: 130, h: 60, label: "Final Report", color: "#ef4444" },
-];
-
 const typeIcons: Record<string, string> = {
-  agent: "🤖", tool: "🔧", data: "📊", output: "📄", text: "📝",
+  agent: "🤖", tool: "🔧", data: "📊", output: "📄", text: "📝", gateway: "🌐"
 };
 
 const tools = [
@@ -36,12 +28,73 @@ const tools = [
 ];
 
 export default function CanvasPage() {
-  const [nodes, setNodes] = useState<CanvasNode[]>(defaultNodes);
+  const { request, isConnected } = useAgdi();
+  const [nodes, setNodes] = useState<CanvasNode[]>([]);
   const [selectedTool, setSelectedTool] = useState("select");
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [dragging, setDragging] = useState<{ nodeId: string; startX: number; startY: number; nodeX: number; nodeY: number } | null>(null);
   const [zoom, setZoom] = useState(1);
   const canvasRef = useRef<HTMLDivElement>(null);
+
+  // Load live map data from gateway
+  useEffect(() => {
+    let mounted = true;
+    const loadTopology = async () => {
+      if (!isConnected) return;
+      
+      try {
+        const agRes = await request<any>("sessions.list", { limit: 100 });
+        if (!mounted) return;
+        const chRes = await request<any>("channels.status", {});
+        if (!mounted) return;
+
+        const newNodes: CanvasNode[] = [];
+        
+        // Central Gateway Node
+        const gwNode: CanvasNode = {
+          id: "gw-core", type: "gateway",
+          x: 400, y: 300, w: 160, h: 70, label: "Agdi Gateway", color: "#3b82f6", connected: []
+        };
+        
+        // Map agents (left side)
+        const sessions = agRes.sessions || [];
+        sessions.forEach((s: any, i: number) => {
+          const id = `agent-${s.key || i}`;
+          gwNode.connected!.push(id); // Connect gateway to agent
+          newNodes.push({
+            id, type: "agent",
+            x: 100, y: 100 + (i * 100), w: 160, h: 60,
+            label: s.displayName || s.derivedTitle || s.key || "Agent",
+            color: "#06b6d4"
+          });
+        });
+        
+        // Map channels (right side)
+        const channels = Object.keys(chRes.channels || {});
+        channels.forEach((name: string, i: number) => {
+          const id = `channel-${name}`;
+          const cData = chRes.channels[name];
+          const isActive = cData.status === "connected" || cData.status === "listening" || cData.status === "webhook-active";
+          if (isActive) {
+             gwNode.connected!.push(id); // Connect gateway to channel
+          }
+          newNodes.push({
+            id, type: "tool",
+            x: 700, y: 100 + (i * 90), w: 140, h: 60,
+            label: name.charAt(0).toUpperCase() + name.slice(1),
+            color: isActive ? "#22c55e" : "#6b7280"
+          });
+        });
+
+        setNodes([gwNode, ...newNodes]);
+
+      } catch (err) {
+        console.error("Failed to fetch topology:", err);
+      }
+    };
+    loadTopology();
+    return () => { mounted = false; };
+  }, [isConnected, request]);
 
   const zoomIn = () => setZoom((z) => Math.min(z + 0.1, 2));
   const zoomOut = () => setZoom((z) => Math.max(z - 0.1, 0.5));
@@ -118,8 +171,8 @@ export default function CanvasPage() {
         const target = nodes.find((t) => t.id === targetId);
         if (target) {
           connections.push({
-            x1: n.x + n.w, y1: n.y + n.h / 2,
-            x2: target.x, y2: target.y + target.h / 2,
+            x1: n.x + n.w / 2, y1: n.y + n.h / 2,
+            x2: target.x + target.w / 2, y2: target.y + target.h / 2,
             color: n.color,
           });
         }
@@ -133,11 +186,12 @@ export default function CanvasPage() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-2">
-            <Brush className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" /> Canvas
+            <Brush className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" /> Live Node Map
           </h1>
-          <p className="text-muted-foreground mt-1 text-sm">{nodes.length} nodes · Agent pipeline builder</p>
+          <p className="text-muted-foreground mt-1 text-sm">{nodes.length} nodes · Active Gateway Topology</p>
         </div>
         <div className="flex items-center gap-2">
+          {!isConnected && <span className="text-xs text-amber-500 mr-2">Offline - No live data</span>}
           <button onClick={zoomOut} className="p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white">
             <ZoomOut className="w-4 h-4" />
           </button>
@@ -175,12 +229,20 @@ export default function CanvasPage() {
               <path d="M0,0 L8,3 L0,6" fill="rgba(255,255,255,0.3)" />
             </marker>
           </defs>
-          {connections.map((c, i) => (
-            <path key={i}
-              d={`M${c.x1},${c.y1} C${c.x1 + 60},${c.y1} ${c.x2 - 60},${c.y2} ${c.x2},${c.y2}`}
-              stroke={c.color} strokeWidth="2" fill="none" strokeOpacity="0.4"
-              markerEnd="url(#arrow)" />
-          ))}
+          {connections.map((c, i) => {
+            const dx = c.x2 - c.x1;
+            const dy = c.y2 - c.y1;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            const rOffset = 60; // Offset from center to edge of target node roughly
+            const x2 = c.x2 - (dx / dist) * rOffset;
+            const y2 = c.y2 - (dy / dist) * rOffset;
+            return (
+               <path key={i}
+                d={`M${c.x1},${c.y1} L${x2},${y2}`}
+                stroke={c.color} strokeWidth="2" fill="none" strokeOpacity="0.4"
+                markerEnd="url(#arrow)" />
+            );
+          })}
         </svg>
 
         {/* Nodes */}
@@ -198,7 +260,7 @@ export default function CanvasPage() {
                 background: `${n.color}15`,
                 borderColor: selectedNode === n.id ? undefined : `${n.color}30`,
               }}>
-              <span className="text-sm">{typeIcons[n.type]}</span>
+              <span className="text-xl shrink-0">{typeIcons[n.type]}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-white truncate">{n.label}</p>
                 <p className="text-[9px] uppercase tracking-wider" style={{ color: n.color }}>{n.type}</p>
