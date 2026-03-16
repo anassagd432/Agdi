@@ -25,14 +25,16 @@ class AwaiterMulti {
     constructor({ onError } = {}){
         this.promises = new Set();
         this.waitUntil = (promise)=>{
-            // if a promise settles before we await it, we can drop it.
+            // if a promise settles before we await it, we should drop it --
+            // storing them indefinitely could result in a memory leak.
             const cleanup = ()=>{
                 this.promises.delete(promise);
             };
-            this.promises.add(promise.then(cleanup, (err)=>{
+            promise.then(cleanup, (err)=>{
                 cleanup();
                 this.onError(err);
-            }));
+            });
+            this.promises.add(promise);
         };
         this.onError = onError ?? console.error;
     }
@@ -40,7 +42,7 @@ class AwaiterMulti {
         while(this.promises.size > 0){
             const promises = Array.from(this.promises);
             this.promises.clear();
-            await Promise.all(promises);
+            await Promise.allSettled(promises);
         }
     }
 }
@@ -49,7 +51,11 @@ class AwaiterOnce {
         this.done = false;
         this.waitUntil = (promise)=>{
             if (this.done) {
-                throw new _invarianterror.InvariantError('Cannot call waitUntil() on an AwaiterOnce that was already awaited');
+                throw Object.defineProperty(new _invarianterror.InvariantError('Cannot call waitUntil() on an AwaiterOnce that was already awaited'), "__NEXT_ERROR_CODE", {
+                    value: "E563",
+                    enumerable: false,
+                    configurable: true
+                });
             }
             return this.awaiter.waitUntil(promise);
         };

@@ -1,12 +1,12 @@
 import path from 'path';
 import { stringify } from 'querystring';
 import { WEBPACK_RESOURCE_QUERIES } from '../../../../lib/constants';
-import { isMetadataRoute } from '../../../../lib/metadata/is-metadata-route';
+import { DEFAULT_METADATA_ROUTE_EXTENSIONS, isMetadataRouteFile } from '../../../../lib/metadata/is-metadata-route';
 import { AppBundlePathNormalizer } from '../../../../server/normalizers/built/app/app-bundle-path-normalizer';
 import { AppPathnameNormalizer } from '../../../../server/normalizers/built/app/app-pathname-normalizer';
 import { loadEntrypoint } from '../../../load-entrypoint';
 import { getFilenameAndExtension } from '../next-metadata-route-loader';
-export async function createAppRouteCode({ name, page, pagePath, resolveAppRoute, pageExtensions, nextConfigOutput }) {
+export async function createAppRouteCode({ appDir, name, page, pagePath, resolveAppRoute, pageExtensions, nextConfigOutput }) {
     // routePath is the path to the route handler file,
     // but could be aliased e.g. private-next-app-dir/favicon.ico
     const routePath = pagePath.replace(/[\\/]/, '/');
@@ -14,12 +14,18 @@ export async function createAppRouteCode({ name, page, pagePath, resolveAppRoute
     // route handler file.
     let resolvedPagePath = await resolveAppRoute(routePath);
     if (!resolvedPagePath) {
-        throw new Error(`Invariant: could not resolve page path for ${name} at ${routePath}`);
+        throw Object.defineProperty(new Error(`Invariant: could not resolve page path for ${name} at ${routePath}`), "__NEXT_ERROR_CODE", {
+            value: "E281",
+            enumerable: false,
+            configurable: true
+        });
     }
-    // If this is a metadata route, then we need to use the metadata loader for
-    // the route to ensure that the route is generated.
+    // If this is a metadata route file, then we need to use the metadata-loader
+    // for the route to ensure that the route is generated.
     const fileBaseName = path.parse(resolvedPagePath).name;
-    if (isMetadataRoute(name) && fileBaseName !== 'route') {
+    const appDirRelativePath = resolvedPagePath.slice(appDir.length);
+    const isMetadataEntryFile = isMetadataRouteFile(appDirRelativePath, DEFAULT_METADATA_ROUTE_EXTENSIONS, true);
+    if (isMetadataEntryFile) {
         const { ext } = getFilenameAndExtension(resolvedPagePath);
         const isDynamicRouteExtension = pageExtensions.includes(ext);
         resolvedPagePath = `next-metadata-route-loader?${stringify({

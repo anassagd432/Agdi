@@ -21,7 +21,7 @@ function _interop_require_default(obj) {
         default: obj
     };
 }
-async function createAppRouteCode({ name, page, pagePath, resolveAppRoute, pageExtensions, nextConfigOutput }) {
+async function createAppRouteCode({ appDir, name, page, pagePath, resolveAppRoute, pageExtensions, nextConfigOutput }) {
     // routePath is the path to the route handler file,
     // but could be aliased e.g. private-next-app-dir/favicon.ico
     const routePath = pagePath.replace(/[\\/]/, '/');
@@ -29,12 +29,18 @@ async function createAppRouteCode({ name, page, pagePath, resolveAppRoute, pageE
     // route handler file.
     let resolvedPagePath = await resolveAppRoute(routePath);
     if (!resolvedPagePath) {
-        throw new Error(`Invariant: could not resolve page path for ${name} at ${routePath}`);
+        throw Object.defineProperty(new Error(`Invariant: could not resolve page path for ${name} at ${routePath}`), "__NEXT_ERROR_CODE", {
+            value: "E281",
+            enumerable: false,
+            configurable: true
+        });
     }
-    // If this is a metadata route, then we need to use the metadata loader for
-    // the route to ensure that the route is generated.
+    // If this is a metadata route file, then we need to use the metadata-loader
+    // for the route to ensure that the route is generated.
     const fileBaseName = _path.default.parse(resolvedPagePath).name;
-    if ((0, _ismetadataroute.isMetadataRoute)(name) && fileBaseName !== 'route') {
+    const appDirRelativePath = resolvedPagePath.slice(appDir.length);
+    const isMetadataEntryFile = (0, _ismetadataroute.isMetadataRouteFile)(appDirRelativePath, _ismetadataroute.DEFAULT_METADATA_ROUTE_EXTENSIONS, true);
+    if (isMetadataEntryFile) {
         const { ext } = (0, _nextmetadatarouteloader.getFilenameAndExtension)(resolvedPagePath);
         const isDynamicRouteExtension = pageExtensions.includes(ext);
         resolvedPagePath = `next-metadata-route-loader?${(0, _querystring.stringify)({

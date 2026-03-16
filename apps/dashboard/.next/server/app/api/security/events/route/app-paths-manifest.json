@@ -1,0 +1,3 @@
+{
+  "/api/security/events/route": "app/api/security/events/route.js"
+}

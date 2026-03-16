@@ -1,4 +1,4 @@
-import { webpack } from 'next/dist/compiled/webpack/webpack';
+import getWebpackBundler from '../shared/lib/get-webpack-bundler';
 function generateStats(result, stat) {
     const { errors, warnings } = stat.toJson({
         preset: 'errors-warnings',
@@ -22,7 +22,7 @@ function closeCompiler(compiler) {
 }
 export function runCompiler(config, { runWebpackSpan, inputFileSystem }) {
     return new Promise((resolve, reject)=>{
-        const compiler = webpack(config);
+        const compiler = getWebpackBundler()(config);
         // Ensure we use the previous inputFileSystem
         if (inputFileSystem) {
             compiler.inputFileSystem = inputFileSystem;
@@ -51,7 +51,11 @@ export function runCompiler(config, { runWebpackSpan, inputFileSystem }) {
                         ]);
                     }
                     return reject(err);
-                } else if (!stats) throw new Error('No Stats from webpack');
+                } else if (!stats) throw Object.defineProperty(new Error('No Stats from webpack'), "__NEXT_ERROR_CODE", {
+                    value: "E370",
+                    enumerable: false,
+                    configurable: true
+                });
                 const result = webpackCloseSpan.traceChild('webpack-generate-error-stats').traceFn(()=>generateStats({
                         errors: [],
                         warnings: [],

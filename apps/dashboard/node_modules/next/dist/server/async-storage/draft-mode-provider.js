@@ -16,14 +16,21 @@ class DraftModeProvider {
         // but Draft Mode does not have any data associated with it.
         const isOnDemandRevalidate = previewProps && (0, _apiutils.checkIsOnDemandRevalidate)(req, previewProps).isOnDemandRevalidate;
         const cookieValue = (_cookies_get = cookies.get(_apiutils.COOKIE_NAME_PRERENDER_BYPASS)) == null ? void 0 : _cookies_get.value;
-        this.isEnabled = Boolean(!isOnDemandRevalidate && cookieValue && previewProps && (cookieValue === previewProps.previewModeId || // In dev mode, the cookie can be actual hash value preview id but the preview props can still be `development-id`.
+        this._isEnabled = Boolean(!isOnDemandRevalidate && cookieValue && previewProps && (cookieValue === previewProps.previewModeId || // In dev mode, the cookie can be actual hash value preview id but the preview props can still be `development-id`.
         process.env.NODE_ENV !== 'production' && previewProps.previewModeId === 'development-id'));
         this._previewModeId = previewProps == null ? void 0 : previewProps.previewModeId;
         this._mutableCookies = mutableCookies;
     }
+    get isEnabled() {
+        return this._isEnabled;
+    }
     enable() {
         if (!this._previewModeId) {
-            throw new Error('Invariant: previewProps missing previewModeId this should never happen');
+            throw Object.defineProperty(new Error('Invariant: previewProps missing previewModeId this should never happen'), "__NEXT_ERROR_CODE", {
+                value: "E93",
+                enumerable: false,
+                configurable: true
+            });
         }
         this._mutableCookies.set({
             name: _apiutils.COOKIE_NAME_PRERENDER_BYPASS,
@@ -33,6 +40,7 @@ class DraftModeProvider {
             secure: process.env.NODE_ENV !== 'development',
             path: '/'
         });
+        this._isEnabled = true;
     }
     disable() {
         // To delete a cookie, set `expires` to a date in the past:
@@ -47,6 +55,7 @@ class DraftModeProvider {
             path: '/',
             expires: new Date(0)
         });
+        this._isEnabled = false;
     }
 }
 

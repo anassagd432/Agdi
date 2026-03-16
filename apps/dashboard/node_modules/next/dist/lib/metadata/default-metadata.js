@@ -63,6 +63,7 @@ function createDefaultMetadata() {
         formatDetection: null,
         itunes: null,
         facebook: null,
+        pinterest: null,
         abstract: null,
         appLinks: null,
         archives: null,
@@ -70,6 +71,10 @@ function createDefaultMetadata() {
         bookmarks: null,
         category: null,
         classification: null,
+        pagination: {
+            previous: null,
+            next: null
+        },
         other: {}
     };
 }

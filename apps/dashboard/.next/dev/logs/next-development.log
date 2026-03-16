@@ -1,0 +1,45 @@
+[00:00:05.470] Server  WARN    ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:06.483] Server  LOG     ✓ Ready in 4.4s
+[00:00:39.267] Server  LOG     ○ Compiling /login ...
+[00:00:41.687] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:40.561] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:57.238] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:07.138] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:07.562] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+      <RedirectBoundary>
+        <RedirectErrorBoundary router={{...}}>
+          <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:<Fragment>, ...}} ...>
+            <SegmentViewNode type="page" pagePath="/Documents...">
+              <SegmentTrieNode>
+              <ClientPageRoot Component={function SystemHealthPage} serverProvidedParams={{...}}>
+                <SystemHealthPage params={Promise} searchParams={Promise}>
+                  <div className="flex flex-...">
+                    <div>
+                    <div className="glass-pane...">
+                      <UptimeBar>
+                        <div className="space-y-2">
+                          <div className="flex items...">
+                            <span>
+                            <span className="text-xs fo...">
++                             80.0
+-                             93.3
+                              ...
+                          ...
+                    ...
+            ...
+          ...
+
+[00:12:20.476] Server  LOG     ✓ Compiled in 181ms

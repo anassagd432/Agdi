@@ -41,8 +41,9 @@ function ProgressBar({ value, max, color }: { value: number; max: number; color:
 /* ── Uptime bar (last 30 days) ────────────────────────────────────── */
 
 function UptimeBar() {
+  // Use deterministic pseudo-random sequence to prevent SSR hydration mismatches
   const days = Array.from({ length: 30 }, (_, i) => {
-    const r = Math.random();
+    const r = Math.abs(Math.sin((i + 1) * 12.9898) * 43758.5453) % 1;
     return r > 0.95 ? "down" : r > 0.88 ? "degraded" : "healthy";
   });
   const uptimePct = ((days.filter((d) => d === "healthy").length / 30) * 100).toFixed(1);

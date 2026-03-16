@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/dashboard/layout,_N_T_/dashboard/approvals/layout,_N_T_/dashboard/approvals/page,_N_T_/dashboard/approvals"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/dashboard/approvals/__PAGE__",
+    "/dashboard/approvals",
+    "/dashboard",
+    "/_index",
+    "/_head"
+  ]
+}

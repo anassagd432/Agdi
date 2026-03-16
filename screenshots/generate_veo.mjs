@@ -10,9 +10,8 @@ if (!API_KEY) {
 }
 
 // Target endpoint for Gemini/Google video generation 
-// Note: As of public APIs, Veo requires Vertex AI GCP project setups rather than simple AI Studio keys,
-// but we will test the Generative Language REST endpoint first to see if you have an alpha/beta key.
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/veo-2.0-generate-video:predict?key=${API_KEY}`;
+// Testing the Generative Language REST endpoint with Veo 3.1
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-video:predict?key=${API_KEY}`;
 
 async function generateVideo() {
   console.log("🎬 Initializing Google AI Video Generation...");
