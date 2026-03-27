@@ -7,27 +7,77 @@
   [![Node.js](https://img.shields.io/badge/Node.js-22.14+-brightgreen.svg)](#)
 
   <p>
-    An advanced, open-source orchestration system for AI agents. Connect to any model, deploy to any channel, and securely execute real-world tasks.
+    An advanced, open-source orchestration system for AI agents. Run it anywhere, connect to any model, deploy to any messaging channel, and securely execute real-world tasks.
   </p>
 </div>
 
 ---
 
-## 🌟 Key Features
+## 📦 One-Line Install
 
-- 🧠 **Bring Your Own Model:** Seamlessly swap between Anthropic Claude, OpenAI, Google Gemini, local Llama models, and more.
-- 💬 **Universal Channels:** Deploy your assistant directly to Discord, Slack, Microsoft Teams, Telegram, WhatsApp, iOS/macOS via iMessage, or use the built-in web dashboard.
-- 🔌 **Extensible Plugin Ecosystem:** Install community skills to let Agdi browse the web, manage your calendar, control smart home devices, run shell commands, or write code.
-- 🔒 **Privacy & Control:** Strong secure defaults. Run everything locally, set up fine-grained allowed actions, and never expose your API keys to third-party servers.
-- 🚀 **High Performance:** Built on modern TypeScript/Node.js architecture for speed and reliability.
+Get started instantly with the global npm package:
 
-## 🚀 Quickstart
+```bash
+npm install -g agdi
+```
+
+Once installed, simply type `agdi` in your terminal to launch the setup wizard and access the dashboard!
+
+---
+
+## 🌟 Comprehensive Capabilities
+
+Agdi is not just a chatbot—it is a full-fledged agentic orchestration platform. Here is everything it can do out of the box:
+
+### 🧠 Model Agnostic (Bring Your Own AI)
+Seamlessly switch between the best AI models in the world without changing your workflow.
+- **Anthropic Claude** (Opus, Sonnet, Haiku)
+- **OpenAI** (GPT-4o, GPT-4 Turbo)
+- **Google Gemini** (Pro, Flash)
+- **Local Models** (Llama 3, Mistral, via Ollama & LM Studio)
+- **Vision & Audio Processing** (Send images, documents, and voice notes directly to the AI)
+
+### 💬 Universal Messaging Channels
+Interact with your AI assistant where you already spend your time. Agdi natively connects to:
+- **Discord** (Threads, direct messages, attachments)
+- **Slack** (Interactive buttons, thread tracking)
+- **Microsoft Teams** (Rich cards, streaming replies, seamless enterprise integration)
+- **Telegram & WhatsApp**
+- **Apple iMessage & SMS** (via macOS integration)
+- **Web Dashboard** (Built-in rich chat interface)
+
+### 🔌 Powerful Plugin & Skill Ecosystem
+Give your AI the tools it needs to take action in the real world.
+- **File System & Terminal:** Securely read/write files and execute shell commands.
+- **Web Browsing & Search:** Search the internet, summarize articles, and extract data from websites.
+- **Smart Home Controls:** Control Philips Hue, Sonos, Eight Sleep, and other IoT devices.
+- **Productivity Apps:** Read and write to Apple Notes, Notion, Google Calendar, and Trello.
+- **GitHub & DevOps:** Automate PR reviews, issue management, and GitHub Actions.
+- *Plus dozens of community plugins easily installable via `agdi skills list`.*
+
+### 🔐 Unmatched Privacy & Security
+- **Local First:** All your API keys, configuration files, and chat logs are stored strictly on your local machine (or your VPS). Nothing routes through third-party telemetry servers.
+- **Execution Guardrails:** Fine-grained permissions ensure the AI cannot run destructive terminal commands or access sensitive files without explicit approval.
+- **Secure Remote Access:** Built-in Tailscale support allows you to securely access your Agdi instance remotely without exposing ports to the public internet.
+
+### 🖥️ Built-In Control Dashboard
+Agdi ships with a stunning, local web dashboard designed for true control:
+- Manage running agents and monitor CPU/Memory usage.
+- Install, configure, and toggle plugins with a single click.
+- Review and approve pending tool execution requests.
+- Read analytics, token usage, and execution traces.
+
+---
+
+## 🚀 Getting Started (From Source)
+
+If you prefer to run Agdi from source or contribute to the project:
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) v22.14 or higher
 - [pnpm](https://pnpm.io/) v10.32+
 
-### Installation
+### Installation Steps
 
 1. **Clone the repository:**
    ```bash
@@ -50,26 +100,15 @@
    pnpm dev
    ```
 
-*(For a global CLI installation, you can link the package locally: `npm link`)*
-
-## 🧩 Extensions & Plugins
-
-Agdi is designed to be highly extensible. The `extensions/` directory contains dozens of supported plugins ranging from API connectors to full messaging interfaces.
-
-To manage plugins, simply use the powerful built-in Skill Management UI or the CLI:
-```bash
-agdi skills list
-```
-
-## 📚 Documentation
-For complete guides on configuring channels, adding API keys, writing your own custom extensions, and setting up Docker containers, please refer to the `docs/` folder in this repository.
-
-## 🛡️ Security
-
-Agdi provides a robust set of security guardrails, especially when granting the AI access to your terminal or file system. Always run the platform in a sandboxed environment if exposing it to untrusted models or users.
-
 ---
 
+## 📚 Documentation & Help
+
+To see all available CLI commands, simply run `agdi --help`. 
+
+For complete guides on configuring specialized channels (like provisioning the Slack bot or setting up Microsoft Teams), configuring Docker, or developing your own custom plugins using the OpenClaw plugin SDK architecture, check the `docs/` folder in this repository.
+
+<br/>
 <div align="center">
   <i>Built with ❤️ for true automation.</i>
 </div>
