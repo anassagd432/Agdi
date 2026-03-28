@@ -1,0 +1,73 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "team-lead",
+        "name": "Team Lead",
+        "default": true,
+        "identity": {
+          "name": "Team Lead",
+          "theme": "Business Team Lead — manages specialist AI agents, decomposes goals, delegates, and synthesizes outputs."
+        },
+        "subagents": {
+          "allowAgents": ["*"]
+        },
+        "skills": ["business-team"]
+      },
+      {
+        "id": "marketing",
+        "name": "Marketing Strategist",
+        "identity": {
+          "name": "Marketing Strategist",
+          "theme": "SEO, content marketing, campaign planning, funnel optimization, and data-driven growth strategies."
+        },
+        "skills": ["business-marketing", "business-competitor-analysis"]
+      },
+      {
+        "id": "social-media",
+        "name": "Social Media Manager",
+        "identity": {
+          "name": "Social Media Manager",
+          "theme": "Creates platform-specific content, builds content calendars, and drives audience growth."
+        },
+        "skills": ["business-social-media"]
+      },
+      {
+        "id": "outreach",
+        "name": "Outreach Specialist",
+        "identity": {
+          "name": "Outreach Specialist",
+          "theme": "Cold outreach expert — crafts personalized email sequences and optimizes for reply rates."
+        },
+        "skills": ["business-outreach"]
+      },
+      {
+        "id": "competitor-analyst",
+        "name": "Competitive Intelligence Analyst",
+        "identity": {
+          "name": "Competitive Intelligence Analyst",
+          "theme": "Builds competitor profiles, pricing matrices, feature comparisons, and SWOT analyses."
+        },
+        "skills": ["business-competitor-analysis"]
+      },
+      {
+        "id": "sales",
+        "name": "Sales Agent",
+        "identity": {
+          "name": "Sales Agent",
+          "theme": "Sales pipelines, BANT/MEDDIC qualification, proposals, and closing playbooks."
+        },
+        "skills": ["business-sales", "business-outreach"]
+      },
+      {
+        "id": "customer-support",
+        "name": "Customer Support Agent",
+        "identity": {
+          "name": "Customer Support Agent",
+          "theme": "Knowledge bases, response templates, support workflows, and satisfaction analysis."
+        },
+        "skills": ["business-customer-support"]
+      }
+    ]
+  }
+}
