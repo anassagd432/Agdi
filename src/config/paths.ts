@@ -18,10 +18,10 @@ export function resolveIsNixMode(env: NodeJS.ProcessEnv = process.env): boolean 
 export const isNixMode = resolveIsNixMode();
 
 // Support historical (and occasionally misspelled) legacy state dirs.
-const LEGACY_STATE_DIRNAMES = [".clawdbot", ".moldbot"] as const;
-const NEW_STATE_DIRNAME = ".openclaw";
-const CONFIG_FILENAME = "openclaw.json";
-const LEGACY_CONFIG_FILENAMES = ["clawdbot.json", "moldbot.json"] as const;
+const LEGACY_STATE_DIRNAMES = [".openclaw", ".clawdbot", ".moldbot"] as const;
+const NEW_STATE_DIRNAME = ".agdi";
+const CONFIG_FILENAME = "agdi.json";
+const LEGACY_CONFIG_FILENAMES = ["openclaw.json", "clawdbot.json", "moldbot.json"] as const;
 
 function resolveDefaultHomeDir(): string {
   return resolveRequiredHomeDir(process.env, os.homedir);
@@ -52,17 +52,12 @@ export function resolveNewStateDir(homedir: () => string = resolveDefaultHomeDir
   return newStateDir(homedir);
 }
 
-/**
- * State directory for mutable data (sessions, logs, caches).
- * Can be overridden via OPENCLAW_STATE_DIR.
- * Default: ~/.openclaw
- */
 export function resolveStateDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = envHomedir(env),
 ): string {
   const effectiveHomedir = () => resolveRequiredHomeDir(env, homedir);
-  const override = env.OPENCLAW_STATE_DIR?.trim();
+  const override = env.AGDI_STATE_DIR?.trim() || env.OPENCLAW_STATE_DIR?.trim();
   if (override) {
     return resolveUserPath(override, env, effectiveHomedir);
   }
@@ -83,7 +78,18 @@ export function resolveStateDir(
     }
   });
   if (existingLegacy) {
-    return existingLegacy;
+    // Attempt Auto-Migration to new directory
+    try {
+      fs.renameSync(existingLegacy, newDir);
+      try {
+        fs.symlinkSync(newDir, existingLegacy, "junction");
+      } catch {
+        // fail silently for symlink
+      }
+      return newDir;
+    } catch {
+      return existingLegacy;
+    }
   }
   return newDir;
 }
@@ -100,14 +106,14 @@ export const STATE_DIR = resolveStateDir();
 
 /**
  * Config file path (JSON or JSON5).
- * Can be overridden via OPENCLAW_CONFIG_PATH.
- * Default: ~/.openclaw/openclaw.json (or $OPENCLAW_STATE_DIR/openclaw.json)
+ * Can be overridden via AGDI_CONFIG_PATH.
+ * Default: ~/.agdi/agdi.json (or $AGDI_STATE_DIR/agdi.json)
  */
 export function resolveCanonicalConfigPath(
   env: NodeJS.ProcessEnv = process.env,
   stateDir: string = resolveStateDir(env, envHomedir(env)),
 ): string {
-  const override = env.OPENCLAW_CONFIG_PATH?.trim();
+  const override = env.AGDI_CONFIG_PATH?.trim() || env.OPENCLAW_CONFIG_PATH?.trim();
   if (override) {
     return resolveUserPath(override, env, envHomedir(env));
   }
@@ -147,7 +153,7 @@ export function resolveConfigPath(
   stateDir: string = resolveStateDir(env, envHomedir(env)),
   homedir: () => string = envHomedir(env),
 ): string {
-  const override = env.OPENCLAW_CONFIG_PATH?.trim();
+  const override = env.AGDI_CONFIG_PATH?.trim() || env.OPENCLAW_CONFIG_PATH?.trim();
   if (override) {
     return resolveUserPath(override, env, homedir);
   }
@@ -190,15 +196,15 @@ export function resolveDefaultConfigCandidates(
   homedir: () => string = envHomedir(env),
 ): string[] {
   const effectiveHomedir = () => resolveRequiredHomeDir(env, homedir);
-  const explicit = env.OPENCLAW_CONFIG_PATH?.trim();
+  const explicit = env.AGDI_CONFIG_PATH?.trim() || env.OPENCLAW_CONFIG_PATH?.trim();
   if (explicit) {
     return [resolveUserPath(explicit, env, effectiveHomedir)];
   }
 
   const candidates: string[] = [];
-  const openclawStateDir = env.OPENCLAW_STATE_DIR?.trim();
-  if (openclawStateDir) {
-    const resolved = resolveUserPath(openclawStateDir, env, effectiveHomedir);
+  const activeStateDir = env.AGDI_STATE_DIR?.trim() || env.OPENCLAW_STATE_DIR?.trim();
+  if (activeStateDir) {
+    const resolved = resolveUserPath(activeStateDir, env, effectiveHomedir);
     candidates.push(path.join(resolved, CONFIG_FILENAME));
     candidates.push(...LEGACY_CONFIG_FILENAMES.map((name) => path.join(resolved, name)));
   }
@@ -215,12 +221,12 @@ export const DEFAULT_GATEWAY_PORT = 18789;
 
 /**
  * Gateway lock directory (ephemeral).
- * Default: os.tmpdir()/openclaw-<uid> (uid suffix when available).
+ * Default: os.tmpdir()/agdi-<uid> (uid suffix when available).
  */
 export function resolveGatewayLockDir(tmpdir: () => string = os.tmpdir): string {
   const base = tmpdir();
   const uid = typeof process.getuid === "function" ? process.getuid() : undefined;
-  const suffix = uid != null ? `openclaw-${uid}` : "openclaw";
+  const suffix = uid != null ? `agdi-${uid}` : "agdi";
   return path.join(base, suffix);
 }
 
@@ -230,14 +236,14 @@ const OAUTH_FILENAME = "oauth.json";
  * OAuth credentials storage directory.
  *
  * Precedence:
- * - `OPENCLAW_OAUTH_DIR` (explicit override)
+ * - `AGDI_OAUTH_DIR` (explicit override)
  * - `$*_STATE_DIR/credentials` (canonical server/default)
  */
 export function resolveOAuthDir(
   env: NodeJS.ProcessEnv = process.env,
   stateDir: string = resolveStateDir(env, envHomedir(env)),
 ): string {
-  const override = env.OPENCLAW_OAUTH_DIR?.trim();
+  const override = env.AGDI_OAUTH_DIR?.trim() || env.OPENCLAW_OAUTH_DIR?.trim();
   if (override) {
     return resolveUserPath(override, env, envHomedir(env));
   }

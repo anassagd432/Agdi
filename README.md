@@ -13,15 +13,17 @@
 
 ---
 
-## 📦 One-Line Install
+## 📦 Installation
 
-Get started instantly with the global npm package:
+Agdi is distributed with zero-friction native OS installers. You don't even need Node.js!
 
-```bash
-npm install -g agdi
-```
+- **Windows**: Download `agdi-windows.exe` from the latest GitHub Release.
+- **macOS**: Download the `agdi-macos` binary from the latest GitHub Release.
+- **Linux**: Download the `agdi-linux` binary from the latest GitHub Release.
 
-Once installed, simply type `agdi` in your terminal to launch the setup wizard and access the dashboard!
+Once downloaded, simply run the executable in your terminal to launch the setup wizard and access the dashboard!
+
+*(Alternatively, if you prefer using npm: run `npm install -g agdi`)*
 
 ---
 
@@ -106,7 +108,7 @@ If you prefer to run Agdi from source or contribute to the project:
 
 To see all available CLI commands, simply run `agdi --help`. 
 
-For complete guides on configuring specialized channels (like provisioning the Slack bot or setting up Microsoft Teams), configuring Docker, or developing your own custom plugins using the OpenClaw plugin SDK architecture, check the `docs/` folder in this repository.
+For complete guides on configuring specialized channels (like provisioning the Slack bot or setting up Microsoft Teams), configuring Docker, or developing your own custom plugins using the Agdi plugin SDK architecture, check the `docs/` folder in this repository.
 
 <br/>
 <div align="center">

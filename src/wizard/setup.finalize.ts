@@ -358,11 +358,11 @@ export async function finalizeSetupWizard(
     await prompter.note(
       [
         "Gateway token: shared auth for the Gateway + Control UI.",
-        "Stored in: ~/.openclaw/openclaw.json (gateway.auth.token) or OPENCLAW_GATEWAY_TOKEN.",
-        `View token: ${formatCliCommand("openclaw config get gateway.auth.token")}`,
-        `Generate token: ${formatCliCommand("openclaw doctor --generate-gateway-token")}`,
+        "Stored in: ~/.agdi/agdi.json (gateway.auth.token) or AGDI_GATEWAY_TOKEN.",
+        `View token: ${formatCliCommand("agdi config get gateway.auth.token")}`,
+        `Generate token: ${formatCliCommand("agdi doctor --generate-gateway-token")}`,
         "Web UI keeps dashboard URL tokens in memory for the current tab and strips them from the URL after load.",
-        `Open the dashboard anytime: ${formatCliCommand("openclaw dashboard --no-open")}`,
+        `Open the dashboard anytime: ${formatCliCommand("agdi dashboard --no-open")}`,
         "If prompted: paste the token into Control UI settings (or use the tokenized dashboard URL).",
       ].join("\n"),
       "Token",
@@ -411,8 +411,8 @@ export async function finalizeSetupWizard(
         [
           `Dashboard link (with token): ${authedUrl}`,
           controlUiOpened
-            ? "Opened in your browser. Keep that tab to control OpenClaw."
-            : "Copy/paste this URL in a browser on this machine to control OpenClaw.",
+            ? "Opened in your browser. Keep that tab to control Agdi."
+            : "Copy/paste this URL in a browser on this machine to control Agdi.",
           controlUiOpenHint,
         ]
           .filter(Boolean)
@@ -421,7 +421,7 @@ export async function finalizeSetupWizard(
       );
     } else {
       await prompter.note(
-        `When you're ready: ${formatCliCommand("openclaw dashboard --no-open")}`,
+        `When you're ready: ${formatCliCommand("agdi dashboard --no-open")}`,
         "Later",
       );
     }
@@ -472,8 +472,8 @@ export async function finalizeSetupWizard(
       [
         `Dashboard link (with token): ${authedUrl}`,
         controlUiOpened
-          ? "Opened in your browser. Keep that tab to control OpenClaw."
-          : "Copy/paste this URL in a browser on this machine to control OpenClaw.",
+          ? "Opened in your browser. Keep that tab to control Agdi."
+          : "Copy/paste this URL in a browser on this machine to control Agdi.",
         controlUiOpenHint,
       ]
         .filter(Boolean)
@@ -581,10 +581,10 @@ export async function finalizeSetupWizard(
 
   await prompter.outro(
     controlUiOpened
-      ? "Onboarding complete. Dashboard opened; keep that tab to control OpenClaw."
+      ? "Onboarding complete. Dashboard opened; keep that tab to control Agdi."
       : seededInBackground
         ? "Onboarding complete. Web UI seeded in the background; open it anytime with the dashboard link above."
-        : "Onboarding complete. Use the dashboard link above to control OpenClaw.",
+        : "Onboarding complete. Use the dashboard link above to control Agdi.",
   );
 
   return { launchedTui };

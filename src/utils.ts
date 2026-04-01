@@ -286,20 +286,34 @@ export function resolveConfigDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,
 ): string {
-  const override = env.OPENCLAW_STATE_DIR?.trim();
-  if (override) {
-    return resolveUserPath(override, env, homedir);
+  const overrideEnv = env.AGDI_STATE_DIR?.trim() || env.OPENCLAW_STATE_DIR?.trim();
+  if (overrideEnv) {
+    return resolveUserPath(overrideEnv, env, homedir);
   }
-  const newDir = path.join(resolveRequiredHomeDir(env, homedir), ".openclaw");
+
+  const hdir = resolveRequiredHomeDir(env, homedir);
+  const targetDir = path.join(hdir, ".agdi");
+  const legacyDir = path.join(hdir, ".openclaw");
+
   try {
-    const hasNew = fs.existsSync(newDir);
-    if (hasNew) {
-      return newDir;
+    const hasTarget = fs.existsSync(targetDir);
+    const hasLegacy = fs.existsSync(legacyDir);
+    
+    if (hasLegacy && !hasTarget) {
+      fs.renameSync(legacyDir, targetDir);
+      try {
+        // Use junction for Windows users to avoid requiring admin privileges for directory symlinks
+        fs.symlinkSync(targetDir, legacyDir, "junction");
+      } catch {
+        // fail silently for symlink
+      }
+      return targetDir;
     }
   } catch {
     // best-effort
   }
-  return newDir;
+
+  return targetDir;
 }
 
 export function resolveHomeDir(): string | undefined {
@@ -311,9 +325,9 @@ function resolveHomeDisplayPrefix(): { home: string; prefix: string } | undefine
   if (!home) {
     return undefined;
   }
-  const explicitHome = process.env.OPENCLAW_HOME?.trim();
+  const explicitHome = process.env.AGDI_HOME?.trim() || process.env.OPENCLAW_HOME?.trim();
   if (explicitHome) {
-    return { home, prefix: "$OPENCLAW_HOME" };
+    return { home, prefix: "$AGDI_HOME" };
   }
   return { home, prefix: "~" };
 }
