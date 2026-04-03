@@ -22,7 +22,7 @@ Availability: internal preview. The iOS app is not publicly distributed yet.
 - Gateway running on another device (macOS, Linux, or Windows via WSL2).
 - Network path:
   - Same LAN via Bonjour, **or**
-  - Tailnet via unicast DNS-SD (example domain: `openclaw.internal.`), **or**
+  - Tailnet via unicast DNS-SD (example domain: `agdi.internal.`), **or**
   - Manual host/port (fallback).
 
 ## Quick start (pair + connect)
@@ -30,7 +30,7 @@ Availability: internal preview. The iOS app is not publicly distributed yet.
 1. Start the Gateway:
 
 ```bash
-openclaw gateway --port 18789
+agdi gateway --port 18789
 ```
 
 2. In the iOS app, open Settings and pick a discovered gateway (or enable Manual Host and enter host/port).
@@ -38,19 +38,19 @@ openclaw gateway --port 18789
 3. Approve the pairing request on the gateway host:
 
 ```bash
-openclaw devices list
-openclaw devices approve <requestId>
+agdi devices list
+agdi devices approve <requestId>
 ```
 
 If the app retries pairing with changed auth details (role/scopes/public key),
 the previous pending request is superseded and a new `requestId` is created.
-Run `openclaw devices list` again before approval.
+Run `agdi devices list` again before approval.
 
 4. Verify connection:
 
 ```bash
-openclaw nodes status
-openclaw gateway call node.list --params "{}"
+agdi nodes status
+agdi gateway call node.list --params "{}"
 ```
 
 ## Relay-backed push for official builds
@@ -106,7 +106,7 @@ Compatibility note:
 The relay exists to enforce two constraints that direct APNs-on-gateway cannot provide for
 official iOS builds:
 
-- Only genuine OpenClaw iOS builds distributed through Apple can use the hosted relay.
+- Only genuine Agdi iOS builds distributed through Apple can use the hosted relay.
 - A gateway can send relay-backed pushes only for iOS devices that paired with that specific
   gateway.
 
@@ -149,7 +149,7 @@ Why this design was created:
 
 - To keep production APNs credentials out of user gateways.
 - To avoid storing raw official-build APNs tokens on the gateway.
-- To allow hosted relay usage only for official/TestFlight OpenClaw builds.
+- To allow hosted relay usage only for official/TestFlight Agdi builds.
 - To prevent one gateway from sending wake pushes to iOS devices owned by a different gateway.
 
 Local/manual builds remain on direct APNs. If you are testing those builds without the relay, the
@@ -165,11 +165,11 @@ export OPENCLAW_APNS_PRIVATE_KEY_P8="$(cat /path/to/AuthKey_KEYID.p8)"
 
 ### Bonjour (LAN)
 
-The Gateway advertises `_openclaw-gw._tcp` on `local.`. The iOS app lists these automatically.
+The Gateway advertises `_agdi-gw._tcp` on `local.`. The iOS app lists these automatically.
 
 ### Tailnet (cross-network)
 
-If mDNS is blocked, use a unicast DNS-SD zone (choose a domain; example: `openclaw.internal.`) and Tailscale split DNS.
+If mDNS is blocked, use a unicast DNS-SD zone (choose a domain; example: `agdi.internal.`) and Tailscale split DNS.
 See [Bonjour](/gateway/bonjour) for the CoreDNS example.
 
 ### Manual host/port
@@ -181,12 +181,12 @@ In Settings, enable **Manual Host** and enter the gateway host + port (default `
 The iOS node renders a WKWebView canvas. Use `node.invoke` to drive it:
 
 ```bash
-openclaw nodes invoke --node "iOS Node" --command canvas.navigate --params '{"url":"http://<gateway-host>:18789/__openclaw__/canvas/"}'
+agdi nodes invoke --node "iOS Node" --command canvas.navigate --params '{"url":"http://<gateway-host>:18789/__agdi__/canvas/"}'
 ```
 
 Notes:
 
-- The Gateway canvas host serves `/__openclaw__/canvas/` and `/__openclaw__/a2ui/`.
+- The Gateway canvas host serves `/__agdi__/canvas/` and `/__agdi__/a2ui/`.
 - It is served from the Gateway HTTP server (same port as `gateway.port`, default `18789`).
 - The iOS node auto-navigates to A2UI on connect when a canvas host URL is advertised.
 - Return to the built-in scaffold with `canvas.navigate` and `{"url":""}`.
@@ -194,11 +194,11 @@ Notes:
 ### Canvas eval / snapshot
 
 ```bash
-openclaw nodes invoke --node "iOS Node" --command canvas.eval --params '{"javaScript":"(() => { const {ctx} = window.__openclaw; ctx.clearRect(0,0,innerWidth,innerHeight); ctx.lineWidth=6; ctx.strokeStyle=\"#ff2d55\"; ctx.beginPath(); ctx.moveTo(40,40); ctx.lineTo(innerWidth-40, innerHeight-40); ctx.stroke(); return \"ok\"; })()"}'
+agdi nodes invoke --node "iOS Node" --command canvas.eval --params '{"javaScript":"(() => { const {ctx} = window.__agdi; ctx.clearRect(0,0,innerWidth,innerHeight); ctx.lineWidth=6; ctx.strokeStyle=\"#ff2d55\"; ctx.beginPath(); ctx.moveTo(40,40); ctx.lineTo(innerWidth-40, innerHeight-40); ctx.stroke(); return \"ok\"; })()"}'
 ```
 
 ```bash
-openclaw nodes invoke --node "iOS Node" --command canvas.snapshot --params '{"maxWidth":900,"format":"jpeg"}'
+agdi nodes invoke --node "iOS Node" --command canvas.snapshot --params '{"maxWidth":900,"format":"jpeg"}'
 ```
 
 ## Voice wake + talk mode
@@ -210,7 +210,7 @@ openclaw nodes invoke --node "iOS Node" --command canvas.snapshot --params '{"ma
 
 - `NODE_BACKGROUND_UNAVAILABLE`: bring the iOS app to the foreground (canvas/camera/screen commands require it).
 - `A2UI_HOST_NOT_CONFIGURED`: the Gateway did not advertise a canvas host URL; check `canvasHost` in [Gateway configuration](/gateway/configuration).
-- Pairing prompt never appears: run `openclaw devices list` and approve manually.
+- Pairing prompt never appears: run `agdi devices list` and approve manually.
 - Reconnect fails after reinstall: the Keychain pairing token was cleared; re-pair the node.
 
 ## Related docs

@@ -1,21 +1,21 @@
 ---
 title: "Building Plugins"
 sidebarTitle: "Getting Started"
-summary: "Create your first OpenClaw plugin in minutes"
+summary: "Create your first Agdi plugin in minutes"
 read_when:
-  - You want to create a new OpenClaw plugin
+  - You want to create a new Agdi plugin
   - You need a quick-start for plugin development
-  - You are adding a new channel, provider, tool, or other capability to OpenClaw
+  - You are adding a new channel, provider, tool, or other capability to Agdi
 ---
 
 # Building Plugins
 
-Plugins extend OpenClaw with new capabilities: channels, model providers, speech,
+Plugins extend Agdi with new capabilities: channels, model providers, speech,
 image generation, web search, agent tools, or any combination.
 
-You do not need to add your plugin to the OpenClaw repository. Publish to
+You do not need to add your plugin to the Agdi repository. Publish to
 [ClawHub](/tools/clawhub) or npm and users install with
-`openclaw plugins install <package-name>`. OpenClaw tries ClawHub first and
+`agdi plugins install <package-name>`. Agdi tries ClawHub first and
 falls back to npm automatically.
 
 ## Prerequisites
@@ -28,7 +28,7 @@ falls back to npm automatically.
 
 <CardGroup cols={3}>
   <Card title="Channel plugin" icon="messages-square" href="/plugins/sdk-channel-plugins">
-    Connect OpenClaw to a messaging platform (Discord, IRC, etc.)
+    Connect Agdi to a messaging platform (Discord, IRC, etc.)
   </Card>
   <Card title="Provider plugin" icon="cpu" href="/plugins/sdk-provider-plugins">
     Add a model provider (LLM, proxy, or custom endpoint)
@@ -48,20 +48,20 @@ and provider plugins have dedicated guides linked above.
     <CodeGroup>
     ```json package.json
     {
-      "name": "@myorg/openclaw-my-plugin",
+      "name": "@myorg/agdi-my-plugin",
       "version": "1.0.0",
       "type": "module",
-      "openclaw": {
+      "agdi": {
         "extensions": ["./index.ts"]
       }
     }
     ```
 
-    ```json openclaw.plugin.json
+    ```json agdi.plugin.json
     {
       "id": "my-plugin",
       "name": "My Plugin",
-      "description": "Adds a custom tool to OpenClaw",
+      "description": "Adds a custom tool to Agdi",
       "configSchema": {
         "type": "object",
         "additionalProperties": false
@@ -79,13 +79,13 @@ and provider plugins have dedicated guides linked above.
 
     ```typescript
     // index.ts
-    import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+    import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
     import { Type } from "@sinclair/typebox";
 
     export default definePluginEntry({
       id: "my-plugin",
       name: "My Plugin",
-      description: "Adds a custom tool to OpenClaw",
+      description: "Adds a custom tool to Agdi",
       register(api) {
         api.registerTool({
           name: "my_tool",
@@ -110,10 +110,10 @@ and provider plugins have dedicated guides linked above.
     **External plugins:** publish to [ClawHub](/tools/clawhub) or npm, then install:
 
     ```bash
-    openclaw plugins install @myorg/openclaw-my-plugin
+    agdi plugins install @myorg/agdi-my-plugin
     ```
 
-    OpenClaw checks ClawHub first, then falls back to npm.
+    Agdi checks ClawHub first, then falls back to npm.
 
     **In-repo plugins:** place under `extensions/` — automatically discovered.
 
@@ -199,14 +199,14 @@ Users enable optional tools in config:
 
 ## Import conventions
 
-Always import from focused `openclaw/plugin-sdk/<subpath>` paths:
+Always import from focused `agdi/plugin-sdk/<subpath>` paths:
 
 ```typescript
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
+import { createPluginRuntimeStore } from "agdi/plugin-sdk/runtime-store";
 
 // Wrong: monolithic root (deprecated, will be removed)
-import { ... } from "openclaw/plugin-sdk";
+import { ... } from "agdi/plugin-sdk";
 ```
 
 For the full subpath reference, see [SDK Overview](/plugins/sdk-overview).
@@ -216,8 +216,8 @@ internal imports — never import your own plugin through its SDK path.
 
 ## Pre-submission checklist
 
-<Check>**package.json** has correct `openclaw` metadata</Check>
-<Check>**openclaw.plugin.json** manifest is present and valid</Check>
+<Check>**package.json** has correct `agdi` metadata</Check>
+<Check>**agdi.plugin.json** manifest is present and valid</Check>
 <Check>Entry point uses `defineChannelPluginEntry` or `definePluginEntry`</Check>
 <Check>All imports use focused `plugin-sdk/<subpath>` paths</Check>
 <Check>Internal imports use local modules, not SDK self-imports</Check>

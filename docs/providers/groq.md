@@ -2,14 +2,14 @@
 title: "Groq"
 summary: "Groq setup (auth + model selection)"
 read_when:
-  - You want to use Groq with OpenClaw
+  - You want to use Groq with Agdi
   - You need the API key env var or CLI auth choice
 ---
 
 # Groq
 
 [Groq](https://groq.com) provides ultra-fast inference on open-source models
-(Llama, Gemma, Mistral, and more) using custom LPU hardware. OpenClaw connects
+(Llama, Gemma, Mistral, and more) using custom LPU hardware. Agdi connects
 to Groq through its OpenAI-compatible API.
 
 - Provider: `groq`
@@ -54,7 +54,7 @@ export GROQ_API_KEY="gsk_..."
 ## Audio transcription
 
 Groq also provides fast Whisper-based audio transcription. When configured as a
-media-understanding provider, OpenClaw uses Groq's `whisper-large-v3-turbo`
+media-understanding provider, Agdi uses Groq's `whisper-large-v3-turbo`
 model to transcribe voice messages.
 
 ```json5
@@ -72,12 +72,12 @@ model to transcribe voice messages.
 ## Environment note
 
 If the Gateway runs as a daemon (launchd/systemd), make sure `GROQ_API_KEY` is
-available to that process (for example, in `~/.openclaw/.env` or via
+available to that process (for example, in `~/.agdi/.env` or via
 `env.shellEnv`).
 
 ## Available models
 
-Groq's model catalog changes frequently. Run `openclaw models list | grep groq`
+Groq's model catalog changes frequently. Run `agdi models list | grep groq`
 to see currently available models, or check
 [console.groq.com/docs/models](https://console.groq.com/docs/models).
 

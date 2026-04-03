@@ -6,12 +6,12 @@ read_when:
   - You see the OPENCLAW_PLUGIN_SDK_COMPAT_DEPRECATED warning
   - You see the OPENCLAW_EXTENSION_API_DEPRECATED warning
   - You are updating a plugin to the modern plugin architecture
-  - You maintain an external OpenClaw plugin
+  - You maintain an external Agdi plugin
 ---
 
 # Plugin SDK Migration
 
-OpenClaw has moved from a broad backwards-compatibility layer to a modern plugin
+Agdi has moved from a broad backwards-compatibility layer to a modern plugin
 architecture with focused, documented imports. If your plugin was built before
 the new architecture, this guide helps you migrate.
 
@@ -20,10 +20,10 @@ the new architecture, this guide helps you migrate.
 The old plugin system provided two wide-open surfaces that let plugins import
 anything they needed from a single entry point:
 
-- **`openclaw/plugin-sdk/compat`** — a single import that re-exported dozens of
+- **`agdi/plugin-sdk/compat`** — a single import that re-exported dozens of
   helpers. It was introduced to keep older hook-based plugins working while the
   new plugin architecture was being built.
-- **`openclaw/extension-api`** — a bridge that gave plugins direct access to
+- **`agdi/extension-api`** — a bridge that gave plugins direct access to
   host-side helpers like the embedded agent runner.
 
 Both surfaces are now **deprecated**. They still work at runtime, but new
@@ -43,7 +43,7 @@ The old approach caused problems:
 - **Circular dependencies** — broad re-exports made it easy to create import cycles
 - **Unclear API surface** — no way to tell which exports were stable vs internal
 
-The modern plugin SDK fixes this: each import path (`openclaw/plugin-sdk/\<subpath\>`)
+The modern plugin SDK fixes this: each import path (`agdi/plugin-sdk/\<subpath\>`)
 is a small, self-contained module with a clear purpose and documented contract.
 
 ## How to migrate
@@ -54,7 +54,7 @@ is a small, self-contained module with a clear purpose and documented contract.
 
     ```bash
     grep -r "plugin-sdk/compat" my-plugin/
-    grep -r "openclaw/extension-api" my-plugin/
+    grep -r "agdi/extension-api" my-plugin/
     ```
 
   </Step>
@@ -68,12 +68,12 @@ is a small, self-contained module with a clear purpose and documented contract.
       createChannelReplyPipeline,
       createPluginRuntimeStore,
       resolveControlCommandGate,
-    } from "openclaw/plugin-sdk/compat";
+    } from "agdi/plugin-sdk/compat";
 
     // After (modern focused imports)
-    import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
-    import { createPluginRuntimeStore } from "openclaw/plugin-sdk/runtime-store";
-    import { resolveControlCommandGate } from "openclaw/plugin-sdk/command-auth";
+    import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
+    import { createPluginRuntimeStore } from "agdi/plugin-sdk/runtime-store";
+    import { resolveControlCommandGate } from "agdi/plugin-sdk/command-auth";
     ```
 
     For host-side helpers, use the injected plugin runtime instead of importing
@@ -81,7 +81,7 @@ is a small, self-contained module with a clear purpose and documented contract.
 
     ```typescript
     // Before (deprecated extension-api bridge)
-    import { runEmbeddedPiAgent } from "openclaw/extension-api";
+    import { runEmbeddedPiAgent } from "agdi/extension-api";
     const result = await runEmbeddedPiAgent({ sessionId, prompt });
 
     // After (injected runtime)
@@ -156,8 +156,8 @@ before the next major release.
 Set these environment variables while you work on migrating:
 
 ```bash
-OPENCLAW_SUPPRESS_PLUGIN_SDK_COMPAT_WARNING=1 openclaw gateway run
-OPENCLAW_SUPPRESS_EXTENSION_API_WARNING=1 openclaw gateway run
+OPENCLAW_SUPPRESS_PLUGIN_SDK_COMPAT_WARNING=1 agdi gateway run
+OPENCLAW_SUPPRESS_EXTENSION_API_WARNING=1 agdi gateway run
 ```
 
 This is a temporary escape hatch, not a permanent solution.

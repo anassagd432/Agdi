@@ -2,7 +2,7 @@
 read_when:
   - 在同一台机器上运行多个 Gateway 网关
   - 你需要为每个 Gateway 网关隔离配置/状态/端口
-summary: 在一台主机上运行多个 OpenClaw Gateway 网关（隔离、端口和配置档案）
+summary: 在一台主机上运行多个 Agdi Gateway 网关（隔离、端口和配置档案）
 title: 多个 Gateway 网关
 x-i18n:
   generated_at: "2026-03-16T06:23:07Z"
@@ -33,19 +33,19 @@ x-i18n:
 
 ```bash
 # main
-openclaw --profile main setup
-openclaw --profile main gateway --port 18789
+agdi --profile main setup
+agdi --profile main gateway --port 18789
 
 # rescue
-openclaw --profile rescue setup
-openclaw --profile rescue gateway --port 19001
+agdi --profile rescue setup
+agdi --profile rescue gateway --port 19001
 ```
 
 每个配置档案的服务：
 
 ```bash
-openclaw --profile main gateway install
-openclaw --profile rescue gateway install
+agdi --profile main gateway install
+agdi --profile rescue gateway install
 ```
 
 ## 救援机器人指南
@@ -66,11 +66,11 @@ openclaw --profile rescue gateway install
 ```bash
 # Main bot（现有或全新，不带 --profile 参数）
 # 运行在端口 18789 + Chrome CDC/Canvas/... 端口
-openclaw onboard
-openclaw gateway install
+agdi onboard
+agdi gateway install
 
 # Rescue bot（隔离的配置档案 + 端口）
-openclaw --profile rescue onboard
+agdi --profile rescue onboard
 # 说明：
 # - 工作区名称默认会追加 -rescue 后缀
 # - 端口至少应为 18789 + 20 个端口，
@@ -78,7 +78,7 @@ openclaw --profile rescue onboard
 # - 其余新手引导与正常情况相同
 
 # 安装服务（如果设置期间未自动完成）
-openclaw --profile rescue gateway install
+agdi --profile rescue gateway install
 ```
 
 ## 端口映射（派生）
@@ -101,19 +101,19 @@ openclaw --profile rescue gateway install
 ## 手动环境变量示例
 
 ```bash
-OPENCLAW_CONFIG_PATH=~/.openclaw/main.json \
-OPENCLAW_STATE_DIR=~/.openclaw-main \
-openclaw gateway --port 18789
+OPENCLAW_CONFIG_PATH=~/.agdi/main.json \
+OPENCLAW_STATE_DIR=~/.agdi-main \
+agdi gateway --port 18789
 
-OPENCLAW_CONFIG_PATH=~/.openclaw/rescue.json \
-OPENCLAW_STATE_DIR=~/.openclaw-rescue \
-openclaw gateway --port 19001
+OPENCLAW_CONFIG_PATH=~/.agdi/rescue.json \
+OPENCLAW_STATE_DIR=~/.agdi-rescue \
+agdi gateway --port 19001
 ```
 
 ## 快速检查
 
 ```bash
-openclaw --profile main status
-openclaw --profile rescue status
-openclaw --profile rescue browser status
+agdi --profile main status
+agdi --profile rescue status
+agdi --profile rescue browser status
 ```

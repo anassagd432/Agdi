@@ -15,7 +15,7 @@ x-i18n:
 
 # 发布策略
 
-OpenClaw 有三个公开发布渠道：
+Agdi 有三个公开发布渠道：
 
 - stable：带标签的正式发布，发布到 npm `latest`
 - beta：预发布标签，发布到 npm `beta`
@@ -40,9 +40,9 @@ OpenClaw 有三个公开发布渠道：
 
 ## 公开参考
 
-- [`.github/workflows/openclaw-npm-release.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/openclaw-npm-release.yml)
-- [`scripts/openclaw-npm-release-check.ts`](https://github.com/openclaw/openclaw/blob/main/scripts/openclaw-npm-release-check.ts)
+- [`.github/workflows/agdi-npm-release.yml`](https://github.com/agdi/agdi/blob/main/.github/workflows/agdi-npm-release.yml)
+- [`scripts/agdi-npm-release-check.ts`](https://github.com/agdi/agdi/blob/main/scripts/agdi-npm-release-check.ts)
 
 维护者使用
-[`openclaw/maintainers/release/README.md`](https://github.com/openclaw/maintainers/blob/main/release/README.md)
+[`agdi/maintainers/release/README.md`](https://github.com/agdi/maintainers/blob/main/release/README.md)
 中的私有发布文档作为实际操作手册。

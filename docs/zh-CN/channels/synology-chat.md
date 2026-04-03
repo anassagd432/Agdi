@@ -1,8 +1,8 @@
 ---
 read_when:
-  - 设置 OpenClaw 与 Synology Chat
+  - 设置 Agdi 与 Synology Chat
   - 调试 Synology Chat webhook 路由
-summary: Synology Chat webhook 设置与 OpenClaw 配置
+summary: Synology Chat webhook 设置与 Agdi 配置
 title: Synology Chat
 x-i18n:
   generated_at: "2026-03-16T06:20:51Z"
@@ -25,7 +25,7 @@ Synology Chat 基于插件，不属于默认的核心渠道安装内容。
 从本地检出安装：
 
 ```bash
-openclaw plugins install ./extensions/synology-chat
+agdi plugins install ./extensions/synology-chat
 ```
 
 详情：[插件](/tools/plugin)
@@ -33,17 +33,17 @@ openclaw plugins install ./extensions/synology-chat
 ## 快速设置
 
 1. 安装并启用 Synology Chat 插件。
-   - `openclaw onboard` 现在会在与 `openclaw channels add` 相同的渠道设置列表中显示 Synology Chat。
-   - 非交互式设置：`openclaw channels add --channel synology-chat --token <token> --url <incoming-webhook-url>`
+   - `agdi onboard` 现在会在与 `agdi channels add` 相同的渠道设置列表中显示 Synology Chat。
+   - 非交互式设置：`agdi channels add --channel synology-chat --token <token> --url <incoming-webhook-url>`
 2. 在 Synology Chat 集成中：
    - 创建一个入站 webhook 并复制其 URL。
    - 使用你的 secret token 创建一个出站 webhook。
-3. 将出站 webhook URL 指向你的 OpenClaw Gateway 网关：
+3. 将出站 webhook URL 指向你的 Agdi Gateway 网关：
    - 默认是 `https://gateway-host/webhook/synology`。
    - 或者使用你自定义的 `channels.synology-chat.webhookPath`。
-4. 在 OpenClaw 中完成设置。
-   - 引导式：`openclaw onboard`
-   - 直接设置：`openclaw channels add --channel synology-chat --token <token> --url <incoming-webhook-url>`
+4. 在 Agdi 中完成设置。
+   - 引导式：`agdi onboard`
+   - 直接设置：`agdi channels add --channel synology-chat --token <token> --url <incoming-webhook-url>`
 5. 重启 Gateway 网关，并向 Synology Chat 机器人发送一条私信。
 
 最小配置：
@@ -86,8 +86,8 @@ openclaw plugins install ./extensions/synology-chat
 - `dmPolicy: "open"` 允许任何发送方。
 - `dmPolicy: "disabled"` 会阻止私信。
 - 配对批准可配合以下命令使用：
-  - `openclaw pairing list synology-chat`
-  - `openclaw pairing approve synology-chat <CODE>`
+  - `agdi pairing list synology-chat`
+  - `agdi pairing approve synology-chat <CODE>`
 
 ## 出站投递
 
@@ -96,8 +96,8 @@ openclaw plugins install ./extensions/synology-chat
 示例：
 
 ```bash
-openclaw message send --channel synology-chat --target 123456 --text "Hello from OpenClaw"
-openclaw message send --channel synology-chat --target synology-chat:123456 --text "Hello again"
+agdi message send --channel synology-chat --target 123456 --text "Hello from Agdi"
+agdi message send --channel synology-chat --target synology-chat:123456 --text "Hello again"
 ```
 
 支持通过基于 URL 的文件投递发送媒体。

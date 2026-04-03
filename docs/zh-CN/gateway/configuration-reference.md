@@ -1,9 +1,9 @@
 ---
-description: Complete field-by-field reference for ~/.openclaw/openclaw.json
+description: Complete field-by-field reference for ~/.agdi/agdi.json
 read_when:
   - 你需要精确到字段级别的配置语义或默认值
   - 你正在验证渠道、模型、Gateway 网关或工具配置块
-summary: 每个 OpenClaw 配置键、默认值和渠道设置的完整参考
+summary: 每个 Agdi 配置键、默认值和渠道设置的完整参考
 title: 配置参考
 x-i18n:
   generated_at: "2026-03-16T06:27:43Z"
@@ -16,9 +16,9 @@ x-i18n:
 
 # 配置参考
 
-`~/.openclaw/openclaw.json` 中所有可用字段。若需面向任务的概览，请参见 [Configuration](/gateway/configuration)。
+`~/.agdi/agdi.json` 中所有可用字段。若需面向任务的概览，请参见 [Configuration](/gateway/configuration)。
 
-配置格式为 **JSON5**（允许注释和尾随逗号）。所有字段都是可选的——省略时，OpenClaw 会使用安全默认值。
+配置格式为 **JSON5**（允许注释和尾随逗号）。所有字段都是可选的——省略时，Agdi 会使用安全默认值。
 
 ---
 
@@ -141,7 +141,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
         default: {},
         personal: {},
         biz: {
-          // authDir: "~/.openclaw/credentials/whatsapp/biz",
+          // authDir: "~/.agdi/credentials/whatsapp/biz",
         },
       },
     },
@@ -151,7 +151,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
 
 - 出站命令默认使用账户 `default`（若存在）；否则使用第一个已配置的账户 ID（排序后）。
 - 可选的 `channels.whatsapp.defaultAccount` 会在其与某个已配置账户 ID 匹配时，覆盖该回退默认账户选择。
-- 旧版单账户 Baileys 认证目录会由 `openclaw doctor` 迁移到 `whatsapp/default`。
+- 旧版单账户 Baileys 认证目录会由 `agdi doctor` 迁移到 `whatsapp/default`。
 - 按账户覆盖：`channels.whatsapp.accounts.<id>.sendReadReceipts`、`channels.whatsapp.accounts.<id>.dmPolicy`、`channels.whatsapp.accounts.<id>.allowFrom`。
 
 </Accordion>
@@ -212,7 +212,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
 
 - 机器人令牌：`channels.telegram.botToken` 或 `channels.telegram.tokenFile`（仅常规文件；拒绝符号链接），默认账户还可回退到 `TELEGRAM_BOT_TOKEN`。
 - 可选的 `channels.telegram.defaultAccount` 会在其与某个已配置账户 ID 匹配时覆盖默认账户选择。
-- 在多账户设置（2 个及以上账户 ID）中，请设置显式默认值（`channels.telegram.defaultAccount` 或 `channels.telegram.accounts.default`），以避免回退路由；如果缺失或无效，`openclaw doctor` 会发出警告。
+- 在多账户设置（2 个及以上账户 ID）中，请设置显式默认值（`channels.telegram.defaultAccount` 或 `channels.telegram.accounts.default`），以避免回退路由；如果缺失或无效，`agdi doctor` 会发出警告。
 - `configWrites: false` 会阻止 Telegram 发起的配置写入（超级群组 ID 迁移、`/config set|unset`）。
 - 顶层 `bindings[]` 中 `type: "acp"` 的条目会为论坛话题配置持久化 ACP 绑定（在 `match.peer.id` 中使用规范形式 `chatId:topic:topicId`）。字段语义与 [ACP Agents](/tools/acp-agents#channel-specific-settings) 共享。
 - Telegram 流式预览使用 `sendMessage` + `editMessageText`（适用于私聊和群聊）。
@@ -248,10 +248,10 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
       replyToMode: "off", // off | first | all
       dmPolicy: "pairing",
       allowFrom: ["1234567890", "123456789012345678"],
-      dm: { enabled: true, groupEnabled: false, groupChannels: ["openclaw-dm"] },
+      dm: { enabled: true, groupEnabled: false, groupChannels: ["agdi-dm"] },
       guilds: {
         "123456789012345678": {
-          slug: "friends-of-openclaw",
+          slug: "friends-of-agdi",
           requireMention: false,
           ignoreOtherMentions: true,
           reactionNotifications: "own",
@@ -327,7 +327,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
 - `channels.discord.ui.components.accentColor` 设置 Discord components v2 容器的强调色。
 - `channels.discord.voice` 启用 Discord 语音频道对话，以及可选的自动加入 + TTS 覆盖。
 - `channels.discord.voice.daveEncryption` 和 `channels.discord.voice.decryptionFailureTolerance` 会透传给 `@discordjs/voice` 的 DAVE 选项（默认分别为 `true` 和 `24`）。
-- 在重复解密失败后，OpenClaw 还会尝试通过离开/重新加入语音会话来恢复语音接收。
+- 在重复解密失败后，Agdi 还会尝试通过离开/重新加入语音会话来恢复语音接收。
 - `channels.discord.streaming` 是规范的流式模式键。旧版 `streamMode` 和布尔型 `streaming` 值会自动迁移。
 - `channels.discord.autoPresence` 将运行时可用性映射为机器人状态（健康 => online，降级 => idle，耗尽 => dnd），并允许可选的状态文本覆盖。
 - `channels.discord.dangerouslyAllowNameMatching` 会重新启用可变名称/tag 匹配（紧急兼容模式）。
@@ -410,7 +410,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
       },
       slashCommand: {
         enabled: true,
-        name: "openclaw",
+        name: "agdi",
         sessionPrefix: "slack:slash",
         ephemeral: true,
       },
@@ -448,7 +448,7 @@ WhatsApp 通过 Gateway 网关的 Web 渠道（Baileys Web）运行。当存在�
 
 ### Mattermost
 
-Mattermost 以插件形式提供：`openclaw plugins install @openclaw/mattermost`。
+Mattermost 以插件形式提供：`agdi plugins install @agdi/mattermost`。
 
 ```json5
 {
@@ -479,7 +479,7 @@ Mattermost 以插件形式提供：`openclaw plugins install @openclaw/mattermos
 启用 Mattermost 原生命令时：
 
 - `commands.callbackPath` 必须是路径（例如 `/api/channels/mattermost/command`），不能是完整 URL。
-- `commands.callbackUrl` 必须解析到 OpenClaw Gateway 网关端点，并且 Mattermost 服务器可以访问它。
+- `commands.callbackUrl` 必须解析到 Agdi Gateway 网关端点，并且 Mattermost 服务器可以访问它。
 - 对于私有/tailnet/内网回调主机，Mattermost 可能要求
   `ServiceSettings.AllowedUntrustedInternalConnections` 包含该回调主机/域名。
   请使用主机/域名值，而不是完整 URL。
@@ -535,7 +535,7 @@ BlueBubbles 是推荐的 iMessage 路径（由插件支持，配置在 `channels
 
 ### iMessage
 
-OpenClaw 会启动 `imsg rpc`（通过 stdio 的 JSON-RPC）。不需要守护进程或端口。
+Agdi 会启动 `imsg rpc`（通过 stdio 的 JSON-RPC）。不需要守护进程或端口。
 
 ```json5
 {
@@ -651,9 +651,9 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
 - 环境变量令牌仅适用于 **default** 账户。
 - 基础渠道设置适用于所有账户，除非按账户覆盖。
 - 使用 `bindings[].match.accountId` 将每个账户路由到不同智能体。
-- 如果你通过 `openclaw channels add`（或渠道新手引导）添加了一个非默认账户，而当前仍是单账户顶层渠道配置，OpenClaw 会先将带账户作用域的顶层单账户值移动到 `channels.<channel>.accounts.default`，以便原始账户继续工作。
+- 如果你通过 `agdi channels add`（或渠道新手引导）添加了一个非默认账户，而当前仍是单账户顶层渠道配置，Agdi 会先将带账户作用域的顶层单账户值移动到 `channels.<channel>.accounts.default`，以便原始账户继续工作。
 - 现有仅渠道绑定（无 `accountId`）仍会匹配默认账户；账户作用域绑定仍是可选的。
-- 当存在命名账户但缺少 `default` 时，`openclaw doctor --fix` 也会通过将带账户作用域的顶层单账户值移动到 `accounts.default` 来修复混合形状。
+- 当存在命名账户但缺少 `default` 时，`agdi doctor --fix` 也会通过将带账户作用域的顶层单账户值移动到 `accounts.default` 来修复混合形状。
 
 ### 其他扩展渠道
 
@@ -676,7 +676,7 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
     groupChat: { historyLimit: 50 },
   },
   agents: {
-    list: [{ id: "main", groupChat: { mentionPatterns: ["@openclaw", "openclaw"] } }],
+    list: [{ id: "main", groupChat: { mentionPatterns: ["@agdi", "agdi"] } }],
   },
 }
 ```
@@ -718,7 +718,7 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
     list: [
       {
         id: "main",
-        groupChat: { mentionPatterns: ["reisponde", "@openclaw"] },
+        groupChat: { mentionPatterns: ["reisponde", "@agdi"] },
       },
     ],
   },
@@ -753,7 +753,7 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
 - 可按渠道覆盖：`channels.discord.commands.native`（布尔值或 `"auto"`）。`false` 会清除先前已注册的命令。
 - `channels.telegram.customCommands` 可添加额外的 Telegram 机器人菜单项。
 - `bash: true` 会为主机 shell 启用 `! <cmd>`。要求 `tools.elevated.enabled` 已启用，且发送者在 `tools.elevated.allowFrom.<channel>` 中。
-- `config: true` 启用 `/config`（读取/写入 `openclaw.json`）。对于 gateway `chat.send` 客户端，持久化的 `/config set|unset` 写入还要求 `operator.admin`；只读的 `/config show` 对普通写作用域 operator 客户端仍然可用。
+- `config: true` 启用 `/config`（读取/写入 `agdi.json`）。对于 gateway `chat.send` 客户端，持久化的 `/config set|unset` 写入还要求 `operator.admin`；只读的 `/config show` 对普通写作用域 operator 客户端仍然可用。
 - `channels.<provider>.configWrites` 按渠道控制配置变更（默认：true）。
 - 对多账户渠道，`channels.<provider>.accounts.<id>.configWrites` 也会控制针对该账户的写入（例如 `/allowlist --config --account <id>` 或 `/config set channels.<provider>.accounts.<id>...`）。
 - `allowFrom` 是按提供商配置的。设置后，它将成为**唯一**的授权来源（渠道 allowlist/配对和 `useAccessGroups` 都会被忽略）。
@@ -767,21 +767,21 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
 
 ### `agents.defaults.workspace`
 
-默认值：`~/.openclaw/workspace`。
+默认值：`~/.agdi/workspace`。
 
 ```json5
 {
-  agents: { defaults: { workspace: "~/.openclaw/workspace" } },
+  agents: { defaults: { workspace: "~/.agdi/workspace" } },
 }
 ```
 
 ### `agents.defaults.repoRoot`
 
-可选的仓库根目录，会显示在系统提示的 Runtime 行中。如果未设置，OpenClaw 会从工作区向上遍历自动检测。
+可选的仓库根目录，会显示在系统提示的 Runtime 行中。如果未设置，Agdi 会从工作区向上遍历自动检测。
 
 ```json5
 {
-  agents: { defaults: { repoRoot: "~/Projects/openclaw" } },
+  agents: { defaults: { repoRoot: "~/Projects/agdi" } },
 }
 ```
 
@@ -911,7 +911,7 @@ IRC 由扩展支持，并配置在 `channels.irc` 下。
   - 如果省略，PDF 工具会回退到 `imageModel`，再回退到提供商的尽力默认值。
 - `pdfMaxBytesMb`：`pdf` 工具在调用时未传入 `maxBytesMb` 时使用的默认 PDF 大小限制。
 - `pdfMaxPages`：`pdf` 工具在提取回退模式下考虑的默认最大页数。
-- `model.primary`：格式为 `provider/model`（例如 `anthropic/claude-opus-4-6`）。如果省略 provider，OpenClaw 会假定为 `anthropic`（已弃用）。
+- `model.primary`：格式为 `provider/model`（例如 `anthropic/claude-opus-4-6`）。如果省略 provider，Agdi 会假定为 `anthropic`（已弃用）。
 - `models`：为 `/model` 配置的模型目录和 allowlist。每项可包含 `alias`（快捷方式）和 `params`（提供商特定参数，例如 `temperature`、`maxTokens`、`cacheRetention`、`context1m`）。
 - `params` 合并优先级（配置）：`agents.defaults.models["provider/model"].params` 为基础，然后由 `agents.list[].params`（匹配的智能体 ID）按键覆盖。
 - 会修改这些字段的配置写入器（例如 `/models set`、`/models set-image` 以及故障切换增删命令）会保存为规范的对象形式，并尽可能保留现有故障切换列表。
@@ -1031,7 +1031,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
 ```
 
 - `mode`：`default` 或 `safeguard`（用于长历史的分块摘要）。见 [Compaction](/concepts/compaction)。
-- `timeoutSeconds`：OpenClaw 中止前，单次压缩操作允许的最大秒数。默认：`900`。
+- `timeoutSeconds`：Agdi 中止前，单次压缩操作允许的最大秒数。默认：`900`。
 - `identifierPolicy`：`strict`（默认）、`off` 或 `custom`。`strict` 会在压缩摘要时预置内置的不透明标识符保留指导。
 - `identifierInstructions`：当 `identifierPolicy=custom` 时使用的可选自定义标识符保留文本。
 - `postCompactionSections`：压缩后重新注入的可选 AGENTS.md H2/H3 节名称。默认是 `["Session Startup", "Red Lines"]`；设为 `[]` 可禁用重新注入。当未设置或显式设置为该默认组合时，旧版 `Every Session`/`Safety` 标题也会作为兼容回退被接受。
@@ -1135,10 +1135,10 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
         backend: "docker", // docker | ssh | openshell
         scope: "agent", // session | agent | shared
         workspaceAccess: "none", // none | ro | rw
-        workspaceRoot: "~/.openclaw/sandboxes",
+        workspaceRoot: "~/.agdi/sandboxes",
         docker: {
-          image: "openclaw-sandbox:bookworm-slim",
-          containerPrefix: "openclaw-sbx-",
+          image: "agdi-sandbox:bookworm-slim",
+          containerPrefix: "agdi-sbx-",
           workdir: "/workspace",
           readOnlyRoot: true,
           tmpfs: ["/tmp", "/var/tmp", "/run"],
@@ -1156,7 +1156,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
             nproc: 256,
           },
           seccompProfile: "/path/to/seccomp.json",
-          apparmorProfile: "openclaw-sandbox",
+          apparmorProfile: "agdi-sandbox",
           dns: ["1.1.1.1", "8.8.8.8"],
           extraHosts: ["internal.service:10.0.0.5"],
           binds: ["/home/user/source:/source:rw"],
@@ -1164,7 +1164,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
         ssh: {
           target: "user@gateway-host:22",
           command: "ssh",
-          workspaceRoot: "/tmp/openclaw-sandboxes",
+          workspaceRoot: "/tmp/agdi-sandboxes",
           strictHostKeyChecking: true,
           updateHostKeys: true,
           identityFile: "~/.ssh/id_ed25519",
@@ -1177,8 +1177,8 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
         },
         browser: {
           enabled: false,
-          image: "openclaw-sandbox-browser:bookworm-slim",
-          network: "openclaw-sandbox-browser",
+          image: "agdi-sandbox-browser:bookworm-slim",
+          network: "agdi-sandbox-browser",
           cdpPort: 9222,
           cdpSourceRange: "172.21.0.1/32",
           vncPort: 5900,
@@ -1236,7 +1236,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
 - `command`：SSH 客户端命令（默认：`ssh`）
 - `workspaceRoot`：按作用域工作区使用的远程绝对根目录
 - `identityFile` / `certificateFile` / `knownHostsFile`：传递给 OpenSSH 的现有本地文件
-- `identityData` / `certificateData` / `knownHostsData`：内联内容或 SecretRef，OpenClaw 会在运行时将其物化为临时文件
+- `identityData` / `certificateData` / `knownHostsData`：内联内容或 SecretRef，Agdi 会在运行时将其物化为临时文件
 - `strictHostKeyChecking` / `updateHostKeys`：OpenSSH 主机密钥策略开关
 
 **SSH 认证优先级：**
@@ -1256,7 +1256,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
 
 **工作区访问：**
 
-- `none`：位于 `~/.openclaw/sandboxes` 下的按作用域划分的沙箱工作区
+- `none`：位于 `~/.agdi/sandboxes` 下的按作用域划分的沙箱工作区
 - `ro`：沙箱工作区位于 `/workspace`，智能体工作区以只读方式挂载到 `/agent`
 - `rw`：智能体工作区以读写方式挂载到 `/workspace`
 
@@ -1276,7 +1276,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
         enabled: true,
         config: {
           mode: "mirror", // mirror | remote
-          from: "openclaw",
+          from: "agdi",
           remoteWorkspaceDir: "/sandbox",
           remoteAgentWorkspaceDir: "/agent",
           gateway: "lab", // 可选
@@ -1297,7 +1297,7 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
 - `mirror`：执行前从本地为远程植入种子，执行后同步回本地；本地工作区保持为规范副本
 - `remote`：在创建沙箱时只为远程植入一次种子，之后保持远程工作区为规范副本
 
-在 `remote` 模式下，在 OpenClaw 外部对主机本地所做的编辑，不会在种子步骤后自动同步进沙箱。
+在 `remote` 模式下，在 Agdi 外部对主机本地所做的编辑，不会在种子步骤后自动同步进沙箱。
 传输层是通过 SSH 进入 OpenShell 沙箱，但插件拥有沙箱生命周期以及可选的镜像同步。
 
 **`setupCommand`** 会在容器创建后运行一次（通过 `sh -lc`）。需要网络出口、可写根文件系统以及 root 用户。
@@ -1310,11 +1310,11 @@ Anthropic Claude 4.6 模型在未显式设置 thinking 级别时，默认使用 
 
 **`docker.binds`** 会挂载额外的主机目录；全局和按智能体的 binds 会合并。
 
-**沙箱浏览器**（`sandbox.browser.enabled`）：容器中的 Chromium + CDP。noVNC URL 会注入系统提示中。不要求在 `openclaw.json` 中启用 `browser.enabled`。
-noVNC 观察者访问默认使用 VNC 身份验证，OpenClaw 会发出一个短期有效的 token URL（而不是在共享 URL 中暴露密码）。
+**沙箱浏览器**（`sandbox.browser.enabled`）：容器中的 Chromium + CDP。noVNC URL 会注入系统提示中。不要求在 `agdi.json` 中启用 `browser.enabled`。
+noVNC 观察者访问默认使用 VNC 身份验证，Agdi 会发出一个短期有效的 token URL（而不是在共享 URL 中暴露密码）。
 
 - `allowHostControl: false`（默认）会阻止沙箱会话指向主机浏览器。
-- `network` 默认为 `openclaw-sandbox-browser`（专用 bridge 网络）。仅当你明确需要全局 bridge 连接时，才设为 `bridge`。
+- `network` 默认为 `agdi-sandbox-browser`（专用 bridge 网络）。仅当你明确需要全局 bridge 连接时，才设为 `bridge`。
 - `cdpSourceRange` 可选地将容器边缘的 CDP 入站限制为某个 CIDR 范围（例如 `172.21.0.1/32`）。
 - `sandbox.browser.binds` 仅将额外主机目录挂载到沙箱浏览器容器中。设置后（包括 `[]`），它会替换浏览器容器的 `docker.binds`。
 - 启动默认值定义于 `scripts/sandbox-browser-entrypoint.sh` 中，并针对容器主机进行了调优：
@@ -1368,8 +1368,8 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
         id: "main",
         default: true,
         name: "Main Agent",
-        workspace: "~/.openclaw/workspace",
-        agentDir: "~/.openclaw/agents/main/agent",
+        workspace: "~/.agdi/workspace",
+        agentDir: "~/.agdi/agents/main/agent",
         model: "anthropic/claude-opus-4-6", // 或 { primary, fallbacks }
         params: { cacheRetention: "none" }, // 按键覆盖匹配的 defaults.models params
         identity: {
@@ -1378,7 +1378,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
           emoji: "🦥",
           avatar: "avatars/samantha.png",
         },
-        groupChat: { mentionPatterns: ["@openclaw"] },
+        groupChat: { mentionPatterns: ["@agdi"] },
         sandbox: { mode: "off" },
         runtime: {
           type: "acp",
@@ -1386,7 +1386,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
             agent: "codex",
             backend: "acpx",
             mode: "persistent",
-            cwd: "/workspace/openclaw",
+            cwd: "/workspace/agdi",
           },
         },
         subagents: { allowAgents: ["*"] },
@@ -1422,8 +1422,8 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
 {
   agents: {
     list: [
-      { id: "home", default: true, workspace: "~/.openclaw/workspace-home" },
-      { id: "work", workspace: "~/.openclaw/workspace-work" },
+      { id: "home", default: true, workspace: "~/.agdi/workspace-home" },
+      { id: "work", workspace: "~/.agdi/workspace-work" },
     ],
   },
   bindings: [
@@ -1453,7 +1453,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
 
 在每一层内，第一个匹配的 `bindings` 条目胜出。
 
-对于 `type: "acp"` 条目，OpenClaw 会按精确对话身份（`match.channel` + account + `match.peer.id`）解析，不使用上述 route 绑定层级顺序。
+对于 `type: "acp"` 条目，Agdi 会按精确对话身份（`match.channel` + account + `match.peer.id`）解析，不使用上述 route 绑定层级顺序。
 
 ### 按智能体的访问配置
 
@@ -1465,7 +1465,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
     list: [
       {
         id: "personal",
-        workspace: "~/.openclaw/workspace-personal",
+        workspace: "~/.agdi/workspace-personal",
         sandbox: { mode: "off" },
       },
     ],
@@ -1483,7 +1483,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
     list: [
       {
         id: "family",
-        workspace: "~/.openclaw/workspace-family",
+        workspace: "~/.agdi/workspace-family",
         sandbox: { mode: "all", scope: "agent", workspaceAccess: "ro" },
         tools: {
           allow: [
@@ -1512,7 +1512,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
     list: [
       {
         id: "public",
-        workspace: "~/.openclaw/workspace-public",
+        workspace: "~/.agdi/workspace-public",
         sandbox: { mode: "all", scope: "agent", workspaceAccess: "none" },
         tools: {
           allow: [
@@ -1575,7 +1575,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
       group: { mode: "idle", idleMinutes: 120 },
     },
     resetTriggers: ["/new", "/reset"],
-    store: "~/.openclaw/agents/{agentId}/sessions/sessions.json",
+    store: "~/.agdi/agents/{agentId}/sessions/sessions.json",
     parentForkMaxTokens: 100000, // 超过此 token 数则跳过父线程 fork（0 表示禁用）
     maintenance: {
       mode: "warn", // warn | enforce
@@ -1612,7 +1612,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
 - **`reset`**：主重置策略。`daily` 会在本地时间 `atHour` 重置；`idle` 会在 `idleMinutes` 后重置。如果两者都配置，谁先到期谁生效。
 - **`resetByType`**：按类型覆盖（`direct`、`group`、`thread`）。旧版 `dm` 仍接受为 `direct` 的别名。
 - **`parentForkMaxTokens`**：创建分叉线程会话时，父会话允许的最大 `totalTokens`（默认 `100000`）。
-  - 如果父会话 `totalTokens` 高于该值，OpenClaw 会启动一个新的线程会话，而不是继承父会话的记录历史。
+  - 如果父会话 `totalTokens` 高于该值，Agdi 会启动一个新的线程会话，而不是继承父会话的记录历史。
   - 设为 `0` 可禁用此保护，并始终允许父会话分叉。
 - **`mainKey`**：旧字段。运行时现在始终为主直聊桶使用 `"main"`。
 - **`sendPolicy`**：可按 `channel`、`chatType`（`direct|group|channel`，旧版 `dm` 仍为别名）、`keyPrefix` 或 `rawKeyPrefix` 匹配。第一个 deny 生效。
@@ -1706,7 +1706,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
       modelOverrides: { enabled: true },
       maxTextLength: 4000,
       timeoutMs: 30000,
-      prefsPath: "~/.openclaw/settings/tts.json",
+      prefsPath: "~/.agdi/settings/tts.json",
       elevenlabs: {
         apiKey: "elevenlabs_api_key",
         baseUrl: "https://api.elevenlabs.io",
@@ -1739,7 +1739,7 @@ scripts/sandbox-browser-setup.sh   # 可选的浏览器镜像
 - `modelOverrides` 默认启用；`modelOverrides.allowProvider` 默认是 `false`（需显式选择启用）。
 - API 密钥回退到 `ELEVENLABS_API_KEY`/`XI_API_KEY` 和 `OPENAI_API_KEY`。
 - `openai.baseUrl` 会覆盖 OpenAI TTS 端点。解析顺序是配置、然后 `OPENAI_TTS_BASE_URL`、再然后 `https://api.openai.com/v1`。
-- 当 `openai.baseUrl` 指向非 OpenAI 端点时，OpenClaw 会将其视为兼容 OpenAI 的 TTS 服务器，并放宽模型/语音校验。
+- 当 `openai.baseUrl` 指向非 OpenAI 端点时，Agdi 会将其视为兼容 OpenAI 的 TTS 服务器，并放宽模型/语音校验。
 
 ---
 
@@ -1800,7 +1800,7 @@ Talk 模式的默认值（macOS/iOS/Android）。
 | `group:automation` | `cron`、`gateway`                                                                        |
 | `group:messaging`  | `message`                                                                                |
 | `group:nodes`      | `nodes`                                                                                  |
-| `group:openclaw`   | 所有内置工具（不含提供商插件）                                                           |
+| `group:agdi`   | 所有内置工具（不含提供商插件）                                                           |
 
 ### `tools.allow` / `tools.deny`
 
@@ -2044,7 +2044,7 @@ Talk 模式的默认值（macOS/iOS/Android）。
 说明：
 
 - 仅 `runtime: "subagent"` 支持附件。ACP 运行时会拒绝它们。
-- 文件会被物化到子工作区中的 `.openclaw/attachments/<uuid>/`，并附带一个 `.manifest.json`。
+- 文件会被物化到子工作区中的 `.agdi/attachments/<uuid>/`，并附带一个 `.manifest.json`。
 - 附件内容会自动从会话记录持久化中脱敏。
 - Base64 输入会通过严格的字母表/填充检查和解码前大小保护进行校验。
 - 文件权限为目录 `0700`、文件 `0600`。
@@ -2075,7 +2075,7 @@ Talk 模式的默认值（macOS/iOS/Android）。
 
 ## 自定义提供商和 base URL
 
-OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.providers` 或 `~/.openclaw/agents/<agentId>/agent/models.json` 添加自定义提供商。
+Agdi 使用 pi-coding-agent 模型目录。可通过配置中的 `models.providers` 或 `~/.agdi/agents/<agentId>/agent/models.json` 添加自定义提供商。
 
 ```json5
 {
@@ -2127,7 +2127,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 - `models.providers.*.baseUrl`：上游 API base URL。
 - `models.providers.*.headers`：用于代理/租户路由的额外静态 header。
 - `models.providers.*.models`：显式的提供商模型目录条目。
-- `models.providers.*.models.*.compat.supportsDeveloperRole`：可选的兼容性提示。对 `api: "openai-completions"` 且非空、非原生 `baseUrl`（主机不是 `api.openai.com`）的情况，OpenClaw 会在运行时将其强制设为 `false`。空或省略的 `baseUrl` 会保留默认 OpenAI 行为。
+- `models.providers.*.models.*.compat.supportsDeveloperRole`：可选的兼容性提示。对 `api: "openai-completions"` 且非空、非原生 `baseUrl`（主机不是 `api.openai.com`）的情况，Agdi 会在运行时将其强制设为 `false`。空或省略的 `baseUrl` 会保留默认 OpenAI 行为。
 - `models.bedrockDiscovery`：Bedrock 自动发现设置根。
 - `models.bedrockDiscovery.enabled`：开启/关闭发现轮询。
 - `models.bedrockDiscovery.region`：发现使用的 AWS 区域。
@@ -2189,7 +2189,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 }
 ```
 
-设置 `OPENCODE_API_KEY`（或 `OPENCODE_ZEN_API_KEY`）。Zen 目录使用 `opencode/...` 引用，Go 目录使用 `opencode-go/...` 引用。快捷方式：`openclaw onboard --auth-choice opencode-zen` 或 `openclaw onboard --auth-choice opencode-go`。
+设置 `OPENCODE_API_KEY`（或 `OPENCODE_ZEN_API_KEY`）。Zen 目录使用 `opencode/...` 引用，Go 目录使用 `opencode-go/...` 引用。快捷方式：`agdi onboard --auth-choice opencode-zen` 或 `agdi onboard --auth-choice opencode-go`。
 
 </Accordion>
 
@@ -2206,7 +2206,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 }
 ```
 
-设置 `ZAI_API_KEY`。`z.ai/*` 和 `z-ai/*` 都是可接受的别名。快捷方式：`openclaw onboard --auth-choice zai-api-key`。
+设置 `ZAI_API_KEY`。`z.ai/*` 和 `z-ai/*` 都是可接受的别名。快捷方式：`agdi onboard --auth-choice zai-api-key`。
 
 - 通用端点：`https://api.z.ai/api/paas/v4`
 - 编码端点（默认）：`https://api.z.ai/api/coding/paas/v4`
@@ -2249,7 +2249,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 }
 ```
 
-中国端点可使用：`baseUrl: "https://api.moonshot.cn/v1"` 或 `openclaw onboard --auth-choice moonshot-api-key-cn`。
+中国端点可使用：`baseUrl: "https://api.moonshot.cn/v1"` 或 `agdi onboard --auth-choice moonshot-api-key-cn`。
 
 </Accordion>
 
@@ -2267,7 +2267,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 }
 ```
 
-兼容 Anthropic 的内置提供商。快捷方式：`openclaw onboard --auth-choice kimi-code-api-key`。
+兼容 Anthropic 的内置提供商。快捷方式：`agdi onboard --auth-choice kimi-code-api-key`。
 
 </Accordion>
 
@@ -2306,7 +2306,7 @@ OpenClaw 使用 pi-coding-agent 模型目录。可通过配置中的 `models.pro
 }
 ```
 
-Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式：`openclaw onboard --auth-choice synthetic-api-key`。
+Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式：`agdi onboard --auth-choice synthetic-api-key`。
 
 </Accordion>
 
@@ -2346,7 +2346,7 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
 }
 ```
 
-设置 `MINIMAX_API_KEY`。快捷方式：`openclaw onboard --auth-choice minimax-api`。
+设置 `MINIMAX_API_KEY`。快捷方式：`agdi onboard --auth-choice minimax-api`。
 
 </Accordion>
 
@@ -2413,18 +2413,18 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
 }
 ```
 
-- 从 `~/.openclaw/extensions`、`<workspace>/.openclaw/extensions` 以及 `plugins.load.paths` 加载。
-- 设备发现同时接受原生 OpenClaw 插件、兼容的 Codex bundle 和 Claude bundle，包括无 manifest 的 Claude 默认布局 bundle。
+- 从 `~/.agdi/extensions`、`<workspace>/.agdi/extensions` 以及 `plugins.load.paths` 加载。
+- 设备发现同时接受原生 Agdi 插件、兼容的 Codex bundle 和 Claude bundle，包括无 manifest 的 Claude 默认布局 bundle。
 - **配置更改需要重启 Gateway 网关。**
 - `allow`：可选 allowlist（仅加载列出的插件）。`deny` 优先。
 - `plugins.entries.<id>.apiKey`：插件级 API key 便捷字段（插件支持时）。
 - `plugins.entries.<id>.env`：插件作用域环境变量映射。
 - `plugins.entries.<id>.hooks.allowPromptInjection`：为 `false` 时，核心会阻止 `before_prompt_build`，并忽略旧版 `before_agent_start` 中会修改 prompt 的字段，同时保留旧版 `modelOverride` 和 `providerOverride`。适用于原生插件 hook 以及受支持 bundle 提供的 hook 目录。
-- `plugins.entries.<id>.config`：插件定义的配置对象（如有可用原生 OpenClaw 插件 schema，则会校验）。
-- 已启用的 Claude bundle 插件也可以从 `settings.json` 提供嵌入式 Pi 默认值；OpenClaw 会将其作为净化后的智能体设置应用，而不是作为原始 OpenClaw 配置补丁。
+- `plugins.entries.<id>.config`：插件定义的配置对象（如有可用原生 Agdi 插件 schema，则会校验）。
+- 已启用的 Claude bundle 插件也可以从 `settings.json` 提供嵌入式 Pi 默认值；Agdi 会将其作为净化后的智能体设置应用，而不是作为原始 Agdi 配置补丁。
 - `plugins.slots.memory`：选择活动记忆插件 ID，或设为 `"none"` 以禁用记忆插件。
 - `plugins.slots.contextEngine`：选择活动上下文引擎插件 ID；默认是 `"legacy"`，除非你安装并选择了其他引擎。
-- `plugins.installs`：由 CLI 管理的安装元数据，供 `openclaw plugins update` 使用。
+- `plugins.installs`：由 CLI 管理的安装元数据，供 `agdi plugins update` 使用。
   - 包括 `source`、`spec`、`sourcePath`、`installPath`、`version`、`resolvedName`、`resolvedVersion`、`resolvedSpec`、`integrity`、`shasum`、`resolvedAt`、`installedAt`。
   - 请将 `plugins.installs.*` 视为托管状态；优先使用 CLI 命令，而不是手动编辑。
 
@@ -2447,7 +2447,7 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
       // allowedHostnames: ["localhost"],
     },
     profiles: {
-      openclaw: { cdpPort: 18800, color: "#FF4500" },
+      agdi: { cdpPort: 18800, color: "#FF4500" },
       work: { cdpPort: 18801, color: "#0066CC" },
       remote: { cdpUrl: "http://10.0.0.42:9222", color: "#00AA00" },
     },
@@ -2484,7 +2484,7 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
   ui: {
     seamColor: "#FF4500",
     assistant: {
-      name: "OpenClaw",
+      name: "Agdi",
       avatar: "CB", // emoji、短文本、图片 URL 或 data URI
     },
   },
@@ -2523,7 +2523,7 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
     },
     controlUi: {
       enabled: true,
-      basePath: "/openclaw",
+      basePath: "/agdi",
       // root: "dist/control-ui",
       // allowedOrigins: ["https://control.example.com"], // 非 loopback Control UI 必需
       // dangerouslyAllowHostHeaderOriginFallback: false, // 危险的 Host-header origin 回退模式
@@ -2613,12 +2613,12 @@ Base URL 不应包含 `/v1`（Anthropic 客户端会追加它）。快捷方式�
 使用不同端口和状态目录，在一台主机上运行多个网关：
 
 ```bash
-OPENCLAW_CONFIG_PATH=~/.openclaw/a.json \
-OPENCLAW_STATE_DIR=~/.openclaw-a \
-openclaw gateway --port 19001
+OPENCLAW_CONFIG_PATH=~/.agdi/a.json \
+OPENCLAW_STATE_DIR=~/.agdi-a \
+agdi gateway --port 19001
 ```
 
-便捷标志：`--dev`（使用 `~/.openclaw-dev` + 端口 `19001`）、`--profile <name>`（使用 `~/.openclaw-<name>`）。
+便捷标志：`--dev`（使用 `~/.agdi-dev` + 端口 `19001`）、`--profile <name>`（使用 `~/.agdi-<name>`）。
 
 见 [Multiple Gateways](/gateway/multiple-gateways)。
 
@@ -2638,7 +2638,7 @@ openclaw gateway --port 19001
     allowedSessionKeyPrefixes: ["hook:"],
     allowedAgentIds: ["hooks", "main"],
     presets: ["gmail"],
-    transformsDir: "~/.openclaw/hooks/transforms",
+    transformsDir: "~/.agdi/hooks/transforms",
     mappings: [
       {
         match: { path: "gmail" },
@@ -2657,7 +2657,7 @@ openclaw gateway --port 19001
 }
 ```
 
-认证：`Authorization: Bearer <token>` 或 `x-openclaw-token: <token>`。
+认证：`Authorization: Bearer <token>` 或 `x-agdi-token: <token>`。
 
 **端点：**
 
@@ -2689,7 +2689,7 @@ openclaw gateway --port 19001
 {
   hooks: {
     gmail: {
-      account: "openclaw@gmail.com",
+      account: "agdi@gmail.com",
       topic: "projects/<project-id>/topics/gog-gmail-watch",
       subscription: "gog-gmail-watch-push",
       pushToken: "shared-push-token",
@@ -2716,7 +2716,7 @@ openclaw gateway --port 19001
 ```json5
 {
   canvasHost: {
-    root: "~/.openclaw/workspace/canvas",
+    root: "~/.agdi/workspace/canvas",
     liveReload: true,
     // enabled: false, // 或 OPENCLAW_SKIP_CANVAS_HOST=1
   },
@@ -2724,15 +2724,15 @@ openclaw gateway --port 19001
 ```
 
 - 在 Gateway 网关端口下，通过 HTTP 提供可由智能体编辑的 HTML/CSS/JS 和 A2UI：
-  - `http://<gateway-host>:<gateway.port>/__openclaw__/canvas/`
-  - `http://<gateway-host>:<gateway.port>/__openclaw__/a2ui/`
+  - `http://<gateway-host>:<gateway.port>/__agdi__/canvas/`
+  - `http://<gateway-host>:<gateway.port>/__agdi__/a2ui/`
 - 仅限本地：保持 `gateway.bind: "loopback"`（默认）。
 - 非 loopback bind：canvas 路由需要 Gateway 网关认证（token/password/trusted-proxy），与其他 Gateway 网关 HTTP 界面一致。
 - Node WebView 通常不会发送认证头；在某个节点完成配对并连接后，Gateway 网关会为 canvas/A2UI 访问通告带节点作用域的 capability URL。
 - Capability URL 绑定到活动节点 WS 会话，并且很快过期。不使用基于 IP 的回退。
 - 会向所服务的 HTML 中注入 live-reload 客户端。
 - 空目录时会自动创建起始 `index.html`。
-- 也会在 `/__openclaw__/a2ui/` 提供 A2UI。
+- 也会在 `/__agdi__/a2ui/` 提供 A2UI。
 - 更改需要重启 Gateway 网关。
 - 对于大型目录或 `EMFILE` 错误，请禁用 live reload。
 
@@ -2754,7 +2754,7 @@ openclaw gateway --port 19001
 
 - `minimal`（默认）：从 TXT 记录中省略 `cliPath` + `sshPort`。
 - `full`：包含 `cliPath` + `sshPort`。
-- 主机名默认为 `openclaw`。可使用 `OPENCLAW_MDNS_HOSTNAME` 覆盖。
+- 主机名默认为 `agdi`。可使用 `OPENCLAW_MDNS_HOSTNAME` 覆盖。
 
 ### 广域（DNS-SD）
 
@@ -2766,9 +2766,9 @@ openclaw gateway --port 19001
 }
 ```
 
-在 `~/.openclaw/dns/` 下写入一个单播 DNS-SD 区域。对于跨网络设备发现，可与 DNS 服务器（推荐 CoreDNS）+ Tailscale split DNS 搭配使用。
+在 `~/.agdi/dns/` 下写入一个单播 DNS-SD 区域。对于跨网络设备发现，可与 DNS 服务器（推荐 CoreDNS）+ Tailscale split DNS 搭配使用。
 
-设置：`openclaw dns setup --apply`。
+设置：`agdi dns setup --apply`。
 
 ---
 
@@ -2792,7 +2792,7 @@ openclaw gateway --port 19001
 ```
 
 - 仅当进程环境中缺少该键时，才会应用内联环境变量。
-- `.env` 文件：当前工作目录 `.env` + `~/.openclaw/.env`（两者都不会覆盖现有变量）。
+- `.env` 文件：当前工作目录 `.env` + `~/.agdi/.env`（两者都不会覆盖现有变量）。
 - `shellEnv`：从你的登录 shell 配置文件导入缺失的预期键名。
 - 完整优先级见 [Environment](/help/environment)。
 
@@ -2838,7 +2838,7 @@ Secret refs 是增量能力：明文值仍然可用。
 ### 支持的凭证表面
 
 - 规范矩阵：[SecretRef Credential Surface](/reference/secretref-credential-surface)
-- `secrets apply` 会定位受支持的 `openclaw.json` 凭证路径。
+- `secrets apply` 会定位受支持的 `agdi.json` 凭证路径。
 - `auth-profiles.json` 中的 ref 也包含在运行时解析和审计覆盖范围内。
 
 ### Secret providers 配置
@@ -2850,13 +2850,13 @@ Secret refs 是增量能力：明文值仍然可用。
       default: { source: "env" }, // 可选的显式环境变量提供商
       filemain: {
         source: "file",
-        path: "~/.openclaw/secrets.json",
+        path: "~/.agdi/secrets.json",
         mode: "json",
         timeoutMs: 5000,
       },
       vault: {
         source: "exec",
-        command: "/usr/local/bin/openclaw-vault-resolver",
+        command: "/usr/local/bin/agdi-vault-resolver",
         passEnv: ["PATH", "VAULT_ADDR"],
       },
     },
@@ -2900,7 +2900,7 @@ Secret refs 是增量能力：明文值仍然可用。
 - 每个智能体的配置文件存储在 `<agentDir>/auth-profiles.json`。
 - `auth-profiles.json` 支持值级 ref（`api_key` 使用 `keyRef`，`token` 使用 `tokenRef`）。
 - 静态运行时凭证来自内存中的已解析快照；发现旧版静态 `auth.json` 条目时会进行清理。
-- 旧版 OAuth 会从 `~/.openclaw/credentials/oauth.json` 导入。
+- 旧版 OAuth 会从 `~/.agdi/credentials/oauth.json` 导入。
 - 见 [OAuth](/concepts/oauth)。
 - Secrets 运行时行为以及 `audit/configure/apply` 工具：见 [Secrets Management](/gateway/secrets)。
 
@@ -2912,7 +2912,7 @@ Secret refs 是增量能力：明文值仍然可用。
 {
   logging: {
     level: "info",
-    file: "/tmp/openclaw/openclaw.log",
+    file: "/tmp/agdi/agdi.log",
     consoleLevel: "info",
     consoleStyle: "pretty", // pretty | compact | json
     redactSensitive: "tools", // off | tools
@@ -2921,7 +2921,7 @@ Secret refs 是增量能力：明文值仍然可用。
 }
 ```
 
-- 默认日志文件：`/tmp/openclaw/openclaw-YYYY-MM-DD.log`。
+- 默认日志文件：`/tmp/agdi/agdi-YYYY-MM-DD.log`。
 - 设置 `logging.file` 以获得稳定路径。
 - 使用 `--verbose` 时，`consoleLevel` 会提升为 `debug`。
 
@@ -2941,7 +2941,7 @@ Secret refs 是增量能力：明文值仍然可用。
 
 - `cli.banner.taglineMode` 控制横幅标语样式：
   - `"random"`（默认）：轮换的有趣/季节性标语。
-  - `"default"`：固定的中性标语（`All your chats, one OpenClaw.`）。
+  - `"default"`：固定的中性标语（`All your chats, one Agdi.`）。
   - `"off"`：不显示标语文本（仍显示横幅标题/版本）。
 - 若要隐藏整个横幅（而不仅是标语），请设置环境变量 `OPENCLAW_HIDE_BANNER=1`。
 
@@ -2995,7 +2995,7 @@ Secret refs 是增量能力：明文值仍然可用。
 
 ## Bridge（旧版，已移除）
 
-当前版本不再包含 TCP bridge。节点通过 Gateway 网关 WebSocket 连接。`bridge.*` 键已不再属于配置 schema 的一部分（在移除前校验会失败；`openclaw doctor --fix` 可清除未知键）。
+当前版本不再包含 TCP bridge。节点通过 Gateway 网关 WebSocket 连接。`bridge.*` 键已不再属于配置 schema 的一部分（在移除前校验会失败；`agdi doctor --fix` 可清除未知键）。
 
 <Accordion title="旧版 bridge 配置（历史参考）">
 
@@ -3079,7 +3079,7 @@ Secret refs 是增量能力：明文值仍然可用。
 将配置拆分为多个文件：
 
 ```json5
-// ~/.openclaw/openclaw.json
+// ~/.agdi/agdi.json
 {
   gateway: { port: 18789 },
   agents: { $include: "./agents.json5" },
@@ -3095,7 +3095,7 @@ Secret refs 是增量能力：明文值仍然可用。
 - 文件数组：按顺序深度合并（后者覆盖前者）。
 - 同级键：在 include 之后再合并（覆盖被包含的值）。
 - 嵌套 include：最多 10 层。
-- 路径：相对于包含它的文件解析，但必须保持在顶层配置目录（`openclaw.json` 的 `dirname`）内。只有在最终解析结果仍位于该边界内时，才允许使用绝对路径/`../` 形式。
+- 路径：相对于包含它的文件解析，但必须保持在顶层配置目录（`agdi.json` 的 `dirname`）内。只有在最终解析结果仍位于该边界内时，才允许使用绝对路径/`../` 形式。
 - 错误：缺失文件、解析错误和循环 include 都会给出清晰错误信息。
 
 ---

@@ -1,13 +1,13 @@
 ---
 summary: "Twitch chat bot configuration and setup"
 read_when:
-  - Setting up Twitch chat integration for OpenClaw
+  - Setting up Twitch chat integration for Agdi
 title: "Twitch"
 ---
 
 # Twitch (plugin)
 
-Twitch chat support via IRC connection. OpenClaw connects as a Twitch user (bot account) to receive and send messages in channels.
+Twitch chat support via IRC connection. Agdi connects as a Twitch user (bot account) to receive and send messages in channels.
 
 ## Plugin required
 
@@ -16,13 +16,13 @@ Twitch ships as a plugin and is not bundled with the core install.
 Install via CLI (npm registry):
 
 ```bash
-openclaw plugins install @openclaw/twitch
+agdi plugins install @agdi/twitch
 ```
 
 Local checkout (when running from a git repo):
 
 ```bash
-openclaw plugins install ./extensions/twitch
+agdi plugins install ./extensions/twitch
 ```
 
 Details: [Plugins](/tools/plugin)
@@ -50,7 +50,7 @@ Minimal config:
   channels: {
     twitch: {
       enabled: true,
-      username: "openclaw", // Bot's Twitch account
+      username: "agdi", // Bot's Twitch account
       accessToken: "oauth:abc123...", // OAuth Access Token (or use OPENCLAW_TWITCH_ACCESS_TOKEN env var)
       clientId: "xyz789...", // Client ID from Token Generator
       channel: "vevisk", // Which Twitch channel's chat to join (required)
@@ -94,7 +94,7 @@ OPENCLAW_TWITCH_ACCESS_TOKEN=oauth:abc123...
   channels: {
     twitch: {
       enabled: true,
-      username: "openclaw",
+      username: "agdi",
       accessToken: "oauth:abc123...",
       clientId: "xyz789...",
       channel: "vevisk",
@@ -156,13 +156,13 @@ Example (one bot account in two channels):
     twitch: {
       accounts: {
         channel1: {
-          username: "openclaw",
+          username: "agdi",
           accessToken: "oauth:abc123...",
           clientId: "xyz789...",
           channel: "vevisk",
         },
         channel2: {
-          username: "openclaw",
+          username: "agdi",
           accessToken: "oauth:def456...",
           clientId: "uvw012...",
           channel: "secondchannel",
@@ -251,8 +251,8 @@ By default, `requireMention` is `true`. To disable and respond to all messages:
 First, run diagnostic commands:
 
 ```bash
-openclaw doctor
-openclaw channels status --probe
+agdi doctor
+agdi channels status --probe
 ```
 
 ### Bot does not respond to messages
@@ -317,7 +317,7 @@ Full example:
   channels: {
     twitch: {
       enabled: true,
-      username: "openclaw",
+      username: "agdi",
       accessToken: "oauth:abc123...",
       clientId: "xyz789...",
       channel: "vevisk",

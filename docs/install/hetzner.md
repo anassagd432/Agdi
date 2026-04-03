@@ -1,20 +1,20 @@
 ---
-summary: "Run OpenClaw Gateway 24/7 on a cheap Hetzner VPS (Docker) with durable state and baked-in binaries"
+summary: "Run Agdi Gateway 24/7 on a cheap Hetzner VPS (Docker) with durable state and baked-in binaries"
 read_when:
-  - You want OpenClaw running 24/7 on a cloud VPS (not your laptop)
+  - You want Agdi running 24/7 on a cloud VPS (not your laptop)
   - You want a production-grade, always-on Gateway on your own VPS
   - You want full control over persistence, binaries, and restart behavior
-  - You are running OpenClaw in Docker on Hetzner or a similar provider
+  - You are running Agdi in Docker on Hetzner or a similar provider
 title: "Hetzner"
 ---
 
-# OpenClaw on Hetzner (Docker, Production VPS Guide)
+# Agdi on Hetzner (Docker, Production VPS Guide)
 
 ## Goal
 
-Run a persistent OpenClaw Gateway on a Hetzner VPS using Docker, with durable state, baked-in binaries, and safe restart behavior.
+Run a persistent Agdi Gateway on a Hetzner VPS using Docker, with durable state, baked-in binaries, and safe restart behavior.
 
-If you want “OpenClaw 24/7 for ~$5”, this is the simplest reliable setup.
+If you want “Agdi 24/7 for ~$5”, this is the simplest reliable setup.
 Hetzner pricing changes; pick the smallest Debian/Ubuntu VPS and scale up if you hit OOMs.
 
 Security model reminder:
@@ -29,8 +29,8 @@ See [Security](/gateway/security) and [VPS hosting](/vps).
 
 - Rent a small Linux server (Hetzner VPS)
 - Install Docker (isolated app runtime)
-- Start the OpenClaw Gateway in Docker
-- Persist `~/.openclaw` + `~/.openclaw/workspace` on the host (survives restarts/rebuilds)
+- Start the Agdi Gateway in Docker
+- Persist `~/.agdi` + `~/.agdi/workspace` on the host (survives restarts/rebuilds)
 - Access the Control UI from your laptop via an SSH tunnel
 
 The Gateway can be accessed via:
@@ -48,7 +48,7 @@ For the generic Docker flow, see [Docker](/install/docker).
 
 1. Provision Hetzner VPS
 2. Install Docker
-3. Clone OpenClaw repository
+3. Clone Agdi repository
 4. Create persistent host directories
 5. Configure `.env` and `docker-compose.yml`
 6. Bake required binaries into the image
@@ -103,10 +103,10 @@ For the generic Docker flow, see [Docker](/install/docker).
 
   </Step>
 
-  <Step title="Clone the OpenClaw repository">
+  <Step title="Clone the Agdi repository">
     ```bash
-    git clone https://github.com/openclaw/openclaw.git
-    cd openclaw
+    git clone https://github.com/agdi/agdi.git
+    cd agdi
     ```
 
     This guide assumes you will build a custom image to guarantee binary persistence.
@@ -118,10 +118,10 @@ For the generic Docker flow, see [Docker](/install/docker).
     All long-lived state must live on the host.
 
     ```bash
-    mkdir -p /root/.openclaw/workspace
+    mkdir -p /root/.agdi/workspace
 
     # Set ownership to the container user (uid 1000):
-    chown -R 1000:1000 /root/.openclaw
+    chown -R 1000:1000 /root/.agdi
     ```
 
   </Step>
@@ -130,16 +130,16 @@ For the generic Docker flow, see [Docker](/install/docker).
     Create `.env` in the repository root.
 
     ```bash
-    OPENCLAW_IMAGE=openclaw:latest
+    OPENCLAW_IMAGE=agdi:latest
     OPENCLAW_GATEWAY_TOKEN=change-me-now
     OPENCLAW_GATEWAY_BIND=lan
     OPENCLAW_GATEWAY_PORT=18789
 
-    OPENCLAW_CONFIG_DIR=/root/.openclaw
-    OPENCLAW_WORKSPACE_DIR=/root/.openclaw/workspace
+    OPENCLAW_CONFIG_DIR=/root/.agdi
+    OPENCLAW_WORKSPACE_DIR=/root/.agdi/workspace
 
     GOG_KEYRING_PASSWORD=change-me-now
-    XDG_CONFIG_HOME=/home/node/.openclaw
+    XDG_CONFIG_HOME=/home/node/.agdi
     ```
 
     Generate strong secrets:
@@ -157,7 +157,7 @@ For the generic Docker flow, see [Docker](/install/docker).
 
     ```yaml
     services:
-      openclaw-gateway:
+      agdi-gateway:
         image: ${OPENCLAW_IMAGE}
         build: .
         restart: unless-stopped
@@ -174,8 +174,8 @@ For the generic Docker flow, see [Docker](/install/docker).
           - XDG_CONFIG_HOME=${XDG_CONFIG_HOME}
           - PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
         volumes:
-          - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-          - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
+          - ${OPENCLAW_CONFIG_DIR}:/home/node/.agdi
+          - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.agdi/workspace
         ports:
           # Recommended: keep the Gateway loopback-only on the VPS; access via SSH tunnel.
           # To expose it publicly, remove the `127.0.0.1:` prefix and firewall accordingly.
@@ -237,8 +237,8 @@ For teams preferring infrastructure-as-code workflows, a community-maintained Te
 
 **Repositories:**
 
-- Infrastructure: [openclaw-terraform-hetzner](https://github.com/andreesg/openclaw-terraform-hetzner)
-- Docker config: [openclaw-docker-config](https://github.com/andreesg/openclaw-docker-config)
+- Infrastructure: [agdi-terraform-hetzner](https://github.com/andreesg/agdi-terraform-hetzner)
+- Docker config: [agdi-docker-config](https://github.com/andreesg/agdi-docker-config)
 
 This approach complements the Docker setup above with reproducible deployments, version-controlled infrastructure, and automated disaster recovery.
 
@@ -248,4 +248,4 @@ This approach complements the Docker setup above with reproducible deployments, 
 
 - Set up messaging channels: [Channels](/channels)
 - Configure the Gateway: [Gateway configuration](/gateway/configuration)
-- Keep OpenClaw up to date: [Updating](/install/updating)
+- Keep Agdi up to date: [Updating](/install/updating)

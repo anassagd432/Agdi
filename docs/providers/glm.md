@@ -1,30 +1,30 @@
 ---
-summary: "GLM model family overview + how to use it in OpenClaw"
+summary: "GLM model family overview + how to use it in Agdi"
 read_when:
-  - You want GLM models in OpenClaw
+  - You want GLM models in Agdi
   - You need the model naming convention and setup
 title: "GLM Models"
 ---
 
 # GLM models
 
-GLM is a **model family** (not a company) available through the Z.AI platform. In OpenClaw, GLM
+GLM is a **model family** (not a company) available through the Z.AI platform. In Agdi, GLM
 models are accessed via the `zai` provider and model IDs like `zai/glm-5`.
 
 ## CLI setup
 
 ```bash
 # Coding Plan Global, recommended for Coding Plan users
-openclaw onboard --auth-choice zai-coding-global
+agdi onboard --auth-choice zai-coding-global
 
 # Coding Plan CN (China region), recommended for Coding Plan users
-openclaw onboard --auth-choice zai-coding-cn
+agdi onboard --auth-choice zai-coding-cn
 
 # General API
-openclaw onboard --auth-choice zai-global
+agdi onboard --auth-choice zai-global
 
 # General API CN (China region)
-openclaw onboard --auth-choice zai-cn
+agdi onboard --auth-choice zai-cn
 ```
 
 ## Config snippet

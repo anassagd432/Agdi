@@ -1,6 +1,6 @@
 ---
 read_when:
-  - 你想将 Cloudflare AI Gateway 与 OpenClaw 一起使用
+  - 你想将 Cloudflare AI Gateway 与 Agdi 一起使用
   - 你需要 account ID、gateway ID 或 API key 环境变量
 summary: Cloudflare AI Gateway 设置（认证 + 模型选择）
 title: Cloudflare AI Gateway
@@ -15,7 +15,7 @@ x-i18n:
 
 # Cloudflare AI Gateway
 
-Cloudflare AI Gateway 位于提供商 API 前方，让你能够添加分析、缓存和控制功能。对于 Anthropic，OpenClaw 会通过你的 Gateway 端点使用 Anthropic Messages API。
+Cloudflare AI Gateway 位于提供商 API 前方，让你能够添加分析、缓存和控制功能。对于 Anthropic，Agdi 会通过你的 Gateway 端点使用 Anthropic Messages API。
 
 - 提供商：`cloudflare-ai-gateway`
 - Base URL：`https://gateway.ai.cloudflare.com/v1/<account_id>/<gateway_id>/anthropic`
@@ -29,7 +29,7 @@ Cloudflare AI Gateway 位于提供商 API 前方，让你能够添加分析、�
 1. 设置提供商 API key 和 Gateway 详细信息：
 
 ```bash
-openclaw onboard --auth-choice cloudflare-ai-gateway-api-key
+agdi onboard --auth-choice cloudflare-ai-gateway-api-key
 ```
 
 2. 设置默认模型：
@@ -47,7 +47,7 @@ openclaw onboard --auth-choice cloudflare-ai-gateway-api-key
 ## 非交互式示例
 
 ```bash
-openclaw onboard --non-interactive \
+agdi onboard --non-interactive \
   --mode local \
   --auth-choice cloudflare-ai-gateway-api-key \
   --cloudflare-ai-gateway-account-id "your-account-id" \
@@ -75,4 +75,4 @@ openclaw onboard --non-interactive \
 
 ## 环境说明
 
-如果 Gateway 作为守护进程运行（launchd/systemd），请确保 `CLOUDFLARE_AI_GATEWAY_API_KEY` 对该进程可用（例如放在 `~/.openclaw/.env` 中，或通过 `env.shellEnv` 提供）。
+如果 Gateway 作为守护进程运行（launchd/systemd），请确保 `CLOUDFLARE_AI_GATEWAY_API_KEY` 对该进程可用（例如放在 `~/.agdi/.env` 中，或通过 `env.shellEnv` 提供）。

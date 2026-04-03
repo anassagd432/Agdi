@@ -5,13 +5,13 @@ summary: "Setup wizards, setup-entry.ts, config schemas, and package.json metada
 read_when:
   - You are adding a setup wizard to a plugin
   - You need to understand setup-entry.ts vs index.ts
-  - You are defining plugin config schemas or package.json openclaw metadata
+  - You are defining plugin config schemas or package.json agdi metadata
 ---
 
 # Plugin Setup and Config
 
 Reference for plugin packaging (`package.json` metadata), manifests
-(`openclaw.plugin.json`), setup entries, and config schemas.
+(`agdi.plugin.json`), setup entries, and config schemas.
 
 <Tip>
   **Looking for a walkthrough?** The how-to guides cover packaging in context:
@@ -21,17 +21,17 @@ Reference for plugin packaging (`package.json` metadata), manifests
 
 ## Package metadata
 
-Your `package.json` needs an `openclaw` field that tells the plugin system what
+Your `package.json` needs an `agdi` field that tells the plugin system what
 your plugin provides:
 
 **Channel plugin:**
 
 ```json
 {
-  "name": "@myorg/openclaw-my-channel",
+  "name": "@myorg/agdi-my-channel",
   "version": "1.0.0",
   "type": "module",
-  "openclaw": {
+  "agdi": {
     "extensions": ["./index.ts"],
     "setupEntry": "./setup-entry.ts",
     "channel": {
@@ -47,17 +47,17 @@ your plugin provides:
 
 ```json
 {
-  "name": "@myorg/openclaw-my-provider",
+  "name": "@myorg/agdi-my-provider",
   "version": "1.0.0",
   "type": "module",
-  "openclaw": {
+  "agdi": {
     "extensions": ["./index.ts"],
     "providers": ["my-provider"]
   }
 }
 ```
 
-### `openclaw` fields
+### `agdi` fields
 
 | Field        | Type       | Description                                                                                |
 | ------------ | ---------- | ------------------------------------------------------------------------------------------ |
@@ -74,7 +74,7 @@ Channel plugins can opt into deferred loading with:
 
 ```json
 {
-  "openclaw": {
+  "agdi": {
     "extensions": ["./index.ts"],
     "setupEntry": "./setup-entry.ts",
     "startup": {
@@ -84,7 +84,7 @@ Channel plugins can opt into deferred loading with:
 }
 ```
 
-When enabled, OpenClaw loads only `setupEntry` during the pre-listen startup
+When enabled, Agdi loads only `setupEntry` during the pre-listen startup
 phase, even for already-configured channels. The full entry loads after the
 gateway starts listening.
 
@@ -97,14 +97,14 @@ gateway starts listening.
 
 ## Plugin manifest
 
-Every native plugin must ship an `openclaw.plugin.json` in the package root.
-OpenClaw uses this to validate config without executing plugin code.
+Every native plugin must ship an `agdi.plugin.json` in the package root.
+Agdi uses this to validate config without executing plugin code.
 
 ```json
 {
   "id": "my-plugin",
   "name": "My Plugin",
-  "description": "Adds My Plugin capabilities to OpenClaw",
+  "description": "Adds My Plugin capabilities to Agdi",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
@@ -150,12 +150,12 @@ See [Plugin Manifest](/plugins/manifest) for the full schema reference.
 ## Setup entry
 
 The `setup-entry.ts` file is a lightweight alternative to `index.ts` that
-OpenClaw loads when it only needs setup surfaces (onboarding, config repair,
+Agdi loads when it only needs setup surfaces (onboarding, config repair,
 disabled channel inspection).
 
 ```typescript
 // setup-entry.ts
-import { defineSetupPluginEntry } from "openclaw/plugin-sdk/core";
+import { defineSetupPluginEntry } from "agdi/plugin-sdk/core";
 import { myChannelPlugin } from "./src/channel.js";
 
 export default defineSetupPluginEntry(myChannelPlugin);
@@ -164,7 +164,7 @@ export default defineSetupPluginEntry(myChannelPlugin);
 This avoids loading heavy runtime code (crypto libraries, CLI registrations,
 background services) during setup flows.
 
-**When OpenClaw uses `setupEntry` instead of the full entry:**
+**When Agdi uses `setupEntry` instead of the full entry:**
 
 - The channel is disabled but needs setup/onboarding surfaces
 - The channel is enabled but unconfigured
@@ -219,12 +219,12 @@ For channel-specific config, use the channel config section instead:
 
 ### Building channel config schemas
 
-Use `buildChannelConfigSchema` from `openclaw/plugin-sdk/core` to convert a
-Zod schema into the `ChannelConfigSchema` wrapper that OpenClaw validates:
+Use `buildChannelConfigSchema` from `agdi/plugin-sdk/core` to convert a
+Zod schema into the `ChannelConfigSchema` wrapper that Agdi validates:
 
 ```typescript
 import { z } from "zod";
-import { buildChannelConfigSchema } from "openclaw/plugin-sdk/core";
+import { buildChannelConfigSchema } from "agdi/plugin-sdk/core";
 
 const accountSchema = z.object({
   token: z.string().optional(),
@@ -238,11 +238,11 @@ const configSchema = buildChannelConfigSchema(accountSchema);
 
 ## Setup wizards
 
-Channel plugins can provide interactive setup wizards for `openclaw onboard`.
+Channel plugins can provide interactive setup wizards for `agdi onboard`.
 The wizard is a `ChannelSetupWizard` object on the `ChannelPlugin`:
 
 ```typescript
-import type { ChannelSetupWizard } from "openclaw/plugin-sdk/channel-setup";
+import type { ChannelSetupWizard } from "agdi/plugin-sdk/channel-setup";
 
 const setupWizard: ChannelSetupWizard = {
   channel: "my-channel",
@@ -279,25 +279,25 @@ full examples.
 
 For DM allowlist prompts that only need the standard
 `note -> prompt -> parse -> merge -> patch` flow, prefer the shared setup
-helpers from `openclaw/plugin-sdk/setup`: `createPromptParsedAllowFromForAccount(...)`,
+helpers from `agdi/plugin-sdk/setup`: `createPromptParsedAllowFromForAccount(...)`,
 `createTopLevelChannelParsedAllowFromPrompt(...)`, and
 `createNestedChannelParsedAllowFromPrompt(...)`.
 
 For channel setup status blocks that only vary by labels, scores, and optional
 extra lines, prefer `createStandardChannelSetupStatus(...)` from
-`openclaw/plugin-sdk/setup` instead of hand-rolling the same `status` object in
+`agdi/plugin-sdk/setup` instead of hand-rolling the same `status` object in
 each plugin.
 
 For optional setup surfaces that should only appear in certain contexts, use
-`createOptionalChannelSetupSurface` from `openclaw/plugin-sdk/channel-setup`:
+`createOptionalChannelSetupSurface` from `agdi/plugin-sdk/channel-setup`:
 
 ```typescript
-import { createOptionalChannelSetupSurface } from "openclaw/plugin-sdk/channel-setup";
+import { createOptionalChannelSetupSurface } from "agdi/plugin-sdk/channel-setup";
 
 const setupSurface = createOptionalChannelSetupSurface({
   channel: "my-channel",
   label: "My Channel",
-  npmSpec: "@myorg/openclaw-my-channel",
+  npmSpec: "@myorg/agdi-my-channel",
   docsPath: "/channels/my-channel",
 });
 // Returns { setupAdapter, setupWizard }
@@ -308,15 +308,15 @@ const setupSurface = createOptionalChannelSetupSurface({
 **External plugins:** publish to [ClawHub](/tools/clawhub) or npm, then install:
 
 ```bash
-openclaw plugins install @myorg/openclaw-my-plugin
+agdi plugins install @myorg/agdi-my-plugin
 ```
 
-OpenClaw tries ClawHub first and falls back to npm automatically. You can also
+Agdi tries ClawHub first and falls back to npm automatically. You can also
 force a specific source:
 
 ```bash
-openclaw plugins install clawhub:@myorg/openclaw-my-plugin   # ClawHub only
-openclaw plugins install npm:@myorg/openclaw-my-plugin       # npm only
+agdi plugins install clawhub:@myorg/agdi-my-plugin   # ClawHub only
+agdi plugins install npm:@myorg/agdi-my-plugin       # npm only
 ```
 
 **In-repo plugins:** place under `extensions/` and they are automatically
@@ -325,12 +325,12 @@ discovered during build.
 **Users can browse and install:**
 
 ```bash
-openclaw plugins search <query>
-openclaw plugins install <package-name>
+agdi plugins search <query>
+agdi plugins install <package-name>
 ```
 
 <Info>
-  For npm-sourced installs, `openclaw plugins install` runs
+  For npm-sourced installs, `agdi plugins install` runs
   `npm install --ignore-scripts` (no lifecycle scripts). Keep plugin dependency
   trees pure JS/TS and avoid packages that require `postinstall` builds.
 </Info>

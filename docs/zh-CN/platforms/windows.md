@@ -1,6 +1,6 @@
 ---
 read_when:
-  - 在 Windows 上安装 OpenClaw
+  - 在 Windows 上安装 Agdi
   - 查找 Windows 配套应用状态
 summary: Windows（WSL2）支持 + 配套应用状态
 title: Windows（WSL2）
@@ -15,7 +15,7 @@ x-i18n:
 
 # Windows（WSL2）
 
-推荐在 Windows 上**通过 WSL2** 运行 OpenClaw（推荐 Ubuntu）。CLI + Gateway 网关在 Linux 内运行，这能保持运行时一致，并使
+推荐在 Windows 上**通过 WSL2** 运行 Agdi（推荐 Ubuntu）。CLI + Gateway 网关在 Linux 内运行，这能保持运行时一致，并使
 工具链兼容性高得多（Node/Bun/pnpm、Linux 二进制文件、Skills）。原生
 Windows 可能会更棘手。WSL2 可提供完整的 Linux 体验 —— 只需一条命令
 即可安装：`wsl --install`。
@@ -35,33 +35,33 @@ Windows 可能会更棘手。WSL2 可提供完整的 Linux 体验 —— 只需�
 当前在原生 Windows 上运行良好的内容：
 
 - 通过 `install.ps1` 使用网站安装器
-- 本地 CLI 用法，例如 `openclaw --version`、`openclaw doctor` 和 `openclaw plugins list --json`
+- 本地 CLI 用法，例如 `agdi --version`、`agdi doctor` 和 `agdi plugins list --json`
 - 嵌入式 local-agent/provider 冒烟测试，例如：
 
 ```powershell
-openclaw agent --local --agent main --thinking low -m "Reply with exactly WINDOWS-HATCH-OK."
+agdi agent --local --agent main --thinking low -m "Reply with exactly WINDOWS-HATCH-OK."
 ```
 
 当前注意事项：
 
-- 除非你传递 `--skip-health`，否则 `openclaw onboard --non-interactive` 仍然要求本地 Gateway 网关可访问
-- `openclaw onboard --non-interactive --install-daemon` 和 `openclaw gateway install` 会优先尝试 Windows Scheduled Tasks
-- 如果拒绝创建 Scheduled Task，OpenClaw 会回退到每用户 Startup 文件夹登录项，并立即启动 Gateway 网关
-- 如果 `schtasks` 本身卡住或停止响应，OpenClaw 现在会快速中止该路径并回退，而不是无限挂起
+- 除非你传递 `--skip-health`，否则 `agdi onboard --non-interactive` 仍然要求本地 Gateway 网关可访问
+- `agdi onboard --non-interactive --install-daemon` 和 `agdi gateway install` 会优先尝试 Windows Scheduled Tasks
+- 如果拒绝创建 Scheduled Task，Agdi 会回退到每用户 Startup 文件夹登录项，并立即启动 Gateway 网关
+- 如果 `schtasks` 本身卡住或停止响应，Agdi 现在会快速中止该路径并回退，而不是无限挂起
 - 在可用时仍优先使用 Scheduled Tasks，因为它们能提供更好的 supervisor 状态
 
 如果你只想使用原生 CLI，而不安装 Gateway 网关服务，可使用以下任一方式：
 
 ```powershell
-openclaw onboard --non-interactive --skip-health
-openclaw gateway run
+agdi onboard --non-interactive --skip-health
+agdi gateway run
 ```
 
 如果你确实想在原生 Windows 上使用受管启动：
 
 ```powershell
-openclaw gateway install
-openclaw gateway status --json
+agdi gateway install
+agdi gateway status --json
 ```
 
 如果无法创建 Scheduled Task，回退服务模式仍会通过当前用户的 Startup 文件夹在登录后自动启动。
@@ -76,19 +76,19 @@ openclaw gateway status --json
 在 WSL2 内：
 
 ```
-openclaw onboard --install-daemon
+agdi onboard --install-daemon
 ```
 
 或者：
 
 ```
-openclaw gateway install
+agdi gateway install
 ```
 
 或者：
 
 ```
-openclaw configure
+agdi configure
 ```
 
 出现提示时，选择 **Gateway 服务**。
@@ -96,7 +96,7 @@ openclaw configure
 修复/迁移：
 
 ```
-openclaw doctor
+agdi doctor
 ```
 
 ## 在 Windows 登录前自动启动 Gateway 网关
@@ -112,12 +112,12 @@ Windows 时也能运行。
 sudo loginctl enable-linger "$(whoami)"
 ```
 
-### 2）安装 OpenClaw Gateway 网关用户服务
+### 2）安装 Agdi Gateway 网关用户服务
 
 在 WSL 内：
 
 ```bash
-openclaw gateway install
+agdi gateway install
 ```
 
 ### 3）在 Windows 启动时自动启动 WSL
@@ -139,8 +139,8 @@ wsl --list --verbose
 重启后（在 Windows 登录前），在 WSL 中检查：
 
 ```bash
-systemctl --user is-enabled openclaw-gateway
-systemctl --user status openclaw-gateway --no-pager
+systemctl --user is-enabled agdi-gateway
+systemctl --user status agdi-gateway --no-pager
 ```
 
 ## 高级：通过局域网暴露 WSL 服务（portproxy）
@@ -183,7 +183,7 @@ netsh interface portproxy add v4tov4 listenport=$ListenPort listenaddress=0.0.0.
 
 - 来自另一台机器的 SSH 应指向**Windows 主机 IP**（例如：`ssh user@windows-host -p 2222`）。
 - 远程节点必须指向**可访问的** Gateway 网关 URL（而不是 `127.0.0.1`）；请使用
-  `openclaw status --all` 进行确认。
+  `agdi status --all` 进行确认。
 - 使用 `listenaddress=0.0.0.0` 可供局域网访问；`127.0.0.1` 则仅限本地。
 - 如果你希望自动执行此操作，请注册一个 Scheduled Task，在登录时运行刷新
   步骤。
@@ -226,17 +226,17 @@ wsl --shutdown
 systemctl --user status
 ```
 
-### 3）安装 OpenClaw（在 WSL 内）
+### 3）安装 Agdi（在 WSL 内）
 
 在 WSL 内按照 Linux 入门指南流程操作：
 
 ```bash
-git clone https://github.com/openclaw/openclaw.git
-cd openclaw
+git clone https://github.com/agdi/agdi.git
+cd agdi
 pnpm install
 pnpm ui:build # 首次运行时会自动安装 UI 依赖
 pnpm build
-openclaw onboard
+agdi onboard
 ```
 
 完整指南：[入门指南](/start/getting-started)

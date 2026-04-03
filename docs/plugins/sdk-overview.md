@@ -4,7 +4,7 @@ sidebarTitle: "SDK Overview"
 summary: "Import map, registration API reference, and SDK architecture"
 read_when:
   - You need to know which SDK subpath to import from
-  - You want a reference for all registration methods on OpenClawPluginApi
+  - You want a reference for all registration methods on AgdiPluginApi
   - You are looking up a specific SDK export
 ---
 
@@ -25,8 +25,8 @@ reference for **what to import** and **what you can register**.
 Always import from a specific subpath:
 
 ```typescript
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { defineChannelPluginEntry } from "openclaw/plugin-sdk/core";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
+import { defineChannelPluginEntry } from "agdi/plugin-sdk/core";
 ```
 
 Each subpath is a small, self-contained module. This keeps startup fast and
@@ -106,7 +106,7 @@ subpaths is in `scripts/lib/plugin-sdk-entrypoints.json`.
 
 ## Registration API
 
-The `register(api)` callback receives an `OpenClawPluginApi` object with these
+The `register(api)` callback receives an `AgdiPluginApi` object with these
 methods:
 
 ### Capability registration
@@ -169,7 +169,7 @@ methods:
 | `api.description`        | `string?`                 | Plugin description (optional)                             |
 | `api.source`             | `string`                  | Plugin source path                                        |
 | `api.rootDir`            | `string?`                 | Plugin root directory (optional)                          |
-| `api.config`             | `OpenClawConfig`          | Current config snapshot                                   |
+| `api.config`             | `AgdiConfig`          | Current config snapshot                                   |
 | `api.pluginConfig`       | `Record<string, unknown>` | Plugin-specific config from `plugins.entries.<id>.config` |
 | `api.runtime`            | `PluginRuntime`           | [Runtime helpers](/plugins/sdk-runtime)                   |
 | `api.logger`             | `PluginLogger`            | Scoped logger (`debug`, `info`, `warn`, `error`)          |
@@ -189,7 +189,7 @@ my-plugin/
 ```
 
 <Warning>
-  Never import your own plugin through `openclaw/plugin-sdk/<your-plugin>`
+  Never import your own plugin through `agdi/plugin-sdk/<your-plugin>`
   from production code. Route internal imports through `./api.ts` or
   `./runtime-api.ts`. The SDK path is the external contract only.
 </Warning>

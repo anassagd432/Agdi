@@ -8,7 +8,7 @@ read_when:
 
 # Release Policy
 
-OpenClaw has three public release lanes:
+Agdi has three public release lanes:
 
 - stable: tagged releases that publish to npm `latest`
 - beta: prerelease tags that publish to npm `beta`
@@ -26,7 +26,7 @@ OpenClaw has three public release lanes:
 - `latest` means the current stable npm release
 - `beta` means the current prerelease npm release
 - Stable correction releases also publish to npm `latest`
-- Every OpenClaw release ships the npm package and macOS app together
+- Every Agdi release ships the npm package and macOS app together
 
 ## Release cadence
 
@@ -40,10 +40,10 @@ OpenClaw has three public release lanes:
 - Run `pnpm build` before `pnpm release:check` so the expected `dist/*` release
   artifacts exist for the pack validation step
 - Run `pnpm release:check` before every tagged release
-- Run `RELEASE_TAG=vYYYY.M.D node --import tsx scripts/openclaw-npm-release-check.ts`
+- Run `RELEASE_TAG=vYYYY.M.D node --import tsx scripts/agdi-npm-release-check.ts`
   (or the matching beta/correction tag) before approval
 - After npm publish, run
-  `node --import tsx scripts/openclaw-npm-postpublish-verify.ts YYYY.M.D`
+  `node --import tsx scripts/agdi-npm-postpublish-verify.ts YYYY.M.D`
   (or the matching beta/correction version) to verify the published registry
   install path in a fresh temp prefix
 - For stable correction releases like `YYYY.M.D-N`, the post-publish verifier
@@ -62,11 +62,11 @@ OpenClaw has three public release lanes:
 
 ## Public references
 
-- [`.github/workflows/openclaw-npm-release.yml`](https://github.com/openclaw/openclaw/blob/main/.github/workflows/openclaw-npm-release.yml)
-- [`scripts/openclaw-npm-release-check.ts`](https://github.com/openclaw/openclaw/blob/main/scripts/openclaw-npm-release-check.ts)
-- [`scripts/package-mac-dist.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/package-mac-dist.sh)
-- [`scripts/make_appcast.sh`](https://github.com/openclaw/openclaw/blob/main/scripts/make_appcast.sh)
+- [`.github/workflows/agdi-npm-release.yml`](https://github.com/agdi/agdi/blob/main/.github/workflows/agdi-npm-release.yml)
+- [`scripts/agdi-npm-release-check.ts`](https://github.com/agdi/agdi/blob/main/scripts/agdi-npm-release-check.ts)
+- [`scripts/package-mac-dist.sh`](https://github.com/agdi/agdi/blob/main/scripts/package-mac-dist.sh)
+- [`scripts/make_appcast.sh`](https://github.com/agdi/agdi/blob/main/scripts/make_appcast.sh)
 
 Maintainers use the private release docs in
-[`openclaw/maintainers/release/README.md`](https://github.com/openclaw/maintainers/blob/main/release/README.md)
+[`agdi/maintainers/release/README.md`](https://github.com/agdi/maintainers/blob/main/release/README.md)
 for the actual runbook.

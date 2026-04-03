@@ -22,7 +22,7 @@ x-i18n:
 
 - 通过 BlueBubbles 辅助应用在 macOS 上运行（[bluebubbles.app](https://bluebubbles.app)）。
 - 推荐/已测试：macOS Sequoia（15）。macOS Tahoe（26）可用；目前编辑功能在 Tahoe 上已损坏，群组图标更新可能会报告成功但不会同步。
-- OpenClaw 通过其 REST API 与其通信（`GET /api/v1/ping`、`POST /message/text`、`POST /chat/:id/*`）。
+- Agdi 通过其 REST API 与其通信（`GET /api/v1/ping`、`POST /message/text`、`POST /chat/:id/*`）。
 - 传入消息通过 webhook 到达；传出回复、输入状态指示、已读回执和 tapback 都通过 REST 调用完成。
 - 附件和贴纸会作为入站媒体接收（并在可能时展示给智能体）。
 - 配对/allowlist 的工作方式与其他渠道相同（`/channels/pairing` 等），使用 `channels.bluebubbles.allowFrom` + 配对码。
@@ -33,7 +33,7 @@ x-i18n:
 
 1. 在你的 Mac 上安装 BlueBubbles 服务器（按照 [bluebubbles.app/install](https://bluebubbles.app/install) 上的说明操作）。
 2. 在 BlueBubbles 配置中启用 Web API 并设置密码。
-3. 运行 `openclaw onboard` 并选择 BlueBubbles，或手动配置：
+3. 运行 `agdi onboard` 并选择 BlueBubbles，或手动配置：
 
    ```json5
    {
@@ -54,7 +54,7 @@ x-i18n:
 安全说明：
 
 - 始终设置 webhook 密码。
-- 始终要求进行 webhook 身份验证。无论 loopback/代理拓扑如何，除非 BlueBubbles webhook 请求包含与 `channels.bluebubbles.password` 匹配的 password/guid（例如 `?password=<password>` 或 `x-password`），否则 OpenClaw 会拒绝该请求。
+- 始终要求进行 webhook 身份验证。无论 loopback/代理拓扑如何，除非 BlueBubbles webhook 请求包含与 `channels.bluebubbles.password` 匹配的 password/guid（例如 `?password=<password>` 或 `x-password`），否则 Agdi 会拒绝该请求。
 - 在读取/解析完整 webhook 请求体之前就会检查密码身份验证。
 
 ## 保持 Messages.app 处于活动状态（VM / 无头设置）
@@ -136,7 +136,7 @@ launchctl load ~/Library/LaunchAgents/com.user.poke-messages.plist
 BlueBubbles 可在交互式设置向导中使用：
 
 ```
-openclaw onboard
+agdi onboard
 ```
 
 向导会提示输入：
@@ -150,7 +150,7 @@ openclaw onboard
 你也可以通过 CLI 添加 BlueBubbles：
 
 ```
-openclaw channels add bluebubbles --http-url http://192.168.1.100:1234 --password <password>
+agdi channels add bluebubbles --http-url http://192.168.1.100:1234 --password <password>
 ```
 
 ## 访问控制（私信 + 群组）
@@ -160,8 +160,8 @@ openclaw channels add bluebubbles --http-url http://192.168.1.100:1234 --passwor
 - 默认值：`channels.bluebubbles.dmPolicy = "pairing"`。
 - 未知发送者会收到一个配对码；在获得批准前，消息会被忽略（代码 1 小时后过期）。
 - 通过以下方式批准：
-  - `openclaw pairing list bluebubbles`
-  - `openclaw pairing approve bluebubbles <CODE>`
+  - `agdi pairing list bluebubbles`
+  - `agdi pairing approve bluebubbles <CODE>`
 - 配对是默认的令牌交换方式。详情见：[配对](/channels/pairing)
 
 群组：
@@ -204,7 +204,7 @@ BlueBubbles 支持群聊中的提及门控，与 iMessage/WhatsApp 的行为一�
 
 - **输入状态指示**：会在生成响应之前和期间自动发送。
 - **已读回执**：由 `channels.bluebubbles.sendReadReceipts` 控制（默认：`true`）。
-- **输入状态指示**：OpenClaw 会发送输入开始事件；BlueBubbles 会在发送后或超时后自动清除输入状态（通过 DELETE 手动停止并不可靠）。
+- **输入状态指示**：Agdi 会发送输入开始事件；BlueBubbles 会在发送后或超时后自动清除输入状态（通过 DELETE 手动停止并不可靠）。
 
 ```json5
 {
@@ -259,7 +259,7 @@ BlueBubbles 支持群聊中的提及门控，与 iMessage/WhatsApp 的行为一�
 
 ### 消息 ID（短 ID 与完整 ID）
 
-OpenClaw 可能会显示*短*消息 ID（例如 `1`、`2`）以节省 token。
+Agdi 可能会显示*短*消息 ID（例如 `1`、`2`）以节省 token。
 
 - `MessageSid` / `ReplyToId` 可以是短 ID。
 - `MessageSidFull` / `ReplyToIdFull` 包含提供商的完整 ID。
@@ -332,7 +332,7 @@ OpenClaw 可能会显示*短*消息 ID（例如 `1`、`2`）以节省 token。
 - `chat_id:123`
 - `chat_identifier:...`
 - 直接 handle：`+15555550123`、`user@example.com`
-  - 如果某个直接 handle 没有现有私信聊天，OpenClaw 会通过 `POST /api/v1/chat/new` 创建一个。这要求启用 BlueBubbles Private API。
+  - 如果某个直接 handle 没有现有私信聊天，Agdi 会通过 `POST /api/v1/chat/new` 创建一个。这要求启用 BlueBubbles Private API。
 
 ## 安全
 
@@ -344,11 +344,11 @@ OpenClaw 可能会显示*短*消息 ID（例如 `1`、`2`）以节省 token。
 ## 故障排除
 
 - 如果输入状态/已读事件停止工作，请检查 BlueBubbles webhook 日志，并验证 Gateway 网关路径与 `channels.bluebubbles.webhookPath` 一致。
-- 配对码会在一小时后过期；使用 `openclaw pairing list bluebubbles` 和 `openclaw pairing approve bluebubbles <code>`。
+- 配对码会在一小时后过期；使用 `agdi pairing list bluebubbles` 和 `agdi pairing approve bluebubbles <code>`。
 - 回应需要 BlueBubbles private API（`POST /api/v1/message/react`）；请确保服务器版本提供该接口。
 - 编辑/撤回需要 macOS 13+ 以及兼容的 BlueBubbles 服务器版本。在 macOS 26（Tahoe）上，由于 private API 变更，编辑功能目前已损坏。
 - 群组图标更新在 macOS 26（Tahoe）上可能不稳定：API 可能返回成功，但新图标不会同步。
-- OpenClaw 会根据 BlueBubbles 服务器的 macOS 版本自动隐藏已知损坏的操作。如果在 macOS 26（Tahoe）上仍显示编辑操作，请手动使用 `channels.bluebubbles.actions.edit=false` 禁用它。
-- 状态/健康信息请使用：`openclaw status --all` 或 `openclaw status --deep`。
+- Agdi 会根据 BlueBubbles 服务器的 macOS 版本自动隐藏已知损坏的操作。如果在 macOS 26（Tahoe）上仍显示编辑操作，请手动使用 `channels.bluebubbles.actions.edit=false` 禁用它。
+- 状态/健康信息请使用：`agdi status --all` 或 `agdi status --deep`。
 
 有关通用渠道工作流程参考，请参见 [Channels](/channels) 和 [Plugins](/tools/plugin) 指南。

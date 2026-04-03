@@ -1,8 +1,8 @@
 ---
 read_when:
-  - 你想通过 Ollama 在 OpenClaw 中运行云端或本地模型
+  - 你想通过 Ollama 在 Agdi 中运行云端或本地模型
   - 你需要 Ollama 设置和配置指南
-summary: 通过 Ollama 运行 OpenClaw（云端和本地模型）
+summary: 通过 Ollama 运行 Agdi（云端和本地模型）
 title: Ollama
 x-i18n:
   generated_at: "2026-03-16T06:26:42Z"
@@ -15,10 +15,10 @@ x-i18n:
 
 # Ollama
 
-Ollama 是一个本地 LLM 运行时，可以让你轻松在自己的机器上运行开源模型。OpenClaw 集成了 Ollama 的原生 API（`/api/chat`），支持流式传输和工具调用，并且在你选择使用 `OLLAMA_API_KEY`（或凭证配置文件）且未定义显式 `models.providers.ollama` 条目时，可以自动发现本地 Ollama 模型。
+Ollama 是一个本地 LLM 运行时，可以让你轻松在自己的机器上运行开源模型。Agdi 集成了 Ollama 的原生 API（`/api/chat`），支持流式传输和工具调用，并且在你选择使用 `OLLAMA_API_KEY`（或凭证配置文件）且未定义显式 `models.providers.ollama` 条目时，可以自动发现本地 Ollama 模型。
 
 <Warning>
-**远程 Ollama 用户：** 不要在 OpenClaw 中使用 `/v1` 的 OpenAI 兼容 URL（`http://host:11434/v1`）。这会破坏工具调用，而且模型可能会把原始工具 JSON 当作纯文本输出。请改用原生 Ollama API URL：`baseUrl: "http://host:11434"`（不要加 `/v1`）。
+**远程 Ollama 用户：** 不要在 Agdi 中使用 `/v1` 的 OpenAI 兼容 URL（`http://host:11434/v1`）。这会破坏工具调用，而且模型可能会把原始工具 JSON 当作纯文本输出。请改用原生 Ollama API URL：`baseUrl: "http://host:11434"`（不要加 `/v1`）。
 </Warning>
 
 ## 快速开始
@@ -28,7 +28,7 @@ Ollama 是一个本地 LLM 运行时，可以让你轻松在自己的机器上�
 通过设置向导配置 Ollama 是最快的方法：
 
 ```bash
-openclaw onboard
+agdi onboard
 ```
 
 从提供商列表中选择 **Ollama**。向导将会：
@@ -42,7 +42,7 @@ openclaw onboard
 也支持非交互模式：
 
 ```bash
-openclaw onboard --non-interactive \
+agdi onboard --non-interactive \
   --auth-choice ollama \
   --accept-risk
 ```
@@ -50,7 +50,7 @@ openclaw onboard --non-interactive \
 也可以选择指定自定义 base URL 或模型：
 
 ```bash
-openclaw onboard --non-interactive \
+agdi onboard --non-interactive \
   --auth-choice ollama \
   --custom-base-url "http://ollama-host:11434" \
   --custom-model-id "qwen3.5:27b" \
@@ -80,33 +80,33 @@ ollama signin
 4. 运行新手引导并选择 `Ollama`：
 
 ```bash
-openclaw onboard
+agdi onboard
 ```
 
 - `Local`：仅本地模型
 - `Cloud + Local`：本地模型加云端模型
 - 云端模型如 `kimi-k2.5:cloud`、`minimax-m2.5:cloud` 和 `glm-5:cloud` **不需要** 本地执行 `ollama pull`
 
-OpenClaw 当前建议：
+Agdi 当前建议：
 
 - 本地默认：`glm-4.7-flash`
 - 云端默认：`kimi-k2.5:cloud`、`minimax-m2.5:cloud`、`glm-5:cloud`
 
-5. 如果你更喜欢手动设置，也可以直接为 OpenClaw 启用 Ollama（任意值都可以；Ollama 不需要真实 key）：
+5. 如果你更喜欢手动设置，也可以直接为 Agdi 启用 Ollama（任意值都可以；Ollama 不需要真实 key）：
 
 ```bash
 # 设置环境变量
 export OLLAMA_API_KEY="ollama-local"
 
 # 或在配置文件中设置
-openclaw config set models.providers.ollama.apiKey "ollama-local"
+agdi config set models.providers.ollama.apiKey "ollama-local"
 ```
 
 6. 查看或切换模型：
 
 ```bash
-openclaw models list
-openclaw models set ollama/glm-4.7-flash
+agdi models list
+agdi models set ollama/glm-4.7-flash
 ```
 
 7. 或者在配置中设置默认值：
@@ -123,12 +123,12 @@ openclaw models set ollama/glm-4.7-flash
 
 ## 模型发现（隐式提供商）
 
-当你设置 `OLLAMA_API_KEY`（或凭证配置文件），并且**未**定义 `models.providers.ollama` 时，OpenClaw 会从 `http://127.0.0.1:11434` 上的本地 Ollama 实例发现模型：
+当你设置 `OLLAMA_API_KEY`（或凭证配置文件），并且**未**定义 `models.providers.ollama` 时，Agdi 会从 `http://127.0.0.1:11434` 上的本地 Ollama 实例发现模型：
 
 - 查询 `/api/tags`
 - 在可用时，尽力通过 `/api/show` 查找 `contextWindow`
 - 通过模型名称启发式规则标记 `reasoning`（`r1`、`reasoning`、`think`）
-- 将 `maxTokens` 设置为 OpenClaw 使用的默认 Ollama 最大 token 上限
+- 将 `maxTokens` 设置为 Agdi 使用的默认 Ollama 最大 token 上限
 - 将所有成本设置为 `0`
 
 这样无需手动维护模型条目，同时又能让目录与本地 Ollama 实例保持一致。
@@ -137,7 +137,7 @@ openclaw models set ollama/glm-4.7-flash
 
 ```bash
 ollama list
-openclaw models list
+agdi models list
 ```
 
 添加新模型时，只需通过 Ollama 拉取它：
@@ -193,7 +193,7 @@ export OLLAMA_API_KEY="ollama-local"
 }
 ```
 
-如果设置了 `OLLAMA_API_KEY`，你可以在提供商条目中省略 `apiKey`，OpenClaw 会在可用性检查时自动填充它。
+如果设置了 `OLLAMA_API_KEY`，你可以在提供商条目中省略 `apiKey`，Agdi 会在可用性检查时自动填充它。
 
 ### 自定义 base URL（显式配置）
 
@@ -246,7 +246,7 @@ export OLLAMA_API_KEY="ollama-local"
 
 ### 推理模型
 
-OpenClaw 默认会将名称中包含 `deepseek-r1`、`reasoning` 或 `think` 的模型视为支持推理的模型：
+Agdi 默认会将名称中包含 `deepseek-r1`、`reasoning` 或 `think` 的模型视为支持推理的模型：
 
 ```bash
 ollama pull deepseek-r1:32b
@@ -258,7 +258,7 @@ Ollama 是免费的，并且在本地运行，因此所有模型成本都设置�
 
 ### 流式传输配置
 
-OpenClaw 的 Ollama 集成默认使用 **原生 Ollama API**（`/api/chat`），它完全支持同时进行流式传输和工具调用。无需任何特殊配置。
+Agdi 的 Ollama 集成默认使用 **原生 Ollama API**（`/api/chat`），它完全支持同时进行流式传输和工具调用。无需任何特殊配置。
 
 #### 旧版 OpenAI 兼容模式
 
@@ -286,7 +286,7 @@ OpenClaw 的 Ollama 集成默认使用 **原生 Ollama API**（`/api/chat`），
 
 这种模式可能不支持同时进行流式传输 + 工具调用。你可能需要在模型配置中通过 `params: { streaming: false }` 禁用流式传输。
 
-当 Ollama 使用 `api: "openai-completions"` 时，OpenClaw 默认会注入 `options.num_ctx`，这样 Ollama 就不会静默回退到 4096 上下文窗口。如果你的代理/上游拒绝未知的 `options` 字段，请禁用此行为：
+当 Ollama 使用 `api: "openai-completions"` 时，Agdi 默认会注入 `options.num_ctx`，这样 Ollama 就不会静默回退到 4096 上下文窗口。如果你的代理/上游拒绝未知的 `options` 字段，请禁用此行为：
 
 ```json5
 {
@@ -306,7 +306,7 @@ OpenClaw 的 Ollama 集成默认使用 **原生 Ollama API**（`/api/chat`），
 
 ### 上下文窗口
 
-对于自动发现的模型，OpenClaw 会在 Ollama 提供时使用其报告的上下文窗口，否则回退到 OpenClaw 使用的默认 Ollama 上下文窗口。你可以在显式提供商配置中覆盖 `contextWindow` 和 `maxTokens`。
+对于自动发现的模型，Agdi 会在 Ollama 提供时使用其报告的上下文窗口，否则回退到 Agdi 使用的默认 Ollama 上下文窗口。你可以在显式提供商配置中覆盖 `contextWindow` 和 `maxTokens`。
 
 ## 故障排除
 

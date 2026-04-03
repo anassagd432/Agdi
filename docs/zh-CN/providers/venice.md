@@ -1,8 +1,8 @@
 ---
 read_when:
-  - 你想在 OpenClaw 中使用注重隐私的推理
+  - 你想在 Agdi 中使用注重隐私的推理
   - 你想获得 Venice AI 设置指引
-summary: 在 OpenClaw 中使用 Venice AI 注重隐私的模型
+summary: 在 Agdi 中使用 Venice AI 注重隐私的模型
 title: Venice AI
 x-i18n:
   generated_at: "2026-03-16T06:27:49Z"
@@ -19,7 +19,7 @@ x-i18n:
 
 Venice AI 提供注重隐私的 AI 推理，支持未审查模型，并可通过其匿名代理访问主要专有模型。所有推理默认都是私密的——不会使用你的数据进行训练，也不会记录日志。
 
-## 为什么在 OpenClaw 中使用 Venice
+## 为什么在 Agdi 中使用 Venice
 
 - **私密推理**，适用于开源模型（不记录日志）。
 - 当你需要时可使用**未审查模型**。
@@ -54,7 +54,7 @@ Venice 提供两个隐私级别 —— 理解这一点对于选择你的模型�
 2. 前往 **Settings → API Keys → Create new key**
 3. 复制你的 API 密钥（格式：`vapi_xxxxxxxxxxxx`）
 
-### 2. 配置 OpenClaw
+### 2. 配置 Agdi
 
 **选项 A：环境变量**
 
@@ -65,7 +65,7 @@ export VENICE_API_KEY="vapi_xxxxxxxxxxxx"
 **选项 B：交互式设置（推荐）**
 
 ```bash
-openclaw onboard --auth-choice venice-api-key
+agdi onboard --auth-choice venice-api-key
 ```
 
 这将会：
@@ -78,7 +78,7 @@ openclaw onboard --auth-choice venice-api-key
 **选项 C：非交互式**
 
 ```bash
-openclaw onboard --non-interactive \
+agdi onboard --non-interactive \
   --auth-choice venice-api-key \
   --venice-api-key "vapi_xxxxxxxxxxxx"
 ```
@@ -86,12 +86,12 @@ openclaw onboard --non-interactive \
 ### 3. 验证设置
 
 ```bash
-openclaw agent --model venice/kimi-k2-5 --message "Hello, are you working?"
+agdi agent --model venice/kimi-k2-5 --message "Hello, are you working?"
 ```
 
 ## 模型选择
 
-设置完成后，OpenClaw 会显示所有可用的 Venice 模型。请根据你的需要进行选择：
+设置完成后，Agdi 会显示所有可用的 Venice 模型。请根据你的需要进行选择：
 
 - **默认模型**：`venice/kimi-k2-5`，适合强大的私密推理 + 视觉。
 - **高能力选项**：`venice/claude-opus-4-6`，适合最强的匿名 Venice 路径。
@@ -101,19 +101,19 @@ openclaw agent --model venice/kimi-k2-5 --message "Hello, are you working?"
 你可以随时更改默认模型：
 
 ```bash
-openclaw models set venice/kimi-k2-5
-openclaw models set venice/claude-opus-4-6
+agdi models set venice/kimi-k2-5
+agdi models set venice/claude-opus-4-6
 ```
 
 列出所有可用模型：
 
 ```bash
-openclaw models list | grep venice
+agdi models list | grep venice
 ```
 
-## 通过 `openclaw configure` 配置
+## 通过 `agdi configure` 配置
 
-1. 运行 `openclaw configure`
+1. 运行 `agdi configure`
 2. 选择 **Model/auth**
 3. 选择 **Venice AI**
 
@@ -184,7 +184,7 @@ openclaw models list | grep venice
 
 ## 模型发现
 
-当设置了 `VENICE_API_KEY` 时，OpenClaw 会自动从 Venice API 发现模型。如果 API 不可访问，则会回退到静态目录。
+当设置了 `VENICE_API_KEY` 时，Agdi 会自动从 Venice API 发现模型。如果 API 不可访问，则会回退到静态目录。
 
 `/models` 端点是公开的（列出模型无需身份验证），但推理需要有效的 API 密钥。
 
@@ -217,19 +217,19 @@ Venice 使用基于积分的系统。当前费率请查看 [venice.ai/pricing](h
 
 ```bash
 # 使用默认私密模型
-openclaw agent --model venice/kimi-k2-5 --message "Quick health check"
+agdi agent --model venice/kimi-k2-5 --message "Quick health check"
 
 # 通过 Venice 使用 Claude Opus（匿名）
-openclaw agent --model venice/claude-opus-4-6 --message "Summarize this task"
+agdi agent --model venice/claude-opus-4-6 --message "Summarize this task"
 
 # 使用未审查模型
-openclaw agent --model venice/venice-uncensored --message "Draft options"
+agdi agent --model venice/venice-uncensored --message "Draft options"
 
 # 使用带图像的视觉模型
-openclaw agent --model venice/qwen3-vl-235b-a22b --message "Review attached image"
+agdi agent --model venice/qwen3-vl-235b-a22b --message "Review attached image"
 
 # 使用编码模型
-openclaw agent --model venice/qwen3-coder-480b-a35b-instruct --message "Refactor this function"
+agdi agent --model venice/qwen3-coder-480b-a35b-instruct --message "Refactor this function"
 ```
 
 ## 故障排除
@@ -238,14 +238,14 @@ openclaw agent --model venice/qwen3-coder-480b-a35b-instruct --message "Refactor
 
 ```bash
 echo $VENICE_API_KEY
-openclaw models list | grep venice
+agdi models list | grep venice
 ```
 
 请确保该密钥以 `vapi_` 开头。
 
 ### 模型不可用
 
-Venice 模型目录会动态更新。运行 `openclaw models list` 以查看当前可用的模型。某些模型可能暂时离线。
+Venice 模型目录会动态更新。运行 `agdi models list` 以查看当前可用的模型。某些模型可能暂时离线。
 
 ### 连接问题
 

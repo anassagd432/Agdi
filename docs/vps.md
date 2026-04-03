@@ -1,16 +1,16 @@
 ---
-summary: "Run OpenClaw on a Linux server or cloud VPS — provider picker, architecture, and tuning"
+summary: "Run Agdi on a Linux server or cloud VPS — provider picker, architecture, and tuning"
 read_when:
   - You want to run the Gateway on a Linux server or cloud VPS
   - You need a quick map of hosting guides
-  - You want generic Linux server tuning for OpenClaw
+  - You want generic Linux server tuning for Agdi
 title: "Linux Server"
 sidebarTitle: "Linux Server"
 ---
 
 # Linux Server
 
-Run the OpenClaw Gateway on any Linux server or cloud VPS. This page helps you
+Run the Agdi Gateway on any Linux server or cloud VPS. This page helps you
 pick a provider, explains how cloud deployments work, and covers generic Linux
 tuning that applies everywhere.
 
@@ -67,9 +67,9 @@ Docs: [Nodes](/nodes), [Nodes CLI](/cli/nodes).
 If CLI commands feel slow on low-power VMs (or ARM hosts), enable Node's module compile cache:
 
 ```bash
-grep -q 'NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache' ~/.bashrc || cat >> ~/.bashrc <<'EOF'
-export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
-mkdir -p /var/tmp/openclaw-compile-cache
+grep -q 'NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache' ~/.bashrc || cat >> ~/.bashrc <<'EOF'
+export NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache
+mkdir -p /var/tmp/agdi-compile-cache
 export OPENCLAW_NO_RESPAWN=1
 EOF
 source ~/.bashrc
@@ -86,7 +86,7 @@ For VM hosts using `systemd`, consider:
 
 - Add service env for a stable startup path:
   - `OPENCLAW_NO_RESPAWN=1`
-  - `NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache`
+  - `NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache`
 - Keep restart behavior explicit:
   - `Restart=always`
   - `RestartSec=2`
@@ -96,13 +96,13 @@ For VM hosts using `systemd`, consider:
 Example:
 
 ```bash
-sudo systemctl edit openclaw
+sudo systemctl edit agdi
 ```
 
 ```ini
 [Service]
 Environment=OPENCLAW_NO_RESPAWN=1
-Environment=NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
+Environment=NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache
 Restart=always
 RestartSec=2
 TimeoutStartSec=90

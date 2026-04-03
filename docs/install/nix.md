@@ -1,5 +1,5 @@
 ---
-summary: "Install OpenClaw declaratively with Nix"
+summary: "Install Agdi declaratively with Nix"
 read_when:
   - You want reproducible, rollback-able installs
   - You're already using Nix/NixOS/Home Manager
@@ -9,10 +9,10 @@ title: "Nix"
 
 # Nix Installation
 
-Install OpenClaw declaratively with **[nix-openclaw](https://github.com/openclaw/nix-openclaw)** -- a batteries-included Home Manager module.
+Install Agdi declaratively with **[nix-agdi](https://github.com/agdi/nix-agdi)** -- a batteries-included Home Manager module.
 
 <Info>
-The [nix-openclaw](https://github.com/openclaw/nix-openclaw) repo is the source of truth for Nix installation. This page is a quick overview.
+The [nix-agdi](https://github.com/agdi/nix-agdi) repo is the source of truth for Nix installation. This page is a quick overview.
 </Info>
 
 ## What You Get
@@ -29,10 +29,10 @@ The [nix-openclaw](https://github.com/openclaw/nix-openclaw) repo is the source 
     If Nix is not already installed, follow the [Determinate Nix installer](https://github.com/DeterminateSystems/nix-installer) instructions.
   </Step>
   <Step title="Create a local flake">
-    Use the agent-first template from the nix-openclaw repo:
+    Use the agent-first template from the nix-agdi repo:
     ```bash
-    mkdir -p ~/code/openclaw-local
-    # Copy templates/agent-first/flake.nix from the nix-openclaw repo
+    mkdir -p ~/code/agdi-local
+    # Copy templates/agent-first/flake.nix from the nix-agdi repo
     ```
   </Step>
   <Step title="Configure secrets">
@@ -48,11 +48,11 @@ The [nix-openclaw](https://github.com/openclaw/nix-openclaw) repo is the source 
   </Step>
 </Steps>
 
-See the [nix-openclaw README](https://github.com/openclaw/nix-openclaw) for full module options and examples.
+See the [nix-agdi README](https://github.com/agdi/nix-agdi) for full module options and examples.
 
 ## Nix Mode Runtime Behavior
 
-When `OPENCLAW_NIX_MODE=1` is set (automatic with nix-openclaw), OpenClaw enters a deterministic mode that disables auto-install flows.
+When `OPENCLAW_NIX_MODE=1` is set (automatic with nix-agdi), Agdi enters a deterministic mode that disables auto-install flows.
 
 You can also set it manually:
 
@@ -63,7 +63,7 @@ export OPENCLAW_NIX_MODE=1
 On macOS, the GUI app does not automatically inherit shell environment variables. Enable Nix mode via defaults instead:
 
 ```bash
-defaults write ai.openclaw.mac openclaw.nixMode -bool true
+defaults write ai.agdi.mac agdi.nixMode -bool true
 ```
 
 ### What changes in Nix mode
@@ -74,16 +74,16 @@ defaults write ai.openclaw.mac openclaw.nixMode -bool true
 
 ### Config and state paths
 
-OpenClaw reads JSON5 config from `OPENCLAW_CONFIG_PATH` and stores mutable data in `OPENCLAW_STATE_DIR`. When running under Nix, set these explicitly to Nix-managed locations so runtime state and config stay out of the immutable store.
+Agdi reads JSON5 config from `OPENCLAW_CONFIG_PATH` and stores mutable data in `OPENCLAW_STATE_DIR`. When running under Nix, set these explicitly to Nix-managed locations so runtime state and config stay out of the immutable store.
 
 | Variable               | Default                                 |
 | ---------------------- | --------------------------------------- |
 | `OPENCLAW_HOME`        | `HOME` / `USERPROFILE` / `os.homedir()` |
-| `OPENCLAW_STATE_DIR`   | `~/.openclaw`                           |
-| `OPENCLAW_CONFIG_PATH` | `$OPENCLAW_STATE_DIR/openclaw.json`     |
+| `OPENCLAW_STATE_DIR`   | `~/.agdi`                           |
+| `OPENCLAW_CONFIG_PATH` | `$OPENCLAW_STATE_DIR/agdi.json`     |
 
 ## Related
 
-- [nix-openclaw](https://github.com/openclaw/nix-openclaw) -- full setup guide
+- [nix-agdi](https://github.com/agdi/nix-agdi) -- full setup guide
 - [Wizard](/start/wizard) -- non-Nix CLI setup
 - [Docker](/install/docker) -- containerized setup

@@ -30,11 +30,11 @@ Use this page for day-1 startup and day-2 operations of the Gateway service.
   <Step title="Start the Gateway">
 
 ```bash
-openclaw gateway --port 18789
+agdi gateway --port 18789
 # debug/trace mirrored to stdio
-openclaw gateway --port 18789 --verbose
+agdi gateway --port 18789 --verbose
 # force-kill listener on selected port, then start
-openclaw gateway --force
+agdi gateway --force
 ```
 
   </Step>
@@ -42,9 +42,9 @@ openclaw gateway --force
   <Step title="Verify service health">
 
 ```bash
-openclaw gateway status
-openclaw status
-openclaw logs --follow
+agdi gateway status
+agdi status
+agdi logs --follow
 ```
 
 Healthy baseline: `Runtime: running` and `RPC probe: ok`.
@@ -54,7 +54,7 @@ Healthy baseline: `Runtime: running` and `RPC probe: ok`.
   <Step title="Validate channel readiness">
 
 ```bash
-openclaw channels status --probe
+agdi channels status --probe
 ```
 
   </Step>
@@ -77,7 +77,7 @@ Default mode is `gateway.reload.mode="hybrid"`.
 
 ## OpenAI-compatible endpoints
 
-OpenClaw’s highest-leverage compatibility surface is now:
+Agdi’s highest-leverage compatibility surface is now:
 
 - `GET /v1/models`
 - `GET /v1/models/{id}`
@@ -93,9 +93,9 @@ Why this set matters:
 
 Planning note:
 
-- `/v1/models` is agent-first: it returns `openclaw`, `openclaw/default`, and `openclaw/<agentId>`.
-- `openclaw/default` is the stable alias that always maps to the configured default agent.
-- Use `x-openclaw-model` when you want a backend provider/model override; otherwise the selected agent's normal model and embedding setup stays in control.
+- `/v1/models` is agent-first: it returns `agdi`, `agdi/default`, and `agdi/<agentId>`.
+- `agdi/default` is the stable alias that always maps to the configured default agent.
+- Use `x-agdi-model` when you want a backend provider/model override; otherwise the selected agent's normal model and embedding setup stays in control.
 
 All of these run on the main Gateway port and use the same trusted operator auth boundary as the rest of the Gateway HTTP API.
 
@@ -118,15 +118,15 @@ All of these run on the main Gateway port and use the same trusted operator auth
 ## Operator command set
 
 ```bash
-openclaw gateway status
-openclaw gateway status --deep
-openclaw gateway status --json
-openclaw gateway install
-openclaw gateway restart
-openclaw gateway stop
-openclaw secrets reload
-openclaw logs --follow
-openclaw doctor
+agdi gateway status
+agdi gateway status --deep
+agdi gateway status --json
+agdi gateway install
+agdi gateway restart
+agdi gateway stop
+agdi secrets reload
+agdi logs --follow
+agdi doctor
 ```
 
 ## Remote access
@@ -154,22 +154,22 @@ Use supervised runs for production-like reliability.
   <Tab title="macOS (launchd)">
 
 ```bash
-openclaw gateway install
-openclaw gateway status
-openclaw gateway restart
-openclaw gateway stop
+agdi gateway install
+agdi gateway status
+agdi gateway restart
+agdi gateway stop
 ```
 
-LaunchAgent labels are `ai.openclaw.gateway` (default) or `ai.openclaw.<profile>` (named profile). `openclaw doctor` audits and repairs service config drift.
+LaunchAgent labels are `ai.agdi.gateway` (default) or `ai.agdi.<profile>` (named profile). `agdi doctor` audits and repairs service config drift.
 
   </Tab>
 
   <Tab title="Linux (systemd user)">
 
 ```bash
-openclaw gateway install
-systemctl --user enable --now openclaw-gateway[-<profile>].service
-openclaw gateway status
+agdi gateway install
+systemctl --user enable --now agdi-gateway[-<profile>].service
+agdi gateway status
 ```
 
 For persistence after logout, enable lingering:
@@ -186,7 +186,7 @@ Use a system unit for multi-user/always-on hosts.
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now openclaw-gateway[-<profile>].service
+sudo systemctl enable --now agdi-gateway[-<profile>].service
 ```
 
   </Tab>
@@ -207,8 +207,8 @@ Checklist per instance:
 Example:
 
 ```bash
-OPENCLAW_CONFIG_PATH=~/.openclaw/a.json OPENCLAW_STATE_DIR=~/.openclaw-a openclaw gateway --port 19001
-OPENCLAW_CONFIG_PATH=~/.openclaw/b.json OPENCLAW_STATE_DIR=~/.openclaw-b openclaw gateway --port 19002
+OPENCLAW_CONFIG_PATH=~/.agdi/a.json OPENCLAW_STATE_DIR=~/.agdi-a agdi gateway --port 19001
+OPENCLAW_CONFIG_PATH=~/.agdi/b.json OPENCLAW_STATE_DIR=~/.agdi-b agdi gateway --port 19002
 ```
 
 See: [Multiple gateways](/gateway/multiple-gateways).
@@ -216,9 +216,9 @@ See: [Multiple gateways](/gateway/multiple-gateways).
 ### Dev profile quick path
 
 ```bash
-openclaw --dev setup
-openclaw --dev gateway --allow-unconfigured
-openclaw --dev status
+agdi --dev setup
+agdi --dev gateway --allow-unconfigured
+agdi --dev status
 ```
 
 Defaults include isolated state/config and base gateway port `19001`.
@@ -247,9 +247,9 @@ See full protocol docs: [Gateway Protocol](/gateway/protocol).
 ### Readiness
 
 ```bash
-openclaw gateway status
-openclaw channels status --probe
-openclaw health
+agdi gateway status
+agdi channels status --probe
+agdi health
 ```
 
 ### Gap recovery

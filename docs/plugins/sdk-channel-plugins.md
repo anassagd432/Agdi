@@ -1,28 +1,28 @@
 ---
 title: "Building Channel Plugins"
 sidebarTitle: "Channel Plugins"
-summary: "Step-by-step guide to building a messaging channel plugin for OpenClaw"
+summary: "Step-by-step guide to building a messaging channel plugin for Agdi"
 read_when:
   - You are building a new messaging channel plugin
-  - You want to connect OpenClaw to a messaging platform
+  - You want to connect Agdi to a messaging platform
   - You need to understand the ChannelPlugin adapter surface
 ---
 
 # Building Channel Plugins
 
-This guide walks through building a channel plugin that connects OpenClaw to a
+This guide walks through building a channel plugin that connects Agdi to a
 messaging platform. By the end you will have a working channel with DM security,
 pairing, reply threading, and outbound messaging.
 
 <Info>
-  If you have not built any OpenClaw plugin before, read
+  If you have not built any Agdi plugin before, read
   [Getting Started](/plugins/building-plugins) first for the basic package
   structure and manifest setup.
 </Info>
 
 ## How channel plugins work
 
-Channel plugins do not need their own send/edit/react tools. OpenClaw keeps one
+Channel plugins do not need their own send/edit/react tools. Agdi keeps one
 shared `message` tool in core. Your plugin owns:
 
 - **Config** — account resolution and setup wizard
@@ -44,22 +44,22 @@ dispatch.
     <CodeGroup>
     ```json package.json
     {
-      "name": "@myorg/openclaw-acme-chat",
+      "name": "@myorg/agdi-acme-chat",
       "version": "1.0.0",
       "type": "module",
-      "openclaw": {
+      "agdi": {
         "extensions": ["./index.ts"],
         "setupEntry": "./setup-entry.ts",
         "channel": {
           "id": "acme-chat",
           "label": "Acme Chat",
-          "blurb": "Connect OpenClaw to Acme Chat."
+          "blurb": "Connect Agdi to Acme Chat."
         }
       }
     }
     ```
 
-    ```json openclaw.plugin.json
+    ```json agdi.plugin.json
     {
       "id": "acme-chat",
       "kind": "channel",
@@ -98,8 +98,8 @@ dispatch.
     import {
       createChatChannelPlugin,
       createChannelPluginBase,
-    } from "openclaw/plugin-sdk/core";
-    import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+    } from "agdi/plugin-sdk/core";
+    import type { AgdiConfig } from "agdi/plugin-sdk/core";
     import { acmeChatApi } from "./client.js"; // your platform API client
 
     type ResolvedAccount = {
@@ -110,7 +110,7 @@ dispatch.
     };
 
     function resolveAccount(
-      cfg: OpenClawConfig,
+      cfg: AgdiConfig,
       accountId?: string | null,
     ): ResolvedAccount {
       const section = (cfg.channels as Record<string, any>)?.["acme-chat"];
@@ -206,7 +206,7 @@ dispatch.
     Create `index.ts`:
 
     ```typescript index.ts
-    import { defineChannelPluginEntry } from "openclaw/plugin-sdk/core";
+    import { defineChannelPluginEntry } from "agdi/plugin-sdk/core";
     import { acmeChatPlugin } from "./src/channel.js";
 
     export default defineChannelPluginEntry({
@@ -238,13 +238,13 @@ dispatch.
     Create `setup-entry.ts` for lightweight loading during onboarding:
 
     ```typescript setup-entry.ts
-    import { defineSetupPluginEntry } from "openclaw/plugin-sdk/core";
+    import { defineSetupPluginEntry } from "agdi/plugin-sdk/core";
     import { acmeChatPlugin } from "./src/channel.js";
 
     export default defineSetupPluginEntry(acmeChatPlugin);
     ```
 
-    OpenClaw loads this instead of the full entry when the channel is disabled
+    Agdi loads this instead of the full entry when the channel is disabled
     or unconfigured. It avoids pulling in heavy runtime code during setup flows.
     See [Setup and Config](/plugins/sdk-setup#setup-entry) for details.
 
@@ -252,7 +252,7 @@ dispatch.
 
   <Step title="Handle inbound messages">
     Your plugin needs to receive messages from the platform and forward them to
-    OpenClaw. The typical pattern is a webhook that verifies the request and
+    Agdi. The typical pattern is a webhook that verifies the request and
     dispatches it through your channel's inbound handler:
 
     ```typescript
@@ -263,7 +263,7 @@ dispatch.
         handler: async (req, res) => {
           const event = parseWebhookPayload(req);
 
-          // Your inbound handler dispatches the message to OpenClaw.
+          // Your inbound handler dispatches the message to Agdi.
           // The exact wiring depends on your platform SDK —
           // see a real example in extensions/msteams or extensions/googlechat.
           await handleAcmeChatInbound(api, event);
@@ -332,8 +332,8 @@ dispatch.
 
 ```
 extensions/acme-chat/
-├── package.json              # openclaw.channel metadata
-├── openclaw.plugin.json      # Manifest with config schema
+├── package.json              # agdi.channel metadata
+├── agdi.plugin.json      # Manifest with config schema
 ├── index.ts                  # defineChannelPluginEntry
 ├── setup-entry.ts            # defineSetupPluginEntry
 ├── api.ts                    # Public exports (optional)

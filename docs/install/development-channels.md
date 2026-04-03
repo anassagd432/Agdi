@@ -10,7 +10,7 @@ sidebarTitle: "Release Channels"
 
 # Development channels
 
-OpenClaw ships three update channels:
+Agdi ships three update channels:
 
 - **stable**: npm dist-tag `latest`. Recommended for most users.
 - **beta**: npm dist-tag `beta` (builds under test).
@@ -24,9 +24,9 @@ without changing the version number -- dist-tags are the source of truth for npm
 ## Switching channels
 
 ```bash
-openclaw update --channel stable
-openclaw update --channel beta
-openclaw update --channel dev
+agdi update --channel stable
+agdi update --channel beta
+agdi update --channel dev
 ```
 
 `--channel` persists your choice in config (`update.channel`) and aligns the
@@ -34,7 +34,7 @@ install method:
 
 - **`stable`/`beta`** (package installs): updates via the matching npm dist-tag.
 - **`stable`/`beta`** (git installs): checks out the latest matching git tag.
-- **`dev`**: ensures a git checkout (default `~/openclaw`, override with
+- **`dev`**: ensures a git checkout (default `~/agdi`, override with
   `OPENCLAW_GIT_DIR`), switches to `main`, rebases on upstream, builds, and
   installs the global CLI from that checkout.
 
@@ -48,35 +48,35 @@ update **without** changing your persisted channel:
 
 ```bash
 # Install a specific version
-openclaw update --tag 2026.3.22
+agdi update --tag 2026.3.22
 
 # Install from the beta dist-tag (one-off, does not persist)
-openclaw update --tag beta
+agdi update --tag beta
 
 # Install from GitHub main branch (npm tarball)
-openclaw update --tag main
+agdi update --tag main
 
 # Install a specific npm package spec
-openclaw update --tag openclaw@2026.3.22
+agdi update --tag agdi@2026.3.22
 ```
 
 Notes:
 
 - `--tag` applies to **package (npm) installs only**. Git installs ignore it.
-- The tag is not persisted. Your next `openclaw update` uses your configured
+- The tag is not persisted. Your next `agdi update` uses your configured
   channel as usual.
 - Downgrade protection: if the target version is older than your current version,
-  OpenClaw prompts for confirmation (skip with `--yes`).
+  Agdi prompts for confirmation (skip with `--yes`).
 
 ## Dry run
 
-Preview what `openclaw update` would do without making changes:
+Preview what `agdi update` would do without making changes:
 
 ```bash
-openclaw update --dry-run
-openclaw update --channel beta --dry-run
-openclaw update --tag 2026.3.22 --dry-run
-openclaw update --dry-run --json
+agdi update --dry-run
+agdi update --channel beta --dry-run
+agdi update --tag 2026.3.22 --dry-run
+agdi update --dry-run --json
 ```
 
 The dry run shows the effective channel, target version, planned actions, and
@@ -84,7 +84,7 @@ whether a downgrade confirmation would be required.
 
 ## Plugins and channels
 
-When you switch channels with `openclaw update`, OpenClaw also syncs plugin
+When you switch channels with `agdi update`, Agdi also syncs plugin
 sources:
 
 - `dev` prefers bundled plugins from the git checkout.
@@ -94,7 +94,7 @@ sources:
 ## Checking current status
 
 ```bash
-openclaw update status
+agdi update status
 ```
 
 Shows the active channel, install kind (git or package), current version, and

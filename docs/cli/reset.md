@@ -1,20 +1,20 @@
 ---
-summary: "CLI reference for `openclaw reset` (reset local state/config)"
+summary: "CLI reference for `agdi reset` (reset local state/config)"
 read_when:
   - You want to wipe local state while keeping the CLI installed
   - You want a dry-run of what would be removed
 title: "reset"
 ---
 
-# `openclaw reset`
+# `agdi reset`
 
 Reset local config/state (keeps the CLI installed).
 
 ```bash
-openclaw backup create
-openclaw reset
-openclaw reset --dry-run
-openclaw reset --scope config+creds+sessions --yes --non-interactive
+agdi backup create
+agdi reset
+agdi reset --dry-run
+agdi reset --scope config+creds+sessions --yes --non-interactive
 ```
 
-Run `openclaw backup create` first if you want a restorable snapshot before removing local state.
+Run `agdi backup create` first if you want a restorable snapshot before removing local state.

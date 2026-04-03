@@ -1,5 +1,5 @@
 ---
-summary: "Mattermost bot setup and OpenClaw config"
+summary: "Mattermost bot setup and Agdi config"
 read_when:
   - Setting up Mattermost
   - Debugging Mattermost routing
@@ -19,17 +19,17 @@ Mattermost ships as a plugin and is not bundled with the core install.
 Install via CLI (npm registry):
 
 ```bash
-openclaw plugins install @openclaw/mattermost
+agdi plugins install @agdi/mattermost
 ```
 
 Local checkout (when running from a git repo):
 
 ```bash
-openclaw plugins install ./extensions/mattermost
+agdi plugins install ./extensions/mattermost
 ```
 
 If you choose Mattermost during setup and a git checkout is detected,
-OpenClaw will offer the local install path automatically.
+Agdi will offer the local install path automatically.
 
 Details: [Plugins](/tools/plugin)
 
@@ -38,7 +38,7 @@ Details: [Plugins](/tools/plugin)
 1. Install the Mattermost plugin.
 2. Create a Mattermost bot account and copy the **bot token**.
 3. Copy the Mattermost **base URL** (e.g., `https://chat.example.com`).
-4. Configure OpenClaw and start the gateway.
+4. Configure Agdi and start the gateway.
 
 Minimal config:
 
@@ -57,7 +57,7 @@ Minimal config:
 
 ## Native slash commands
 
-Native slash commands are opt-in. When enabled, OpenClaw registers `oc_*` slash commands via
+Native slash commands are opt-in. When enabled, Agdi registers `oc_*` slash commands via
 the Mattermost API and receives callback POSTs on the gateway HTTP server.
 
 ```json5
@@ -79,14 +79,14 @@ the Mattermost API and receives callback POSTs on the gateway HTTP server.
 Notes:
 
 - `native: "auto"` defaults to disabled for Mattermost. Set `native: true` to enable.
-- If `callbackUrl` is omitted, OpenClaw derives one from gateway host/port + `callbackPath`.
+- If `callbackUrl` is omitted, Agdi derives one from gateway host/port + `callbackPath`.
 - For multi-account setups, `commands` can be set at the top level or under
   `channels.mattermost.accounts.<id>.commands` (account values override top-level fields).
 - Command callbacks are validated with per-command tokens and fail closed when token checks fail.
 - Reachability requirement: the callback endpoint must be reachable from the Mattermost server.
-  - Do not set `callbackUrl` to `localhost` unless Mattermost runs on the same host/network namespace as OpenClaw.
-  - Do not set `callbackUrl` to your Mattermost base URL unless that URL reverse-proxies `/api/channels/mattermost/command` to OpenClaw.
-  - A quick check is `curl https://<gateway-host>/api/channels/mattermost/command`; a GET should return `405 Method Not Allowed` from OpenClaw, not `404`.
+  - Do not set `callbackUrl` to `localhost` unless Mattermost runs on the same host/network namespace as Agdi.
+  - Do not set `callbackUrl` to your Mattermost base URL unless that URL reverse-proxies `/api/channels/mattermost/command` to Agdi.
+  - A quick check is `curl https://<gateway-host>/api/channels/mattermost/command`; a GET should return `405 Method Not Allowed` from Agdi, not `404`.
 - Mattermost egress allowlist requirement:
   - If your callback targets private/tailnet/internal addresses, set Mattermost
     `ServiceSettings.AllowedUntrustedInternalConnections` to include the callback host/domain.
@@ -162,8 +162,8 @@ Notes:
 
 - Default: `channels.mattermost.dmPolicy = "pairing"` (unknown senders get a pairing code).
 - Approve via:
-  - `openclaw pairing list mattermost`
-  - `openclaw pairing approve mattermost <CODE>`
+  - `agdi pairing list mattermost`
+  - `agdi pairing approve mattermost <CODE>`
 - Public DMs: `channels.mattermost.dmPolicy="open"` plus `channels.mattermost.allowFrom=["*"]`.
 
 ## Channels (groups)
@@ -176,7 +176,7 @@ Notes:
 
 ## Targets for outbound delivery
 
-Use these target formats with `openclaw message send` or cron/webhooks:
+Use these target formats with `agdi message send` or cron/webhooks:
 
 - `channel:<id>` for a channel
 - `user:<id>` for a DM
@@ -184,16 +184,16 @@ Use these target formats with `openclaw message send` or cron/webhooks:
 
 Bare opaque IDs (like `64ifufp...`) are **ambiguous** in Mattermost (user ID vs channel ID).
 
-OpenClaw resolves them **user-first**:
+Agdi resolves them **user-first**:
 
-- If the ID exists as a user (`GET /api/v4/users/<id>` succeeds), OpenClaw sends a **DM** by resolving the direct channel via `/api/v4/channels/direct`.
+- If the ID exists as a user (`GET /api/v4/users/<id>` succeeds), Agdi sends a **DM** by resolving the direct channel via `/api/v4/channels/direct`.
 - Otherwise the ID is treated as a **channel ID**.
 
 If you need deterministic behavior, always use the explicit prefixes (`user:<id>` / `channel:<id>`).
 
 ## DM channel retry
 
-When OpenClaw sends to a Mattermost DM target and needs to resolve the direct channel first, it
+When Agdi sends to a Mattermost DM target and needs to resolve the direct channel first, it
 retries transient direct-channel creation failures by default.
 
 Use `channels.mattermost.dmChannelRetry` to tune that behavior globally for the Mattermost plugin,
@@ -291,10 +291,10 @@ Config:
   reach the gateway at its bind host directly.
 - In multi-account setups, you can also set the same field under
   `channels.mattermost.accounts.<id>.interactions.callbackBaseUrl`.
-- If `interactions.callbackBaseUrl` is omitted, OpenClaw derives the callback URL from
+- If `interactions.callbackBaseUrl` is omitted, Agdi derives the callback URL from
   `gateway.customBindHost` + `gateway.port`, then falls back to `http://localhost:<port>`.
 - Reachability rule: the button callback URL must be reachable from the Mattermost server.
-  `localhost` only works when Mattermost and OpenClaw run on the same host/network namespace.
+  `localhost` only works when Mattermost and Agdi run on the same host/network namespace.
 - If your callback target is private/tailnet/internal, add its host/domain to Mattermost
   `ServiceSettings.AllowedUntrustedInternalConnections`.
 
@@ -353,7 +353,7 @@ The gateway verifies button clicks with HMAC-SHA256. External scripts must gener
 that match the gateway's verification logic:
 
 1. Derive the secret from the bot token:
-   `HMAC-SHA256(key="openclaw-mattermost-interactions", data=botToken)`
+   `HMAC-SHA256(key="agdi-mattermost-interactions", data=botToken)`
 2. Build the context object with all fields **except** `_token`.
 3. Serialize with **sorted keys** and **no spaces** (the gateway uses `JSON.stringify`
    with sorted keys, which produces compact output).
@@ -366,7 +366,7 @@ Python example:
 import hmac, hashlib, json
 
 secret = hmac.new(
-    b"openclaw-mattermost-interactions",
+    b"agdi-mattermost-interactions",
     bot_token.encode(), hashlib.sha256
 ).hexdigest()
 
@@ -392,7 +392,7 @@ Common HMAC pitfalls:
 
 The Mattermost plugin includes a directory adapter that resolves channel and user names
 via the Mattermost API. This enables `#channel-name` and `@username` targets in
-`openclaw message send` and cron/webhook deliveries.
+`agdi message send` and cron/webhook deliveries.
 
 No configuration is needed — the adapter uses the bot token from the account config.
 

@@ -23,8 +23,8 @@ Gateway 网关在 Linux 上得到完全支持。**Node 是推荐的运行时**�
 ## 面向初学者的快速路径（VPS）
 
 1. 安装 Node 24（推荐；Node 22 LTS，目前 `22.16+`，为了兼容性仍然可用）
-2. `npm i -g openclaw@latest`
-3. `openclaw onboard --install-daemon`
+2. `npm i -g agdi@latest`
+3. `agdi onboard --install-daemon`
 4. 在你的笔记本电脑上运行：`ssh -N -L 18789:127.0.0.1:18789 <user>@<host>`
 5. 打开 `http://127.0.0.1:18789/` 并粘贴你的令牌
 
@@ -46,19 +46,19 @@ Gateway 网关在 Linux 上得到完全支持。**Node 是推荐的运行时**�
 使用以下任一方式：
 
 ```
-openclaw onboard --install-daemon
+agdi onboard --install-daemon
 ```
 
 或者：
 
 ```
-openclaw gateway install
+agdi gateway install
 ```
 
 或者：
 
 ```
-openclaw configure
+agdi configure
 ```
 
 出现提示时，选择 **Gateway 服务**。
@@ -66,26 +66,26 @@ openclaw configure
 修复/迁移：
 
 ```
-openclaw doctor
+agdi doctor
 ```
 
 ## 系统控制（systemd 用户单元）
 
-OpenClaw 默认安装 systemd **用户**服务。对于共享或始终在线的服务器，请使用 **系统** 服务。完整的单元示例和指导
+Agdi 默认安装 systemd **用户**服务。对于共享或始终在线的服务器，请使用 **系统** 服务。完整的单元示例和指导
 请参见 [Gateway 网关运行手册](/gateway)。
 
 最小设置：
 
-创建 `~/.config/systemd/user/openclaw-gateway[-<profile>].service`：
+创建 `~/.config/systemd/user/agdi-gateway[-<profile>].service`：
 
 ```
 [Unit]
-Description=OpenClaw Gateway (profile: <profile>, v<version>)
+Description=Agdi Gateway (profile: <profile>, v<version>)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/openclaw gateway --port 18789
+ExecStart=/usr/local/bin/agdi gateway --port 18789
 Restart=always
 RestartSec=5
 
@@ -96,5 +96,5 @@ WantedBy=default.target
 启用它：
 
 ```
-systemctl --user enable --now openclaw-gateway[-<profile>].service
+systemctl --user enable --now agdi-gateway[-<profile>].service
 ```

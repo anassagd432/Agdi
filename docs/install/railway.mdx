@@ -1,12 +1,12 @@
 ---
-summary: "Deploy OpenClaw on Railway with one-click template"
+summary: "Deploy Agdi on Railway with one-click template"
 read_when:
-  - Deploying OpenClaw to Railway
+  - Deploying Agdi to Railway
   - You want a one-click cloud deploy with browser-based Control UI
 title: "Railway"
 ---
 
-Deploy OpenClaw on Railway with a one-click template and access it through the web Control UI.
+Deploy Agdi on Railway with a one-click template and access it through the web Control UI.
 This is the easiest "no terminal on the server" path: Railway runs the Gateway for you.
 
 ## Quick checklist (new users)
@@ -15,7 +15,7 @@ This is the easiest "no terminal on the server" path: Railway runs the Gateway f
 2. Add a **Volume** mounted at `/data`.
 3. Set the required **Variables** (at least `OPENCLAW_GATEWAY_PORT` and `OPENCLAW_GATEWAY_TOKEN`).
 4. Enable **HTTP Proxy** on port `8080`.
-5. Open `https://<your-railway-domain>/openclaw` and connect using your `OPENCLAW_GATEWAY_TOKEN`.
+5. Open `https://<your-railway-domain>/agdi` and connect using your `OPENCLAW_GATEWAY_TOKEN`.
 
 ## One-click deploy
 
@@ -32,11 +32,11 @@ Railway will either:
 
 Then open:
 
-- `https://<your-railway-domain>/openclaw` — Control UI
+- `https://<your-railway-domain>/agdi` — Control UI
 
 ## What you get
 
-- Hosted OpenClaw Gateway + Control UI
+- Hosted Agdi Gateway + Control UI
 - Persistent storage via Railway Volume (`/data`) so config/credentials/workspace survive redeploys
 
 ## Required Railway settings
@@ -59,12 +59,12 @@ Set these variables on the service:
 
 - `OPENCLAW_GATEWAY_PORT=8080` (required — must match the port in Public Networking)
 - `OPENCLAW_GATEWAY_TOKEN` (required; treat as an admin secret)
-- `OPENCLAW_STATE_DIR=/data/.openclaw` (recommended)
+- `OPENCLAW_STATE_DIR=/data/.agdi` (recommended)
 - `OPENCLAW_WORKSPACE_DIR=/data/workspace` (recommended)
 
 ## Connect a channel
 
-Use the Control UI at `/openclaw` or run `openclaw onboard` via Railway's shell for channel setup instructions:
+Use the Control UI at `/agdi` or run `agdi onboard` via Railway's shell for channel setup instructions:
 
 - [Telegram](/channels/telegram) (fastest — just a bot token)
 - [Discord](/channels/discord)
@@ -75,13 +75,13 @@ Use the Control UI at `/openclaw` or run `openclaw onboard` via Railway's shell 
 Export your configuration and workspace:
 
 ```bash
-openclaw backup create
+agdi backup create
 ```
 
-This creates a portable backup archive you can restore on any OpenClaw host. See [Backup](/cli/backup) for details.
+This creates a portable backup archive you can restore on any Agdi host. See [Backup](/cli/backup) for details.
 
 ## Next steps
 
 - Set up messaging channels: [Channels](/channels)
 - Configure the Gateway: [Gateway configuration](/gateway/configuration)
-- Keep OpenClaw up to date: [Updating](/install/updating)
+- Keep Agdi up to date: [Updating](/install/updating)

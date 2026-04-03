@@ -57,7 +57,7 @@ OPENCLAW_DIAGNOSTICS=0
 Flags emit logs into the standard diagnostics log file. By default:
 
 ```
-/tmp/openclaw/openclaw-YYYY-MM-DD.log
+/tmp/agdi/agdi-YYYY-MM-DD.log
 ```
 
 If you set `logging.file`, use that path instead. Logs are JSONL (one JSON object per line). Redaction still applies based on `logging.redactSensitive`.
@@ -67,22 +67,22 @@ If you set `logging.file`, use that path instead. Logs are JSONL (one JSON objec
 Pick the latest log file:
 
 ```bash
-ls -t /tmp/openclaw/openclaw-*.log | head -n 1
+ls -t /tmp/agdi/agdi-*.log | head -n 1
 ```
 
 Filter for Telegram HTTP diagnostics:
 
 ```bash
-rg "telegram http error" /tmp/openclaw/openclaw-*.log
+rg "telegram http error" /tmp/agdi/agdi-*.log
 ```
 
 Or tail while reproducing:
 
 ```bash
-tail -f /tmp/openclaw/openclaw-$(date +%F).log | rg "telegram http error"
+tail -f /tmp/agdi/agdi-$(date +%F).log | rg "telegram http error"
 ```
 
-For remote gateways, you can also use `openclaw logs --follow` (see [/cli/logs](/cli/logs)).
+For remote gateways, you can also use `agdi logs --follow` (see [/cli/logs](/cli/logs)).
 
 ## Notes
 

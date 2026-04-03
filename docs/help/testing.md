@@ -9,7 +9,7 @@ title: "Testing"
 
 # Testing
 
-OpenClaw has three Vitest suites (unit/integration, e2e, live) and a small set of Docker runners.
+Agdi has three Vitest suites (unit/integration, e2e, live) and a small set of Docker runners.
 
 This doc is a “how we test” guide:
 
@@ -117,7 +117,7 @@ Think of the suites as “increasing realism” (and increasing flakiness/cost):
 - Scope:
   - Starts an isolated OpenShell gateway on the host via Docker
   - Creates a sandbox from a temporary local Dockerfile
-  - Exercises OpenClaw's OpenShell backend over real `sandbox ssh-config` + SSH exec
+  - Exercises Agdi's OpenShell backend over real `sandbox ssh-config` + SSH exec
   - Verifies remote-canonical filesystem behavior through the sandbox fs bridge
 - Expectations:
   - Opt-in only; not part of the default `pnpm test:e2e` run
@@ -203,7 +203,7 @@ Live tests are split into two layers so we can isolate failures:
   - Separates “provider API is broken / key is invalid” from “gateway agent pipeline is broken”
   - Contains small, isolated regressions (example: OpenAI Responses/Codex Responses reasoning replay + tool-call flows)
 
-### Layer 2: Gateway + dev agent smoke (what "@openclaw" actually does)
+### Layer 2: Gateway + dev agent smoke (what "@agdi" actually does)
 
 - Test: `src/gateway/gateway-models.profiles.live.test.ts`
 - Goal:
@@ -240,8 +240,8 @@ Live tests are split into two layers so we can isolate failures:
 Tip: to see what you can test on your machine (and the exact `provider/model` ids), run:
 
 ```bash
-openclaw models list
-openclaw models list --json
+agdi models list
+agdi models list --json
 ```
 
 ## Live: Anthropic setup-token smoke
@@ -260,7 +260,7 @@ openclaw models list --json
 Setup example:
 
 ```bash
-openclaw models auth paste-token --provider anthropic --profile-id anthropic:setup-token-test
+agdi models auth paste-token --provider anthropic --profile-id anthropic:setup-token-test
 OPENCLAW_LIVE_SETUP_TOKEN=1 OPENCLAW_LIVE_SETUP_TOKEN_PROFILE=anthropic:setup-token-test pnpm test:live src/agents/anthropic.setup-token.live.test.ts
 ```
 
@@ -318,8 +318,8 @@ Notes:
 - `google-antigravity/...` uses the Antigravity OAuth bridge (Cloud Code Assist-style agent endpoint).
 - `google-gemini-cli/...` uses the local Gemini CLI on your machine (separate auth + tooling quirks).
 - Gemini API vs Gemini CLI:
-  - API: OpenClaw calls Google’s hosted Gemini API over HTTP (API key / profile auth); this is what most users mean by “Gemini”.
-  - CLI: OpenClaw shells out to a local `gemini` binary; it has its own auth and can behave differently (streaming/tool support/version skew).
+  - API: Agdi calls Google’s hosted Gemini API over HTTP (API key / profile auth); this is what most users mean by “Gemini”.
+  - CLI: Agdi shells out to a local `gemini` binary; it has its own auth and can behave differently (streaming/tool support/version skew).
 
 ## Live: model matrix (what we cover)
 
@@ -365,7 +365,7 @@ Include at least one image-capable model in `OPENCLAW_LIVE_GATEWAY_MODELS` (Clau
 
 If you have keys enabled, we also support testing via:
 
-- OpenRouter: `openrouter/...` (hundreds of models; use `openclaw models scan` to find tool+image capable candidates)
+- OpenRouter: `openrouter/...` (hundreds of models; use `agdi models scan` to find tool+image capable candidates)
 - OpenCode: `opencode/...` for Zen and `opencode-go/...` for Go (auth via `OPENCODE_API_KEY` / `OPENCODE_ZEN_API_KEY`)
 
 More providers you can include in the live matrix (if you have creds/config):
@@ -380,10 +380,10 @@ Tip: don’t try to hardcode “all models” in docs. The authoritative list is
 Live tests discover credentials the same way the CLI does. Practical implications:
 
 - If the CLI works, live tests should find the same keys.
-- If a live test says “no creds”, debug the same way you’d debug `openclaw models list` / model selection.
+- If a live test says “no creds”, debug the same way you’d debug `agdi models list` / model selection.
 
-- Profile store: `~/.openclaw/credentials/` (preferred; what “profile keys” means in the tests)
-- Config: `~/.openclaw/openclaw.json` (or `OPENCLAW_CONFIG_PATH`)
+- Profile store: `~/.agdi/credentials/` (preferred; what “profile keys” means in the tests)
+- Config: `~/.agdi/agdi.json` (or `OPENCLAW_CONFIG_PATH`)
 
 If you want to rely on env keys (e.g. exported in your `~/.profile`), run local tests after `source ~/.profile`, or use the Docker runners below (they can mount `~/.profile` into the container).
 
@@ -447,16 +447,16 @@ real Telegram/Discord/etc. channel workers inside the container.
 `OPENCLAW_LIVE_GATEWAY_*` as well when you need to narrow or exclude gateway
 live coverage from that Docker lane.
 `test:docker:openwebui` is a higher-level compatibility smoke: it starts an
-OpenClaw gateway container with the OpenAI-compatible HTTP endpoints enabled,
+Agdi gateway container with the OpenAI-compatible HTTP endpoints enabled,
 starts a pinned Open WebUI container against that gateway, signs in through
-Open WebUI, verifies `/api/models` exposes `openclaw/default`, then sends a
+Open WebUI, verifies `/api/models` exposes `agdi/default`, then sends a
 real chat request through Open WebUI's `/api/chat/completions` proxy.
 The first run can be noticeably slower because Docker may need to pull the
 Open WebUI image and Open WebUI may need to finish its own cold-start setup.
 This lane expects a usable live model key, and `OPENCLAW_PROFILE_FILE`
 (`~/.profile` by default) is the primary way to provide it in Dockerized runs.
 Successful runs print a small JSON payload like `{ "ok": true, "model":
-"openclaw/default", ... }`.
+"agdi/default", ... }`.
 
 Manual ACP plain-language thread smoke (not CI):
 
@@ -465,8 +465,8 @@ Manual ACP plain-language thread smoke (not CI):
 
 Useful env vars:
 
-- `OPENCLAW_CONFIG_DIR=...` (default: `~/.openclaw`) mounted to `/home/node/.openclaw`
-- `OPENCLAW_WORKSPACE_DIR=...` (default: `~/.openclaw/workspace`) mounted to `/home/node/.openclaw/workspace`
+- `OPENCLAW_CONFIG_DIR=...` (default: `~/.agdi`) mounted to `/home/node/.agdi`
+- `OPENCLAW_WORKSPACE_DIR=...` (default: `~/.agdi/workspace`) mounted to `/home/node/.agdi/workspace`
 - `OPENCLAW_PROFILE_FILE=...` (default: `~/.profile`) mounted to `/home/node/.profile` and sourced before running tests
 - External CLI auth dirs under `$HOME` are mounted read-only under `/host-auth/...`, then copied into `/home/node/...` before tests start
   - Default: mount all supported dirs (`.codex`, `.claude`, `.qwen`, `.minimax`)

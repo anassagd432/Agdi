@@ -20,13 +20,13 @@ creating them.
 
 ## `definePluginEntry`
 
-**Import:** `openclaw/plugin-sdk/plugin-entry`
+**Import:** `agdi/plugin-sdk/plugin-entry`
 
 For provider plugins, tool plugins, hook plugins, and anything that is **not**
 a messaging channel.
 
 ```typescript
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
 
 export default definePluginEntry({
   id: "my-plugin",
@@ -49,22 +49,22 @@ export default definePluginEntry({
 | `name`         | `string`                                                         | Yes      | —                   |
 | `description`  | `string`                                                         | Yes      | —                   |
 | `kind`         | `string`                                                         | No       | —                   |
-| `configSchema` | `OpenClawPluginConfigSchema \| () => OpenClawPluginConfigSchema` | No       | Empty object schema |
-| `register`     | `(api: OpenClawPluginApi) => void`                               | Yes      | —                   |
+| `configSchema` | `AgdiPluginConfigSchema \| () => AgdiPluginConfigSchema` | No       | Empty object schema |
+| `register`     | `(api: AgdiPluginApi) => void`                               | Yes      | —                   |
 
-- `id` must match your `openclaw.plugin.json` manifest.
+- `id` must match your `agdi.plugin.json` manifest.
 - `kind` is for exclusive slots: `"memory"` or `"context-engine"`.
 - `configSchema` can be a function for lazy evaluation.
 
 ## `defineChannelPluginEntry`
 
-**Import:** `openclaw/plugin-sdk/core`
+**Import:** `agdi/plugin-sdk/core`
 
 Wraps `definePluginEntry` with channel-specific wiring. Automatically calls
 `api.registerChannel({ plugin })` and gates `registerFull` on registration mode.
 
 ```typescript
-import { defineChannelPluginEntry } from "openclaw/plugin-sdk/core";
+import { defineChannelPluginEntry } from "agdi/plugin-sdk/core";
 
 export default defineChannelPluginEntry({
   id: "my-channel",
@@ -85,9 +85,9 @@ export default defineChannelPluginEntry({
 | `name`         | `string`                                                         | Yes      | —                   |
 | `description`  | `string`                                                         | Yes      | —                   |
 | `plugin`       | `ChannelPlugin`                                                  | Yes      | —                   |
-| `configSchema` | `OpenClawPluginConfigSchema \| () => OpenClawPluginConfigSchema` | No       | Empty object schema |
+| `configSchema` | `AgdiPluginConfigSchema \| () => AgdiPluginConfigSchema` | No       | Empty object schema |
 | `setRuntime`   | `(runtime: PluginRuntime) => void`                               | No       | —                   |
-| `registerFull` | `(api: OpenClawPluginApi) => void`                               | No       | —                   |
+| `registerFull` | `(api: AgdiPluginApi) => void`                               | No       | —                   |
 
 - `setRuntime` is called during registration so you can store the runtime reference
   (typically via `createPluginRuntimeStore`).
@@ -96,18 +96,18 @@ export default defineChannelPluginEntry({
 
 ## `defineSetupPluginEntry`
 
-**Import:** `openclaw/plugin-sdk/core`
+**Import:** `agdi/plugin-sdk/core`
 
 For the lightweight `setup-entry.ts` file. Returns just `{ plugin }` with no
 runtime or CLI wiring.
 
 ```typescript
-import { defineSetupPluginEntry } from "openclaw/plugin-sdk/core";
+import { defineSetupPluginEntry } from "agdi/plugin-sdk/core";
 
 export default defineSetupPluginEntry(myChannelPlugin);
 ```
 
-OpenClaw loads this instead of the full entry when a channel is disabled,
+Agdi loads this instead of the full entry when a channel is disabled,
 unconfigured, or when deferred loading is enabled. See
 [Setup and Config](/plugins/sdk-setup#setup-entry) for when this matters.
 
@@ -137,7 +137,7 @@ register(api) {
 
 ## Plugin shapes
 
-OpenClaw classifies loaded plugins by their registration behavior:
+Agdi classifies loaded plugins by their registration behavior:
 
 | Shape                 | Description                                        |
 | --------------------- | -------------------------------------------------- |
@@ -146,7 +146,7 @@ OpenClaw classifies loaded plugins by their registration behavior:
 | **hook-only**         | Only hooks, no capabilities                        |
 | **non-capability**    | Tools/commands/services but no capabilities        |
 
-Use `openclaw plugins inspect <id>` to see a plugin's shape.
+Use `agdi plugins inspect <id>` to see a plugin's shape.
 
 ## Related
 

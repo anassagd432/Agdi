@@ -16,7 +16,7 @@ x-i18n:
 
 # 测试
 
-OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时）以及一小组 Docker 运行器。
+Agdi 包含三个 Vitest 测试套件（单元/集成、端到端、实时）以及一小组 Docker 运行器。
 
 本文档是一份"我们如何测试"的指南：
 
@@ -127,7 +127,7 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
   - 将"提供商 API 损坏/密钥无效"与"Gateway 网关智能体管道损坏"分离
   - 包含小型、隔离的回归测试（例如：OpenAI Responses/Codex Responses 推理重放 + 工具调用流程）
 
-### 第二层：Gateway 网关 + 开发智能体冒烟测试（"@openclaw"实际做的事）
+### 第二层：Gateway 网关 + 开发智能体冒烟测试（"@agdi"实际做的事）
 
 - 测试：`src/gateway/gateway-models.profiles.live.test.ts`
 - 目标：
@@ -164,8 +164,8 @@ OpenClaw 包含三个 Vitest 测试套件（单元/集成、端到端、实时�
 提示：要查看你的机器上可以测试什么（以及确切的 `provider/model` ID），运行：
 
 ```bash
-openclaw models list
-openclaw models list --json
+agdi models list
+agdi models list --json
 ```
 
 ## 实时测试：Anthropic 设置令牌冒烟测试
@@ -184,7 +184,7 @@ openclaw models list --json
 设置示例：
 
 ```bash
-openclaw models auth paste-token --provider anthropic --profile-id anthropic:setup-token-test
+agdi models auth paste-token --provider anthropic --profile-id anthropic:setup-token-test
 OPENCLAW_LIVE_SETUP_TOKEN=1 OPENCLAW_LIVE_SETUP_TOKEN_PROFILE=anthropic:setup-token-test pnpm test:live src/agents/anthropic.setup-token.live.test.ts
 ```
 
@@ -242,8 +242,8 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 - `google-antigravity/...` 使用 Antigravity OAuth 桥接（Cloud Code Assist 风格的智能体端点）。
 - `google-gemini-cli/...` 使用你机器上的本地 Gemini CLI（独立的认证 + 工具怪癖）。
 - Gemini API 与 Gemini CLI：
-  - API：OpenClaw 通过 HTTP 调用 Google 托管的 Gemini API（API 密钥/配置文件认证）；这是大多数用户说的"Gemini"。
-  - CLI：OpenClaw 调用本地 `gemini` 二进制文件；它有自己的认证，行为可能不同（流式传输/工具支持/版本差异）。
+  - API：Agdi 通过 HTTP 调用 Google 托管的 Gemini API（API 密钥/配置文件认证）；这是大多数用户说的"Gemini"。
+  - CLI：Agdi 调用本地 `gemini` 二进制文件；它有自己的认证，行为可能不同（流式传输/工具支持/版本差异）。
 
 ## 实时测试：模型矩阵（我们覆盖什么）
 
@@ -289,7 +289,7 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 
 如果你启用了密钥，我们也支持通过以下方式测试：
 
-- OpenRouter：`openrouter/...`（数百个模型；使用 `openclaw models scan` 查找支持工具+图像的候选模型）
+- OpenRouter：`openrouter/...`（数百个模型；使用 `agdi models scan` 查找支持工具+图像的候选模型）
 - OpenCode Zen：`opencode/...`（通过 `OPENCODE_API_KEY` / `OPENCODE_ZEN_API_KEY` 认证）
 
 如果你有凭证/配置，可以在实时矩阵中包含更多提供商：
@@ -304,10 +304,10 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 实时测试以与 CLI 相同的方式发现凭证。实际含义：
 
 - 如果 CLI 能工作，实时测试应该能找到相同的密钥。
-- 如果实时测试说"无凭证"，用调试 `openclaw models list`/模型选择相同的方式调试。
+- 如果实时测试说"无凭证"，用调试 `agdi models list`/模型选择相同的方式调试。
 
-- 配置文件存储：`~/.openclaw/credentials/`（首选；测试中"配置文件密钥"的含义）
-- 配置：`~/.openclaw/openclaw.json`（或 `OPENCLAW_CONFIG_PATH`）
+- 配置文件存储：`~/.agdi/credentials/`（首选；测试中"配置文件密钥"的含义）
+- 配置：`~/.agdi/agdi.json`（或 `OPENCLAW_CONFIG_PATH`）
 
 如果你想依赖环境变量密钥（例如在 `~/.profile` 中导出的），在 `source ~/.profile` 后运行本地测试，或使用下面的 Docker 运行器（它们可以将 `~/.profile` 挂载到容器中）。
 
@@ -328,8 +328,8 @@ OPENCLAW_LIVE_CLI_BACKEND=1 \
 
 有用的环境变量：
 
-- `OPENCLAW_CONFIG_DIR=...`（默认：`~/.openclaw`）挂载到 `/home/node/.openclaw`
-- `OPENCLAW_WORKSPACE_DIR=...`（默认：`~/.openclaw/workspace`）挂载到 `/home/node/.openclaw/workspace`
+- `OPENCLAW_CONFIG_DIR=...`（默认：`~/.agdi`）挂载到 `/home/node/.agdi`
+- `OPENCLAW_WORKSPACE_DIR=...`（默认：`~/.agdi/workspace`）挂载到 `/home/node/.agdi/workspace`
 - `OPENCLAW_PROFILE_FILE=...`（默认：`~/.profile`）挂载到 `/home/node/.profile` 并在运行测试前加载
 - `OPENCLAW_LIVE_GATEWAY_MODELS=...` / `OPENCLAW_LIVE_MODELS=...` 用于缩小运行范围
 - `OPENCLAW_LIVE_REQUIRE_PROFILE_KEYS=1` 确保凭证来自配置文件存储（而非环境变量）

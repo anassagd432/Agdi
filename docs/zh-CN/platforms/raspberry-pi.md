@@ -1,9 +1,9 @@
 ---
 read_when:
-  - 在 Raspberry Pi 上设置 OpenClaw
-  - 在 ARM 设备上运行 OpenClaw
+  - 在 Raspberry Pi 上设置 Agdi
+  - 在 ARM 设备上运行 Agdi
   - 构建一个低成本、始终在线的个人 AI
-summary: 在 Raspberry Pi 上运行 OpenClaw（低预算自托管方案）
+summary: 在 Raspberry Pi 上运行 Agdi（低预算自托管方案）
 title: Raspberry Pi
 x-i18n:
   generated_at: "2026-03-16T06:24:58Z"
@@ -14,11 +14,11 @@ x-i18n:
   workflow: 15
 ---
 
-# 在 Raspberry Pi 上运行 OpenClaw
+# 在 Raspberry Pi 上运行 Agdi
 
 ## 目标
 
-在 Raspberry Pi 上以 **约 35–80 美元**的一次性成本（无月费）运行一个持久化、始终在线的 OpenClaw Gateway 网关。
+在 Raspberry Pi 上以 **约 35–80 美元**的一次性成本（无月费）运行一个持久化、始终在线的 Agdi Gateway 网关。
 
 非常适合：
 
@@ -114,19 +114,19 @@ echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 ```
 
-## 6）安装 OpenClaw
+## 6）安装 Agdi
 
 ### 选项 A：标准安装（推荐）
 
 ```bash
-curl -fsSL https://openclaw.ai/install.sh | bash
+curl -fsSL https://agdi.ai/install.sh | bash
 ```
 
 ### 选项 B：可修改安装（适合折腾）
 
 ```bash
-git clone https://github.com/openclaw/openclaw.git
-cd openclaw
+git clone https://github.com/agdi/agdi.git
+cd agdi
 npm install
 npm run build
 npm link
@@ -137,7 +137,7 @@ npm link
 ## 7）运行新手引导
 
 ```bash
-openclaw onboard --install-daemon
+agdi onboard --install-daemon
 ```
 
 按向导完成设置：
@@ -151,23 +151,23 @@ openclaw onboard --install-daemon
 
 ```bash
 # 检查状态
-openclaw status
+agdi status
 
 # 检查服务
-sudo systemctl status openclaw
+sudo systemctl status agdi
 
 # 查看日志
-journalctl -u openclaw -f
+journalctl -u agdi -f
 ```
 
-## 9）访问 OpenClaw Dashboard
+## 9）访问 Agdi Dashboard
 
 将 `user@gateway-host` 替换为你的 Pi 用户名，以及主机名或 IP 地址。
 
 在你的电脑上，让 Pi 打印一个新的 Dashboard URL：
 
 ```bash
-ssh user@gateway-host 'openclaw dashboard --no-open'
+ssh user@gateway-host 'agdi dashboard --no-open'
 ```
 
 该命令会打印 `Dashboard URL:`。根据 `gateway.auth.token`
@@ -206,9 +206,9 @@ lsblk
 在性能较弱的 Pi 主机上，启用 Node 的模块编译缓存可以加快重复 CLI 运行速度：
 
 ```bash
-grep -q 'NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache' ~/.bashrc || cat >> ~/.bashrc <<'EOF' # pragma: allowlist secret
-export NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
-mkdir -p /var/tmp/openclaw-compile-cache
+grep -q 'NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache' ~/.bashrc || cat >> ~/.bashrc <<'EOF' # pragma: allowlist secret
+export NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache
+mkdir -p /var/tmp/agdi-compile-cache
 export OPENCLAW_NO_RESPAWN=1
 EOF
 source ~/.bashrc
@@ -223,16 +223,16 @@ source ~/.bashrc
 
 ### systemd 启动调优（可选）
 
-如果这台 Pi 主要运行 OpenClaw，可以添加一个服务 drop-in，以减少重启抖动并保持稳定的启动环境：
+如果这台 Pi 主要运行 Agdi，可以添加一个服务 drop-in，以减少重启抖动并保持稳定的启动环境：
 
 ```bash
-sudo systemctl edit openclaw
+sudo systemctl edit agdi
 ```
 
 ```ini
 [Service]
 Environment=OPENCLAW_NO_RESPAWN=1
-Environment=NODE_COMPILE_CACHE=/var/tmp/openclaw-compile-cache
+Environment=NODE_COMPILE_CACHE=/var/tmp/agdi-compile-cache
 Restart=always
 RestartSec=2
 TimeoutStartSec=90
@@ -242,10 +242,10 @@ TimeoutStartSec=90
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl restart openclaw
+sudo systemctl restart agdi
 ```
 
-如果可能，请将 OpenClaw 状态/缓存放在 SSD 支持的存储上，以避免冷启动期间 SD 卡随机 I/O 成为瓶颈。
+如果可能，请将 Agdi 状态/缓存放在 SSD 支持的存储上，以避免冷启动期间 SD 卡随机 I/O 成为瓶颈。
 
 关于 `Restart=` 策略如何帮助自动恢复：
 [systemd can automate service recovery](https://www.redhat.com/en/blog/systemd-automate-recovery)。
@@ -279,7 +279,7 @@ htop
 
 ### 二进制兼容性
 
-OpenClaw 的大多数功能都可在 ARM64 上运行，但某些外部二进制文件可能需要 ARM 构建版本：
+Agdi 的大多数功能都可在 ARM64 上运行，但某些外部二进制文件可能需要 ARM 构建版本：
 
 | 工具               | ARM64 状态 | 说明                                |
 | ------------------ | ---------- | ----------------------------------- |
@@ -329,13 +329,13 @@ uname -m
 
 ```bash
 # 检查服务是否已启用
-sudo systemctl is-enabled openclaw
+sudo systemctl is-enabled agdi
 
 # 如果没有，则启用
-sudo systemctl enable openclaw
+sudo systemctl enable agdi
 
 # 开机启动
-sudo systemctl start openclaw
+sudo systemctl start agdi
 ```
 
 ---
@@ -362,12 +362,12 @@ free -h
 
 ```bash
 # 检查日志
-journalctl -u openclaw --no-pager -n 100
+journalctl -u agdi --no-pager -n 100
 
 # 常见修复：重新构建
-cd ~/openclaw  # 如果使用的是可修改安装
+cd ~/agdi  # 如果使用的是可修改安装
 npm run build
-sudo systemctl restart openclaw
+sudo systemctl restart agdi
 ```
 
 ### ARM 二进制问题

@@ -1,14 +1,14 @@
 ---
 title: Fly.io
-summary: "Step-by-step Fly.io deployment for OpenClaw with persistent storage and HTTPS"
+summary: "Step-by-step Fly.io deployment for Agdi with persistent storage and HTTPS"
 read_when:
-  - Deploying OpenClaw on Fly.io
+  - Deploying Agdi on Fly.io
   - Setting up Fly volumes, secrets, and first-run config
 ---
 
 # Fly.io Deployment
 
-**Goal:** OpenClaw Gateway running on a [Fly.io](https://fly.io) machine with persistent storage, automatic HTTPS, and Discord/channel access.
+**Goal:** Agdi Gateway running on a [Fly.io](https://fly.io) machine with persistent storage, automatic HTTPS, and Discord/channel access.
 
 ## What you need
 
@@ -28,14 +28,14 @@ read_when:
   <Step title="Create the Fly app">
     ```bash
     # Clone the repo
-    git clone https://github.com/openclaw/openclaw.git
-    cd openclaw
+    git clone https://github.com/agdi/agdi.git
+    cd agdi
 
     # Create a new Fly app (pick your own name)
-    fly apps create my-openclaw
+    fly apps create my-agdi
 
     # Create a persistent volume (1GB is usually enough)
-    fly volumes create openclaw_data --size 1 --region iad
+    fly volumes create agdi_data --size 1 --region iad
     ```
 
     **Tip:** Choose a region close to you. Common options: `lhr` (London), `iad` (Virginia), `sjc` (San Jose).
@@ -48,7 +48,7 @@ read_when:
     **Security note:** The default config exposes a public URL. For a hardened deployment with no public IP, see [Private Deployment](#private-deployment-hardened) or use `fly.private.toml`.
 
     ```toml
-    app = "my-openclaw"  # Your app name
+    app = "my-agdi"  # Your app name
     primary_region = "iad"
 
     [build]
@@ -76,7 +76,7 @@ read_when:
       memory = "2048mb"
 
     [mounts]
-      source = "openclaw_data"
+      source = "agdi_data"
       destination = "/data"
     ```
 
@@ -112,7 +112,7 @@ read_when:
 
     - Non-loopback binds (`--bind lan`) require `OPENCLAW_GATEWAY_TOKEN` for security.
     - Treat these tokens like passwords.
-    - **Prefer env vars over config file** for all API keys and tokens. This keeps secrets out of `openclaw.json` where they could be accidentally exposed or logged.
+    - **Prefer env vars over config file** for all API keys and tokens. This keeps secrets out of `agdi.json` where they could be accidentally exposed or logged.
 
   </Step>
 
@@ -150,7 +150,7 @@ read_when:
 
     ```bash
     mkdir -p /data
-    cat > /data/openclaw.json << 'EOF'
+    cat > /data/agdi.json << 'EOF'
     {
       "agents": {
         "defaults": {
@@ -200,7 +200,7 @@ read_when:
     EOF
     ```
 
-    **Note:** With `OPENCLAW_STATE_DIR=/data`, the config path is `/data/openclaw.json`.
+    **Note:** With `OPENCLAW_STATE_DIR=/data`, the config path is `/data/agdi.json`.
 
     **Note:** The Discord token can come from either:
 
@@ -227,7 +227,7 @@ read_when:
     fly open
     ```
 
-    Or visit `https://my-openclaw.fly.dev/`
+    Or visit `https://my-agdi.fly.dev/`
 
     Paste your gateway token (the one from `OPENCLAW_GATEWAY_TOKEN`) to authenticate.
 
@@ -297,12 +297,12 @@ The lock file is at `/data/gateway.*.lock` (not in a subdirectory).
 
 ### Config Not Being Read
 
-If using `--allow-unconfigured`, the gateway creates a minimal config. Your custom config at `/data/openclaw.json` should be read on restart.
+If using `--allow-unconfigured`, the gateway creates a minimal config. Your custom config at `/data/agdi.json` should be read on restart.
 
 Verify the config exists:
 
 ```bash
-fly ssh console --command "cat /data/openclaw.json"
+fly ssh console --command "cat /data/agdi.json"
 ```
 
 ### Writing Config via SSH
@@ -311,17 +311,17 @@ The `fly ssh console -C` command doesn't support shell redirection. To write a c
 
 ```bash
 # Use echo + tee (pipe from local to remote)
-echo '{"your":"config"}' | fly ssh console -C "tee /data/openclaw.json"
+echo '{"your":"config"}' | fly ssh console -C "tee /data/agdi.json"
 
 # Or use sftp
 fly sftp shell
-> put /local/path/config.json /data/openclaw.json
+> put /local/path/config.json /data/agdi.json
 ```
 
 **Note:** `fly sftp` may fail if the file already exists. Delete first:
 
 ```bash
-fly ssh console --command "rm /data/openclaw.json"
+fly ssh console --command "rm /data/agdi.json"
 ```
 
 ### State Not Persisting
@@ -387,18 +387,18 @@ Or convert an existing deployment:
 
 ```bash
 # List current IPs
-fly ips list -a my-openclaw
+fly ips list -a my-agdi
 
 # Release public IPs
-fly ips release <public-ipv4> -a my-openclaw
-fly ips release <public-ipv6> -a my-openclaw
+fly ips release <public-ipv4> -a my-agdi
+fly ips release <public-ipv6> -a my-agdi
 
 # Switch to private config so future deploys don't re-allocate public IPs
 # (remove [http_service] or deploy with the private template)
 fly deploy -c fly.private.toml
 
 # Allocate private-only IPv6
-fly ips allocate-v6 --private -a my-openclaw
+fly ips allocate-v6 --private -a my-agdi
 ```
 
 After this, `fly ips list` should show only a `private` type IP:
@@ -416,7 +416,7 @@ Since there's no public URL, use one of these methods:
 
 ```bash
 # Forward local port 3000 to the app
-fly proxy 3000:3000 -a my-openclaw
+fly proxy 3000:3000 -a my-agdi
 
 # Then open http://localhost:3000 in browser
 ```
@@ -434,7 +434,7 @@ fly wireguard create
 **Option 3: SSH only**
 
 ```bash
-fly ssh console -a my-openclaw
+fly ssh console -a my-agdi
 ```
 
 ### Webhooks with private deployment
@@ -498,4 +498,4 @@ See [Fly.io pricing](https://fly.io/docs/about/pricing/) for details.
 
 - Set up messaging channels: [Channels](/channels)
 - Configure the Gateway: [Gateway configuration](/gateway/configuration)
-- Keep OpenClaw up to date: [Updating](/install/updating)
+- Keep Agdi up to date: [Updating](/install/updating)

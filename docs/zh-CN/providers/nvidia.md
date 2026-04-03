@@ -1,8 +1,8 @@
 ---
 read_when:
-  - 你想在 OpenClaw 中使用 NVIDIA 模型
+  - 你想在 Agdi 中使用 NVIDIA 模型
   - 你需要设置 `NVIDIA_API_KEY`
-summary: 在 OpenClaw 中使用 NVIDIA 的 OpenAI 兼容 API
+summary: 在 Agdi 中使用 NVIDIA 的 OpenAI 兼容 API
 title: NVIDIA
 x-i18n:
   generated_at: "2026-03-16T06:26:11Z"
@@ -23,8 +23,8 @@ NVIDIA 在 `https://integrate.api.nvidia.com/v1` 提供一个与 OpenAI 兼容�
 
 ```bash
 export NVIDIA_API_KEY="nvapi-..."
-openclaw onboard --auth-choice skip
-openclaw models set nvidia/nvidia/llama-3.1-nemotron-70b-instruct
+agdi onboard --auth-choice skip
+agdi models set nvidia/nvidia/llama-3.1-nemotron-70b-instruct
 ```
 
 如果你仍然使用 `--token`，请记住它会出现在 shell 历史记录和 `ps` 输出中；如果可能，优先使用环境变量。

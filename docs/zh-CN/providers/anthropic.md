@@ -1,8 +1,8 @@
 ---
 read_when:
-  - 你想在 OpenClaw 中使用 Anthropic 模型
+  - 你想在 Agdi 中使用 Anthropic 模型
   - 你想使用 setup-token 而不是 API 密钥
-summary: 在 OpenClaw 中通过 API 密钥或 setup-token 使用 Anthropic Claude
+summary: 在 Agdi 中通过 API 密钥或 setup-token 使用 Anthropic Claude
 title: Anthropic
 x-i18n:
   generated_at: "2026-03-16T06:25:19Z"
@@ -16,7 +16,7 @@ x-i18n:
 # Anthropic（Claude）
 
 Anthropic 构建了 **Claude** 模型家族，并通过 API 提供访问。
-在 OpenClaw 中，你可以使用 API 密钥或 **setup-token** 进行身份验证。
+在 Agdi 中，你可以使用 API 密钥或 **setup-token** 进行身份验证。
 
 ## 选项 A：Anthropic API 密钥
 
@@ -26,11 +26,11 @@ Anthropic 构建了 **Claude** 模型家族，并通过 API 提供访问。
 ### CLI 设置
 
 ```bash
-openclaw onboard
+agdi onboard
 # choose: Anthropic API key
 
 # or non-interactive
-openclaw onboard --anthropic-api-key "$ANTHROPIC_API_KEY"
+agdi onboard --anthropic-api-key "$ANTHROPIC_API_KEY"
 ```
 
 ### 配置片段
@@ -44,7 +44,7 @@ openclaw onboard --anthropic-api-key "$ANTHROPIC_API_KEY"
 
 ## Thinking 默认值（Claude 4.6）
 
-- 当未设置显式 thinking 级别时，Anthropic Claude 4.6 模型在 OpenClaw 中默认使用 `adaptive` thinking。
+- 当未设置显式 thinking 级别时，Anthropic Claude 4.6 模型在 Agdi 中默认使用 `adaptive` thinking。
 - 你可以按消息覆盖（`/think:<level>`），或在模型参数中覆盖：
   `agents.defaults.models["anthropic/<model>"].params.thinking`。
 - 相关 Anthropic 文档：
@@ -53,7 +53,7 @@ openclaw onboard --anthropic-api-key "$ANTHROPIC_API_KEY"
 
 ## 快速模式（Anthropic API）
 
-OpenClaw 的共享 `/fast` 开关也支持直接 Anthropic API 密钥流量。
+Agdi 的共享 `/fast` 开关也支持直接 Anthropic API 密钥流量。
 
 - `/fast on` 映射到 `service_tier: "auto"`
 - `/fast off` 映射到 `service_tier: "standard_only"`
@@ -75,13 +75,13 @@ OpenClaw 的共享 `/fast` 开关也支持直接 Anthropic API 密钥流量。
 
 重要限制：
 
-- 这**仅适用于 API 密钥**。Anthropic setup-token / OAuth 身份验证不会遵循 OpenClaw 的快速模式层级注入。
-- OpenClaw 仅对直接发往 `api.anthropic.com` 的请求注入 Anthropic 服务层级。如果你通过代理或网关路由 `anthropic/*`，`/fast` 不会修改 `service_tier`。
+- 这**仅适用于 API 密钥**。Anthropic setup-token / OAuth 身份验证不会遵循 Agdi 的快速模式层级注入。
+- Agdi 仅对直接发往 `api.anthropic.com` 的请求注入 Anthropic 服务层级。如果你通过代理或网关路由 `anthropic/*`，`/fast` 不会修改 `service_tier`。
 - Anthropic 会在响应中的 `usage.service_tier` 下报告实际生效的层级。对于没有 Priority Tier 容量的账户，`service_tier: "auto"` 仍可能解析为 `standard`。
 
 ## Prompt 缓存（Anthropic API）
 
-OpenClaw 支持 Anthropic 的 prompt 缓存功能。这**仅适用于 API**；订阅身份验证不会遵循缓存设置。
+Agdi 支持 Anthropic 的 prompt 缓存功能。这**仅适用于 API**；订阅身份验证不会遵循缓存设置。
 
 ### 配置
 
@@ -109,7 +109,7 @@ OpenClaw 支持 Anthropic 的 prompt 缓存功能。这**仅适用于 API**；�
 
 ### 默认值
 
-当使用 Anthropic API 密钥身份验证时，OpenClaw 会自动对所有 Anthropic 模型应用 `cacheRetention: "short"`（5 分钟缓存）。你可以通过在配置中显式设置 `cacheRetention` 来覆盖此行为。
+当使用 Anthropic API 密钥身份验证时，Agdi 会自动对所有 Anthropic 模型应用 `cacheRetention: "short"`（5 分钟缓存）。你可以通过在配置中显式设置 `cacheRetention` 来覆盖此行为。
 
 ### 每个智能体的 cacheRetention 覆盖
 
@@ -156,12 +156,12 @@ OpenClaw 支持 Anthropic 的 prompt 缓存功能。这**仅适用于 API**；�
 
 我们建议迁移到新的 `cacheRetention` 参数。
 
-OpenClaw 会在 Anthropic API 请求中包含 `extended-cache-ttl-2025-04-11` beta 标志；
+Agdi 会在 Anthropic API 请求中包含 `extended-cache-ttl-2025-04-11` beta 标志；
 如果你覆盖了提供商请求头，请保留它（参见 [/gateway/configuration](/gateway/configuration)）。
 
 ## 1M 上下文窗口（Anthropic beta）
 
-Anthropic 的 1M 上下文窗口受 beta 门控。在 OpenClaw 中，可通过为受支持的 Opus/Sonnet 模型
+Anthropic 的 1M 上下文窗口受 beta 门控。在 Agdi 中，可通过为受支持的 Opus/Sonnet 模型
 设置 `params.context1m: true` 按模型启用。
 
 ```json5
@@ -178,7 +178,7 @@ Anthropic 的 1M 上下文窗口受 beta 门控。在 OpenClaw 中，可通过�
 }
 ```
 
-OpenClaw 会将其映射为 Anthropic 请求上的 `anthropic-beta: context-1m-2025-08-07`。
+Agdi 会将其映射为 Anthropic 请求上的 `anthropic-beta: context-1m-2025-08-07`。
 
 仅当该模型的 `params.context1m` 被显式设置为 `true` 时，
 此功能才会激活。
@@ -189,7 +189,7 @@ OpenClaw 会将其映射为 Anthropic 请求上的 `anthropic-beta: context-1m-2
 `HTTP 429: rate_limit_error: Extra usage is required for long context requests`。
 
 注意：Anthropic 当前在使用
-OAuth/订阅令牌（`sk-ant-oat-*`）时会拒绝 `context-1m-*` beta 请求。OpenClaw 会自动跳过
+OAuth/订阅令牌（`sk-ant-oat-*`）时会拒绝 `context-1m-*` beta 请求。Agdi 会自动跳过
 OAuth 身份验证的 `context1m` beta 请求头，并保留所需的 OAuth beta 标志。
 
 ## 选项 B：Claude setup-token
@@ -204,23 +204,23 @@ setup-token 由 **Claude Code CLI** 创建，而不是在 Anthropic Console 中�
 claude setup-token
 ```
 
-将该令牌粘贴到 OpenClaw 中（向导：**Anthropic token（粘贴 setup-token）**），或在 Gateway 网关主机上运行：
+将该令牌粘贴到 Agdi 中（向导：**Anthropic token（粘贴 setup-token）**），或在 Gateway 网关主机上运行：
 
 ```bash
-openclaw models auth setup-token --provider anthropic
+agdi models auth setup-token --provider anthropic
 ```
 
 如果你是在另一台机器上生成该令牌，请粘贴它：
 
 ```bash
-openclaw models auth paste-token --provider anthropic
+agdi models auth paste-token --provider anthropic
 ```
 
 ### CLI 设置（setup-token）
 
 ```bash
 # Paste a setup-token during setup
-openclaw onboard --auth-choice setup-token
+agdi onboard --auth-choice setup-token
 ```
 
 ### 配置片段（setup-token）
@@ -233,7 +233,7 @@ openclaw onboard --auth-choice setup-token
 
 ## 说明
 
-- 使用 `claude setup-token` 生成 setup-token 并粘贴它，或者在 Gateway 网关主机上运行 `openclaw models auth setup-token`。
+- 使用 `claude setup-token` 生成 setup-token 并粘贴它，或者在 Gateway 网关主机上运行 `agdi models auth setup-token`。
 - 如果你在 Claude 订阅上看到 “OAuth token refresh failed …”，请使用 setup-token 重新进行身份验证。请参见 [/gateway/troubleshooting#oauth-token-refresh-failed-anthropic-claude-subscription](/gateway/troubleshooting#oauth-token-refresh-failed-anthropic-claude-subscription)。
 - 身份验证详情和复用规则见 [/concepts/oauth](/concepts/oauth)。
 
@@ -244,22 +244,22 @@ openclaw onboard --auth-choice setup-token
 - Claude 订阅身份验证可能会过期或被撤销。请重新运行 `claude setup-token`，
   并将其粘贴到 **Gateway 网关主机** 上。
 - 如果 Claude CLI 登录位于另一台机器上，请在 Gateway 网关主机上使用
-  `openclaw models auth paste-token --provider anthropic`。
+  `agdi models auth paste-token --provider anthropic`。
 
 **No API key found for provider "anthropic"**
 
 - 身份验证是**按智能体**区分的。新智能体不会继承主智能体的密钥。
 - 请为该智能体重新运行新手引导，或在
-  Gateway 网关主机上粘贴 setup-token / API 密钥，然后使用 `openclaw models status` 验证。
+  Gateway 网关主机上粘贴 setup-token / API 密钥，然后使用 `agdi models status` 验证。
 
 **No credentials found for profile `anthropic:default`**
 
-- 运行 `openclaw models status` 查看当前活动的 auth profile。
+- 运行 `agdi models status` 查看当前活动的 auth profile。
 - 重新运行新手引导，或为该配置档案粘贴 setup-token / API 密钥。
 
 **No available auth profile (all in cooldown/unavailable)**
 
-- 检查 `openclaw models status --json` 中的 `auth.unusableProfiles`。
+- 检查 `agdi models status --json` 中的 `auth.unusableProfiles`。
 - 添加另一个 Anthropic 配置档案，或等待冷却结束。
 
 更多信息：[/gateway/troubleshooting](/gateway/troubleshooting) 和 [/help/faq](/help/faq)。
