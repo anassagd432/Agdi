@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import type { AppViewState } from "../app-view-state.ts";
+import { describeFounderOpsApproval } from "../../../../src/founder-ops/control-plane.js";
 
 function formatRemaining(ms: number): string {
   const remaining = Math.max(0, ms);
@@ -28,6 +29,15 @@ export function renderExecApprovalPrompt(state: AppViewState) {
     return nothing;
   }
   const request = active.request;
+  const approval = describeFounderOpsApproval({
+    command: request.command,
+    ask: request.ask,
+    sessionKey: request.sessionKey,
+    cwd: request.cwd,
+    host: request.host,
+    resolvedPath: request.resolvedPath,
+    security: request.security,
+  });
   const remainingMs = active.expiresAtMs - Date.now();
   const remaining = remainingMs > 0 ? `expires in ${formatRemaining(remainingMs)}` : "expired";
   const queueCount = state.execApprovalQueue.length;
@@ -36,7 +46,7 @@ export function renderExecApprovalPrompt(state: AppViewState) {
       <div class="exec-approval-card">
         <div class="exec-approval-header">
           <div>
-            <div class="exec-approval-title">Exec approval needed</div>
+            <div class="exec-approval-title">Founder approval required</div>
             <div class="exec-approval-sub">${remaining}</div>
           </div>
           ${
@@ -44,6 +54,18 @@ export function renderExecApprovalPrompt(state: AppViewState) {
               ? html`<div class="exec-approval-queue">${queueCount} pending</div>`
               : nothing
           }
+        </div>
+        <div style="display: grid; gap: 8px; margin-bottom: 12px;">
+          <div style="font-weight: 600;">${approval.title}</div>
+          <div class="muted">${approval.rationale}</div>
+          <div class="muted" style="font-size: 12px;">Context: ${approval.sourceContext}</div>
+          <div class="muted" style="font-size: 12px;">Outcome: ${approval.expectedOutcome}</div>
+          <div class="muted" style="font-size: 12px;">
+            Delay: ${approval.consequenceOfDelay}
+          </div>
+          <div class="pill" style="font-size: 11px; width: fit-content;">
+            Timeout fallback: ${approval.timeoutFallback}
+          </div>
         </div>
         <div class="exec-approval-command mono">${request.command}</div>
         <div class="exec-approval-meta">
@@ -66,21 +88,21 @@ export function renderExecApprovalPrompt(state: AppViewState) {
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("allow-once")}
           >
-            Allow once
+            ${approval.labels.approveOnce}
           </button>
           <button
             class="btn"
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("allow-always")}
           >
-            Always allow
+            ${approval.labels.approveAlways}
           </button>
           <button
             class="btn danger"
             ?disabled=${state.execApprovalBusy}
             @click=${() => state.handleExecApprovalDecision("deny")}
           >
-            Deny
+            ${approval.labels.reject}
           </button>
         </div>
       </div>

@@ -18,7 +18,7 @@ import { hasAmbiguousGatewayAuthModeConfig } from "../gateway/auth-mode-policy.j
 import { resolveGatewayAuth } from "../gateway/auth.js";
 import { buildGatewayConnectionDetails } from "../gateway/call.js";
 import { runStartupMatrixMigration } from "../gateway/server-startup-matrix-migration.js";
-import { resolveOpenClawPackageRoot } from "../infra/openclaw-root.js";
+import { resolveAgdiPackageRoot } from "../infra/openclaw-root.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { defaultRuntime } from "../runtime.js";
 import { note } from "../terminal/note.js";
@@ -77,9 +77,9 @@ export async function doctorCommand(
 ) {
   const prompter = createDoctorPrompter({ runtime, options });
   printWizardHeader(runtime);
-  intro("OpenClaw doctor");
+  intro("Agdi doctor");
 
-  const root = await resolveOpenClawPackageRoot({
+  const root = await resolveAgdiPackageRoot({
     moduleUrl: import.meta.url,
     argv1: process.argv[1],
     cwd: process.cwd(),

@@ -159,6 +159,11 @@ describe("plugin-sdk root alias", () => {
     expect(lazyModule.createJitiCalls).toBe(1);
     expect(lazyModule.jitiLoadCalls).toBe(1);
     expect(lazyModule.createJitiOptions.at(-1)?.tryNative).toBe(false);
+    expect(
+      lazyModule.createJitiOptions.at(-1)?.alias &&
+        typeof lazyModule.createJitiOptions.at(-1)?.alias === "object" &&
+        "agdi/plugin-sdk" in (lazyModule.createJitiOptions.at(-1)?.alias as Record<string, unknown>),
+    ).toBe(true);
     expect((lazyRootSdk.slowHelper as () => string)()).toBe("loaded");
     expect(Object.keys(lazyRootSdk)).toContain("slowHelper");
     expect(Object.getOwnPropertyDescriptor(lazyRootSdk, "slowHelper")).toBeDefined();

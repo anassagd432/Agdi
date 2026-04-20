@@ -120,6 +120,9 @@ import {
   type ExecApprovalsSetParams,
   ExecApprovalsSetParamsSchema,
   type ExecApprovalsSnapshot,
+  type ExecApprovalListParams,
+  ExecApprovalListParamsSchema,
+  type ExecApprovalListResult,
   type ExecApprovalRequestParams,
   ExecApprovalRequestParamsSchema,
   type ExecApprovalResolveParams,
@@ -431,6 +434,9 @@ export const validateExecApprovalsGetParams = ajv.compile<ExecApprovalsGetParams
 export const validateExecApprovalsSetParams = ajv.compile<ExecApprovalsSetParams>(
   ExecApprovalsSetParamsSchema,
 );
+export const validateExecApprovalListParams = ajv.compile<ExecApprovalListParams>(
+  ExecApprovalListParamsSchema,
+);
 export const validateExecApprovalRequestParams = ajv.compile<ExecApprovalRequestParams>(
   ExecApprovalRequestParamsSchema,
 );
@@ -708,6 +714,8 @@ export type {
   ExecApprovalsGetParams,
   ExecApprovalsSetParams,
   ExecApprovalsSnapshot,
+  ExecApprovalListParams,
+  ExecApprovalListResult,
   LogsTailParams,
   LogsTailResult,
   PollParams,

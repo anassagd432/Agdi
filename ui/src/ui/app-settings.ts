@@ -17,6 +17,7 @@ import { loadCronJobs, loadCronRuns, loadCronStatus } from "./controllers/cron.t
 import { loadDebug } from "./controllers/debug.ts";
 import { loadDevices } from "./controllers/devices.ts";
 import { loadExecApprovals } from "./controllers/exec-approvals.ts";
+import { loadPendingExecApprovals } from "./controllers/exec-approval.ts";
 import { loadLogs } from "./controllers/logs.ts";
 import { loadNodes } from "./controllers/nodes.ts";
 import { loadPresence } from "./controllers/presence.ts";
@@ -506,6 +507,7 @@ export async function loadOverview(host: SettingsHost) {
     loadDebug(app),
     loadSkills(app),
     loadUsage(app),
+    loadPendingExecApprovals(app),
     loadOverviewLogs(app),
   ]);
   buildAttentionItems(app);
@@ -580,7 +582,7 @@ function buildAttentionItems(host: OpenClawApp) {
       title: "Missing operator.read scope",
       description:
         "This connection does not have the operator.read scope. Some features may be unavailable.",
-      href: "https://docs.openclaw.ai/web/dashboard",
+      href: "https://docs.agdi.ai/web/dashboard",
       external: true,
     });
   }

@@ -340,7 +340,7 @@ export async function setupSearch(
       {
         value: "__skip__" as const,
         label: "Skip for now",
-        hint: "Configure later with openclaw configure --section web",
+        hint: "Configure later with agdi configure --section web",
       },
     ],
     initialValue: defaultProvider,
@@ -372,7 +372,7 @@ export async function setupSearch(
     await prompter.note(
       [
         `${entry.label} works without an API key.`,
-        "OpenClaw will enable the plugin and use it as your web_search provider.",
+        "Agdi will enable the plugin and use it as your web_search provider.",
         `Docs: ${entry.docsUrl ?? "https://docs.openclaw.ai/tools/web"}`,
       ].join("\n"),
       "Web search",
@@ -388,7 +388,7 @@ export async function setupSearch(
     const ref = buildSearchEnvRef(config, choice);
     await prompter.note(
       [
-        "Secret references enabled — OpenClaw will store a reference instead of the API key.",
+        "Secret references enabled — Agdi will store a reference instead of the API key.",
         `Env var: ${ref.id}${envAvailable ? " (detected)" : ""}.`,
         ...(envAvailable ? [] : [`Set ${ref.id} in the Gateway environment.`]),
         "Docs: https://docs.openclaw.ai/tools/web",

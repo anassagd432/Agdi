@@ -79,11 +79,12 @@ function createPluginSdkAliasFixture(params?: {
     params?.trustedRootIndicatorMode ??
     (params?.trustedRootIndicators === false ? "none" : "bin+marker");
   const packageJson: Record<string, unknown> = {
-    name: params?.packageName ?? "openclaw",
+    name: params?.packageName ?? "agdi",
     type: "module",
   };
   if (trustedRootIndicatorMode === "bin+marker") {
     packageJson.bin = {
+      agdi: "agdi.mjs",
       openclaw: "openclaw.mjs",
     };
   }
@@ -100,6 +101,7 @@ function createPluginSdkAliasFixture(params?: {
   }
   fs.writeFileSync(path.join(root, "package.json"), JSON.stringify(packageJson, null, 2), "utf-8");
   if (trustedRootIndicatorMode === "bin+marker") {
+    fs.writeFileSync(path.join(root, "agdi.mjs"), "export {};\n", "utf-8");
     fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
   }
   fs.writeFileSync(srcFile, params?.srcBody ?? "export {};\n", "utf-8");
@@ -113,12 +115,13 @@ function createExtensionApiAliasFixture(params?: { srcBody?: string; distBody?: 
   const distFile = path.join(root, "dist", "extensionAPI.js");
   mkdirSafe(path.dirname(srcFile));
   mkdirSafe(path.dirname(distFile));
-  fs.writeFileSync(
-    path.join(root, "package.json"),
-    JSON.stringify({ name: "openclaw", type: "module" }, null, 2),
-    "utf-8",
-  );
-  fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
+    fs.writeFileSync(
+      path.join(root, "package.json"),
+      JSON.stringify({ name: "agdi", type: "module" }, null, 2),
+      "utf-8",
+    );
+    fs.writeFileSync(path.join(root, "agdi.mjs"), "export {};\n", "utf-8");
+    fs.writeFileSync(path.join(root, "openclaw.mjs"), "export {};\n", "utf-8");
   fs.writeFileSync(srcFile, params?.srcBody ?? "export {};\n", "utf-8");
   fs.writeFileSync(distFile, params?.distBody ?? "export {};\n", "utf-8");
   return { root, srcFile, distFile };
@@ -130,11 +133,11 @@ function createPluginRuntimeAliasFixture(params?: { srcBody?: string; distBody?:
   const distFile = path.join(root, "dist", "plugins", "runtime", "index.js");
   mkdirSafe(path.dirname(srcFile));
   mkdirSafe(path.dirname(distFile));
-  fs.writeFileSync(
-    path.join(root, "package.json"),
-    JSON.stringify({ name: "openclaw", type: "module" }, null, 2),
-    "utf-8",
-  );
+    fs.writeFileSync(
+      path.join(root, "package.json"),
+      JSON.stringify({ name: "agdi", type: "module" }, null, 2),
+      "utf-8",
+    );
   fs.writeFileSync(
     srcFile,
     params?.srcBody ?? "export const createPluginRuntime = () => ({});\n",
@@ -450,7 +453,13 @@ describe("plugin sdk alias helpers", () => {
     expect(fs.realpathSync(sourceAliases["openclaw/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
+    expect(fs.realpathSync(sourceAliases["agdi/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(sourceRootAlias),
+    );
     expect(fs.realpathSync(sourceAliases["openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+      fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
+    );
+    expect(fs.realpathSync(sourceAliases["agdi/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
     );
 
@@ -464,7 +473,13 @@ describe("plugin sdk alias helpers", () => {
     expect(fs.realpathSync(distAliases["openclaw/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(distRootAlias),
     );
+    expect(fs.realpathSync(distAliases["agdi/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(distRootAlias),
+    );
     expect(fs.realpathSync(distAliases["openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+      fs.realpathSync(path.join(fixture.root, "dist", "plugin-sdk", "channel-runtime.js")),
+    );
+    expect(fs.realpathSync(distAliases["agdi/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(path.join(fixture.root, "dist", "plugin-sdk", "channel-runtime.js")),
     );
   });
@@ -493,7 +508,13 @@ describe("plugin sdk alias helpers", () => {
     expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(sourceRootAlias),
+    );
     expect(fs.realpathSync(aliases["openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+      fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
+    );
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
     );
   });
@@ -540,7 +561,13 @@ describe("plugin sdk alias helpers", () => {
     expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
       fs.realpathSync(sourceRootAlias),
     );
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(sourceRootAlias),
+    );
     expect(fs.realpathSync(aliases["openclaw/plugin-sdk/channel-runtime"] ?? "")).toBe(
+      fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
+    );
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
     );
   });

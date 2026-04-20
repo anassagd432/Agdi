@@ -22,7 +22,9 @@ type GatewayClientMock = {
 
 const gatewayClientInstances: GatewayClientMock[] = [];
 
-vi.mock("./gateway.ts", () => {
+vi.mock("./gateway.ts", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./gateway.ts")>();
+
   function resolveGatewayErrorDetailCode(
     error: { details?: unknown } | null | undefined,
   ): string | null {
@@ -81,7 +83,11 @@ vi.mock("./gateway.ts", () => {
     }
   }
 
-  return { GatewayBrowserClient, resolveGatewayErrorDetailCode };
+  return {
+    ...actual,
+    GatewayBrowserClient,
+    resolveGatewayErrorDetailCode,
+  };
 });
 
 vi.mock("./controllers/chat.ts", async (importOriginal) => {
@@ -124,7 +130,7 @@ function createHost() {
     agentsList: null,
     agentsError: null,
     debugHealth: null,
-    assistantName: "OpenClaw",
+    assistantName: "Agdi",
     assistantAvatar: null,
     assistantAgentId: null,
     serverVersion: null,

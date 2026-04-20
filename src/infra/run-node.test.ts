@@ -24,13 +24,13 @@ const NEW_TIME = new Date("2026-03-13T12:00:01.000Z");
 
 const BASE_PROJECT_FILES = {
   [ROOT_TSCONFIG]: "{}\n",
-  [ROOT_PACKAGE]: '{"name":"openclaw-test"}\n',
+  [ROOT_PACKAGE]: '{"name":"agdi-test"}\n',
   [DIST_ENTRY]: "console.log('built');\n",
   [BUILD_STAMP]: '{"head":"abc123"}\n',
 } as const;
 
 async function withTempDir<T>(run: (dir: string) => Promise<T>): Promise<T> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-run-node-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "agdi-run-node-"));
   try {
     return await run(dir);
   } finally {
@@ -62,7 +62,7 @@ function expectedBuildSpawn() {
 }
 
 function statusCommandSpawn() {
-  return [process.execPath, "openclaw.mjs", "status"];
+  return [process.execPath, "agdi.mjs", "status"];
 }
 
 function resolvePath(tmp: string, relativePath: string) {
@@ -199,7 +199,7 @@ describe("run-node script", () => {
         await expect(fs.readFile(indexPath, "utf-8")).resolves.toContain("sentinel");
         expect(nodeCalls).toEqual([
           [process.execPath, "scripts/tsdown-build.mjs", "--no-clean"],
-          [process.execPath, "openclaw.mjs", "--version"],
+          [process.execPath, "agdi.mjs", "--version"],
         ]);
       });
     },

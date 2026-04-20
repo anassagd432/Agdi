@@ -70,6 +70,7 @@ describe("deleteSessionsAndRefresh", () => {
     });
     expect(request).toHaveBeenNthCalledWith(3, "sessions.list", {
       includeGlobal: true,
+      includeLastMessage: true,
       includeUnknown: true,
     });
     expect(state.sessionsLoading).toBe(false);

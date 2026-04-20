@@ -4,7 +4,7 @@ import path from "node:path";
 import { resolveBrewPathDirs } from "./brew.js";
 import { isTruthyEnvValue } from "./env.js";
 
-type EnsureOpenClawPathOpts = {
+type EnsureAgdiPathOpts = {
   execPath?: string;
   cwd?: string;
   homeDir?: string;
@@ -49,7 +49,11 @@ function mergePath(params: { existing: string; prepend?: string[]; append?: stri
   return merged.join(path.delimiter);
 }
 
-function candidateBinDirs(opts: EnsureOpenClawPathOpts): { prepend: string[]; append: string[] } {
+function hasExecutableInDir(dir: string, names: readonly string[]): boolean {
+  return names.some((name) => isExecutable(path.join(dir, name)));
+}
+
+function candidateBinDirs(opts: EnsureAgdiPathOpts): { prepend: string[]; append: string[] } {
   const execPath = opts.execPath ?? process.execPath;
   const cwd = opts.cwd ?? process.cwd();
   const homeDir = opts.homeDir ?? os.homedir();
@@ -58,11 +62,10 @@ function candidateBinDirs(opts: EnsureOpenClawPathOpts): { prepend: string[]; ap
   const prepend: string[] = [];
   const append: string[] = [];
 
-  // Bundled macOS app: `openclaw` lives next to the executable (process.execPath).
+  // Bundled app installs keep the CLI shim next to the executable.
   try {
     const execDir = path.dirname(execPath);
-    const siblingCli = path.join(execDir, "openclaw");
-    if (isExecutable(siblingCli)) {
+    if (hasExecutableInDir(execDir, ["agdi", "openclaw"])) {
       prepend.push(execDir);
     }
   } catch {
@@ -73,10 +76,11 @@ function candidateBinDirs(opts: EnsureOpenClawPathOpts): { prepend: string[]; ap
   // disabled by default; if an operator explicitly enables it, only append (never prepend).
   const allowProjectLocalBin =
     opts.allowProjectLocalBin === true ||
+    isTruthyEnvValue(process.env.AGDI_ALLOW_PROJECT_LOCAL_BIN) ||
     isTruthyEnvValue(process.env.OPENCLAW_ALLOW_PROJECT_LOCAL_BIN);
   if (allowProjectLocalBin) {
     const localBinDir = path.join(cwd, "node_modules", ".bin");
-    if (isExecutable(path.join(localBinDir, "openclaw"))) {
+    if (hasExecutableInDir(localBinDir, ["agdi", "openclaw"])) {
       append.push(localBinDir);
     }
   }
@@ -106,13 +110,17 @@ function candidateBinDirs(opts: EnsureOpenClawPathOpts): { prepend: string[]; ap
 }
 
 /**
- * Best-effort PATH bootstrap so skills that require the `openclaw` CLI can run
+ * Best-effort PATH bootstrap so skills that require the `agdi` CLI can run
  * under launchd/minimal environments (and inside the macOS app bundle).
  */
-export function ensureOpenClawCliOnPath(opts: EnsureOpenClawPathOpts = {}) {
-  if (isTruthyEnvValue(process.env.OPENCLAW_PATH_BOOTSTRAPPED)) {
+export function ensureAgdiCliOnPath(opts: EnsureAgdiPathOpts = {}) {
+  if (
+    isTruthyEnvValue(process.env.AGDI_PATH_BOOTSTRAPPED) ||
+    isTruthyEnvValue(process.env.OPENCLAW_PATH_BOOTSTRAPPED)
+  ) {
     return;
   }
+  process.env.AGDI_PATH_BOOTSTRAPPED = "1";
   process.env.OPENCLAW_PATH_BOOTSTRAPPED = "1";
 
   const existing = opts.pathEnv ?? process.env.PATH ?? "";
@@ -126,3 +134,5 @@ export function ensureOpenClawCliOnPath(opts: EnsureOpenClawPathOpts = {}) {
     process.env.PATH = merged;
   }
 }
+
+export const ensureOpenClawCliOnPath = ensureAgdiCliOnPath;

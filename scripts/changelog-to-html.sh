@@ -57,13 +57,13 @@ markdown_to_html() {
 
 version_content=$(extract_version_section "$VERSION" "$CHANGELOG_FILE")
 if [[ -z "$version_content" ]]; then
-  echo "<h2>OpenClaw $VERSION</h2>"
-  echo "<p>Latest OpenClaw update.</p>"
+  echo "<h2>Agdi $VERSION</h2>"
+  echo "<p>Latest Agdi update.</p>"
   echo "<p><a href=\"https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md\">View full changelog</a></p>"
   exit 0
 fi
 
-echo "<h2>OpenClaw $VERSION</h2>"
+echo "<h2>Agdi $VERSION</h2>"
 
 in_list=false
 while IFS= read -r line; do

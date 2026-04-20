@@ -1,0 +1,7 @@
+Playwright E2E Dashboard Testing Report
+=======================================
+
+Bugs & Errors Found:
+- Fatal Test Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:5173/
+Call log:
+[2m  - navigating to "http://127.0.0.1:5173/", waiting until "load"[22m

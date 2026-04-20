@@ -23,6 +23,13 @@ export type ExecApprovalResolved = {
   ts?: number | null;
 };
 
+export type PendingExecApprovalState = {
+  client: { request<T>(method: string, params: Record<string, unknown>): Promise<T> } | null;
+  connected: boolean;
+  execApprovalQueue: ExecApprovalRequest[];
+  execApprovalError?: string | null;
+};
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -97,4 +104,19 @@ export function removeExecApproval(
   id: string,
 ): ExecApprovalRequest[] {
   return pruneExecApprovalQueue(queue).filter((entry) => entry.id !== id);
+}
+
+export async function loadPendingExecApprovals(state: PendingExecApprovalState) {
+  if (!state.client || !state.connected) {
+    return;
+  }
+  try {
+    const response = await state.client.request<{ approvals?: unknown[] }>("exec.approval.list", {});
+    const approvals = Array.isArray(response.approvals)
+      ? response.approvals.map((entry) => parseExecApprovalRequested(entry)).filter(Boolean)
+      : [];
+    state.execApprovalQueue = pruneExecApprovalQueue(approvals);
+  } catch (err) {
+    state.execApprovalError = String(err);
+  }
 }

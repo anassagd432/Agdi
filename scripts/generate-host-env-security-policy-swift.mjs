@@ -23,6 +23,7 @@ const outputPath = path.join(
   "OpenClaw",
   "HostEnvSecurityPolicy.generated.swift",
 );
+const outputDir = path.dirname(outputPath);
 
 /** @type {{blockedKeys: string[]; blockedOverrideKeys?: string[]; blockedOverridePrefixes?: string[]; blockedPrefixes: string[]}} */
 const policy = JSON.parse(fs.readFileSync(policyPath, "utf8"));
@@ -55,6 +56,12 @@ ${renderSwiftStringArray(policy.blockedPrefixes)}
 `;
 
 const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, "utf8") : null;
+const hasMacAppSources = fs.existsSync(outputDir);
+
+if (!hasMacAppSources) {
+  console.log(`Skipping ${path.relative(repoRoot, outputPath)} (macOS app sources not present).`);
+  process.exit(0);
+}
 
 if (checkOnly) {
   if (current === generated) {

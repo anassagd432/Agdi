@@ -22,7 +22,7 @@ class MockWebSocket {
 
 export function mountApp(pathname: string) {
   window.history.replaceState({}, "", pathname);
-  const app = document.createElement("openclaw-app") as OpenClawApp;
+  const app = document.createElement("agdi-app") as OpenClawApp;
   document.body.append(app);
   app.connected = true;
   app.requestUpdate();

@@ -1,6 +1,8 @@
 import { html, nothing } from "lit";
+import { createFounderOpsAgendaFromDashboardData } from "../founder-ops.ts";
 import { t, i18n, SUPPORTED_LOCALES, type Locale, isSupportedLocale } from "../../i18n/index.ts";
 import type { EventLogEntry } from "../app-events.ts";
+import type { ExecApprovalRequest } from "../controllers/exec-approval.ts";
 import { buildExternalLinkRel, EXTERNAL_LINK_TARGET } from "../external-link.ts";
 import { formatRelativeTimestamp, formatDurationHuman } from "../format.ts";
 import type { GatewayHelloOk } from "../gateway.ts";
@@ -14,8 +16,7 @@ import type {
   SessionsUsageResult,
   SkillStatusReport,
 } from "../types.ts";
-import { renderOverviewAttention } from "./overview-attention.ts";
-import { renderOverviewCards } from "./overview-cards.ts";
+import { renderFounderCommandCenter } from "./founder-command-center.ts";
 import { renderOverviewEventLog } from "./overview-event-log.ts";
 import {
   resolveAuthHintKind,
@@ -43,6 +44,7 @@ export type OverviewProps = {
   cronJobs: CronJob[];
   cronStatus: CronStatus | null;
   attentionItems: AttentionItem[];
+  execApprovalQueue: ExecApprovalRequest[];
   eventLog: EventLogEntry[];
   overviewLogLines: string[];
   showGatewayToken: boolean;
@@ -59,6 +61,11 @@ export type OverviewProps = {
 };
 
 export function renderOverview(props: OverviewProps) {
+  const founderAgenda = createFounderOpsAgendaFromDashboardData({
+    sessionsResult: props.sessionsResult,
+    cronJobs: props.cronJobs,
+    execApprovalQueue: props.execApprovalQueue,
+  });
   const snapshot = props.hello?.snapshot as
     | {
         uptimeMs?: number;
@@ -81,8 +88,8 @@ export function renderOverview(props: OverviewProps) {
       <div class="muted" style="margin-top: 8px">
         ${t("overview.pairing.hint")}
         <div style="margin-top: 6px">
-          <span class="mono">openclaw devices list</span><br />
-          <span class="mono">openclaw devices approve &lt;requestId&gt;</span>
+          <span class="mono">agdi devices list</span><br />
+          <span class="mono">agdi devices approve &lt;requestId&gt;</span>
         </div>
         <div style="margin-top: 6px; font-size: 12px;">
           ${t("overview.pairing.mobileHint")}
@@ -90,7 +97,7 @@ export function renderOverview(props: OverviewProps) {
         <div style="margin-top: 6px">
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/web/control-ui#device-pairing-first-connection"
+            href="https://docs.agdi.ai/web/control-ui#device-pairing-first-connection"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
             title="Device pairing docs (opens in new tab)"
@@ -117,13 +124,13 @@ export function renderOverview(props: OverviewProps) {
         <div class="muted" style="margin-top: 8px">
           ${t("overview.auth.required")}
           <div style="margin-top: 6px">
-            <span class="mono">openclaw dashboard --no-open</span> → tokenized URL<br />
-            <span class="mono">openclaw doctor --generate-gateway-token</span> → set token
+            <span class="mono">agdi dashboard --no-open</span> → tokenized URL<br />
+            <span class="mono">agdi doctor --generate-gateway-token</span> → set token
           </div>
           <div style="margin-top: 6px">
             <a
               class="session-link"
-              href="https://docs.openclaw.ai/web/dashboard"
+              href="https://docs.agdi.ai/web/dashboard"
               target=${EXTERNAL_LINK_TARGET}
               rel=${buildExternalLinkRel()}
               title="Control UI auth docs (opens in new tab)"
@@ -135,11 +142,11 @@ export function renderOverview(props: OverviewProps) {
     }
     return html`
       <div class="muted" style="margin-top: 8px">
-        ${t("overview.auth.failed", { command: "openclaw dashboard --no-open" })}
+        ${t("overview.auth.failed", { command: "agdi dashboard --no-open" })}
         <div style="margin-top: 6px">
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/web/dashboard"
+            href="https://docs.agdi.ai/web/dashboard"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
             title="Control UI auth docs (opens in new tab)"
@@ -170,7 +177,7 @@ export function renderOverview(props: OverviewProps) {
         <div style="margin-top: 6px">
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/gateway/tailscale"
+            href="https://docs.agdi.ai/gateway/tailscale"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
             title="Tailscale Serve docs (opens in new tab)"
@@ -179,7 +186,7 @@ export function renderOverview(props: OverviewProps) {
           <span class="muted"> · </span>
           <a
             class="session-link"
-            href="https://docs.openclaw.ai/web/control-ui#insecure-http"
+            href="https://docs.agdi.ai/web/control-ui#insecure-http"
             target=${EXTERNAL_LINK_TARGET}
             rel=${buildExternalLinkRel()}
             title="Insecure HTTP docs (opens in new tab)"
@@ -317,16 +324,16 @@ export function renderOverview(props: OverviewProps) {
                 <div class="login-gate__help" style="margin-top: 16px;">
                   <div class="login-gate__help-title">${t("overview.connection.title")}</div>
                   <ol class="login-gate__steps">
-                    <li>${t("overview.connection.step1")}<code>openclaw gateway run</code></li>
-                    <li>${t("overview.connection.step2")}<code>openclaw dashboard --no-open</code></li>
+                    <li>${t("overview.connection.step1")}<code>agdi gateway run</code></li>
+                    <li>${t("overview.connection.step2")}<code>agdi dashboard --no-open</code></li>
                     <li>${t("overview.connection.step3")}</li>
-                    <li>${t("overview.connection.step4")}<code>openclaw doctor --generate-gateway-token</code></li>
+                    <li>${t("overview.connection.step4")}<code>agdi doctor --generate-gateway-token</code></li>
                   </ol>
                   <div class="login-gate__docs">
                     ${t("overview.connection.docsHint")}
                     <a
                       class="session-link"
-                      href="https://docs.openclaw.ai/web/dashboard"
+                      href="https://docs.agdi.ai/web/dashboard"
                       target="_blank"
                       rel="noreferrer"
                     >${t("overview.connection.docsLink")}</a>
@@ -381,17 +388,11 @@ export function renderOverview(props: OverviewProps) {
 
     <div class="ov-section-divider"></div>
 
-    ${renderOverviewCards({
-      usageResult: props.usageResult,
-      sessionsResult: props.sessionsResult,
-      skillsReport: props.skillsReport,
-      cronJobs: props.cronJobs,
-      cronStatus: props.cronStatus,
-      presenceCount: props.presenceCount,
+    ${renderFounderCommandCenter({
+      agenda: founderAgenda,
       onNavigate: props.onNavigate,
+      onOpenSession: props.onSessionKeyChange,
     })}
-
-    ${renderOverviewAttention({ items: props.attentionItems })}
 
     <div class="ov-section-divider"></div>
 

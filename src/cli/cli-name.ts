@@ -1,16 +1,21 @@
 import path from "node:path";
 
-export const DEFAULT_CLI_NAME = "openclaw";
+export const DEFAULT_CLI_NAME = "agdi";
 
-const KNOWN_CLI_NAMES = new Set([DEFAULT_CLI_NAME]);
-const CLI_PREFIX_RE = /^(?:((?:pnpm|npm|bunx|npx)\s+))?(openclaw)\b/;
+const LEGACY_CLI_NAME = "openclaw";
+const KNOWN_CLI_NAMES = new Set([DEFAULT_CLI_NAME, LEGACY_CLI_NAME]);
+const CLI_PREFIX_RE = /^(?:((?:pnpm|npm|bunx|npx)\s+))?(?:agdi|openclaw)\b/;
+
+function normalizeCliBasename(raw: string): string {
+  return raw.replace(/\.(?:mjs|js|cjs|cmd|bat|exe)$/i, "");
+}
 
 export function resolveCliName(argv: string[] = process.argv): string {
   const argv1 = argv[1];
   if (!argv1) {
     return DEFAULT_CLI_NAME;
   }
-  const base = path.basename(argv1).trim();
+  const base = normalizeCliBasename(path.basename(argv1).trim().toLowerCase());
   if (KNOWN_CLI_NAMES.has(base)) {
     return base;
   }

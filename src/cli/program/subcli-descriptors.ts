@@ -44,6 +44,11 @@ export const SUB_CLI_DESCRIPTORS = [
     hasSubcommands: true,
   },
   {
+    name: "ops",
+    description: "Founder operations command center via Gateway",
+    hasSubcommands: true,
+  },
+  {
     name: "sandbox",
     description: "Manage sandbox containers for agent isolation",
     hasSubcommands: true,
@@ -65,7 +70,7 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "docs",
-    description: "Search the live OpenClaw docs",
+    description: "Search the live Agdi docs",
     hasSubcommands: false,
   },
   {
@@ -95,7 +100,7 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "plugins",
-    description: "Manage OpenClaw plugins and extensions",
+    description: "Manage Agdi plugins and extensions",
     hasSubcommands: true,
   },
   {
@@ -125,7 +130,7 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "update",
-    description: "Update OpenClaw and inspect update channel status",
+    description: "Update Agdi and inspect update channel status",
     hasSubcommands: true,
   },
   {

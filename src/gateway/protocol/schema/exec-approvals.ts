@@ -85,6 +85,49 @@ export const ExecApprovalsNodeSetParamsSchema = Type.Object(
   { additionalProperties: false },
 );
 
+export const ExecApprovalListParamsSchema = Type.Object({}, { additionalProperties: false });
+
+export const ExecApprovalRequestPayloadSchema = Type.Object(
+  {
+    command: NonEmptyString,
+    commandPreview: Type.Optional(Type.String()),
+    commandArgv: Type.Optional(Type.Array(Type.String())),
+    envKeys: Type.Optional(Type.Array(Type.String())),
+    systemRunBinding: Type.Optional(Type.Unknown()),
+    systemRunPlan: Type.Optional(Type.Unknown()),
+    cwd: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    nodeId: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    host: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    security: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    ask: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    agentId: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    resolvedPath: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    sessionKey: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    turnSourceChannel: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    turnSourceTo: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    turnSourceAccountId: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    turnSourceThreadId: Type.Optional(Type.Union([Type.String(), Type.Number(), Type.Null()])),
+  },
+  { additionalProperties: false },
+);
+
+export const ExecApprovalRecordSchema = Type.Object(
+  {
+    id: NonEmptyString,
+    request: ExecApprovalRequestPayloadSchema,
+    createdAtMs: Type.Integer({ minimum: 0 }),
+    expiresAtMs: Type.Integer({ minimum: 0 }),
+  },
+  { additionalProperties: false },
+);
+
+export const ExecApprovalListResultSchema = Type.Object(
+  {
+    approvals: Type.Array(ExecApprovalRecordSchema),
+  },
+  { additionalProperties: false },
+);
+
 export const ExecApprovalRequestParamsSchema = Type.Object(
   {
     id: Type.Optional(NonEmptyString),

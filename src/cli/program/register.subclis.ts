@@ -137,6 +137,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "ops",
+    description: "Founder operations command center via Gateway",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../founder-ops-cli.js");
+      mod.registerFounderOpsCli(program);
+    },
+  },
+  {
     name: "sandbox",
     description: "Manage sandbox containers for agent isolation",
     hasSubcommands: true,
@@ -174,7 +183,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "docs",
-    description: "Search the live OpenClaw docs",
+    description: "Search the live Agdi docs",
     hasSubcommands: false,
     register: async (program) => {
       const mod = await import("../docs-cli.js");
@@ -236,7 +245,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "plugins",
-    description: "Manage OpenClaw plugins and extensions",
+    description: "Manage Agdi plugins and extensions",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../plugins-cli.js");
@@ -295,7 +304,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "update",
-    description: "Update OpenClaw and inspect update channel status",
+    description: "Update Agdi and inspect update channel status",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../update-cli.js");

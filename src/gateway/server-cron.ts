@@ -27,6 +27,7 @@ import { SsrFBlockedError } from "../infra/net/ssrf.js";
 import { deliverOutboundPayloads } from "../infra/outbound/deliver.js";
 import { enqueueSystemEvent } from "../infra/system-events.js";
 import { getChildLogger } from "../logging.js";
+import { resolveFounderRoutineSessionRequestKey } from "../founder-ops/control-plane.js";
 import { normalizeAgentId, toAgentStoreSessionKey } from "../routing/session-key.js";
 import { defaultRuntime } from "../runtime.js";
 
@@ -284,13 +285,12 @@ export function buildGatewayCronService(params: {
     },
     runIsolatedAgentJob: async ({ job, message, abortSignal }) => {
       const { agentId, cfg: runtimeConfig } = resolveCronAgent(job.agentId);
-      let sessionKey = `cron:${job.id}`;
-      if (job.sessionTarget.startsWith("session:")) {
-        const customSessionId = job.sessionTarget.slice(8).trim();
-        if (customSessionId) {
-          sessionKey = customSessionId;
-        }
-      }
+      const sessionKey =
+        resolveFounderRoutineSessionRequestKey({
+          id: job.id,
+          name: job.name,
+          sessionTarget: job.sessionTarget,
+        }) ?? `cron:${job.id}`;
       return await runCronIsolatedAgentTurn({
         cfg: runtimeConfig,
         deps: params.deps,

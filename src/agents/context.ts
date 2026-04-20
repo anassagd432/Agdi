@@ -96,6 +96,8 @@ function isLikelyOpenClawCliProcess(argv: string[] = process.argv): boolean {
     .trim()
     .toLowerCase();
   return (
+    entryBasename === "agdi" ||
+    entryBasename === "agdi.mjs" ||
     entryBasename === "openclaw" ||
     entryBasename === "openclaw.mjs" ||
     entryBasename === "entry.js" ||

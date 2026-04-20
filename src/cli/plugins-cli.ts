@@ -205,7 +205,7 @@ function formatInstallLines(install: PluginInstallRecord | undefined): string[] 
 export function registerPluginsCli(program: Command) {
   const plugins = program
     .command("plugins")
-    .description("Manage OpenClaw plugins and extensions")
+    .description("Manage Agdi plugins and extensions")
     .addHelpText(
       "after",
       () =>

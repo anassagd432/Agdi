@@ -89,7 +89,7 @@ function resolveProfileStateDir(
   homedir: () => string,
 ): string {
   const suffix = profile.toLowerCase() === "default" ? "" : `-${profile}`;
-  return path.join(resolveRequiredHomeDir(env as NodeJS.ProcessEnv, homedir), `.openclaw${suffix}`);
+  return path.join(resolveRequiredHomeDir(env as NodeJS.ProcessEnv, homedir), `.agdi${suffix}`);
 }
 
 export function applyCliProfileEnv(params: {
@@ -105,18 +105,34 @@ export function applyCliProfileEnv(params: {
   }
 
   // Convenience only: fill defaults, never override explicit env values.
+  env.AGDI_PROFILE = profile;
   env.OPENCLAW_PROFILE = profile;
 
-  const stateDir = env.OPENCLAW_STATE_DIR?.trim() || resolveProfileStateDir(profile, env, homedir);
+  const stateDir =
+    env.AGDI_STATE_DIR?.trim() ||
+    env.OPENCLAW_STATE_DIR?.trim() ||
+    resolveProfileStateDir(profile, env, homedir);
+  if (!env.AGDI_STATE_DIR?.trim()) {
+    env.AGDI_STATE_DIR = stateDir;
+  }
   if (!env.OPENCLAW_STATE_DIR?.trim()) {
     env.OPENCLAW_STATE_DIR = stateDir;
   }
 
+  const configPath = path.join(stateDir, "agdi.json");
+  if (!env.AGDI_CONFIG_PATH?.trim()) {
+    env.AGDI_CONFIG_PATH = configPath;
+  }
   if (!env.OPENCLAW_CONFIG_PATH?.trim()) {
-    env.OPENCLAW_CONFIG_PATH = path.join(stateDir, "openclaw.json");
+    env.OPENCLAW_CONFIG_PATH = configPath;
   }
 
-  if (profile === "dev" && !env.OPENCLAW_GATEWAY_PORT?.trim()) {
+  if (
+    profile === "dev" &&
+    !env.AGDI_GATEWAY_PORT?.trim() &&
+    !env.OPENCLAW_GATEWAY_PORT?.trim()
+  ) {
+    env.AGDI_GATEWAY_PORT = "19001";
     env.OPENCLAW_GATEWAY_PORT = "19001";
   }
 }

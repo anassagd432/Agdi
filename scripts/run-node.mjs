@@ -191,7 +191,7 @@ const hasSourceMtimeChanged = (stampMtime, deps) => {
 };
 
 const shouldBuild = (deps) => {
-  if (deps.env.OPENCLAW_FORCE_BUILD === "1") {
+  if ((deps.env.AGDI_FORCE_BUILD ?? deps.env.OPENCLAW_FORCE_BUILD) === "1") {
     return true;
   }
   const stamp = readBuildStamp(deps);
@@ -233,14 +233,14 @@ const shouldBuild = (deps) => {
 };
 
 const logRunner = (message, deps) => {
-  if (deps.env.OPENCLAW_RUNNER_LOG === "0") {
+  if ((deps.env.AGDI_RUNNER_LOG ?? deps.env.OPENCLAW_RUNNER_LOG) === "0") {
     return;
   }
-  deps.stderr.write(`[openclaw] ${message}\n`);
+  deps.stderr.write(`[agdi] ${message}\n`);
 };
 
-const runOpenClaw = async (deps) => {
-  const nodeProcess = deps.spawn(deps.execPath, ["openclaw.mjs", ...deps.args], {
+const runAgdi = async (deps) => {
+  const nodeProcess = deps.spawn(deps.execPath, ["agdi.mjs", ...deps.args], {
     cwd: deps.cwd,
     env: deps.env,
     stdio: "inherit",
@@ -307,7 +307,7 @@ export async function runNodeMain(params = {}) {
     if (!syncRuntimeArtifacts(deps)) {
       return 1;
     }
-    return await runOpenClaw(deps);
+    return await runAgdi(deps);
   }
 
   logRunner("Building TypeScript (dist is stale).", deps);
@@ -332,7 +332,7 @@ export async function runNodeMain(params = {}) {
     return 1;
   }
   writeBuildStamp(deps);
-  return await runOpenClaw(deps);
+  return await runAgdi(deps);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {

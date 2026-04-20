@@ -1,0 +1,362 @@
+{
+    "hero": {
+        "name": "Anass Agdi",
+        "title": "AI Engineer — Autonomous Systems, Automation & Prompt Engineering",
+        "description": "I engineer production AI systems: autonomous agent frameworks, document parsing pipelines, voice agents, prompt engineering, and workflow automation. Building intelligent systems that handle real data for real users.",
+        "cta_primary": "See What I've Built",
+        "cta_secondary": "Work With Me",
+        "tech_stack": "TypeScript • Next.js • Supabase • n8n • Gemini AI",
+        "carousel": {
+            "agdi_dashboard_overview_alt": "Agdi Dashboard overview displaying real-time agent metrics",
+            "agdi_dashboard_analytics_alt": "Agdi Dashboard analytics showing model token usage",
+            "agdi_dashboard_health_alt": "Agdi Dashboard system health and operations monitoring"
+        }
+    },
+    "hireMe": {
+        "title": "Need AI Automation?",
+        "subtitle": "I can ship an MVP in 7–14 days. AI receptionist, document parser, or custom workflow.",
+        "cta": "Let's Talk"
+    },
+    "howIWork": {
+        "title": "How I Work",
+        "subtitle": "From idea to production in weeks, not months.",
+        "steps": {
+            "call": {
+                "title": "15 Min Call",
+                "description": "Understand your requirements and constraints."
+            },
+            "prototype": {
+                "title": "48h Prototype",
+                "description": "Functional demo to validate the approach."
+            },
+            "shipping": {
+                "title": "Weekly Shipping",
+                "description": "Iterative delivery with continuous feedback."
+            },
+            "handover": {
+                "title": "Docs + Handover",
+                "description": "Production-ready code with full documentation."
+            }
+        }
+    },
+    "systems": {
+        "title": "Systems I've Built",
+        "subtitle": "Production code. Real tradeoffs. Actual results.",
+        "tradeoffs_label": "// tradeoffs:",
+        "items": {
+            "dockparser": {
+                "name": "DockParser",
+                "description": "AI document parser that extracts structured data from invoices and contracts.",
+                "technical": "Chose Gemini over GPT-4 for vision tasks — 3x cheaper, faster cold starts. Server-side only to avoid key exposure. Rate-limited demo mode to control costs.",
+                "result": "90% reduction in manual data entry time. Handles 50+ document formats.",
+                "verification": "Measured on 50 document test set, internal pilot."
+            },
+            "b2b": {
+                "name": "B2B Lead Automation",
+                "description": "End-to-end cold outreach pipeline: intake → research → personalized email → CRM sync.",
+                "technical": "n8n over Zapier — self-hosted, no per-task limits. Gemini Vision for OCR on screenshot leads. Error nodes with Telegram alerts for failed runs.",
+                "result": "Processes 200+ leads/day. 15% reply rate on cold outreach.",
+                "verification": "Last 30 days of client campaigns, tracked via CRM."
+            },
+            "vendorvault": {
+                "name": "VendorVault",
+                "description": "Document approval workflow for vendor onboarding with role-based access.",
+                "technical": "Supabase RLS over custom auth — faster to ship, battle-tested security. Edge functions for webhooks. No external auth provider to reduce deps.",
+                "result": "Full CRUD + approval flow shipped in 2 weeks. Zero security incidents.",
+                "verification": "Production system since Q4 2025, zero breaches reported."
+            }
+        }
+    },
+    "services": {
+        "title": "Agdi AI Services",
+        "subtitle": "Never miss a lead again — automate your bookings and turn your website into a 24/7 sales agent",
+        "visit_button": "Visit Agdi AI",
+        "items": {
+            "receptionist": {
+                "title": "AI Receptionist (24/7)",
+                "description": "Automated call handling, lead qualification, and appointment booking. Integrates directly with Google Calendar.",
+                "industries": "Clinics, salons, real estate, dealerships"
+            },
+            "salesweb": {
+                "title": "AI Sales Website",
+                "description": "High-converting websites with embedded Voice + Chat AI. Your digital sales rep that qualifies leads and schedules instantly.",
+                "industries": "Any B2B or service business"
+            },
+            "webdev": {
+                "title": "Web Development",
+                "description": "Professional, fast, and responsive websites — from standard lead-capture sites to premium fully animated experiences.",
+                "industries": "Forms, booking systems, tracking"
+            },
+            "automation": {
+                "title": "Custom AI Automations",
+                "description": "Streamline workflows with email automation, outreach sequences, and Telegram-based AI personal assistants.",
+                "industries": "Google Sheets & Calendar integration"
+            }
+        }
+    },
+    "caseStudy": {
+        "title": "Case Study: DockParser (InvoiceFlow AI)",
+        "subtitle": "Real-time extraction with confidence scoring; production-ready data pipelines and Stripe-powered billing.",
+        "challenge_title": "The Challenge",
+        "challenge_text": "Manual invoice processing consumes time and causes errors. Operations teams spend hours on data entry instead of strategic work.",
+        "approach_title": "Technical Decisions",
+        "decisions": {
+            "gemini": "Gemini over GPT-4: 3x cheaper for vision, faster cold starts",
+            "serverside": "Server-side only: No client API calls — zero key exposure",
+            "supabase": "Supabase RLS: Auth + storage in one, no custom RBAC code",
+            "ratelimit": "Rate-limited demo: Controls costs, prevents abuse"
+        },
+        "architecture_title": "System Architecture",
+        "outcome_label": "Outcome:",
+        "outcome_text": "~90% time saved on data entry in test scenarios. Production-ready data pipelines with confidence scoring.",
+        "cta": "Request a Technical Walkthrough"
+    },
+    "workflows": {
+        "title": "Open-Source Workflows",
+        "subtitle": "Production-ready n8n automations — free to download and customize",
+        "download_button": "Download JSON",
+        "coming_soon": "More workflows coming soon. Follow me on",
+        "for_updates": "for updates.",
+        "items": {
+            "b2b_lead": {
+                "title": "B2B Lead Generation & AI Qualification",
+                "description": "End-to-end cold outreach automation. Takes raw leads → enriches → qualifies → sends personalized emails → logs everything.",
+                "features": [
+                    "Lead intake from Google Sheets or Telegram",
+                    "Gemini Vision OCR for screenshot/photo leads",
+                    "AI research agent pulls context: site, services, proof points",
+                    "AI copywriter generates personalized cold emails",
+                    "Gmail send + Sheet logging with status & follow-up dates",
+                    "Telegram notifications: success / review / errors"
+                ]
+            },
+            "contact_form": {
+                "title": "Website Contact Form → AI Analysis → CRM",
+                "description": "Full-stack contact form automation. Webhook receives form → Gemini extracts & qualifies lead → syncs to HubSpot → sends auto-response + follow-up → notifies Telegram.",
+                "features": [
+                    "Webhook trigger captures website form submissions",
+                    "Gemini AI extracts business details & assigns lead score (1-10)",
+                    "Instant Telegram notification with AI-generated summary",
+                    "Auto-sync to HubSpot CRM with lifecycle stage mapping",
+                    "Personalized thank-you email referencing pain points",
+                    "Automated 2-day follow-up email with case studies"
+                ]
+            }
+        }
+    },
+    "contact": {
+        "title": "Let's Build Something Useful",
+        "subtitle": "Available for remote contracts and AI/automation roles.",
+        "email_button": "Email",
+        "schedule_button": "Schedule",
+        "hiring": "Hiring?",
+        "hiring_text": "Send a short brief to"
+    },
+    "about": {
+        "title": "About Me",
+        "subtitle": "Discipline built through years of training and entrepreneurship.",
+        "traits": {
+            "calisthenics": {
+                "title": "6 Years Calisthenics",
+                "description": "Building physical and mental strength through discipline and consistent training."
+            },
+            "entrepreneur": {
+                "title": "3 Years Entrepreneur",
+                "description": "Building products, solving problems, and learning from every failure."
+            },
+            "discipline": {
+                "title": "Discipline & Consistency",
+                "description": "I wake up early and show up every day, regardless of motivation or immediate results."
+            },
+            "proof": {
+                "title": "Proof",
+                "github": "@anassagd432",
+                "npm": "agdi on npm",
+                "demos": "3 Live Demos"
+            }
+        }
+    },
+    "footer": {
+        "copyright": "© {year} Anass Agdi —",
+        "built_by": "Built and maintained by Anass Agdi."
+    },
+    "language_switcher": {
+        "label": "Language"
+    },
+    "projects": {
+        "title": "Selected Works",
+        "subtitle": "Production-grade applications with live demos and open-source code.",
+        "key_innovations": "Key Innovations",
+        "flagship": {
+            "title": "Agdi",
+            "subtitle": "Agdi.dev",
+            "role": "Founder & Principal Architect",
+            "status": "v4.0.1 — Public Release on npm (2026)",
+            "hook": "A Sovereign, Runtime-Native AI Framework. Zero Cloud Latency. Automated Community Intel.",
+            "description": "Agdi is an autonomous engineering framework blending terminal-level logic with web-scale connectivity. Using a highly secure WebSocket Local Node, Agdi bridges local execution with premium cloud dashboards. The ecosystem now features a Custom Gemini AI Discord Admin that processes developer support tickets autonomously, 24/7.",
+            "demo_button": "Live Demo",
+            "npm_button": "📦 npm i -g agdi@4.0.1",
+            "github_button": "GitHub",
+            "innovations": {
+                "squad": {
+                    "title": "Agdi Squad (Multi-Agent)",
+                    "text": "A fleet of 5 specialized AI agents working in parallel with reversible micro-commits for deep codebase refactoring."
+                },
+                "gateway": {
+                    "title": "WebSocket Local Gateway",
+                    "text": "Engineered a highly secure, natively authenticated WebSocket node (18789) bridging local machine execution with cloud Web UIs instantly."
+                },
+                "discord": {
+                    "title": "Custom AI Discord Admin",
+                    "text": "Built a standalone 24/7 Discord bot powered by Gemini-1.5-Flash to autonomously resolve developer support tickets and manage community logging."
+                },
+                "dashboard": {
+                    "title": "Vercel Command Center",
+                    "text": "A premium, glassmorphism 3D dashboard providing real-time fleet telemetry, tracing, and multi-agent management."
+                },
+                "audit": {
+                    "title": "Production Audit & Steerable Exec",
+                    "text": "AI Breakpoints for mid-task reviews, paired with automated WCAG, XSS, and SEO vulnerability scanning before deployment."
+                },
+                "plugins": {
+                    "title": "Plugin Architecture",
+                    "text": "A highly modular extension SDK allowing developers to seamlessly bridge Agdi into external platforms (Slack, Zalo, WhatsApp, Teams)."
+                }
+            },
+            "stats": {
+                "cli_commands": {
+                    "value": "17",
+                    "label": "CLI Commands"
+                },
+                "ai_agents": {
+                    "value": "5",
+                    "label": "AI Agents"
+                },
+                "llm_models": {
+                    "value": "13+",
+                    "label": "LLM Models"
+                },
+                "tests": {
+                    "value": "83",
+                    "label": "Automated Tests"
+                },
+                "providers": {
+                    "value": "7",
+                    "label": "Providers"
+                }
+            }
+        },
+        "items": {
+            "dockparser": {
+                "title": "DockParser",
+                "description": "AI-powered invoice & contract parsing with structured data extraction.",
+                "badges": [
+                    "Next.js",
+                    "Gemini",
+                    "Stripe"
+                ]
+            },
+            "vendorvault": {
+                "title": "VendorVault",
+                "description": "Secure document approvals and vendor onboarding for enterprise ops.",
+                "badges": [
+                    "React",
+                    "Supabase"
+                ]
+            },
+            "nanobanana": {
+                "title": "Nano-Banana",
+                "description": "UX-first AI toy concept generator with generative imaging.",
+                "badges": [
+                    "AI",
+                    "Generative UX"
+                ]
+            }
+        },
+        "dashboard": {
+            "title": "Agdi Dashboard — AI Agent Command Center",
+            "role": "AI Engineer & Automation Architect",
+            "status": "Production — 30+ Pages",
+            "hook": "A premium real-time dashboard for orchestrating autonomous AI agents, built with Next.js 16 and WebSocket-driven telemetry.",
+            "description": "Agdi Dashboard is a full-featured operator control plane for the Agdi autonomous AI agent framework. It provides real-time monitoring, configuration, and management of AI agents through a premium glassmorphism dark-mode interface. The dashboard connects to the Agdi Gateway via WebSocket (JSON-RPC 2.0) and delivers live telemetry, approval workflows, knowledge base management, and multi-agent orchestration — all from the browser.",
+            "features_title": "Key Features",
+            "features": {
+                "fleet": {
+                    "title": "Multi-Agent Fleet",
+                    "text": "Real-time status monitoring of all AI agents with live health indicators and command dispatch."
+                },
+                "analytics": {
+                    "title": "Live Analytics",
+                    "text": "Animated counters, sparkline charts, and real-time metrics for agent performance and system health."
+                },
+                "tracing": {
+                    "title": "Agent Tracing",
+                    "text": "Real-time execution waterfall with span-level observability for debugging agent pipelines."
+                },
+                "knowledge": {
+                    "title": "RAG Knowledge Base",
+                    "text": "Drag-and-drop PDF/TXT document ingestion into LanceDB for retrieval-augmented generation."
+                },
+                "approvals": {
+                    "title": "Approval Workflows",
+                    "text": "Mobile push notifications (APNs + FCM) for human-in-the-loop agent approval gates."
+                },
+                "browser": {
+                    "title": "Browser Automation",
+                    "text": "Headless browser automation with Playwright integration for web scraping and testing."
+                },
+                "canvas": {
+                    "title": "Interactive Canvas",
+                    "text": "Agent-generated UI rendering with live preview and interactive component exploration."
+                },
+                "pages": {
+                    "title": "30+ Dashboard Pages",
+                    "text": "Fully functional pages covering fleet management, settings, logs, traces, and system configuration."
+                }
+            },
+            "stats": {
+                "pages": {
+                    "value": "30+",
+                    "label": "Dashboard Pages"
+                },
+                "features": {
+                    "value": "8",
+                    "label": "Core Features"
+                },
+                "platforms": {
+                    "value": "3",
+                    "label": "Platforms (Web, iOS, Android)"
+                }
+            },
+            "github_button": "View on GitHub"
+        }
+    },
+    "aiScale": {
+        "title": "Industrial-Scale AI Orchestration",
+        "subtitle": "200M+ Tokens Orchestrated • 90M+ Verified Logs • Top 2% Global Ranking",
+        "statement": "My experience isn't just theoretical—it's industrial.",
+        "description1": "I have 89.2 Million verified tokens across DeepSeek (17M), OpenRouter (66M), and Cursor (5.5M). However, to bootstrap production without capital, I aggressively maximized distributed development workflows (Bolt.new, Lovable) to bypass rate limits and maintain continuous shipping cycles.",
+        "description2": "Including these high-velocity workflows, my lifetime orchestration exceeds 200 Million Tokens. I don't just prompt AI; I exhaust it to build production-grade software.",
+        "stats": {
+            "total_orchestrated": "Total Orchestrated",
+            "verified_logs": "Verified / Paid Logs",
+            "distributed_dev": "Distributed Dev / Bootstrapped",
+            "global_user": "Global Power User"
+        },
+        "badge_alt": "OpenRouter Top 2% AI Power User Badge - Verified Global Ranking",
+        "watermark": "DeepSeek V3 • OpenRouter • Cursor • Bolt.new • Lovable • Production-Grade Autonomous Agents"
+    },
+    "techStack": {
+        "title": "Powering Production Systems",
+        "footer": "SECURE SERVER-SIDE OPS • BYOK READY • ZERO CLIENT LEAKS"
+    },
+    "contactForm": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Tell me about your project",
+        "submit": "Initiate Collaboration",
+        "success_title": "Message Received",
+        "success_message": "I'll be in touch shortly.",
+        "send_another": "Send another"
+    }
+}

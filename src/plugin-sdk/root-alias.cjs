@@ -67,7 +67,7 @@ function resolveControlCommandGate(params) {
 function onDiagnosticEvent(listener) {
   const diagnosticEvents = loadDiagnosticEventsModule();
   if (!diagnosticEvents || typeof diagnosticEvents.onDiagnosticEvent !== "function") {
-    throw new Error("openclaw/plugin-sdk root alias could not resolve onDiagnosticEvent");
+    throw new Error("agdi/plugin-sdk root alias could not resolve onDiagnosticEvent");
   }
   return diagnosticEvents.onDiagnosticEvent(listener);
 }
@@ -116,12 +116,14 @@ function buildPluginSdkAliasMap(useDist) {
   const pluginSdkDir = path.join(packageRoot, useDist ? "dist" : "src", "plugin-sdk");
   const ext = useDist ? ".js" : ".ts";
   const aliasMap = {
+    "agdi/plugin-sdk": __filename,
     "openclaw/plugin-sdk": __filename,
   };
 
   for (const subpath of listPluginSdkExportedSubpaths()) {
     const candidate = path.join(pluginSdkDir, `${subpath}${ext}`);
     if (fs.existsSync(candidate)) {
+      aliasMap[`agdi/plugin-sdk/${subpath}`] = candidate;
       aliasMap[`openclaw/plugin-sdk/${subpath}`] = candidate;
     }
   }

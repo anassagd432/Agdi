@@ -1,7 +1,8 @@
 import { createRequire } from "node:module";
 
 declare const __OPENCLAW_VERSION__: string | undefined;
-const CORE_PACKAGE_NAME = "openclaw";
+declare const __AGDI_VERSION__: string | undefined;
+const CORE_PACKAGE_NAMES = new Set(["agdi", "openclaw"]);
 
 const PACKAGE_JSON_CANDIDATES = [
   "../package.json",
@@ -30,7 +31,10 @@ function readVersionFromJsonCandidates(
         if (!version) {
           continue;
         }
-        if (opts.requirePackageName && parsed.name !== CORE_PACKAGE_NAME) {
+        if (
+          opts.requirePackageName &&
+          (typeof parsed.name !== "string" || !CORE_PACKAGE_NAMES.has(parsed.name))
+        ) {
           continue;
         }
         return version;
@@ -110,19 +114,23 @@ export function resolveRuntimeServiceVersion(
 
   return (
     firstNonEmpty(
+      env["AGDI_VERSION"],
       env["OPENCLAW_VERSION"],
       runtimeVersion,
+      env["AGDI_SERVICE_VERSION"],
       env["OPENCLAW_SERVICE_VERSION"],
       env["npm_package_version"],
     ) ?? fallback
   );
 }
 
-// Single source of truth for the current OpenClaw version.
+// Single source of truth for the current Agdi version.
 // - Embedded/bundled builds: injected define or env var.
 // - Dev/npm builds: package.json.
 export const VERSION = resolveBinaryVersion({
   moduleUrl: import.meta.url,
-  injectedVersion: typeof __OPENCLAW_VERSION__ === "string" ? __OPENCLAW_VERSION__ : undefined,
-  bundledVersion: process.env.OPENCLAW_BUNDLED_VERSION,
+  injectedVersion:
+    (typeof __AGDI_VERSION__ === "string" ? __AGDI_VERSION__ : undefined) ||
+    (typeof __OPENCLAW_VERSION__ === "string" ? __OPENCLAW_VERSION__ : undefined),
+  bundledVersion: process.env.AGDI_BUNDLED_VERSION ?? process.env.OPENCLAW_BUNDLED_VERSION,
 });

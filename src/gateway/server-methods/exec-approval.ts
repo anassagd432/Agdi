@@ -14,6 +14,7 @@ import {
   ErrorCodes,
   errorShape,
   formatValidationErrors,
+  validateExecApprovalListParams,
   validateExecApprovalRequestParams,
   validateExecApprovalResolveParams,
 } from "../protocol/index.js";
@@ -24,6 +25,22 @@ export function createExecApprovalHandlers(
   opts?: { forwarder?: ExecApprovalForwarder },
 ): GatewayRequestHandlers {
   return {
+    "exec.approval.list": ({ params, respond }) => {
+      if (!validateExecApprovalListParams(params)) {
+        respond(
+          false,
+          undefined,
+          errorShape(
+            ErrorCodes.INVALID_REQUEST,
+            `invalid exec.approval.list params: ${formatValidationErrors(
+              validateExecApprovalListParams.errors,
+            )}`,
+          ),
+        );
+        return;
+      }
+      respond(true, { approvals: manager.listPending() }, undefined);
+    },
     "exec.approval.request": async ({ params, respond, context, client }) => {
       if (!validateExecApprovalRequestParams(params)) {
         respond(

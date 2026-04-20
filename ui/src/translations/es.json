@@ -1,0 +1,362 @@
+{
+    "hero": {
+        "name": "Anass Agdi",
+        "title": "Ingeniero de IA — Sistemas Autónomos, Automatización e Ingeniería de Prompts",
+        "description": "Diseño sistemas de IA en producción: frameworks de agentes autónomos, procesamiento de documentos, agentes de voz, ingeniería de prompts y automatización de flujos de trabajo. Construyendo sistemas inteligentes que manejan datos reales para usuarios reales.",
+        "cta_primary": "Ver Lo Que He Construido",
+        "cta_secondary": "Trabaja Conmigo",
+        "tech_stack": "TypeScript • Next.js • Supabase • n8n • Gemini AI",
+        "carousel": {
+            "agdi_dashboard_overview_alt": "Resumen de Agdi Dashboard mostrando métricas de agentes en tiempo real",
+            "agdi_dashboard_analytics_alt": "Análisis de Agdi Dashboard mostrando el uso de tokens por modelo",
+            "agdi_dashboard_health_alt": "Monitoreo de la salud del sistema y operaciones de Agdi Dashboard"
+        }
+    },
+    "hireMe": {
+        "title": "¿Necesitas Automatización con IA?",
+        "subtitle": "Puedo entregar un MVP en 7–14 días. Recepcionista IA, analizador de documentos o flujo de trabajo personalizado.",
+        "cta": "Hablemos"
+    },
+    "howIWork": {
+        "title": "Cómo Trabajo",
+        "subtitle": "De la idea a producción en semanas, no meses.",
+        "steps": {
+            "call": {
+                "title": "Llamada de 15 Min",
+                "description": "Entender tus requisitos y restricciones."
+            },
+            "prototype": {
+                "title": "Prototipo en 48h",
+                "description": "Demo funcional para validar el enfoque."
+            },
+            "shipping": {
+                "title": "Entregas Semanales",
+                "description": "Entrega iterativa con feedback continuo."
+            },
+            "handover": {
+                "title": "Docs + Entrega",
+                "description": "Código listo para producción con documentación completa."
+            }
+        }
+    },
+    "systems": {
+        "title": "Sistemas Que He Construido",
+        "subtitle": "Código en producción. Decisiones reales. Resultados reales.",
+        "tradeoffs_label": "// decisiones:",
+        "items": {
+            "dockparser": {
+                "name": "DockParser",
+                "description": "Analizador de documentos con IA que extrae datos estructurados de facturas y contratos.",
+                "technical": "Elegí Gemini sobre GPT-4 para tareas de visión — 3x más barato, arranque más rápido. Solo servidor para evitar exposición de claves. Modo demo con límite de tasa para controlar costos.",
+                "result": "90% de reducción en tiempo de entrada manual de datos. Maneja más de 50 formatos de documentos.",
+                "verification": "Medido en conjunto de prueba de 50 documentos, piloto interno."
+            },
+            "b2b": {
+                "name": "Automatización de Leads B2B",
+                "description": "Pipeline de contacto en frío de extremo a extremo: captación → investigación → email personalizado → sincronización con CRM.",
+                "technical": "n8n sobre Zapier — auto-hospedado, sin límites por tarea. Gemini Vision para OCR en capturas de pantalla. Nodos de error con alertas de Telegram para ejecuciones fallidas.",
+                "result": "Procesa más de 200 leads/día. 15% de tasa de respuesta en contacto en frío.",
+                "verification": "Últimos 30 días de campañas de clientes, rastreado vía CRM."
+            },
+            "vendorvault": {
+                "name": "VendorVault",
+                "description": "Flujo de trabajo de aprobación de documentos para incorporación de proveedores con acceso basado en roles.",
+                "technical": "Supabase RLS sobre autenticación personalizada — más rápido de implementar, seguridad probada. Funciones edge para webhooks. Sin proveedor de autenticación externo para reducir dependencias.",
+                "result": "CRUD completo + flujo de aprobación entregado en 2 semanas. Cero incidentes de seguridad.",
+                "verification": "Sistema en producción desde Q4 2025, cero brechas reportadas."
+            }
+        }
+    },
+    "services": {
+        "title": "Servicios de Agdi AI",
+        "subtitle": "Nunca pierdas un lead — automatiza tus reservas y convierte tu sitio web en un agente de ventas 24/7",
+        "visit_button": "Visitar Agdi AI",
+        "items": {
+            "receptionist": {
+                "title": "Recepcionista IA (24/7)",
+                "description": "Manejo automatizado de llamadas, calificación de leads y reserva de citas. Se integra directamente con Google Calendar.",
+                "industries": "Clínicas, salones, bienes raíces, concesionarios"
+            },
+            "salesweb": {
+                "title": "Sitio Web de Ventas IA",
+                "description": "Sitios web de alta conversión con IA de Voz + Chat integrada. Tu representante de ventas digital que califica leads y programa al instante.",
+                "industries": "Cualquier negocio B2B o de servicios"
+            },
+            "webdev": {
+                "title": "Desarrollo Web",
+                "description": "Sitios web profesionales, rápidos y responsivos — desde sitios estándar de captación hasta experiencias premium completamente animadas.",
+                "industries": "Formularios, sistemas de reservas, seguimiento"
+            },
+            "automation": {
+                "title": "Automatizaciones IA Personalizadas",
+                "description": "Optimiza flujos de trabajo con automatización de email, secuencias de contacto y asistentes personales basados en Telegram.",
+                "industries": "Integración con Google Sheets y Calendar"
+            }
+        }
+    },
+    "caseStudy": {
+        "title": "Caso de Estudio: DockParser (InvoiceFlow AI)",
+        "subtitle": "Extracción en tiempo real con puntuación de confianza; pipelines de datos listos para producción y facturación con Stripe.",
+        "challenge_title": "El Desafío",
+        "challenge_text": "El procesamiento manual de facturas consume tiempo y causa errores. Los equipos de operaciones pasan horas en entrada de datos en lugar de trabajo estratégico.",
+        "approach_title": "Decisiones Técnicas",
+        "decisions": {
+            "gemini": "Gemini sobre GPT-4: 3x más barato para visión, arranque más rápido",
+            "serverside": "Solo servidor: Sin llamadas API del cliente — cero exposición de claves",
+            "supabase": "Supabase RLS: Auth + almacenamiento en uno, sin código RBAC personalizado",
+            "ratelimit": "Demo con límite de tasa: Controla costos, previene abuso"
+        },
+        "architecture_title": "Arquitectura del Sistema",
+        "outcome_label": "Resultado:",
+        "outcome_text": "~90% de tiempo ahorrado en entrada de datos en escenarios de prueba. Pipelines de datos listos para producción con puntuación de confianza.",
+        "cta": "Solicitar una Demostración Técnica"
+    },
+    "workflows": {
+        "title": "Flujos de Trabajo Open-Source",
+        "subtitle": "Automatizaciones n8n listas para producción — gratis para descargar y personalizar",
+        "download_button": "Descargar JSON",
+        "coming_soon": "Más flujos de trabajo próximamente. Sígueme en",
+        "for_updates": "para actualizaciones.",
+        "items": {
+            "b2b_lead": {
+                "title": "Generación de Leads B2B y Calificación con IA",
+                "description": "Automatización de contacto en frío de extremo a extremo. Toma leads crudos → enriquece → califica → envía emails personalizados → registra todo.",
+                "features": [
+                    "Captación de leads desde Google Sheets o Telegram",
+                    "OCR con Gemini Vision para capturas de pantalla/fotos de leads",
+                    "Agente de investigación IA extrae contexto: sitio, servicios, puntos de prueba",
+                    "Redactor IA genera emails personalizados de contacto en frío",
+                    "Envío por Gmail + registro en Sheets con estado y fechas de seguimiento",
+                    "Notificaciones de Telegram: éxito / revisión / errores"
+                ]
+            },
+            "contact_form": {
+                "title": "Formulario de Contacto Web → Análisis IA → CRM",
+                "description": "Automatización completa de formulario de contacto. Webhook recibe formulario → Gemini extrae y califica lead → sincroniza con HubSpot → envía respuesta automática + seguimiento → notifica por Telegram.",
+                "features": [
+                    "Trigger de webhook captura envíos de formulario del sitio web",
+                    "Gemini AI extrae detalles del negocio y asigna puntuación de lead (1-10)",
+                    "Notificación instantánea de Telegram con resumen generado por IA",
+                    "Sincronización automática con HubSpot CRM con mapeo de etapa de ciclo de vida",
+                    "Email de agradecimiento personalizado referenciando puntos de dolor",
+                    "Email de seguimiento automatizado en 2 días con casos de estudio"
+                ]
+            }
+        }
+    },
+    "contact": {
+        "title": "Construyamos Algo Útil",
+        "subtitle": "Disponible para contratos remotos y roles de IA/automatización.",
+        "email_button": "Email",
+        "schedule_button": "Agendar",
+        "hiring": "¿Contratando?",
+        "hiring_text": "Envía una breve descripción a"
+    },
+    "about": {
+        "title": "Sobre Mí",
+        "subtitle": "Disciplina construida a través de años de entrenamiento y emprendimiento.",
+        "traits": {
+            "calisthenics": {
+                "title": "6 Años de Calistenia",
+                "description": "Construyendo fuerza física y mental a través de la disciplina y el entrenamiento constante."
+            },
+            "entrepreneur": {
+                "title": "3 Años de Emprendedor",
+                "description": "Construyendo productos, resolviendo problemas y aprendiendo de cada fracaso."
+            },
+            "discipline": {
+                "title": "Disciplina y Consistencia",
+                "description": "Me levanto temprano y me presento todos los días, sin importar la motivación o los resultados inmediatos."
+            },
+            "proof": {
+                "title": "Prueba",
+                "github": "@anassagd432",
+                "npm": "agdi en npm",
+                "demos": "3 Demos en Vivo"
+            }
+        }
+    },
+    "footer": {
+        "copyright": "© {year} Anass Agdi —",
+        "built_by": "Construido y mantenido por Anass Agdi."
+    },
+    "language_switcher": {
+        "label": "Idioma"
+    },
+    "projects": {
+        "title": "Trabajos Seleccionados",
+        "subtitle": "Aplicaciones de nivel de producción con demos en vivo y código abierto.",
+        "key_innovations": "Innovaciones Clave",
+        "flagship": {
+            "title": "Agdi",
+            "subtitle": "Agdi.dev",
+            "role": "Fundador y Arquitecto Principal",
+            "status": "v4.0.1 — Lanzamiento Público en npm (2026)",
+            "hook": "Un Framework de IA Soberano y Nativo en Runtime. Cero Latencia de Nube. Inteligencia de Comunidad Automatizada.",
+            "description": "Agdi es un framework de ingeniería autónomo que combina lógica a nivel de terminal con conectividad a escala web. Mediante un Nodo Local WebSocket altamente seguro, Agdi puentea la ejecución local con dashboards premium en la nube. El ecosistema ahora cuenta con un Administrador Discord de IA Gemini Personalizado que procesa tickets de soporte de desarrolladores de forma autónoma, 24/7.",
+            "demo_button": "Demo en Vivo",
+            "npm_button": "📦 npm i -g agdi@4.0.1",
+            "github_button": "GitHub",
+            "innovations": {
+                "squad": {
+                    "title": "Escuadrón Agdi (Multi-Agente)",
+                    "text": "Una flota de 5 agentes de IA especializados trabajando en paralelo con micro-commits reversibles para una refactorización profunda de código."
+                },
+                "gateway": {
+                    "title": "Gateway Local WebSocket",
+                    "text": "Diseñó un nodo WebSocket (18789) altamente seguro y autenticado de forma nativa que conecta la ejecución en la máquina local con Web UIs en la nube al instante."
+                },
+                "discord": {
+                    "title": "Administrador IA de Discord Personalizado",
+                    "text": "Construyó un bot de Discord autónomo 24/7 impulsado por Gemini-1.5-Flash para resolver automáticamente tickets de soporte de desarrolladores y gestionar registros de la comunidad."
+                },
+                "dashboard": {
+                    "title": "Vercel Command Center",
+                    "text": "Un dashboard 3D premium estilo glassmorphism que proporciona telemetría de flota en tiempo real, trazado y gestión multi-agente."
+                },
+                "audit": {
+                    "title": "Auditoría de Producción y Ejecución Dirigible",
+                    "text": "Breakpoints de IA para revisiones en medio de la tarea, emparejados con escaneo automatizado contra vulnerabilidades WCAG, XSS y SEO antes de implementar."
+                },
+                "plugins": {
+                    "title": "Arquitectura de Plugins",
+                    "text": "Un SDK de extensión altamente modular que permite a los desarrolladores integrar Agdi a plataformas externas (Slack, Zalo, WhatsApp, Teams) sin problemas."
+                }
+            },
+            "stats": {
+                "cli_commands": {
+                    "value": "17",
+                    "label": "Comandos CLI"
+                },
+                "ai_agents": {
+                    "value": "5",
+                    "label": "Agentes IA"
+                },
+                "llm_models": {
+                    "value": "13+",
+                    "label": "Modelos LLM"
+                },
+                "tests": {
+                    "value": "83",
+                    "label": "Pruebas Automatizadas"
+                },
+                "providers": {
+                    "value": "7",
+                    "label": "Proveedores"
+                }
+            }
+        },
+        "items": {
+            "dockparser": {
+                "title": "DockParser",
+                "description": "Análisis de facturas y contratos impulsado por IA con extracción de datos estructurados.",
+                "badges": [
+                    "Next.js",
+                    "Gemini",
+                    "Stripe"
+                ]
+            },
+            "vendorvault": {
+                "title": "VendorVault",
+                "description": "Aprobaciones de documentos seguros e incorporación de proveedores para operaciones empresariales.",
+                "badges": [
+                    "React",
+                    "Supabase"
+                ]
+            },
+            "nanobanana": {
+                "title": "Nano-Banana",
+                "description": "Generador de conceptos de juguetes de IA con UX primero e imágenes generativas.",
+                "badges": [
+                    "IA",
+                    "Generative UX"
+                ]
+            }
+        },
+        "dashboard": {
+            "title": "Agdi Dashboard — Centro de Comando de Agentes IA",
+            "role": "Ingeniero de IA y Arquitecto de Automatización",
+            "status": "Producción — 30+ Páginas",
+            "hook": "Un dashboard premium en tiempo real para orquestar agentes de IA autónomos, construido con Next.js 16 y telemetría por WebSocket.",
+            "description": "Agdi Dashboard es un plano de control de operador completo para el framework de agentes de IA autónomos Agdi. Proporciona monitoreo en tiempo real, configuración y gestión de agentes de IA a través de una interfaz premium glassmorphism en modo oscuro. El dashboard se conecta a la puerta de enlace Agdi vía WebSocket (JSON-RPC 2.0) y entrega telemetría en vivo, flujos de aprobación, gestión de base de conocimiento y orquestación multi-agente — todo desde el navegador.",
+            "features_title": "Características Clave",
+            "features": {
+                "fleet": {
+                    "title": "Flota Multi-Agente",
+                    "text": "Monitoreo de estado en tiempo real de todos los agentes IA con indicadores de salud en vivo y despacho de comandos."
+                },
+                "analytics": {
+                    "title": "Analíticas en Vivo",
+                    "text": "Contadores animados, gráficos sparkline y métricas en tiempo real para rendimiento de agentes y salud del sistema."
+                },
+                "tracing": {
+                    "title": "Trazado de Agentes",
+                    "text": "Cascada de ejecución en tiempo real con observabilidad a nivel de span para depurar pipelines de agentes."
+                },
+                "knowledge": {
+                    "title": "Base de Conocimiento RAG",
+                    "text": "Ingesta de documentos PDF/TXT con arrastrar y soltar en LanceDB para generación aumentada por recuperación."
+                },
+                "approvals": {
+                    "title": "Flujos de Aprobación",
+                    "text": "Notificaciones push móviles (APNs + FCM) para puertas de aprobación de agentes con humano en el bucle."
+                },
+                "browser": {
+                    "title": "Automatización de Navegador",
+                    "text": "Automatización de navegador headless con integración Playwright para web scraping y testing."
+                },
+                "canvas": {
+                    "title": "Canvas Interactivo",
+                    "text": "Renderizado de UI generada por agentes con vista previa en vivo y exploración interactiva de componentes."
+                },
+                "pages": {
+                    "title": "30+ Páginas de Dashboard",
+                    "text": "Páginas completamente funcionales que cubren gestión de flota, configuración, logs, trazas y configuración del sistema."
+                }
+            },
+            "stats": {
+                "pages": {
+                    "value": "30+",
+                    "label": "Páginas de Dashboard"
+                },
+                "features": {
+                    "value": "8",
+                    "label": "Características Principales"
+                },
+                "platforms": {
+                    "value": "3",
+                    "label": "Plataformas (Web, iOS, Android)"
+                }
+            },
+            "github_button": "Ver en GitHub"
+        }
+    },
+    "aiScale": {
+        "title": "Orquestación de IA a Escala Industrial",
+        "subtitle": "200M+ Tokens Orquestados • 90M+ Registros Verificados • Top 2% Ranking Global",
+        "statement": "Mi experiencia no es solo teórica—es industrial.",
+        "description1": "Tengo 89.2 Millones de tokens verificados en DeepSeek (17M), OpenRouter (66M) y Cursor (5.5M). Sin embargo, para iniciar producción sin capital, maximicé agresivamente flujos de desarrollo distribuido (Bolt.new, Lovable) para eludir límites de tasa y mantener ciclos de entrega continuos.",
+        "description2": "Incluyendo estos flujos de alta velocidad, mi orquestación total supera los 200 Millones de Tokens. No solo hago prompts a la IA; la agoto para construir software de nivel de producción.",
+        "stats": {
+            "total_orchestrated": "Total Orquestado",
+            "verified_logs": "Registros Verificados / Pagados",
+            "distributed_dev": "Dev Distribuido / Bootstrapped",
+            "global_user": "Usuario Power Global"
+        },
+        "badge_alt": "Insignia de Usuario Power Top 2% de OpenRouter - Ranking Global Verificado",
+        "watermark": "DeepSeek V3 • OpenRouter • Cursor • Bolt.new • Lovable • Agentes Autónomos de Grado de Producción"
+    },
+    "techStack": {
+        "title": "Impulsando Sistemas de Producción",
+        "footer": "OPS SEGURAS EN EL SERVIDOR • LISTO PARA BYOK • CERO FUGAS EN EL CLIENTE"
+    },
+    "contactForm": {
+        "name": "Nombre",
+        "email": "Email",
+        "message": "Cuéntame sobre tu proyecto",
+        "submit": "Iniciar Colaboración",
+        "success_title": "Mensaje Recibido",
+        "success_message": "Me pondré en contacto pronto.",
+        "send_another": "Enviar otro"
+    }
+}

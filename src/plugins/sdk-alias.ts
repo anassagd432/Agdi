@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveOpenClawPackageRootSync } from "../infra/openclaw-root.js";
+import { resolveAgdiPackageRootSync } from "../infra/openclaw-root.js";
 
 type PluginSdkAliasCandidateKind = "dist" | "src";
 
@@ -44,7 +44,7 @@ function listPluginSdkSubpathsFromPackageJson(pkg: PluginSdkPackageJson): string
     .toSorted();
 }
 
-function hasTrustedOpenClawRootIndicator(params: {
+function hasTrustedAgdiRootIndicator(params: {
   packageRoot: string;
   packageJson: PluginSdkPackageJson;
 }): boolean {
@@ -57,14 +57,19 @@ function hasTrustedOpenClawRootIndicator(params: {
     return false;
   }
   const hasCliEntryExport = Object.prototype.hasOwnProperty.call(packageExports, "./cli-entry");
-  const hasOpenClawBin =
-    (typeof params.packageJson.bin === "string" &&
-      params.packageJson.bin.toLowerCase().includes("openclaw")) ||
-    (typeof params.packageJson.bin === "object" &&
-      params.packageJson.bin !== null &&
-      typeof params.packageJson.bin.openclaw === "string");
-  const hasOpenClawEntrypoint = fs.existsSync(path.join(params.packageRoot, "openclaw.mjs"));
-  return hasCliEntryExport || hasOpenClawBin || hasOpenClawEntrypoint;
+  const binValues =
+    typeof params.packageJson.bin === "string"
+      ? [params.packageJson.bin]
+      : typeof params.packageJson.bin === "object" && params.packageJson.bin !== null
+        ? Object.entries(params.packageJson.bin)
+            .filter((entry): entry is [string, string] => typeof entry[1] === "string")
+            .flatMap(([name, target]) => [name, target])
+        : [];
+  const hasCanonicalBin = binValues.some((value) => /agdi|openclaw/i.test(value));
+  const hasCanonicalEntrypoint =
+    fs.existsSync(path.join(params.packageRoot, "agdi.mjs")) ||
+    fs.existsSync(path.join(params.packageRoot, "openclaw.mjs"));
+  return hasCliEntryExport || hasCanonicalBin || hasCanonicalEntrypoint;
 }
 
 function readPluginSdkSubpathsFromPackageRoot(packageRoot: string): string[] | null {
@@ -72,21 +77,21 @@ function readPluginSdkSubpathsFromPackageRoot(packageRoot: string): string[] | n
   if (!pkg) {
     return null;
   }
-  if (!hasTrustedOpenClawRootIndicator({ packageRoot, packageJson: pkg })) {
+  if (!hasTrustedAgdiRootIndicator({ packageRoot, packageJson: pkg })) {
     return null;
   }
   const subpaths = listPluginSdkSubpathsFromPackageJson(pkg);
   return subpaths.length > 0 ? subpaths : null;
 }
 
-function resolveTrustedOpenClawRootFromArgvHint(params: {
+function resolveTrustedAgdiRootFromArgvHint(params: {
   argv1?: string;
   cwd: string;
 }): string | null {
   if (!params.argv1) {
     return null;
   }
-  const packageRoot = resolveOpenClawPackageRootSync({
+  const packageRoot = resolveAgdiPackageRootSync({
     cwd: params.cwd,
     argv1: params.argv1,
   });
@@ -97,7 +102,7 @@ function resolveTrustedOpenClawRootFromArgvHint(params: {
   if (!packageJson) {
     return null;
   }
-  return hasTrustedOpenClawRootIndicator({ packageRoot, packageJson }) ? packageRoot : null;
+  return hasTrustedAgdiRootIndicator({ packageRoot, packageJson }) ? packageRoot : null;
 }
 
 function findNearestPluginSdkPackageRoot(startDir: string, maxDepth = 12): string | null {
@@ -120,13 +125,13 @@ export function resolveLoaderPackageRoot(
   params: LoaderModuleResolveParams & { modulePath: string },
 ): string | null {
   const cwd = params.cwd ?? path.dirname(params.modulePath);
-  const fromModulePath = resolveOpenClawPackageRootSync({ cwd });
+  const fromModulePath = resolveAgdiPackageRootSync({ cwd });
   if (fromModulePath) {
     return fromModulePath;
   }
   const argv1 = params.argv1 ?? process.argv[1];
   const moduleUrl = params.moduleUrl ?? (params.modulePath ? undefined : import.meta.url);
-  return resolveOpenClawPackageRootSync({
+  return resolveAgdiPackageRootSync({
     cwd,
     ...(argv1 ? { argv1 } : {}),
     ...(moduleUrl ? { moduleUrl } : {}),
@@ -137,11 +142,11 @@ function resolveLoaderPluginSdkPackageRoot(
   params: LoaderModuleResolveParams & { modulePath: string },
 ): string | null {
   const cwd = params.cwd ?? path.dirname(params.modulePath);
-  const fromCwd = resolveOpenClawPackageRootSync({ cwd });
+  const fromCwd = resolveAgdiPackageRootSync({ cwd });
   const fromExplicitHints =
-    resolveTrustedOpenClawRootFromArgvHint({ cwd, argv1: params.argv1 }) ??
+    resolveTrustedAgdiRootFromArgvHint({ cwd, argv1: params.argv1 }) ??
     (params.moduleUrl
-      ? resolveOpenClawPackageRootSync({
+      ? resolveAgdiPackageRootSync({
           cwd,
           moduleUrl: params.moduleUrl,
         })
@@ -287,11 +292,12 @@ export function resolvePluginSdkScopedAliasMap(
       dist: path.join(packageRoot, "dist", "plugin-sdk", `${subpath}.js`),
     } as const;
     for (const kind of orderedKinds) {
-      const candidate = candidateMap[kind];
-      if (fs.existsSync(candidate)) {
-        aliasMap[`openclaw/plugin-sdk/${subpath}`] = candidate;
-        break;
-      }
+        const candidate = candidateMap[kind];
+        if (fs.existsSync(candidate)) {
+          aliasMap[`agdi/plugin-sdk/${subpath}`] = candidate;
+          aliasMap[`openclaw/plugin-sdk/${subpath}`] = candidate;
+          break;
+        }
     }
   }
   cachedPluginSdkScopedAliasMaps.set(cacheKey, aliasMap);
@@ -340,8 +346,18 @@ export function buildPluginLoaderAliasMap(
   });
   const extensionApiAlias = resolveExtensionApiAlias({ modulePath });
   return {
-    ...(extensionApiAlias ? { "openclaw/extension-api": extensionApiAlias } : {}),
-    ...(pluginSdkAlias ? { "openclaw/plugin-sdk": pluginSdkAlias } : {}),
+    ...(extensionApiAlias
+      ? {
+          "agdi/extension-api": extensionApiAlias,
+          "openclaw/extension-api": extensionApiAlias,
+        }
+      : {}),
+    ...(pluginSdkAlias
+      ? {
+          "agdi/plugin-sdk": pluginSdkAlias,
+          "openclaw/plugin-sdk": pluginSdkAlias,
+        }
+      : {}),
     ...resolvePluginSdkScopedAliasMap({ modulePath, argv1, moduleUrl }),
   };
 }

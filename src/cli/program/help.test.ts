@@ -36,11 +36,11 @@ vi.mock("../cli-name.js", () => ({
   replaceCliName: (cmd: string) => cmd,
 }));
 
-vi.mock("./command-registry.js", () => ({
+vi.mock("./core-command-descriptors.js", () => ({
   getCoreCliCommandsWithSubcommands: () => ["models", "message"],
 }));
 
-vi.mock("./register.subclis.js", () => ({
+vi.mock("./subcli-descriptors.js", () => ({
   getSubCliCommandsWithSubcommands: () => ["gateway"],
 }));
 
@@ -132,12 +132,12 @@ describe("configureProgramHelp", () => {
 
   it("prints version and exits immediately when version flags are present", () => {
     process.argv = ["node", "openclaw", "--version"];
-    expectVersionExit({ expectedVersion: "OpenClaw 9.9.9-test (abc1234)" });
+    expectVersionExit({ expectedVersion: "Agdi 9.9.9-test (abc1234)" });
   });
 
   it("prints version and exits immediately without commit metadata", () => {
     process.argv = ["node", "openclaw", "--version"];
     resolveCommitHashMock.mockReturnValue(null);
-    expectVersionExit({ expectedVersion: "OpenClaw 9.9.9-test" });
+    expectVersionExit({ expectedVersion: "Agdi 9.9.9-test" });
   });
 });

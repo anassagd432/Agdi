@@ -7,7 +7,7 @@ VM_NAME="macOS Tahoe"
 SNAPSHOT_HINT="macOS 26.3.1 latest"
 MODE="both"
 OPENAI_API_KEY_ENV="OPENAI_API_KEY"
-INSTALL_URL="https://openclaw.ai/install.sh"
+INSTALL_URL="https://agdi.ai/install.sh"
 HOST_PORT="18425"
 HOST_PORT_EXPLICIT=0
 HOST_IP=""
@@ -113,7 +113,7 @@ Options:
                              both    = run both lanes
   --openai-api-key-env <var> Host env var name for OpenAI API key.
                              Default: OPENAI_API_KEY
-  --install-url <url>        Installer URL for latest release. Default: https://openclaw.ai/install.sh
+  --install-url <url>        Installer URL for latest release. Default: https://agdi.ai/install.sh
   --host-port <port>         Host HTTP port for current-main tgz. Default: 18425
   --host-ip <ip>             Override Parallels host IP.
   --latest-version <ver>     Override npm latest version lookup.
@@ -783,8 +783,8 @@ deadline=\$((SECONDS + 30))
 dashboard_ready=0
 while [ \$SECONDS -lt \$deadline ]; do
   if curl -fsSL "\$dashboard_http_url" >/tmp/openclaw-dashboard-smoke.html 2>/dev/null; then
-    if grep -F '<title>OpenClaw Control</title>' /tmp/openclaw-dashboard-smoke.html >/dev/null; then
-      if grep -F '<openclaw-app></openclaw-app>' /tmp/openclaw-dashboard-smoke.html >/dev/null; then
+    if grep -F '<title>Agdi Control</title>' /tmp/openclaw-dashboard-smoke.html >/dev/null; then
+      if grep -F '<agdi-app></agdi-app>' /tmp/openclaw-dashboard-smoke.html >/dev/null; then
         dashboard_ready=1
         break
       fi
@@ -796,8 +796,8 @@ done
   echo "dashboard HTML did not become ready at \$dashboard_http_url" >&2
   exit 1
 }
-grep -F '<title>OpenClaw Control</title>' /tmp/openclaw-dashboard-smoke.html >/dev/null
-grep -F '<openclaw-app></openclaw-app>' /tmp/openclaw-dashboard-smoke.html >/dev/null
+grep -F '<title>Agdi Control</title>' /tmp/openclaw-dashboard-smoke.html >/dev/null
+grep -F '<agdi-app></agdi-app>' /tmp/openclaw-dashboard-smoke.html >/dev/null
 pkill -x Safari >/dev/null 2>&1 || true
 open -a Safari "\$dashboard_url"
 deadline=\$((SECONDS + 20))

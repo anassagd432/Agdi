@@ -31,6 +31,7 @@ const NODE_ROLE_METHODS = new Set([
 
 const METHOD_SCOPE_GROUPS: Record<OperatorScope, readonly string[]> = {
   [APPROVALS_SCOPE]: [
+    "exec.approval.list",
     "exec.approval.request",
     "exec.approval.waitDecision",
     "exec.approval.resolve",
