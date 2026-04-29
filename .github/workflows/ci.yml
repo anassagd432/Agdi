@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changed-scope:
+    runs-on: ubuntu-latest
+    outputs:
+      run_node: ${{ steps.scope.outputs.run_node }}
+      run_windows: ${{ steps.scope.outputs.run_windows }}
+      run_changed_smoke: ${{ steps.scope.outputs.run_changed_smoke }}
+      run_build_artifacts: ${{ steps.manifest.outputs.run_build_artifacts }}
+      run_checks_fast: ${{ steps.manifest.outputs.run_checks_fast }}
+      checks_fast_matrix: ${{ steps.manifest.outputs.checks_fast_matrix }}
+      run_checks: ${{ steps.manifest.outputs.run_checks }}
+      checks_matrix: ${{ steps.manifest.outputs.checks_matrix }}
+      run_check: ${{ steps.manifest.outputs.run_check }}
+      run_check_additional: ${{ steps.manifest.outputs.run_check_additional }}
+      run_build_smoke: ${{ steps.manifest.outputs.run_build_smoke }}
+      run_check_docs: ${{ steps.manifest.outputs.run_check_docs }}
+      run_checks_windows: ${{ steps.manifest.outputs.run_checks_windows }}
+      checks_windows_matrix: ${{ steps.manifest.outputs.checks_windows_matrix }}
+      required_check_names: ${{ steps.manifest.outputs.required_check_names }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-node-env
+
+      - id: scope
+        run: node scripts/ci-changed-scope.mjs --base origin/${{ github.base_ref || 'main' }}
+        env:
+          GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
+
+      - id: manifest
+        run: node scripts/ci-write-manifest-outputs.mjs --workflow ci
+        env:
+          GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
+
+  checks-fast:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_checks_fast == 'true' }}
+    strategy:
+      matrix:
+        task: ${{ fromJSON(needs.changed-scope.outputs.checks_fast_matrix).task || fromJSON('["lint", "format:check"]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm ${{ matrix.task }}
+
+  checks:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_checks == 'true' }}
+    strategy:
+      matrix:
+        task: ${{ fromJSON(needs.changed-scope.outputs.checks_matrix).task || fromJSON('["typecheck", "test:unit"]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm ${{ matrix.task }}
+
+  check:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_check == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm check
+
+  build-smoke:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_build_smoke == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm build
+      - run: node --experimental-loader tsx agdi.mjs --version
+
+  check-docs:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_check_docs == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm docs:spellcheck
+
+  check-additional:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_check_additional == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm deadcode:knip
+
+  checks-windows:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_checks_windows == 'true' }}
+    strategy:
+      matrix:
+        task: ${{ fromJSON(needs.changed-scope.outputs.checks_windows_matrix).task || fromJSON('["test:unit"]') }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm ${{ matrix.task }}
+
+  build-artifacts:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_build_artifacts == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - run: pnpm build

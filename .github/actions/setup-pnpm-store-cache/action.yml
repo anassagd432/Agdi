@@ -1,0 +1,25 @@
+name: Setup pnpm store cache
+description: Cache the pnpm store for faster installs
+
+inputs:
+  key-prefix:
+    description: Prefix for the cache key
+    default: pnpm-store
+
+runs:
+  using: composite
+  steps:
+    - name: Get pnpm store directory
+      id: pnpm-store
+      shell: bash
+      run: |
+        echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache pnpm store
+      uses: actions/cache@v4
+      id: pnpm-cache
+      with:
+        path: ${{ steps.pnpm-store.outputs.store_path }}
+        key: ${{ inputs.key-prefix }}-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ inputs.key-prefix }}-${{ runner.os }}-

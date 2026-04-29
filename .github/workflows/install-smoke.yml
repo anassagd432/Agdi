@@ -1,0 +1,62 @@
+name: Install smoke test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - scripts/install.sh
+      - scripts/test-install-sh-docker.sh
+      - scripts/docker/**
+      - extensions/**/package.json
+      - .github/workflows/install-smoke.yml
+      - .github/actions/setup-node-env/action.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - .npmrc
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - scripts/install.sh
+      - scripts/test-install-sh-docker.sh
+      - scripts/docker/**
+      - extensions/**/package.json
+      - .github/workflows/install-smoke.yml
+      - .github/actions/setup-node-env/action.yml
+
+concurrency:
+  group: install-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changed-scope:
+    runs-on: ubuntu-latest
+    outputs:
+      run_install_smoke: ${{ steps.manifest.outputs.run_install_smoke }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node-env
+      - id: manifest
+        run: node scripts/ci-write-manifest-outputs.mjs --workflow install-smoke
+        env:
+          GITHUB_OUTPUT: ${{ env.GITHUB_OUTPUT }}
+
+  install-smoke:
+    needs: changed-scope
+    if: ${{ needs.changed-scope.outputs.run_install_smoke == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-env
+      - name: Smoke test - fresh install
+        run: pnpm ls --depth 0
+      - name: Verify entrypoint
+        run: node agdi.mjs --version

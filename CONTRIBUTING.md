@@ -107,6 +107,25 @@ Welcome to the lobster tank! 🦞
 - Use American English spelling and grammar in code, comments, docs, and UI strings
 - Do not edit files covered by `CODEOWNERS` security ownership unless a listed owner explicitly asked for the change or is already reviewing it with you. Treat those paths as restricted review surfaces, not opportunistic cleanup targets.
 
+## Documentation Translations (i18n)
+
+Translations live under `docs/{locale}/` (e.g., `docs/zh-CN/`, `docs/ja-JP/`). The i18n pipeline uses a Go-based tool in `scripts/docs-i18n/`.
+
+**Adding or updating a translation:**
+
+1. Check if your target locale already exists under `docs/{locale}/`. If not, you'll need to create the directory structure.
+2. For Chinese (zh-CN):
+   - Update the glossary at `docs/.i18n/glossary.zh-CN.json` for any new terms
+   - Run `pnpm docs:check-i18n-glossary` to verify glossary coverage
+   - Run the translator: `go run scripts/docs-i18n/main.go -mode doc -parallel 6 docs/**/*.md`
+   - For small patches, use segment mode: `go run scripts/docs-i18n/main.go -mode segment docs/path/to/file.md`
+3. For new locales, set up a glossary at `docs/.i18n/glossary.{locale}.json` and a translation memory at `docs/.i18n/{locale}.tm.jsonl`.
+
+**Verification:**
+- `pnpm docs:spellcheck` checks spelling across all docs
+- `pnpm docs:check-links` validates internal links
+- Review translated content for locale-specific conventions (quotes, CJK-Latin spacing, etc.)
+
 ## Review Conversations Are Author-Owned
 
 If a review bot leaves review conversations on your PR, you are expected to handle the follow-through:

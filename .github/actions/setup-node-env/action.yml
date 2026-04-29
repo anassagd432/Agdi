@@ -1,0 +1,42 @@
+name: Setup Node.js environment
+description: Install Node.js, pnpm, and project dependencies with caching
+
+inputs:
+  node-version:
+    description: Node.js version to install
+    default: "22.x"
+  pnpm-version:
+    description: pnpm version to install
+    default: "10"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+        run_install: false
+
+    - name: Get pnpm store directory
+      id: pnpm-store
+      shell: bash
+      run: |
+        echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+    - name: Restore pnpm store cache
+      uses: actions/cache@v4
+      id: pnpm-cache
+      with:
+        path: ${{ steps.pnpm-store.outputs.store_path }}
+        key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-${{ runner.os }}-
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

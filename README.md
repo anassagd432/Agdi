@@ -1,116 +1,93 @@
-<div align="center">
-  <h1>⚡ Agdi ⚡</h1>
-  <p><b>The AI that actually does things.</b></p>
-  
-  [![Version](https://img.shields.io/badge/version-2026.3.24-blue.svg)](#)
-  [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-  [![Node.js](https://img.shields.io/badge/Node.js-22.14+-brightgreen.svg)](#)
+# Agdi
 
-  <p>
-    An advanced, open-source orchestration system for AI agents. Run it anywhere, connect to any model, deploy to any messaging channel, and securely execute real-world tasks.
-  </p>
-</div>
+Agdi is an open-source AI agent runtime for running long-lived agents, messaging channels, web control surfaces, and real tool execution on your own machine or gateway host.
 
----
+## Install
 
-## 📦 Installation
+Native installers:
 
-Agdi is distributed with zero-friction native OS installers. You don't even need Node.js!
+- Windows: download the latest `agdi-windows.exe` release artifact
+- macOS: download the latest `agdi-macos` release artifact
+- Linux: download the latest `agdi-linux` release artifact
 
-- **Windows**: Download `agdi-windows.exe` from the latest GitHub Release.
-- **macOS**: Download the `agdi-macos` binary from the latest GitHub Release.
-- **Linux**: Download the `agdi-linux` binary from the latest GitHub Release.
+npm:
 
-Once downloaded, simply run the executable in your terminal to launch the setup wizard and access the dashboard!
+```bash
+npm install -g agdi
+```
 
-*(Alternatively, if you prefer using npm: run `npm install -g agdi`)*
+After install:
 
----
+```bash
+agdi onboard
+```
 
-## 🌟 Comprehensive Capabilities
+## Gateway quick start
 
-Agdi is not just a chatbot—it is a full-fledged agentic orchestration platform. Here is everything it can do out of the box:
+Start the Gateway locally:
 
-### 🧠 Model Agnostic (Bring Your Own AI)
-Seamlessly switch between the best AI models in the world without changing your workflow.
-- **Anthropic Claude** (Opus, Sonnet, Haiku)
-- **OpenAI** (GPT-4o, GPT-4 Turbo)
-- **Google Gemini** (Pro, Flash)
-- **Local Models** (Llama 3, Mistral, via Ollama & LM Studio)
-- **Vision & Audio Processing** (Send images, documents, and voice notes directly to the AI)
+```bash
+agdi gateway
+```
 
-### 💬 Universal Messaging Channels
-Interact with your AI assistant where you already spend your time. Agdi natively connects to:
-- **Discord** (Threads, direct messages, attachments)
-- **Slack** (Interactive buttons, thread tracking)
-- **Microsoft Teams** (Rich cards, streaming replies, seamless enterprise integration)
-- **Telegram & WhatsApp**
-- **Apple iMessage & SMS** (via macOS integration)
-- **Web Dashboard** (Built-in rich chat interface)
+Open the dashboard:
 
-### 🔌 Powerful Plugin & Skill Ecosystem
-Give your AI the tools it needs to take action in the real world.
-- **File System & Terminal:** Securely read/write files and execute shell commands.
-- **Web Browsing & Search:** Search the internet, summarize articles, and extract data from websites.
-- **Smart Home Controls:** Control Philips Hue, Sonos, Eight Sleep, and other IoT devices.
-- **Productivity Apps:** Read and write to Apple Notes, Notion, Google Calendar, and Trello.
-- **GitHub & DevOps:** Automate PR reviews, issue management, and GitHub Actions.
-- *Plus dozens of community plugins easily installable via `agdi skills list`.*
+```bash
+agdi dashboard
+```
 
-### 🔐 Unmatched Privacy & Security
-- **Local First:** All your API keys, configuration files, and chat logs are stored strictly on your local machine (or your VPS). Nothing routes through third-party telemetry servers.
-- **Execution Guardrails:** Fine-grained permissions ensure the AI cannot run destructive terminal commands or access sensitive files without explicit approval.
-- **Secure Remote Access:** Built-in Tailscale support allows you to securely access your Agdi instance remotely without exposing ports to the public internet.
+Canonical Gateway auth env vars:
 
-### 🖥️ Built-In Control Dashboard
-Agdi ships with a stunning, local web dashboard designed for true control:
-- Manage running agents and monitor CPU/Memory usage.
-- Install, configure, and toggle plugins with a single click.
-- Review and approve pending tool execution requests.
-- Read analytics, token usage, and execution traces.
+- `AGDI_GATEWAY_TOKEN`
+- `AGDI_GATEWAY_PASSWORD`
+- `AGDI_PROFILE`
 
----
+Legacy `OPENCLAW_*` daemon env vars are still accepted as compatibility fallbacks, but Agdi-native names are the recommended public surface.
 
-## 🚀 Getting Started (From Source)
+## What Agdi provides
 
-If you prefer to run Agdi from source or contribute to the project:
+- Gateway runtime with WebSocket control, HTTP APIs, and Control UI
+- Messaging integrations across built-in and plugin channels
+- Local and remote node execution
+- Tooling for shell, files, web, and automation workflows
+- Profile-aware daemon/service installs on macOS, Linux/WSL, and Windows task surfaces
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) v22.14 or higher
-- [pnpm](https://pnpm.io/) v10.32+
+## Docs
 
-### Installation Steps
+- Getting started: https://docs.openclaw.ai/start/getting-started
+- Onboarding: https://docs.openclaw.ai/start/wizard
+- Gateway runbook: https://docs.openclaw.ai/gateway
+- Dashboard: https://docs.openclaw.ai/web/dashboard
+- Remote access: https://docs.openclaw.ai/gateway/remote
+- Configuration: https://docs.openclaw.ai/gateway/configuration
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/anassagd432/Agdi.git
-   cd Agdi
-   ```
+## Run from source
 
-2. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
+Prerequisites:
 
-3. **Build the core engine:**
-   ```bash
-   pnpm build
-   ```
+- Node.js 22+
+- pnpm
 
-4. **Start the application:**
-   ```bash
-   pnpm dev
-   ```
+Setup:
 
----
+```bash
+git clone https://github.com/anassagd432/Agdi.git
+cd Agdi
+pnpm install
+pnpm build
+pnpm dev
+```
 
-## 📚 Documentation & Help
+## Development checks
 
-To see all available CLI commands, simply run `agdi --help`. 
+```bash
+pnpm check      # lint, format, branding, boundary checks
+pnpm test       # unit, gateway, channel, and extension tests
+pnpm build      # tsdown bundle + postbuild
+```
 
-For complete guides on configuring specialized channels (like provisioning the Slack bot or setting up Microsoft Teams), configuring Docker, or developing your own custom plugins using the Agdi plugin SDK architecture, check the `docs/` folder in this repository.
+CI runs automatically via GitHub Actions on push/PR to `main` — includes lint, type-check, unit tests across Linux and Windows, build smoke tests, and docs validation.
 
-<br/>
-<div align="center">
-  <i>Built with ❤️ for true automation.</i>
-</div>
+## License
+
+MIT

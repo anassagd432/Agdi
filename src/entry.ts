@@ -10,7 +10,7 @@ import { normalizeWindowsArgv } from "./cli/windows-argv.js";
 import { buildCliRespawnPlan } from "./entry.respawn.js";
 import { isTruthyEnvValue, normalizeEnv } from "./infra/env.js";
 import { isMainModule } from "./infra/is-main.js";
-import { ensureOpenClawExecMarkerOnProcess } from "./infra/openclaw-exec-env.js";
+import { ensureAgdiExecMarkerOnProcess } from "./infra/openclaw-exec-env.js";
 import { installProcessWarningFilter } from "./infra/warning-filter.js";
 import { attachChildProcessBridge } from "./process/child-process-bridge.js";
 
@@ -47,8 +47,8 @@ if (
   const { installGaxiosFetchCompat } = await import("./infra/gaxios-fetch-compat.js");
 
   await installGaxiosFetchCompat();
-  process.title = "openclaw";
-  ensureOpenClawExecMarkerOnProcess();
+  process.title = "agdi";
+  ensureAgdiExecMarkerOnProcess();
   installProcessWarningFilter();
   normalizeEnv();
   if (!isTruthyEnvValue(process.env.NODE_DISABLE_COMPILE_CACHE)) {
@@ -60,6 +60,7 @@ if (
   }
 
   if (shouldForceReadOnlyAuthStore(process.argv)) {
+    process.env.AGDI_AUTH_STORE_READONLY = "1";
     process.env.OPENCLAW_AUTH_STORE_READONLY = "1";
   }
 
@@ -91,7 +92,7 @@ if (
 
     child.once("error", (error) => {
       console.error(
-        "[openclaw] Failed to respawn CLI:",
+        "[agdi] Failed to respawn CLI:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
       process.exit(1);
@@ -111,12 +112,12 @@ if (
     Promise.all([import("./version.js"), import("./infra/git-commit.js")])
       .then(([{ VERSION }, { resolveCommitHash }]) => {
         const commit = resolveCommitHash({ moduleUrl: import.meta.url });
-        console.log(commit ? `OpenClaw ${VERSION} (${commit})` : `OpenClaw ${VERSION}`);
+        console.log(commit ? `Agdi ${VERSION} (${commit})` : `Agdi ${VERSION}`);
         process.exit(0);
       })
       .catch((error) => {
         console.error(
-          "[openclaw] Failed to resolve version:",
+          "[agdi] Failed to resolve version:",
           error instanceof Error ? (error.stack ?? error.message) : error,
         );
         process.exitCode = 1;
@@ -129,20 +130,20 @@ if (
   if (!ensureCliRespawnReady()) {
     const parsedContainer = parseCliContainerArgs(process.argv);
     if (!parsedContainer.ok) {
-      console.error(`[openclaw] ${parsedContainer.error}`);
+      console.error(`[agdi] ${parsedContainer.error}`);
       process.exit(2);
     }
 
     const parsed = parseCliProfileArgs(parsedContainer.argv);
     if (!parsed.ok) {
       // Keep it simple; Commander will handle rich help/errors after we strip flags.
-      console.error(`[openclaw] ${parsed.error}`);
+      console.error(`[agdi] ${parsed.error}`);
       process.exit(2);
     }
 
     const containerTargetName = resolveCliContainerTarget(process.argv);
     if (containerTargetName && parsed.profile) {
-      console.error("[openclaw] --container cannot be combined with --profile/--dev");
+      console.error("[agdi] --container cannot be combined with --profile/--dev");
       process.exit(2);
     }
 
@@ -176,7 +177,7 @@ export function tryHandleRootHelpFastPath(
     deps.onError ??
     ((error: unknown) => {
       console.error(
-        "[openclaw] Failed to display help:",
+        "[agdi] Failed to display help:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
       process.exitCode = 1;
@@ -205,7 +206,7 @@ function runMainOrRootHelp(argv: string[]): void {
     .then(({ runCli }) => runCli(argv))
     .catch((error) => {
       console.error(
-        "[openclaw] Failed to start CLI:",
+        "[agdi] Failed to start CLI:",
         error instanceof Error ? (error.stack ?? error.message) : error,
       );
       process.exitCode = 1;
