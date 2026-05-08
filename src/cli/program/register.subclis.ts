@@ -19,7 +19,11 @@ type SubCliEntry = SubCliDescriptor & {
 };
 
 const shouldRegisterPrimaryOnly = (argv: string[]) => {
-  if (isTruthyEnvValue(process.env.OPENCLAW_DISABLE_LAZY_SUBCOMMANDS)) {
+  if (
+    isTruthyEnvValue(
+      process.env.AGDI_DISABLE_LAZY_SUBCOMMANDS ?? process.env.OPENCLAW_DISABLE_LAZY_SUBCOMMANDS,
+    )
+  ) {
     return false;
   }
   if (hasHelpOrVersion(argv)) {
@@ -29,7 +33,9 @@ const shouldRegisterPrimaryOnly = (argv: string[]) => {
 };
 
 const shouldEagerRegisterSubcommands = (_argv: string[]) => {
-  return isTruthyEnvValue(process.env.OPENCLAW_DISABLE_LAZY_SUBCOMMANDS);
+  return isTruthyEnvValue(
+    process.env.AGDI_DISABLE_LAZY_SUBCOMMANDS ?? process.env.OPENCLAW_DISABLE_LAZY_SUBCOMMANDS,
+  );
 };
 
 export const loadValidatedConfigForPluginRegistration =
@@ -57,7 +63,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "gateway",
-    description: "Run, inspect, and query the WebSocket Gateway",
+    description: "Run, inspect, and query the technical runtime",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../gateway-cli.js");
@@ -75,7 +81,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "logs",
-    description: "Tail gateway file logs via RPC",
+    description: "Tail runtime file logs via RPC",
     hasSubcommands: false,
     register: async (program) => {
       const mod = await import("../logs-cli.js");
@@ -102,7 +108,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "approvals",
-    description: "Manage exec approvals (gateway or node host)",
+    description: "Manage exec approvals (runtime or node host)",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../exec-approvals-cli.js");
@@ -111,7 +117,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "nodes",
-    description: "Manage gateway-owned node pairing and node commands",
+    description: "Manage workspace-owned node pairing and node commands",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../nodes-cli.js");
@@ -138,7 +144,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "ops",
-    description: "Founder operations command center via Gateway",
+    description: "Founder operations command center",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../founder-ops-cli.js");
@@ -156,7 +162,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "tui",
-    description: "Open a terminal UI connected to the Gateway",
+    description: "Open the agent workspace in the terminal",
     hasSubcommands: false,
     register: async (program) => {
       const mod = await import("../tui-cli.js");
@@ -165,7 +171,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "cron",
-    description: "Manage cron jobs via the Gateway scheduler",
+    description: "Manage scheduled automations",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../cron-cli.js");
@@ -259,7 +265,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "channels",
-    description: "Manage connected chat channels (Telegram, Discord, etc.)",
+    description: "Manage connected chat apps (Telegram, Discord, etc.)",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../channels-cli.js");

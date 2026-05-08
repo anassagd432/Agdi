@@ -8,11 +8,11 @@ export const SUB_CLI_DESCRIPTORS = [
   { name: "acp", description: "Agent Control Protocol tools", hasSubcommands: true },
   {
     name: "gateway",
-    description: "Run, inspect, and query the WebSocket Gateway",
+    description: "Run, inspect, and query the technical runtime",
     hasSubcommands: true,
   },
   { name: "daemon", description: "Gateway service (legacy alias)", hasSubcommands: true },
-  { name: "logs", description: "Tail gateway file logs via RPC", hasSubcommands: false },
+  { name: "logs", description: "Tail runtime file logs via RPC", hasSubcommands: false },
   {
     name: "system",
     description: "System events, heartbeat, and presence",
@@ -25,12 +25,12 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "approvals",
-    description: "Manage exec approvals (gateway or node host)",
+    description: "Manage exec approvals (runtime or node host)",
     hasSubcommands: true,
   },
   {
     name: "nodes",
-    description: "Manage gateway-owned node pairing and node commands",
+    description: "Manage workspace-owned node pairing and node commands",
     hasSubcommands: true,
   },
   {
@@ -45,7 +45,7 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "ops",
-    description: "Founder operations command center via Gateway",
+    description: "Founder operations command center",
     hasSubcommands: true,
   },
   {
@@ -55,12 +55,12 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "tui",
-    description: "Open a terminal UI connected to the Gateway",
+    description: "Open the agent workspace in the terminal",
     hasSubcommands: false,
   },
   {
     name: "cron",
-    description: "Manage cron jobs via the Gateway scheduler",
+    description: "Manage scheduled automations",
     hasSubcommands: true,
   },
   {
@@ -105,7 +105,7 @@ export const SUB_CLI_DESCRIPTORS = [
   },
   {
     name: "channels",
-    description: "Manage connected chat channels (Telegram, Discord, etc.)",
+    description: "Manage connected chat apps (Telegram, Discord, etc.)",
     hasSubcommands: true,
   },
   {

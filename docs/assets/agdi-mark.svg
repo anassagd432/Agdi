@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Agdi">
+  <rect width="64" height="64" rx="14" fill="#0E1726"/>
+  <path d="M18 46 31 14h6l13 32h-7l-3-8H28l-3 8h-7Zm12-14h8l-4-11-4 11Z" fill="#5BA0FF"/>
+  <path d="M16 50h32" stroke="#2FBF71" stroke-width="4" stroke-linecap="round"/>
+</svg>

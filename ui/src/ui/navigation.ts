@@ -2,24 +2,17 @@ import { t } from "../i18n/index.ts";
 import type { IconName } from "./icons.js";
 
 export const TAB_GROUPS = [
-  { label: "chat", tabs: ["chat"] },
+  { label: "workspace", tabs: ["chat", "overview"] },
+  { label: "assistants", tabs: ["agents", "skills", "nodes"] },
   {
-    label: "control",
-    tabs: ["overview", "channels", "instances", "sessions", "usage", "cron"],
+    label: "connections",
+    tabs: ["channels", "communications", "instances"],
   },
-  { label: "agent", tabs: ["agents", "skills", "nodes"] },
+  { label: "automations", tabs: ["cron", "automation"] },
+  { label: "activity", tabs: ["sessions", "usage", "logs", "debug"] },
   {
     label: "settings",
-    tabs: [
-      "config",
-      "communications",
-      "appearance",
-      "automation",
-      "infrastructure",
-      "aiAgents",
-      "debug",
-      "logs",
-    ],
+    tabs: ["config", "appearance", "infrastructure", "aiAgents"],
   },
 ] as const;
 

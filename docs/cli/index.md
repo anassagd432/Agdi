@@ -77,18 +77,18 @@ This page describes the current CLI behavior. If commands change, update this do
 
 ## Color palette
 
-Agdi uses a lobster palette for CLI output.
+Agdi uses a workspace palette for CLI output.
 
-- `accent` (#FF5A2D): headings, labels, primary highlights.
-- `accentBright` (#FF7A3D): command names, emphasis.
-- `accentDim` (#D14A22): secondary highlight text.
-- `info` (#FF8A5B): informational values.
+- `accent` (#2D7FF5): headings, labels, primary highlights.
+- `accentBright` (#3D9AFF): command names, emphasis.
+- `accentDim` (#2266CC): secondary highlight text.
+- `info` (#5BA0FF): informational values.
 - `success` (#2FBF71): success states.
 - `warn` (#FFB020): warnings, fallbacks, attention.
 - `error` (#E23D2D): errors, failures.
 - `muted` (#8B7F77): de-emphasis, metadata.
 
-Palette source of truth: `src/terminal/palette.ts` (the “lobster palette”).
+Palette source of truth: `src/terminal/palette.ts` (the Agdi palette).
 
 ## Command tree
 

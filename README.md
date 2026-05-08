@@ -1,6 +1,6 @@
 # Agdi
 
-Agdi is an open-source AI agent runtime for running long-lived agents, messaging channels, web control surfaces, and real tool execution on your own machine or gateway host.
+Agdi is an open-source agent workspace for running assistants, automations, connected chat apps, and real tool execution on your own machine or private host.
 
 ## Install
 
@@ -22,21 +22,21 @@ After install:
 agdi onboard
 ```
 
-## Gateway quick start
+## Workspace quick start
 
-Start the Gateway locally:
+Start the local runtime:
 
 ```bash
 agdi gateway
 ```
 
-Open the dashboard:
+Open the workspace:
 
 ```bash
 agdi dashboard
 ```
 
-Canonical Gateway auth env vars:
+Canonical workspace auth env vars:
 
 - `AGDI_GATEWAY_TOKEN`
 - `AGDI_GATEWAY_PASSWORD`
@@ -46,20 +46,20 @@ Legacy `OPENCLAW_*` daemon env vars are still accepted as compatibility fallback
 
 ## What Agdi provides
 
-- Gateway runtime with WebSocket control, HTTP APIs, and Control UI
-- Messaging integrations across built-in and plugin channels
+- Local runtime with WebSocket control, HTTP APIs, and a workspace UI
+- Connections across built-in and plugin chat apps
 - Local and remote node execution
 - Tooling for shell, files, web, and automation workflows
 - Profile-aware daemon/service installs on macOS, Linux/WSL, and Windows task surfaces
 
 ## Docs
 
-- Getting started: https://docs.openclaw.ai/start/getting-started
-- Onboarding: https://docs.openclaw.ai/start/wizard
-- Gateway runbook: https://docs.openclaw.ai/gateway
-- Dashboard: https://docs.openclaw.ai/web/dashboard
-- Remote access: https://docs.openclaw.ai/gateway/remote
-- Configuration: https://docs.openclaw.ai/gateway/configuration
+- Getting started: https://docs.agdi.ai/start/getting-started
+- Onboarding: https://docs.agdi.ai/start/wizard
+- Runtime runbook: https://docs.agdi.ai/gateway
+- Workspace UI: https://docs.agdi.ai/web/dashboard
+- Remote access: https://docs.agdi.ai/gateway/remote
+- Configuration: https://docs.agdi.ai/gateway/configuration
 
 ## Run from source
 
@@ -86,7 +86,7 @@ pnpm test       # unit, gateway, channel, and extension tests
 pnpm build      # tsdown bundle + postbuild
 ```
 
-CI runs automatically via GitHub Actions on push/PR to `main` — includes lint, type-check, unit tests across Linux and Windows, build smoke tests, and docs validation.
+CI runs automatically via GitHub Actions on push/PR to `main`; it includes lint, type-check, unit tests across Linux and Windows, build smoke tests, and docs validation.
 
 ## License
 

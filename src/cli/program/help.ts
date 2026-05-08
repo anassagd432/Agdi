@@ -21,27 +21,18 @@ const ROOT_COMMANDS_HINT =
   "Hint: commands suffixed with * have subcommands. Run <command> --help for details.";
 
 const EXAMPLES = [
-  ["agdi models --help", "Show detailed help for the models command."],
-  [
-    "agdi channels login --verbose",
-    "Link personal WhatsApp Web and show QR + connection logs.",
-  ],
+  ["agdi setup", "Create a local Agdi workspace."],
+  ["agdi connect", "Connect messaging apps and integrations."],
+  ["agdi chat", "Open the local agent workspace in the terminal."],
+  ["agdi automate", "Inspect scheduled automation commands."],
+  ["agdi status", "Review connection health and recent activity."],
+  ["agdi doctor", "Check compatibility, config, and runtime health."],
+  ["agdi models --help", "Configure model providers."],
   [
     'agdi message send --target +15555550123 --message "Hi" --json',
-    "Send via your web session and print JSON result.",
+    "Send through a connected channel and print JSON.",
   ],
-  ["agdi gateway --port 18789", "Run the WebSocket Gateway locally."],
-  ["agdi --dev gateway", "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001."],
-  ["agdi gateway --force", "Kill anything bound to the default gateway port, then start it."],
-  ["agdi gateway ...", "Gateway control via WebSocket."],
-  [
-    'agdi agent --to +15555550123 --message "Run summary" --deliver',
-    "Talk directly to the agent using the Gateway; optionally send the WhatsApp reply.",
-  ],
-  [
-    'agdi message send --channel telegram --target @mychat --message "Hi"',
-    "Send via your Telegram bot.",
-  ],
+  ["agdi gateway --port 18789", "Run the technical runtime locally."],
 ] as const;
 
 export function configureProgramHelp(program: Command, ctx: ProgramContext) {
@@ -136,7 +127,7 @@ export function configureProgramHelp(program: Command, ctx: ProgramContext) {
     if (command !== program) {
       return "";
     }
-    const docs = formatDocsLink("/cli", "docs.openclaw.ai/cli");
+    const docs = formatDocsLink("/cli", "docs.agdi.ai/cli");
     return `\n${theme.heading("Examples:")}\n${fmtExamples}\n\n${theme.muted("Docs:")} ${docs}\n`;
   });
 }

@@ -26,7 +26,7 @@ describe("formatCliBannerLine", () => {
       richTty: false,
     });
 
-    expect(line).toBe("⚡ Agdi 2026.3.7 (abc1234)");
+    expect(line).toBe("Agdi 2026.3.7 (abc1234)");
   });
 
   it("uses default tagline when cli.banner.taglineMode is default", () => {
@@ -37,7 +37,7 @@ describe("formatCliBannerLine", () => {
       richTty: false,
     });
 
-    expect(line).toBe("⚡ Agdi 2026.3.7 (abc1234) — All your chats, one Agdi.");
+    expect(line).toBe("Agdi 2026.3.7 (abc1234) - Your agent workspace, ready when you are.");
   });
 
   it("prefers explicit tagline mode over config", () => {
@@ -49,6 +49,6 @@ describe("formatCliBannerLine", () => {
       mode: "default",
     });
 
-    expect(line).toBe("⚡ Agdi 2026.3.7 (abc1234) — All your chats, one Agdi.");
+    expect(line).toBe("Agdi 2026.3.7 (abc1234) - Your agent workspace, ready when you are.");
   });
 });

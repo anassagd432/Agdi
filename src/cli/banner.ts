@@ -1,5 +1,4 @@
 import { resolveCommitHash } from "../infra/git-commit.js";
-import { visibleWidth } from "../terminal/ansi.js";
 import { isRich, theme } from "../terminal/theme.js";
 import { hasRootVersionAlias } from "./argv.js";
 import { readCliBannerTaglineMode } from "./banner-config-lite.js";
@@ -13,22 +12,6 @@ type BannerOptions = TaglineOptions & {
 };
 
 let bannerEmitted = false;
-
-const graphemeSegmenter =
-  typeof Intl !== "undefined" && "Segmenter" in Intl
-    ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
-    : null;
-
-function splitGraphemes(value: string): string[] {
-  if (!graphemeSegmenter) {
-    return Array.from(value);
-  }
-  try {
-    return Array.from(graphemeSegmenter.segment(value), (seg) => seg.segment);
-  } catch {
-    return Array.from(value);
-  }
-}
 
 const hasJsonFlag = (argv: string[]) =>
   argv.some((arg) => arg === "--json" || arg.startsWith("--json="));
@@ -57,12 +40,12 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
   const commitLabel = commit ?? "unknown";
   const tagline = pickTagline({ ...options, mode: resolveTaglineMode(options) });
   const rich = options.richTty ?? isRich();
-  const title = "⚡ Agdi";
-  const prefix = "⚡ ";
+  const title = "Agdi";
+  const prefix = "Agdi ";
   const columns = options.columns ?? process.stdout.columns ?? 120;
   const plainBaseLine = `${title} ${version} (${commitLabel})`;
-  const plainFullLine = tagline ? `${plainBaseLine} — ${tagline}` : plainBaseLine;
-  const fitsOnOneLine = visibleWidth(plainFullLine) <= columns;
+  const plainFullLine = tagline ? `${plainBaseLine} - ${tagline}` : plainBaseLine;
+  const fitsOnOneLine = plainFullLine.length <= columns;
   if (rich) {
     if (fitsOnOneLine) {
       if (!tagline) {
@@ -70,7 +53,7 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
       }
       return `${theme.heading(title)} ${theme.info(version)} ${theme.muted(
         `(${commitLabel})`,
-      )} ${theme.muted("—")} ${theme.accentDim(tagline)}`;
+      )} ${theme.muted("-")} ${theme.accentDim(tagline)}`;
     }
     const line1 = `${theme.heading(title)} ${theme.info(version)} ${theme.muted(
       `(${commitLabel})`,
@@ -92,46 +75,22 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
   return `${line1}\n${line2}`;
 }
 
-const LOBSTER_ASCII = [
-  "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄",
-  "██░▄▄▄░██░▄▄▀██░▄▄▀██▄░▄██",
-  "██░▀▀▀░██░█▀▀██░██░██░▀░██",
-  "██░███░██░▀▀▄██░▀▀░██▄▀▄██",
-  "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
-  "               ⚡ AGDI ⚡               ",
+const AGDI_ASCII = [
+  "   A G D I",
+  "   agent workspace",
+  "   connections | automations | activity",
   " ",
 ];
 
 export function formatCliBannerArt(options: BannerOptions = {}): string {
   const rich = options.richTty ?? isRich();
   if (!rich) {
-    return LOBSTER_ASCII.join("\n");
+    return AGDI_ASCII.join("\n");
   }
 
-  const colorChar = (ch: string) => {
-    if (ch === "█") {
-      return theme.accentBright(ch);
-    }
-    if (ch === "░") {
-      return theme.accentDim(ch);
-    }
-    if (ch === "▀") {
-      return theme.accent(ch);
-    }
-    return theme.muted(ch);
-  };
-
-  const colored = LOBSTER_ASCII.map((line) => {
-    if (line.includes("AGDI")) {
-      return (
-        theme.muted("              ") +
-        theme.accent("🦞") +
-        theme.info(" AGDI ") +
-        theme.accent("🦞")
-      );
-    }
-    return splitGraphemes(line).map(colorChar).join("");
-  });
+  const colored = AGDI_ASCII.map((line, index) =>
+    index === 0 ? theme.heading(line) : theme.accentDim(line),
+  );
 
   return colored.join("\n");
 }

@@ -1,14 +1,14 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "OpenClaw",
-  "description": "Self-hosted gateway that connects WhatsApp, Telegram, Discord, iMessage, and more to AI coding agents. Run a single Gateway process on your own machine and message your AI assistant from anywhere.",
+  "name": "Agdi",
+  "description": "Local-first agent workspace for assistants, automations, connected chat apps, and real tool execution on your own machine or private host.",
   "theme": "mint",
   "icons": {
     "library": "lucide"
   },
   "logo": {
-    "light": "/assets/pixel-lobster.svg",
-    "dark": "/assets/pixel-lobster.svg"
+    "light": "/assets/agdi-mark.svg",
+    "dark": "/assets/agdi-mark.svg"
   },
   "fonts": {
     "body": {
@@ -18,11 +18,11 @@
       "family": "DM Sans"
     }
   },
-  "favicon": "/assets/pixel-lobster.svg",
+  "favicon": "/assets/agdi-mark.svg",
   "colors": {
-    "primary": "#FF5A36",
-    "dark": "#FF5A36",
-    "light": "#FF8A6B"
+    "primary": "#2D7FF5",
+    "dark": "#2266CC",
+    "light": "#5BA0FF"
   },
   "styling": {
     "codeblocks": {
@@ -36,18 +36,13 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/openclaw/openclaw",
+        "href": "https://github.com/anassagd432/Agdi",
         "icon": "github"
       },
       {
         "label": "Releases",
-        "href": "https://github.com/openclaw/openclaw/releases",
+        "href": "https://github.com/anassagd432/Agdi/releases",
         "icon": "package"
-      },
-      {
-        "label": "Discord",
-        "href": "https://discord.com/invite/clawd",
-        "icon": "discord"
       }
     ]
   },
@@ -342,15 +337,15 @@
     },
     {
       "source": "/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/agdi"
     },
     {
       "source": "/start/clawd",
-      "destination": "/start/openclaw"
+      "destination": "/start/agdi"
     },
     {
       "source": "/start/clawd/",
-      "destination": "/start/openclaw"
+      "destination": "/start/agdi"
     },
     {
       "source": "/start/pairing",
@@ -904,11 +899,7 @@
               },
               {
                 "group": "Guides",
-                "pages": [
-                  "start/openclaw",
-                  "start/wizard-cli-reference",
-                  "start/wizard-cli-automation"
-                ]
+                "pages": ["start/agdi", "start/wizard-cli-reference", "start/wizard-cli-automation"]
               }
             ]
           },
@@ -1262,10 +1253,10 @@
             ]
           },
           {
-            "tab": "Gateway & Ops",
+            "tab": "Workspace & Ops",
             "groups": [
               {
-                "group": "Gateway",
+                "group": "Runtime",
                 "pages": [
                   "gateway/index",
                   {
@@ -1364,7 +1355,7 @@
                 "pages": [
                   "cli/index",
                   {
-                    "group": "Gateway and service",
+                    "group": "Runtime and service",
                     "pages": [
                       "cli/backup",
                       "cli/daemon",

@@ -42,6 +42,29 @@ const coreEntries: CoreCliEntry[] = [
   {
     commands: [
       {
+        name: "connect",
+        description: "Connect chat apps and integrations",
+        hasSubcommands: false,
+      },
+      {
+        name: "chat",
+        description: "Open the agent workspace in the terminal",
+        hasSubcommands: false,
+      },
+      {
+        name: "automate",
+        description: "Create and inspect scheduled automations",
+        hasSubcommands: false,
+      },
+    ],
+    register: async ({ program }) => {
+      const mod = await import("./register.workspace.js");
+      mod.registerWorkspaceCommands(program);
+    },
+  },
+  {
+    commands: [
+      {
         name: "setup",
         description: "Initialize local config and agent workspace",
         hasSubcommands: false,
@@ -56,7 +79,7 @@ const coreEntries: CoreCliEntry[] = [
     commands: [
       {
         name: "onboard",
-        description: "Interactive onboarding for gateway, workspace, and skills",
+        description: "Interactive onboarding for workspace, connections, and skills",
         hasSubcommands: false,
       },
     ],
@@ -70,7 +93,7 @@ const coreEntries: CoreCliEntry[] = [
       {
         name: "configure",
         description:
-          "Interactive configuration for credentials, channels, gateway, and agent defaults",
+          "Interactive configuration for credentials, connections, runtime, and agent defaults",
         hasSubcommands: false,
       },
     ],
@@ -110,12 +133,12 @@ const coreEntries: CoreCliEntry[] = [
     commands: [
       {
         name: "doctor",
-        description: "Health checks + quick fixes for the gateway and channels",
+        description: "Health checks + quick fixes for the workspace and connections",
         hasSubcommands: false,
       },
       {
         name: "dashboard",
-        description: "Open the Control UI with your current token",
+        description: "Open the Agdi workspace with your current token",
         hasSubcommands: false,
       },
       {
@@ -177,7 +200,7 @@ const coreEntries: CoreCliEntry[] = [
     commands: [
       {
         name: "agent",
-        description: "Run one agent turn via the Gateway",
+        description: "Run one agent turn from the local workspace",
         hasSubcommands: false,
       },
       {
@@ -197,12 +220,12 @@ const coreEntries: CoreCliEntry[] = [
     commands: [
       {
         name: "status",
-        description: "Show channel health and recent session recipients",
+        description: "Show connection health and recent session recipients",
         hasSubcommands: false,
       },
       {
         name: "health",
-        description: "Fetch health from the running gateway",
+        description: "Fetch health from the running runtime",
         hasSubcommands: false,
       },
       {
