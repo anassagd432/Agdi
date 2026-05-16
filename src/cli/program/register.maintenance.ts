@@ -2,6 +2,7 @@ import type { Command } from "commander";
 import { dashboardCommand } from "../../commands/dashboard.js";
 import { doctorCommand } from "../../commands/doctor.js";
 import { resetCommand } from "../../commands/reset.js";
+import { scanCommand } from "../../commands/scan.js";
 import { uninstallCommand } from "../../commands/uninstall.js";
 import { defaultRuntime } from "../../runtime.js";
 import { formatDocsLink } from "../../terminal/links.js";
@@ -39,6 +40,9 @@ export function registerMaintenanceCommands(program: Command) {
         defaultRuntime.exit(0);
       });
     });
+
+  // Register scan command
+  program.addCommand(scanCommand);
 
   program
     .command("dashboard")
