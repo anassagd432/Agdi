@@ -409,12 +409,20 @@ function validateConfigObjectWithPluginsBase(
 
     for (const diag of registry.diagnostics) {
       let path = diag.pluginId ? `plugins.entries.${diag.pluginId}` : "plugins";
-      if (!diag.pluginId && diag.message.includes("plugin path not found")) {
+      if (
+        !diag.pluginId &&
+        (diag.message.includes("plugin path not found") ||
+          diag.message.includes("plugin manifest not found"))
+      ) {
         path = "plugins.load.paths";
       }
       const pluginLabel = diag.pluginId ? `plugin ${diag.pluginId}` : "plugin";
       const message = `${pluginLabel}: ${diag.message}`;
-      if (diag.level === "error") {
+      const isStalePluginPathWarning =
+        !diag.pluginId &&
+        (diag.message.includes("plugin path not found") ||
+          diag.message.includes("plugin manifest not found"));
+      if (diag.level === "error" && !isStalePluginPathWarning) {
         issues.push({ path, message });
       } else {
         warnings.push({ path, message });

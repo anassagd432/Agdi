@@ -222,12 +222,6 @@ describe("config plugin validation", () => {
     });
     expect(res.ok).toBe(false);
     if (!res.ok) {
-      expect(
-        res.issues.some(
-          (issue) =>
-            issue.path === "plugins.load.paths" && issue.message.includes("plugin path not found"),
-        ),
-      ).toBe(true);
       expect(res.issues).toEqual(
         expect.arrayContaining([
           { path: "plugins.deny", message: "plugin not found: missing-deny" },
@@ -240,9 +234,34 @@ describe("config plugin validation", () => {
           "plugin not found: missing-allow (stale config entry ignored; remove it from plugins config)",
       });
       expect(res.warnings).toContainEqual({
+        path: "plugins.load.paths",
+        message: `plugin: plugin path not found: ${missingPath}`,
+      });
+      expect(res.warnings).toContainEqual({
         path: "plugins.entries.missing-plugin",
         message:
           "plugin not found: missing-plugin (stale config entry ignored; remove it from plugins config)",
+      });
+    }
+  });
+
+  it("warns instead of failing when a configured direct plugin path is missing its manifest", async () => {
+    const stalePluginDir = path.join(suiteHome, "stale-plugin");
+    await fs.mkdir(stalePluginDir, { recursive: true });
+    await fs.writeFile(path.join(stalePluginDir, "index.ts"), 'export const plugin = "stale";\n');
+
+    const res = validateInSuite({
+      agents: { list: [{ id: "pi" }] },
+      plugins: {
+        load: { paths: [stalePluginDir] },
+      },
+    });
+
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.warnings).toContainEqual({
+        path: "plugins.load.paths",
+        message: `plugin: plugin manifest not found: ${path.join(stalePluginDir, "openclaw.plugin.json")}`,
       });
     }
   });
