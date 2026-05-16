@@ -156,6 +156,7 @@ function resolvePluginSdkAlias(params: {
   distFile: string;
   modulePath: string;
   argv1?: string;
+  moduleUrl?: string;
   env?: NodeJS.ProcessEnv;
 }) {
   const run = () =>
@@ -164,6 +165,7 @@ function resolvePluginSdkAlias(params: {
       distFile: params.distFile,
       modulePath: params.modulePath,
       argv1: params.argv1,
+      moduleUrl: params.moduleUrl,
     });
   return params.env ? withEnv(params.env, run) : run();
 }
@@ -516,6 +518,53 @@ describe("plugin sdk alias helpers", () => {
     );
     expect(fs.realpathSync(aliases["agdi/plugin-sdk/channel-runtime"] ?? "")).toBe(
       fs.realpathSync(path.join(fixture.root, "src", "plugin-sdk", "channel-runtime.ts")),
+    );
+  });
+
+  it("prefers the running SDK root over a stale external checkout root", () => {
+    const running = createPluginSdkAliasFixture({
+      srcFile: "plugin-entry.ts",
+      distFile: "plugin-entry.js",
+      packageExports: {
+        "./plugin-sdk/plugin-entry": { default: "./dist/plugin-sdk/plugin-entry.js" },
+      },
+    });
+    const runningRootAlias = path.join(running.root, "src", "plugin-sdk", "root-alias.cjs");
+    fs.writeFileSync(runningRootAlias, "module.exports = {};\n", "utf-8");
+
+    const stale = createPluginSdkAliasFixture({
+      srcFile: "plugin-entry.ts",
+      distFile: "plugin-entry.js",
+      packageExports: {
+        "./plugin-sdk/plugin-entry": { default: "./dist/plugin-sdk/plugin-entry.js" },
+      },
+    });
+    const staleRootAlias = path.join(stale.root, "src", "plugin-sdk", "root-alias.cjs");
+    fs.writeFileSync(staleRootAlias, "module.exports = {};\n", "utf-8");
+    fs.rmSync(path.join(stale.root, "src", "plugin-sdk", "plugin-entry.ts"));
+    fs.rmSync(path.join(stale.root, "dist", "plugin-sdk", "plugin-entry.js"));
+
+    const stalePluginEntry = path.join(stale.root, "extensions", "demo", "index.ts");
+    mkdirSafe(path.dirname(stalePluginEntry));
+    fs.writeFileSync(stalePluginEntry, 'export const plugin = "demo";\n', "utf-8");
+
+    const aliases = withCwd(path.dirname(stalePluginEntry), () =>
+      withEnv({ NODE_ENV: undefined }, () =>
+        buildPluginLoaderAliasMap(stalePluginEntry, path.join(running.root, "agdi.mjs")),
+      ),
+    );
+
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(runningRootAlias),
+    );
+    expect(fs.realpathSync(aliases["openclaw/plugin-sdk"] ?? "")).toBe(
+      fs.realpathSync(runningRootAlias),
+    );
+    expect(fs.realpathSync(aliases["agdi/plugin-sdk/plugin-entry"] ?? "")).toBe(
+      fs.realpathSync(path.join(running.root, "src", "plugin-sdk", "plugin-entry.ts")),
+    );
+    expect(fs.realpathSync(aliases["openclaw/plugin-sdk/plugin-entry"] ?? "")).toBe(
+      fs.realpathSync(path.join(running.root, "src", "plugin-sdk", "plugin-entry.ts")),
     );
   });
 

@@ -17,8 +17,6 @@ type PluginSdkPackageJson = {
   bin?: string | Record<string, unknown>;
 };
 
-const STARTUP_ARGV1 = process.argv[1];
-
 function resolveLoaderModulePath(params: LoaderModuleResolveParams = {}): string {
   return params.modulePath ?? fileURLToPath(params.moduleUrl ?? import.meta.url);
 }
@@ -121,6 +119,11 @@ function findNearestPluginSdkPackageRoot(startDir: string, maxDepth = 12): strin
   return null;
 }
 
+function isSameOrInsidePath(parentDir: string, candidatePath: string): boolean {
+  const relative = path.relative(path.resolve(parentDir), path.resolve(candidatePath));
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
 export function resolveLoaderPackageRoot(
   params: LoaderModuleResolveParams & { modulePath: string },
 ): string | null {
@@ -151,9 +154,12 @@ function resolveLoaderPluginSdkPackageRoot(
           moduleUrl: params.moduleUrl,
         })
       : null);
+  if (fromCwd && (!fromExplicitHints || isSameOrInsidePath(fromCwd, fromExplicitHints))) {
+    return fromCwd;
+  }
   return (
-    fromCwd ??
     fromExplicitHints ??
+    fromCwd ??
     findNearestPluginSdkPackageRoot(path.dirname(params.modulePath)) ??
     (params.cwd ? findNearestPluginSdkPackageRoot(params.cwd) : null) ??
     findNearestPluginSdkPackageRoot(process.cwd())
@@ -334,7 +340,7 @@ export function resolveExtensionApiAlias(params: LoaderModuleResolveParams = {})
 
 export function buildPluginLoaderAliasMap(
   modulePath: string,
-  argv1: string | undefined = STARTUP_ARGV1,
+  argv1?: string,
   moduleUrl?: string,
 ): Record<string, string> {
   const pluginSdkAlias = resolvePluginSdkAliasFile({
