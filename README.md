@@ -22,6 +22,20 @@ After install:
 agdi onboard
 ```
 
+## Command Split
+
+Agdi and Agdi-dev now use separate command namespaces.
+
+- This repo (`Agdi`) keeps the runtime commands `agdi` and `openclaw`.
+- The `Agdi-dev` repo uses `agdi-build` for the app-builder CLI.
+
+Install the app-builder CLI separately if you need it:
+
+```bash
+npm install -g agdi-dev
+agdi-build build "A CRM dashboard"
+```
+
 ## Workspace quick start
 
 Start the local runtime:
