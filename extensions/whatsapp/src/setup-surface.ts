@@ -9,9 +9,9 @@ import {
   setSetupChannelEnabled,
   type DmPolicy,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/setup";
-import type { ChannelSetupWizard } from "openclaw/plugin-sdk/setup";
-import { formatCliCommand, formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+} from "agdi/plugin-sdk/setup";
+import type { ChannelSetupWizard } from "agdi/plugin-sdk/setup";
+import { formatCliCommand, formatDocsLink } from "agdi/plugin-sdk/setup-tools";
 import { listWhatsAppAccountIds, resolveWhatsAppAuthDir } from "./accounts.js";
 import { loginWeb } from "./login.js";
 import { whatsappSetupAdapter } from "./setup-core.js";

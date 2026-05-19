@@ -24,7 +24,7 @@ export type WhatsAppGroupConfig = {
 };
 
 export type WhatsAppAckReactionConfig = {
-  /** Emoji to use for acknowledgment (e.g., "👀"). Empty = disabled. */
+  /** Emoji to use for acknowledgment (e.g., "ðŸ‘€"). Empty = disabled. */
   emoji?: string;
   /** Send reactions in direct chats. Default: true. */
   direct?: boolean;

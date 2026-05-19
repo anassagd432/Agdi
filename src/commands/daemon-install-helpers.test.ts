@@ -416,7 +416,7 @@ describe("buildGatewayInstallPlan", () => {
   });
 });
 
-describe("buildGatewayInstallPlan — dotenv merge", () => {
+describe("buildGatewayInstallPlan â€” dotenv merge", () => {
   let tmpDir: string;
 
   beforeEach(() => {

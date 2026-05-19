@@ -13,7 +13,7 @@ import {
   setScopedCredentialValue,
   type WebSearchProviderPlugin,
   writeCache,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "agdi/plugin-sdk/provider-web-search";
 import {
   buildXaiWebSearchPayload,
   extractXaiWebSearchContent,

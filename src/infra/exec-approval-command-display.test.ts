@@ -10,8 +10,8 @@ describe("sanitizeExecApprovalDisplayText", () => {
   });
 
   it("escapes visually blank hangul filler characters used for spoofing", () => {
-    expect(sanitizeExecApprovalDisplayText("date\u3164\uFFA0\u115F\u1160가")).toBe(
-      "date\\u{3164}\\u{FFA0}\\u{115F}\\u{1160}가",
+    expect(sanitizeExecApprovalDisplayText("date\u3164\uFFA0\u115F\u1160ê°€")).toBe(
+      "date\\u{3164}\\u{FFA0}\\u{115F}\\u{1160}ê°€",
     );
   });
 });

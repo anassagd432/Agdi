@@ -40,11 +40,11 @@ export function resolveAgentDeliveryPlan(params: {
    * @see https://github.com/openclaw/openclaw/issues/24152
    */
   turnSourceChannel?: string;
-  /** Turn-source `to` — paired with `turnSourceChannel`. */
+  /** Turn-source `to` â€” paired with `turnSourceChannel`. */
   turnSourceTo?: string;
-  /** Turn-source `accountId` — paired with `turnSourceChannel`. */
+  /** Turn-source `accountId` â€” paired with `turnSourceChannel`. */
   turnSourceAccountId?: string;
-  /** Turn-source `threadId` — paired with `turnSourceChannel`. */
+  /** Turn-source `threadId` â€” paired with `turnSourceChannel`. */
   turnSourceThreadId?: string | number;
 }): AgentDeliveryPlan {
   const requestedRaw =

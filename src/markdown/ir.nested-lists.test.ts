@@ -10,7 +10,7 @@
  * to plain text for messaging platforms, we expect:
  *
  * 1. **Indentation**: Each nesting level adds 2 spaces of indentation
- * 2. **Bullet markers**: Bullet lists use "•" (Unicode bullet)
+ * 2. **Bullet markers**: Bullet lists use "â€¢" (Unicode bullet)
  * 3. **Ordered markers**: Ordered lists use "N. " format
  * 4. **Line endings**: Each list item ends with a single newline
  * 5. **List termination**: A trailing newline after the entire list (for top-level only)
@@ -50,15 +50,15 @@ describe("Nested Lists - 2 Level Nesting", () => {
     const result = markdownToIR(input);
 
     // Expected output:
-    // • Item 1
-    //   • Nested 1.1
-    //   • Nested 1.2
-    // • Item 2
+    // â€¢ Item 1
+    //   â€¢ Nested 1.1
+    //   â€¢ Nested 1.2
+    // â€¢ Item 2
     // Note: markdownToIR trims trailing whitespace, so no final newline
-    const expected = `• Item 1
-  • Nested 1.1
-  • Nested 1.2
-• Item 2`;
+    const expected = `â€¢ Item 1
+  â€¢ Nested 1.1
+  â€¢ Nested 1.2
+â€¢ Item 2`;
 
     expect(result.text).toBe(expected);
   });
@@ -72,14 +72,14 @@ describe("Nested Lists - 2 Level Nesting", () => {
     const result = markdownToIR(input);
 
     // Expected output:
-    // • Bullet item
+    // â€¢ Bullet item
     //   1. Ordered sub-item 1
     //   2. Ordered sub-item 2
-    // • Another bullet
-    const expected = `• Bullet item
+    // â€¢ Another bullet
+    const expected = `â€¢ Bullet item
   1. Ordered sub-item 1
   2. Ordered sub-item 2
-• Another bullet`;
+â€¢ Another bullet`;
 
     expect(result.text).toBe(expected);
   });
@@ -94,12 +94,12 @@ describe("Nested Lists - 2 Level Nesting", () => {
 
     // Expected output:
     // 1. Ordered 1
-    //   • Bullet sub 1
-    //   • Bullet sub 2
+    //   â€¢ Bullet sub 1
+    //   â€¢ Bullet sub 2
     // 2. Ordered 2
     const expected = `1. Ordered 1
-  • Bullet sub 1
-  • Bullet sub 2
+  â€¢ Bullet sub 1
+  â€¢ Bullet sub 2
 2. Ordered 2`;
 
     expect(result.text).toBe(expected);
@@ -132,14 +132,14 @@ describe("Nested Lists - 3+ Level Deep Nesting", () => {
     const result = markdownToIR(input);
 
     // Expected output with progressive indentation:
-    // • Level 1
-    //   • Level 2
-    //     • Level 3
-    // • Back to 1
-    const expected = `• Level 1
-  • Level 2
-    • Level 3
-• Back to 1`;
+    // â€¢ Level 1
+    //   â€¢ Level 2
+    //     â€¢ Level 3
+    // â€¢ Back to 1
+    const expected = `â€¢ Level 1
+  â€¢ Level 2
+    â€¢ Level 3
+â€¢ Back to 1`;
 
     expect(result.text).toBe(expected);
   });
@@ -153,11 +153,11 @@ describe("Nested Lists - 3+ Level Deep Nesting", () => {
 
     const result = markdownToIR(input);
 
-    const expected = `• L1
-  • L2
-    • L3
-      • L4
-• Back`;
+    const expected = `â€¢ L1
+  â€¢ L2
+    â€¢ L3
+      â€¢ L4
+â€¢ Back`;
 
     expect(result.text).toBe(expected);
   });
@@ -172,12 +172,12 @@ describe("Nested Lists - 3+ Level Deep Nesting", () => {
 
     const result = markdownToIR(input);
 
-    const expected = `• A1
-  • B1
-    • C1
-    • C2
-  • B2
-• A2`;
+    const expected = `â€¢ A1
+  â€¢ B1
+    â€¢ C1
+    â€¢ C2
+  â€¢ B2
+â€¢ A2`;
 
     expect(result.text).toBe(expected);
   });
@@ -193,11 +193,11 @@ describe("Nested Lists - Mixed Nesting", () => {
 
     const result = markdownToIR(input);
 
-    const expected = `• Bullet 1
+    const expected = `â€¢ Bullet 1
   1. Ordered 1.1
-    • Deep bullet
+    â€¢ Deep bullet
   2. Ordered 1.2
-• Bullet 2`;
+â€¢ Bullet 2`;
 
     expect(result.text).toBe(expected);
   });
@@ -212,9 +212,9 @@ describe("Nested Lists - Mixed Nesting", () => {
     const result = markdownToIR(input);
 
     const expected = `1. First
-  • Sub bullet
+  â€¢ Sub bullet
     1. Deep ordered
-  • Another bullet
+  â€¢ Another bullet
 2. Second`;
 
     expect(result.text).toBe(expected);
@@ -240,8 +240,8 @@ describe("Nested Lists - Newline Handling", () => {
     const result = markdownToIR(input);
 
     // Between B and C there should be exactly one newline
-    expect(result.text).toContain("  • B\n  • C");
-    expect(result.text).not.toContain("  • B\n\n  • C");
+    expect(result.text).toContain("  â€¢ B\n  â€¢ C");
+    expect(result.text).not.toContain("  â€¢ B\n\n  â€¢ C");
   });
 
   it("properly terminates top-level list (trimmed output)", () => {
@@ -255,7 +255,7 @@ describe("Nested Lists - Newline Handling", () => {
     // (no trailing newline after trimming)
     expect(result.text).toMatch(/Item 2$/);
     // Should not have excessive newlines before Item 2
-    expect(result.text).not.toContain("\n\n• Item 2");
+    expect(result.text).not.toContain("\n\nâ€¢ Item 2");
   });
 });
 
@@ -269,7 +269,7 @@ describe("Nested Lists - Edge Cases", () => {
     const result = markdownToIR(input);
 
     // Should still render the nested item with proper indentation
-    expect(result.text).toContain("  • Nested only");
+    expect(result.text).toContain("  â€¢ Nested only");
   });
 
   it("handles nested list as first child of parent item", () => {
@@ -280,7 +280,7 @@ describe("Nested Lists - Edge Cases", () => {
     const result = markdownToIR(input);
 
     // The child should appear indented under the parent
-    expect(result.text).toContain("• Parent text\n  • Child");
+    expect(result.text).toContain("â€¢ Parent text\n  â€¢ Child");
   });
 
   it("handles sibling nested lists at same level", () => {
@@ -291,10 +291,10 @@ describe("Nested Lists - Edge Cases", () => {
 
     const result = markdownToIR(input);
 
-    const expected = `• A
-  • A1
-• B
-  • B1`;
+    const expected = `â€¢ A
+  â€¢ A1
+â€¢ B
+  â€¢ B1`;
 
     expect(result.text).toBe(expected);
   });

@@ -1,10 +1,10 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "agdi/plugin-sdk/provider-auth";
 import {
   GOOGLE_GEMINI_DEFAULT_MODEL,
   applyGoogleGeminiModelDefault,
-} from "openclaw/plugin-sdk/provider-models";
-import { createGoogleThinkingPayloadWrapper } from "openclaw/plugin-sdk/provider-stream";
+} from "agdi/plugin-sdk/provider-models";
+import { createGoogleThinkingPayloadWrapper } from "agdi/plugin-sdk/provider-stream";
 import { registerGoogleGeminiCliProvider } from "./gemini-cli-provider.js";
 import { buildGoogleImageGenerationProvider } from "./image-generation-provider.js";
 import { googleMediaUnderstandingProvider } from "./media-understanding-provider.js";

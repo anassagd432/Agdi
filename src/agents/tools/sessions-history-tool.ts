@@ -42,7 +42,7 @@ function truncateHistoryText(text: string): {
     return { text: sanitized, truncated: false, redacted };
   }
   const cut = truncateUtf16Safe(sanitized, SESSIONS_HISTORY_TEXT_MAX_CHARS);
-  return { text: `${cut}\n…(truncated)…`, truncated: true, redacted };
+  return { text: `${cut}\nâ€¦(truncated)â€¦`, truncated: true, redacted };
 }
 
 function sanitizeHistoryContentBlock(block: unknown): {

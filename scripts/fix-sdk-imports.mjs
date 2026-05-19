@@ -28,8 +28,8 @@ for (const startDir of dirsToScan) {
   for (const file of files) {
     try {
       const content = readFileSync(file, 'utf8');
-      if (content.includes('agdi/plugin-sdk')) {
-        const newContent = content.replace(/agdi\/plugin-sdk/g, 'openclaw/plugin-sdk');
+      if (content.includes('openclaw/plugin-sdk')) {
+        const newContent = content.replace(/openclaw\/plugin-sdk/g, 'agdi/plugin-sdk');
         writeFileSync(file, newContent, 'utf8');
         filesChanged++;
         console.log(`Fixed: ${file}`);

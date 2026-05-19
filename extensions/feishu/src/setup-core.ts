@@ -2,7 +2,7 @@ import {
   DEFAULT_ACCOUNT_ID,
   type ChannelSetupAdapter,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 import type { FeishuConfig } from "./types.js";
 
 export function setFeishuNamedAccountEnabled(

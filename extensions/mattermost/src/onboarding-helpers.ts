@@ -1,1 +1,1 @@
-export { promptAccountId } from "agdi/plugin-sdk";
+export { promptAccountId } from "agdi/plugin-sdk/setup";

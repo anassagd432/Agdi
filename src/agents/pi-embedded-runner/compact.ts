@@ -594,7 +594,7 @@ export async function compactEmbeddedPiSessionDirect(
     if (slashIdx > 0) {
       provider = compactionModelOverride.slice(0, slashIdx).trim();
       modelId = compactionModelOverride.slice(slashIdx + 1).trim() || DEFAULT_MODEL;
-      // Provider changed — drop primary auth profile so getApiKeyForModel
+      // Provider changed â€” drop primary auth profile so getApiKeyForModel
       // falls back to provider-based key resolution for the override model.
       if (provider !== (params.provider ?? "").trim()) {
         authProfileId = undefined;
@@ -1102,7 +1102,7 @@ export async function compactEmbeddedPiSessionDirect(
 
         if (!containsRealConversationMessages(session.messages)) {
           log.info(
-            `[compaction] skipping — no real conversation messages (sessionKey=${params.sessionKey ?? params.sessionId})`,
+            `[compaction] skipping â€” no real conversation messages (sessionKey=${params.sessionKey ?? params.sessionId})`,
           );
           return {
             ok: true,
@@ -1117,7 +1117,7 @@ export async function compactEmbeddedPiSessionDirect(
         const messageCountCompactionInput = messageCountOriginal;
         // Estimate full session tokens BEFORE compaction (including system prompt,
         // bootstrap context, workspace files, and all history). This is needed for
-        // a correct sanity check — result.tokensBefore only covers the summarizable
+        // a correct sanity check â€” result.tokensBefore only covers the summarizable
         // history subset, not the full session.
         let fullSessionTokensBefore = 0;
         try {

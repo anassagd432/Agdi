@@ -5,11 +5,11 @@ vi.mock("../../../../extensions/slack/src/send.js", () => ({
   sendMessageSlack: vi.fn().mockResolvedValue({ messageId: "1234.5678", channelId: "C123" }),
 }));
 
-vi.mock("openclaw/plugin-sdk/plugin-runtime", () => ({
+vi.mock("agdi/plugin-sdk/plugin-runtime", () => ({
   getGlobalHookRunner: vi.fn(),
 }));
 
-import { getGlobalHookRunner } from "openclaw/plugin-sdk/plugin-runtime";
+import { getGlobalHookRunner } from "agdi/plugin-sdk/plugin-runtime";
 import { sendMessageSlack } from "../../../../extensions/slack/src/send.js";
 import { slackOutbound } from "../../../../test/channel-outbounds.js";
 

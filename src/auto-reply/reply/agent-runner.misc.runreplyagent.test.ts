@@ -415,9 +415,9 @@ describe("runReplyAgent auto-compaction token update", () => {
         payloads: [{ text: "done" }],
         meta: {
           agentMeta: {
-            // Accumulated usage across pre+post compaction calls — inflated
+            // Accumulated usage across pre+post compaction calls â€” inflated
             usage: { input: 190_000, output: 8_000, total: 198_000 },
-            // Last individual API call's usage — actual post-compaction context
+            // Last individual API call's usage â€” actual post-compaction context
             lastCallUsage: { input: 10_000, output: 3_000, total: 13_000 },
             compactionCount: 1,
           },
@@ -1779,7 +1779,7 @@ describe("runReplyAgent response usage footer", () => {
     const res = await createRun({ responseUsage: "full", sessionKey });
     const payload = Array.isArray(res) ? res[0] : res;
     expect(String(payload?.text ?? "")).toContain("Usage:");
-    expect(String(payload?.text ?? "")).toContain(`· session \`${sessionKey}\``);
+    expect(String(payload?.text ?? "")).toContain(`Â· session \`${sessionKey}\``);
   });
 
   it("does not append session key when responseUsage=tokens", async () => {
@@ -1798,7 +1798,7 @@ describe("runReplyAgent response usage footer", () => {
     const res = await createRun({ responseUsage: "tokens", sessionKey });
     const payload = Array.isArray(res) ? res[0] : res;
     expect(String(payload?.text ?? "")).toContain("Usage:");
-    expect(String(payload?.text ?? "")).not.toContain("· session ");
+    expect(String(payload?.text ?? "")).not.toContain("Â· session ");
   });
 });
 

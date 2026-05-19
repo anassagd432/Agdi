@@ -19,7 +19,7 @@ const promptAndConfigureOllamaMock = vi.hoisted(() =>
 );
 const ensureOllamaModelPulledMock = vi.hoisted(() => vi.fn(async () => {}));
 
-vi.mock("openclaw/plugin-sdk/ollama-setup", () => ({
+vi.mock("agdi/plugin-sdk/ollama-setup", () => ({
   promptAndConfigureOllama: promptAndConfigureOllamaMock,
   ensureOllamaModelPulled: ensureOllamaModelPulledMock,
   configureOllamaNonInteractive: vi.fn(),

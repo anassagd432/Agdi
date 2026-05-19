@@ -9,7 +9,7 @@ import type { CronJob } from "./types.js";
  * Root cause: onTimer's results-processing block used the full
  * recomputeNextRuns which could silently advance a past-due nextRunAtMs
  * for a job that became due between findDueJobs and the post-execution
- * locked block — skipping that run and jumping 48h ahead.
+ * locked block â€” skipping that run and jumping 48h ahead.
  *
  * Fix: use recomputeNextRunsForMaintenance in the post-execution block,
  * which only fills in missing nextRunAtMs values and never overwrites
@@ -79,7 +79,7 @@ describe("issue #17852 - daily cron jobs should not skip days", () => {
     const state = createMockCronStateForJobs({ jobs: [job], nowMs: now });
     recomputeNextRuns(state);
 
-    // The full recomputeNextRuns advances it to TOMORROW — skipping today's
+    // The full recomputeNextRuns advances it to TOMORROW â€” skipping today's
     // execution entirely.  This is the 48h jump bug: from the previous run
     // (yesterday 3 AM) to the newly computed next run (tomorrow 3 AM).
     const tomorrowThreeAM = threeAM + DAY_MS;

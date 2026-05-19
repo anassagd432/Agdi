@@ -105,7 +105,7 @@ export function registerDnsCli(program: Command) {
     .description("DNS helpers for wide-area discovery (Tailscale + CoreDNS)")
     .addHelpText(
       "after",
-      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/dns", "docs.openclaw.ai/cli/dns")}\n`,
+      () => `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/dns", "docs.agdi.ai/cli/dns")}\n`,
     );
 
   dns
@@ -147,7 +147,7 @@ export function registerDnsCli(program: Command) {
             { Key: "Zone file", Value: zonePath },
             {
               Key: "Tailnet IP",
-              Value: `${tailnetIPv4 ?? "—"}${tailnetIPv6 ? ` (v6 ${tailnetIPv6})` : ""}`,
+              Value: `${tailnetIPv4 ?? "â€”"}${tailnetIPv6 ? ` (v6 ${tailnetIPv6})` : ""}`,
             },
           ],
         }).trimEnd(),
@@ -159,7 +159,7 @@ export function registerDnsCli(program: Command) {
         discovery: { wideArea: { enabled: true, domain: wideAreaDomain } },
       });
       defaultRuntime.log("");
-      defaultRuntime.log(theme.heading("Tailscale admin (DNS → Nameservers):"));
+      defaultRuntime.log(theme.heading("Tailscale admin (DNS â†’ Nameservers):"));
       defaultRuntime.log(
         theme.muted(`- Add nameserver: ${tailnetIPv4 ?? "<this machine's tailnet IPv4>"}`),
       );
@@ -239,7 +239,7 @@ export function registerDnsCli(program: Command) {
       }
 
       defaultRuntime.log("");
-      defaultRuntime.log(theme.heading("Starting CoreDNS (sudo)…"));
+      defaultRuntime.log(theme.heading("Starting CoreDNS (sudo)â€¦"));
       run("sudo", ["brew", "services", "restart", "coredns"], {
         inherit: true,
       });

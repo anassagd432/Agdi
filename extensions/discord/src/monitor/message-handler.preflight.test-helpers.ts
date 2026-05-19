@@ -1,5 +1,5 @@
 import { ChannelType } from "@buape/carbon";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import type { preflightDiscordMessage } from "./message-handler.preflight.js";
 import { createNoopThreadBindingManager } from "./thread-bindings.js";
 
@@ -90,7 +90,7 @@ export function createDiscordPreflightArgs(params: {
     discordConfig: params.discordConfig,
     accountId: "default",
     token: "token",
-    runtime: {} as import("openclaw/plugin-sdk/runtime-env").RuntimeEnv,
+    runtime: {} as import("agdi/plugin-sdk/runtime-env").RuntimeEnv,
     botUserId: params.botUserId ?? "openclaw-bot",
     guildHistories: new Map(),
     historyLimit: 0,

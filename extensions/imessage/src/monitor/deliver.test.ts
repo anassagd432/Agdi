@@ -14,8 +14,8 @@ vi.mock("../send.js", () => ({
     sendMessageIMessageMock(to, message, opts),
 }));
 
-vi.mock("openclaw/plugin-sdk/config-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/config-runtime")>();
+vi.mock("agdi/plugin-sdk/config-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/config-runtime")>();
   return {
     ...actual,
     loadConfig: () => ({}),
@@ -23,8 +23,8 @@ vi.mock("openclaw/plugin-sdk/config-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/reply-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/reply-runtime")>();
+vi.mock("agdi/plugin-sdk/reply-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/reply-runtime")>();
   return {
     ...actual,
     chunkTextWithMode: (text: string) => chunkTextWithModeMock(text),
@@ -32,8 +32,8 @@ vi.mock("openclaw/plugin-sdk/reply-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/text-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/text-runtime")>();
+vi.mock("agdi/plugin-sdk/text-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/text-runtime")>();
   return {
     ...actual,
     convertMarkdownTables: (text: string) => convertMarkdownTablesMock(text),

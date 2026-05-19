@@ -9,9 +9,9 @@ import {
   type StatusReactionAdapter,
 } from "./status-reactions.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Mock Adapter
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const createMockAdapter = () => {
   const calls: { method: string; emoji: string }[] = [];
@@ -35,7 +35,7 @@ const createEnabledController = (
   const controller = createStatusReactionController({
     enabled: true,
     adapter,
-    initialEmoji: "👀",
+    initialEmoji: "ðŸ‘€",
     ...overrides,
   });
   return { adapter, calls, controller };
@@ -51,14 +51,14 @@ const createSetOnlyController = () => {
   const controller = createStatusReactionController({
     enabled: true,
     adapter,
-    initialEmoji: "👀",
+    initialEmoji: "ðŸ‘€",
   });
   return { calls, controller };
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Tests
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("resolveToolEmoji", () => {
   const cases: Array<{
@@ -115,7 +115,7 @@ describe("createStatusReactionController", () => {
     const controller = createStatusReactionController({
       enabled: false,
       adapter,
-      initialEmoji: "👀",
+      initialEmoji: "ðŸ‘€",
     });
 
     void controller.setQueued();
@@ -131,7 +131,7 @@ describe("createStatusReactionController", () => {
     void controller.setQueued();
     await vi.runAllTimersAsync();
 
-    expect(calls).toContainEqual({ method: "set", emoji: "👀" });
+    expect(calls).toContainEqual({ method: "set", emoji: "ðŸ‘€" });
   });
 
   it("should debounce setThinking and eventually call adapter", async () => {
@@ -234,7 +234,7 @@ describe("createStatusReactionController", () => {
     void controller.setTool("exec");
     await vi.advanceTimersByTimeAsync(DEFAULT_TIMING.debounceMs);
 
-    // Should only have the last one (exec → coding)
+    // Should only have the last one (exec â†’ coding)
     const setEmojis = calls.filter((c) => c.method === "set").map((c) => c.emoji);
     expect(setEmojis).toEqual([DEFAULT_EMOJIS.coding]);
   });
@@ -278,7 +278,7 @@ describe("createStatusReactionController", () => {
 
     // Should set thinking, then remove queued
     expect(calls).toContainEqual({ method: "set", emoji: DEFAULT_EMOJIS.thinking });
-    expect(calls).toContainEqual({ method: "remove", emoji: "👀" });
+    expect(calls).toContainEqual({ method: "remove", emoji: "ðŸ‘€" });
   });
 
   it("should only call setReaction when adapter lacks removeReaction", async () => {
@@ -327,25 +327,25 @@ describe("createStatusReactionController", () => {
 
     await controller.restoreInitial();
 
-    expect(calls).toContainEqual({ method: "set", emoji: "👀" });
+    expect(calls).toContainEqual({ method: "set", emoji: "ðŸ‘€" });
   });
 
   it("should use custom emojis when provided", async () => {
     const { calls, controller } = createEnabledController({
       emojis: {
-        thinking: "🤔",
-        done: "🎉",
+        thinking: "ðŸ¤”",
+        done: "ðŸŽ‰",
       },
     });
 
     void controller.setThinking();
     await vi.advanceTimersByTimeAsync(DEFAULT_TIMING.debounceMs);
 
-    expect(calls).toContainEqual({ method: "set", emoji: "🤔" });
+    expect(calls).toContainEqual({ method: "set", emoji: "ðŸ¤”" });
 
     await controller.setDone();
     await vi.runAllTimersAsync();
-    expect(calls).toContainEqual({ method: "set", emoji: "🎉" });
+    expect(calls).toContainEqual({ method: "set", emoji: "ðŸŽ‰" });
   });
 
   it("should use custom timing when provided", async () => {
@@ -440,7 +440,7 @@ describe("createStatusReactionController", () => {
     const controller = createStatusReactionController({
       enabled: true,
       adapter,
-      initialEmoji: "👀",
+      initialEmoji: "ðŸ‘€",
       onError,
     });
 

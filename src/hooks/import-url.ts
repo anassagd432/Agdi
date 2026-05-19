@@ -2,7 +2,7 @@
  * Build an import URL for a hook handler module.
  *
  * Bundled hooks (shipped in dist/) are immutable between installs, so they
- * can be imported without a cache-busting suffix — letting V8 reuse its
+ * can be imported without a cache-busting suffix â€” letting V8 reuse its
  * module cache across gateway restarts.
  *
  * Workspace, managed, and plugin hooks may be edited by the user between

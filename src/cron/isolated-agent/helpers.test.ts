@@ -108,7 +108,7 @@ describe("isHeartbeatOnlyResponse", () => {
     expect(
       isHeartbeatOnlyResponse(
         [
-          { text: "It's 12:49 AM — quiet hours. Let me run the checks quickly." },
+          { text: "It's 12:49 AM â€” quiet hours. Let me run the checks quickly." },
           { text: "Emails: Just 2 calendar invites. Not urgent." },
           { text: "HEARTBEAT_OK" },
         ],
@@ -141,7 +141,7 @@ describe("isHeartbeatOnlyResponse", () => {
   it("returns false when no payload contains HEARTBEAT_OK", () => {
     expect(
       isHeartbeatOnlyResponse(
-        [{ text: "Checked emails — found 3 urgent messages from your manager." }],
+        [{ text: "Checked emails â€” found 3 urgent messages from your manager." }],
         ACK_MAX,
       ),
     ).toBe(false);

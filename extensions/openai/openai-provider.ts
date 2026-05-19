@@ -1,8 +1,8 @@
 import {
   type ProviderResolveDynamicModelContext,
   type ProviderRuntimeModel,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
+} from "agdi/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "agdi/plugin-sdk/provider-auth";
 import {
   applyOpenAIConfig,
   DEFAULT_CONTEXT_TOKENS,
@@ -10,11 +10,11 @@ import {
   normalizeProviderId,
   OPENAI_DEFAULT_MODEL,
   type ProviderPlugin,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 import {
   createOpenAIAttributionHeadersWrapper,
   createOpenAIDefaultTransportWrapper,
-} from "openclaw/plugin-sdk/provider-stream";
+} from "agdi/plugin-sdk/provider-stream";
 import {
   cloneFirstTemplateModel,
   findCatalogTemplate,

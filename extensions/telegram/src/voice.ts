@@ -1,4 +1,4 @@
-import { isTelegramVoiceCompatibleAudio } from "openclaw/plugin-sdk/media-runtime";
+import { isTelegramVoiceCompatibleAudio } from "agdi/plugin-sdk/media-runtime";
 
 export function resolveTelegramVoiceDecision(opts: {
   wantsVoice: boolean;

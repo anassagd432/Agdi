@@ -58,7 +58,7 @@ describe("handleBtwCommand", () => {
 
     expect(result).toEqual({
       shouldContinue: false,
-      reply: { text: "⚠️ /btw requires an active session with existing context." },
+      reply: { text: "âš ï¸ /btw requires an active session with existing context." },
     });
   });
 

@@ -34,7 +34,7 @@ export function resolveThreadBindingThreadName(params: {
 }): string {
   const label = params.label?.trim();
   const base = label || params.agentId?.trim() || "agent";
-  const raw = `🤖 ${base}`.replace(/\s+/g, " ").trim();
+  const raw = `ðŸ¤– ${base}`.replace(/\s+/g, " ").trim();
   return raw.slice(0, 100);
 }
 

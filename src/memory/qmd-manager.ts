@@ -884,7 +884,7 @@ export class QmdMemoryManager implements MemorySearchManager {
       log.debug("qmd sync ignoring targeted sessionFiles hint; running regular update");
     }
     if (params?.progress) {
-      params.progress({ completed: 0, total: 1, label: "Updating QMD index…" });
+      params.progress({ completed: 0, total: 1, label: "Updating QMD indexâ€¦" });
     }
     await this.runUpdate(params?.reason ?? "manual", params?.force);
     if (params?.progress) {
@@ -1144,7 +1144,7 @@ export class QmdMemoryManager implements MemorySearchManager {
    * is a no-op.
    */
   private async symlinkSharedModels(): Promise<void> {
-    // process.env is never modified — only this.env (passed to child_process
+    // process.env is never modified â€” only this.env (passed to child_process
     // spawn) overrides XDG_CACHE_HOME.  So reading it here gives us the
     // user's original value, which is where `qmd` downloaded its models.
     //
@@ -1172,10 +1172,10 @@ export class QmdMemoryManager implements MemorySearchManager {
       // Check if something already exists at the target path
       try {
         await fs.lstat(targetModelsDir);
-        // Already exists (directory, symlink, or file) – leave it alone
+        // Already exists (directory, symlink, or file) â€“ leave it alone
         return;
       } catch {
-        // Does not exist – proceed to create symlink
+        // Does not exist â€“ proceed to create symlink
       }
       // On Windows, creating directory symlinks requires either Administrator
       // privileges or Developer Mode.  Fall back to a directory junction which
@@ -1191,7 +1191,7 @@ export class QmdMemoryManager implements MemorySearchManager {
           throw symlinkErr;
         }
       }
-      log.debug(`symlinked qmd models: ${defaultModelsDir} → ${targetModelsDir}`);
+      log.debug(`symlinked qmd models: ${defaultModelsDir} â†’ ${targetModelsDir}`);
     } catch (err) {
       // Non-fatal: if we can't symlink, qmd will fall back to downloading
       log.warn(`failed to symlink qmd models directory: ${String(err)}`);

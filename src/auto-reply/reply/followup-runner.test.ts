@@ -819,7 +819,7 @@ describe("createFollowupRunner messaging tool dedupe", () => {
       },
     });
 
-    // Media stripped → payload becomes non-renderable → not delivered.
+    // Media stripped â†’ payload becomes non-renderable â†’ not delivered.
     expect(onBlockReply).not.toHaveBeenCalled();
   });
 

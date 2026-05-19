@@ -25,7 +25,7 @@ describe("resolveMemoryFlushPromptForRun", () => {
 
     expect(prompt).toContain("memory/2026-02-16.md");
     expect(prompt).toContain(
-      "Current time: Monday, February 16th, 2026 — 10:00 AM (America/New_York) / 2026-02-16 15:00 UTC",
+      "Current time: Monday, February 16th, 2026 â€” 10:00 AM (America/New_York) / 2026-02-16 15:00 UTC",
     );
   });
 

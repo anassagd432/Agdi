@@ -33,7 +33,7 @@ export async function drainFormattedSystemEvents(params: {
       return null;
     }
     if (trimmed.startsWith("Node:")) {
-      return trimmed.replace(/ · last input [^·]+/i, "").trim();
+      return trimmed.replace(/ Â· last input [^Â·]+/i, "").trim();
     }
     return trimmed;
   };

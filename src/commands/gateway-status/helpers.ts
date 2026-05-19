@@ -348,7 +348,7 @@ export function renderProbeSummaryLine(probe: GatewayProbeResult, rich: boolean)
   if (probe.ok) {
     const latency =
       typeof probe.connectLatencyMs === "number" ? `${probe.connectLatencyMs}ms` : "unknown";
-    return `${colorize(rich, theme.success, "Connect: ok")} (${latency}) · ${colorize(rich, theme.success, "RPC: ok")}`;
+    return `${colorize(rich, theme.success, "Connect: ok")} (${latency}) Â· ${colorize(rich, theme.success, "RPC: ok")}`;
   }
 
   const detail = probe.error ? ` - ${probe.error}` : "";
@@ -358,7 +358,7 @@ export function renderProbeSummaryLine(probe: GatewayProbeResult, rich: boolean)
     const rpcStatus = isScopeLimitedProbeFailure(probe)
       ? colorize(rich, theme.warn, "RPC: limited")
       : colorize(rich, theme.error, "RPC: failed");
-    return `${colorize(rich, theme.success, "Connect: ok")} (${latency}) · ${rpcStatus}${detail}`;
+    return `${colorize(rich, theme.success, "Connect: ok")} (${latency}) Â· ${rpcStatus}${detail}`;
   }
 
   return `${colorize(rich, theme.error, "Connect: failed")}${detail}`;

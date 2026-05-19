@@ -128,7 +128,7 @@ export const systemHandlers: GatewayRequestHandlers = {
         if (reasonChanged) {
           parts.push(`reason ${reasonValue?.trim() || "event"}`);
         }
-        const deltaText = parts.join(" · ");
+        const deltaText = parts.join(" Â· ");
         if (deltaText) {
           enqueueSystemEvent(deltaText, {
             sessionKey,

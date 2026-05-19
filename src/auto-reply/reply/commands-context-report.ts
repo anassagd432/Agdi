@@ -81,7 +81,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
   if (!sub || sub === "help") {
     return {
       text: [
-        "🧠 /context",
+        "ðŸ§  /context",
         "",
         "What counts as context (high-level), plus a breakdown mode.",
         "",
@@ -90,7 +90,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
         "- /context detail (per-file + per-tool + per-skill + system prompt size)",
         "- /context json   (same, machine-readable)",
         "",
-        "Inline shortcut = a command token inside a normal message (e.g. “hey /status”). It runs immediately (allowlisted senders only) and is stripped before the model sees the remaining text.",
+        "Inline shortcut = a command token inside a normal message (e.g. â€œhey /statusâ€). It runs immediately (allowlisted senders only) and is stripped before the model sees the remaining text.",
       ].join("\n"),
     };
   }
@@ -132,7 +132,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
   const formatNameList = (names: string[], cap: number) =>
     names.length <= cap
       ? names.join(", ")
-      : `${names.slice(0, cap).join(", ")}, … (+${names.length - cap} more)`;
+      : `${names.slice(0, cap).join(", ")}, â€¦ (+${names.length - cap} more)`;
   const skillsLine = `Skills list (system prompt text): ${formatCharsAndTokens(report.skills.promptChars)} (${skillNameSet.size} skills)`;
   const skillsNamesLine = skillNameSet.size
     ? `Skills: ${formatNameList(skillNames, 20)}`
@@ -184,7 +184,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
   const bootstrapWarningLines =
     truncatedBootstrapFiles.length > 0
       ? [
-          `⚠ Bootstrap context is over configured limits: ${truncatedBootstrapFiles.length} file(s) truncated (${formatInt(bootstrapAnalysis.totals.rawChars)} raw chars -> ${formatInt(bootstrapAnalysis.totals.injectedChars)} injected chars).`,
+          `âš  Bootstrap context is over configured limits: ${truncatedBootstrapFiles.length} file(s) truncated (${formatInt(bootstrapAnalysis.totals.rawChars)} raw chars -> ${formatInt(bootstrapAnalysis.totals.injectedChars)} injected chars).`,
           ...(truncationCauseParts.length ? [`Causes: ${truncationCauseParts.join("; ")}.`] : []),
           "Tip: increase `agents.defaults.bootstrapMaxChars` and/or `agents.defaults.bootstrapTotalMaxChars` if this truncation is not intentional.",
         ]
@@ -230,26 +230,26 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
 
     return {
       text: [
-        "🧠 Context breakdown (detailed)",
+        "ðŸ§  Context breakdown (detailed)",
         ...sharedContextLines,
         ...(perSkill.lines.length ? ["Top skills (prompt entry size):", ...perSkill.lines] : []),
-        ...(perSkill.omitted ? [`… (+${perSkill.omitted} more skills)`] : []),
+        ...(perSkill.omitted ? [`â€¦ (+${perSkill.omitted} more skills)`] : []),
         "",
         toolListLine,
         toolSchemaLine,
         toolsNamesLine,
         "Top tools (schema size):",
         ...perToolSchema.lines,
-        ...(perToolSchema.omitted ? [`… (+${perToolSchema.omitted} more tools)`] : []),
+        ...(perToolSchema.omitted ? [`â€¦ (+${perToolSchema.omitted} more tools)`] : []),
         "",
         "Top tools (summary text size):",
         ...perToolSummary.lines,
-        ...(perToolSummary.omitted ? [`… (+${perToolSummary.omitted} more tools)`] : []),
+        ...(perToolSummary.omitted ? [`â€¦ (+${perToolSummary.omitted} more tools)`] : []),
         ...(toolPropsLines.length ? ["", "Tools (param count):", ...toolPropsLines] : []),
         "",
         totalsLine,
         "",
-        "Inline shortcut: a command token inside normal text (e.g. “hey /status”) that runs immediately (allowlisted senders only) and is stripped before the model sees the remaining message.",
+        "Inline shortcut: a command token inside normal text (e.g. â€œhey /statusâ€) that runs immediately (allowlisted senders only) and is stripped before the model sees the remaining message.",
       ]
         .filter(Boolean)
         .join("\n"),
@@ -258,7 +258,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
 
   return {
     text: [
-      "🧠 Context breakdown",
+      "ðŸ§  Context breakdown",
       ...sharedContextLines,
       toolListLine,
       toolSchemaLine,
@@ -266,7 +266,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
       "",
       totalsLine,
       "",
-      "Inline shortcut: a command token inside normal text (e.g. “hey /status”) that runs immediately (allowlisted senders only) and is stripped before the model sees the remaining message.",
+      "Inline shortcut: a command token inside normal text (e.g. â€œhey /statusâ€) that runs immediately (allowlisted senders only) and is stripped before the model sees the remaining message.",
     ].join("\n"),
   };
 }

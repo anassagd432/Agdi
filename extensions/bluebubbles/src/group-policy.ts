@@ -2,8 +2,8 @@ import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-policy";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 
 type BlueBubblesGroupContext = {
   cfg: OpenClawConfig;

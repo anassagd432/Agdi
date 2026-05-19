@@ -262,7 +262,7 @@ Successfully processed 1 files`;
     });
   });
 
-  describe("summarizeWindowsAcl — SID-based classification", () => {
+  describe("summarizeWindowsAcl â€” SID-based classification", () => {
     it("classifies SYSTEM SID (S-1-5-18) as trusted", () => {
       expectTrustedOnly([aclEntry({ principal: "S-1-5-18" })]);
     });
@@ -380,7 +380,7 @@ Successfully processed 1 files`;
       expect(summary.untrustedGroup).toHaveLength(0);
     });
 
-    it("full scenario: SYSTEM SID + owner SID only → no findings", () => {
+    it("full scenario: SYSTEM SID + owner SID only â†’ no findings", () => {
       const ownerSid = "S-1-5-21-1824257776-4070701511-781240313-1001";
       const entries: WindowsAclEntry[] = [
         {
@@ -626,23 +626,23 @@ Successfully processed 1 files`;
     });
   });
 
-  describe("summarizeWindowsAcl — localized SYSTEM account names", () => {
-    it("classifies French SYSTEM (AUTORITE NT\\Système) as trusted", () => {
-      expectTrustedOnly([aclEntry({ principal: "AUTORITE NT\\Système" })]);
+  describe("summarizeWindowsAcl â€” localized SYSTEM account names", () => {
+    it("classifies French SYSTEM (AUTORITE NT\\SystÃ¨me) as trusted", () => {
+      expectTrustedOnly([aclEntry({ principal: "AUTORITE NT\\SystÃ¨me" })]);
     });
 
-    it("classifies German SYSTEM (NT-AUTORITÄT\\SYSTEM) as trusted", () => {
-      expectTrustedOnly([aclEntry({ principal: "NT-AUTORITÄT\\SYSTEM" })]);
+    it("classifies German SYSTEM (NT-AUTORITÃ„T\\SYSTEM) as trusted", () => {
+      expectTrustedOnly([aclEntry({ principal: "NT-AUTORITÃ„T\\SYSTEM" })]);
     });
 
     it("classifies Spanish SYSTEM (AUTORIDAD NT\\SYSTEM) as trusted", () => {
       expectTrustedOnly([aclEntry({ principal: "AUTORIDAD NT\\SYSTEM" })]);
     });
 
-    it("French Windows full scenario: user + Système only → no untrusted", () => {
+    it("French Windows full scenario: user + SystÃ¨me only â†’ no untrusted", () => {
       const entries: WindowsAclEntry[] = [
         aclEntry({ principal: "MYPC\\Pierre" }),
-        aclEntry({ principal: "AUTORITE NT\\Système" }),
+        aclEntry({ principal: "AUTORITE NT\\SystÃ¨me" }),
       ];
       const env = { USERNAME: "Pierre", USERDOMAIN: "MYPC" };
       const { trusted, untrustedWorld, untrustedGroup } = summarizeWindowsAcl(entries, env);
@@ -652,7 +652,7 @@ Successfully processed 1 files`;
     });
   });
 
-  describe("formatIcaclsResetCommand — uses SID for SYSTEM", () => {
+  describe("formatIcaclsResetCommand â€” uses SID for SYSTEM", () => {
     it("uses *S-1-5-18 instead of SYSTEM in reset command", () => {
       const cmd = formatIcaclsResetCommand("C:\\test.json", {
         isDir: false,

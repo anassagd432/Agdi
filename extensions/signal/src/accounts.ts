@@ -3,7 +3,7 @@ import {
   normalizeAccountId,
   resolveMergedAccountConfig,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-resolution";
+} from "agdi/plugin-sdk/account-resolution";
 import type { SignalAccountConfig } from "./runtime-api.js";
 
 export type ResolvedSignalAccount = {

@@ -1,19 +1,19 @@
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveHumanDelayConfig } from "agdi/plugin-sdk/agent-runtime";
 import {
   logAckFailure,
   logTypingFailure,
   removeAckReactionAfterReply,
-} from "openclaw/plugin-sdk/channel-feedback";
-import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
-import { resolveStorePath, updateLastRoute } from "openclaw/plugin-sdk/config-runtime";
-import { resolveAgentOutboundIdentity } from "openclaw/plugin-sdk/outbound-runtime";
-import { clearHistoryEntriesIfEnabled } from "openclaw/plugin-sdk/reply-history";
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
-import { dispatchInboundMessage } from "openclaw/plugin-sdk/reply-runtime";
-import { createReplyDispatcherWithTyping } from "openclaw/plugin-sdk/reply-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { danger, logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/channel-feedback";
+import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
+import { resolveStorePath, updateLastRoute } from "agdi/plugin-sdk/config-runtime";
+import { resolveAgentOutboundIdentity } from "agdi/plugin-sdk/outbound-runtime";
+import { clearHistoryEntriesIfEnabled } from "agdi/plugin-sdk/reply-history";
+import { resolveSendableOutboundReplyParts } from "agdi/plugin-sdk/reply-payload";
+import { dispatchInboundMessage } from "agdi/plugin-sdk/reply-runtime";
+import { createReplyDispatcherWithTyping } from "agdi/plugin-sdk/reply-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+import { danger, logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "agdi/plugin-sdk/security-runtime";
 import { editSlackMessage, reactSlackMessage, removeSlackReaction } from "../../actions.js";
 import { createSlackDraftStream } from "../../draft-stream.js";
 import { normalizeSlackOutboundText } from "../../format.js";

@@ -1,7 +1,7 @@
 import {
   deliverTextOrMediaReply,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import type { OpenClawConfig, PluginRuntime, ReplyPayload } from "../runtime-api.js";
 import { getAgentScopedMediaLocalRoots } from "../runtime-api.js";
 

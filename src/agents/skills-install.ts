@@ -284,7 +284,7 @@ function resolveBrewMissingFailure(spec: SkillInstallSpec): SkillInstallResult {
     process.platform === "linux"
       ? `Homebrew is not installed. Install it from https://brew.sh or install "${formula}" manually using your system package manager (e.g. apt, dnf, pacman).`
       : "Homebrew is not installed. Install it from https://brew.sh";
-  return createInstallFailure({ message: `brew not installed — ${hint}` });
+  return createInstallFailure({ message: `brew not installed â€” ${hint}` });
 }
 
 async function ensureUvInstalled(params: {
@@ -299,7 +299,7 @@ async function ensureUvInstalled(params: {
   if (!params.brewExe) {
     return createInstallFailure({
       message:
-        "uv not installed — install manually: https://docs.astral.sh/uv/getting-started/installation/",
+        "uv not installed â€” install manually: https://docs.astral.sh/uv/getting-started/installation/",
     });
   }
 
@@ -320,7 +320,7 @@ async function installGoViaApt(timeoutMs: number): Promise<SkillInstallResult | 
   const aptInstallArgv = ["apt-get", "install", "-y", "golang-go"];
   const aptUpdateArgv = ["apt-get", "update", "-qq"];
   const aptFailureMessage =
-    "go not installed — automatic install via apt failed. Install manually: https://go.dev/doc/install";
+    "go not installed â€” automatic install via apt failed. Install manually: https://go.dev/doc/install";
 
   const isRoot = typeof process.getuid === "function" && process.getuid() === 0;
   if (isRoot) {
@@ -339,7 +339,7 @@ async function installGoViaApt(timeoutMs: number): Promise<SkillInstallResult | 
   if (!hasBinary("sudo")) {
     return createInstallFailure({
       message:
-        "go not installed — apt-get is available but sudo is not installed. Install manually: https://go.dev/doc/install",
+        "go not installed â€” apt-get is available but sudo is not installed. Install manually: https://go.dev/doc/install",
     });
   }
 
@@ -349,7 +349,7 @@ async function installGoViaApt(timeoutMs: number): Promise<SkillInstallResult | 
   if (sudoCheck.code !== 0) {
     return createInstallFailure({
       message:
-        "go not installed — apt-get is available but sudo is not usable (missing or requires a password). Install manually: https://go.dev/doc/install",
+        "go not installed â€” apt-get is available but sudo is not usable (missing or requires a password). Install manually: https://go.dev/doc/install",
       ...sudoCheck,
     });
   }
@@ -396,7 +396,7 @@ async function ensureGoInstalled(params: {
   }
 
   return createInstallFailure({
-    message: "go not installed — install manually: https://go.dev/doc/install",
+    message: "go not installed â€” install manually: https://go.dev/doc/install",
   });
 }
 

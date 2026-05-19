@@ -78,7 +78,7 @@ export function buildDisabledCommandReply(params: {
   const disabledVerb = params.disabledVerb ?? "is";
   const docsSuffix = params.docsUrl ? ` Docs: ${params.docsUrl}` : "";
   return {
-    text: `⚠️ ${params.label} ${disabledVerb} disabled. Set commands.${params.configKey}=true to enable.${docsSuffix}`,
+    text: `âš ï¸ ${params.label} ${disabledVerb} disabled. Set commands.${params.configKey}=true to enable.${docsSuffix}`,
   };
 }
 

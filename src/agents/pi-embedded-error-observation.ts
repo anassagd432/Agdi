@@ -31,7 +31,7 @@ function truncateForObservation(text: string | undefined, maxChars: number): str
   if (!trimmed) {
     return undefined;
   }
-  return trimmed.length > maxChars ? `${trimmed.slice(0, maxChars)}…` : trimmed;
+  return trimmed.length > maxChars ? `${trimmed.slice(0, maxChars)}â€¦` : trimmed;
 }
 
 function boundObservationInput(text: string | undefined): string | undefined {

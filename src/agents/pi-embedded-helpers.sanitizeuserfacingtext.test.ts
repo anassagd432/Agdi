@@ -84,7 +84,7 @@ describe("sanitizeUserFacingText", () => {
 
   it("returns a friendly message for rate limit errors in Error: prefixed payloads", () => {
     expect(sanitizeUserFacingText("Error: 429 Rate limit exceeded", { errorContext: true })).toBe(
-      "⚠️ API rate limit reached. Please try again later.",
+      "âš ï¸ API rate limit reached. Please try again later.",
     );
   });
 
@@ -414,8 +414,8 @@ describe("normalizeTextForComparison", () => {
     { input: "Hello World", expected: "hello world" },
     { input: "  hello  ", expected: "hello" },
     { input: "hello    world", expected: "hello world" },
-    { input: "Hello 👋 World 🌍", expected: "hello world" },
-    { input: "  Hello 👋   WORLD  🌍  ", expected: "hello world" },
+    { input: "Hello ðŸ‘‹ World ðŸŒ", expected: "hello world" },
+    { input: "  Hello ðŸ‘‹   WORLD  ðŸŒ  ", expected: "hello world" },
   ])("normalizes comparison text", ({ input, expected }) => {
     expect(normalizeTextForComparison(input)).toBe(expected);
   });
@@ -444,7 +444,7 @@ describe("isMessagingToolDuplicate", () => {
       expected: true,
     },
     {
-      input: "Hello! 👋 This is a test message!",
+      input: "Hello! ðŸ‘‹ This is a test message!",
       sentTexts: ["Hello! This is a test message!"],
       expected: true,
     },

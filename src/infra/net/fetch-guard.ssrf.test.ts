@@ -302,7 +302,7 @@ describe("fetchWithSsrFGuard hardening", () => {
 
   it("blocks URLs that use credentials to obscure a private host", async () => {
     const fetchImpl = vi.fn();
-    // http://attacker.com@127.0.0.1:8080/ — URL parser extracts hostname as 127.0.0.1
+    // http://attacker.com@127.0.0.1:8080/ â€” URL parser extracts hostname as 127.0.0.1
     await expect(
       fetchWithSsrFGuard({
         url: "http://attacker.com@127.0.0.1:8080/internal",

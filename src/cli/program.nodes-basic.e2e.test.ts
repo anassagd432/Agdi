@@ -146,7 +146,7 @@ describe("cli program (nodes basics)", () => {
         connected: true,
       },
       expectedOutput: [
-        "Known: 1 · Paired: 1 · Connected: 1",
+        "Known: 1 Â· Paired: 1 Â· Connected: 1",
         "iOS Node",
         "Detail",
         "device: iPad",
@@ -171,7 +171,7 @@ describe("cli program (nodes basics)", () => {
         connected: true,
       },
       expectedOutput: [
-        "Known: 1 · Paired: 0 · Connected: 1",
+        "Known: 1 Â· Paired: 0 Â· Connected: 1",
         "Peter's Tab",
         "S10 Ultra",
         "Detail",

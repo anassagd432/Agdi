@@ -198,7 +198,7 @@ function resolveProviderLabel(params: {
   if (!authLabel || authLabel === "unknown") {
     return params.provider;
   }
-  return `${params.provider} · 🔑 ${authLabel}`;
+  return `${params.provider} Â· ðŸ”‘ ${authLabel}`;
 }
 
 export function formatModelsAvailableHeader(params: {
@@ -214,7 +214,7 @@ export function formatModelsAvailableHeader(params: {
     agentDir: params.agentDir,
     sessionEntry: params.sessionEntry,
   });
-  return `Models (${providerLabel}) — ${params.total} available`;
+  return `Models (${providerLabel}) â€” ${params.total} available`;
 }
 
 export async function resolveModelsCommandReply(params: {
@@ -289,7 +289,7 @@ export async function resolveModelsCommandReply(params: {
 
   if (total === 0) {
     const lines: string[] = [
-      `Models (${providerLabel}) — none`,
+      `Models (${providerLabel}) â€” none`,
       "",
       "Browse: /models",
       "Switch: /model <provider/model>",
@@ -344,7 +344,7 @@ export async function resolveModelsCommandReply(params: {
   const endIndexExclusive = Math.min(total, startIndex + effectivePageSize);
   const pageModels = models.slice(startIndex, endIndexExclusive);
 
-  const header = `Models (${providerLabel}) — showing ${startIndex + 1}-${endIndexExclusive} of ${total} (page ${safePage}/${pageCount})`;
+  const header = `Models (${providerLabel}) â€” showing ${startIndex + 1}-${endIndexExclusive} of ${total} (page ${safePage}/${pageCount})`;
 
   const lines: string[] = [header];
   for (const id of pageModels) {

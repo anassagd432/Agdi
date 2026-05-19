@@ -18,7 +18,7 @@ import type {
   GatewayRequestOptions,
 } from "./server-methods/types.js";
 
-// ── Fallback gateway context for non-WS paths (Telegram, WhatsApp, etc.) ──
+// â”€â”€ Fallback gateway context for non-WS paths (Telegram, WhatsApp, etc.) â”€â”€
 // The WS path sets a per-request scope via AsyncLocalStorage, but channel
 // adapters (Telegram polling, etc.) invoke the agent directly without going
 // through handleGatewayRequest. We store the gateway context at startup so
@@ -157,7 +157,7 @@ function authorizeFallbackModelOverride(params: {
       allowed: false,
       reason:
         `plugin "${pluginId}" is not trusted for fallback provider/model override requests. ` +
-        "See https://docs.openclaw.ai/tools/plugin#runtime-helpers and search for: " +
+        "See https://docs.agdi.ai/tools/plugin#runtime-helpers and search for: " +
         "plugins.entries.<id>.subagent.allowModelOverride",
     };
   }
@@ -209,7 +209,7 @@ function resolveRequestedFallbackModelRef(params: {
   return `${parsed.provider}/${parsed.model}`;
 }
 
-// ── Internal gateway dispatch for plugin runtime ────────────────────
+// â”€â”€ Internal gateway dispatch for plugin runtime â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function createSyntheticOperatorClient(params?: {
   allowModelOverride?: boolean;
@@ -381,7 +381,7 @@ export function createGatewaySubagentRuntime(): PluginRuntime["subagent"] {
   };
 }
 
-// ── Plugin loading ──────────────────────────────────────────────────
+// â”€â”€ Plugin loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function loadGatewayPlugins(params: {
   cfg: ReturnType<typeof loadConfig>;

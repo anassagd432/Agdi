@@ -1,4 +1,4 @@
-import type { AGDIConfig } from "agdi/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk/setup";
 import {
   formatDocsLink,
   promptAccountId,
@@ -6,7 +6,7 @@ import {
   normalizeAccountId,
   type ChannelOnboardingAdapter,
   type WizardPrompter,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import type { TlonResolvedAccount } from "./types.js";
 import { listTlonAccountIds, resolveTlonAccount } from "./types.js";
 import { isBlockedUrbitHostname, validateUrbitBaseUrl } from "./urbit/base-url.js";

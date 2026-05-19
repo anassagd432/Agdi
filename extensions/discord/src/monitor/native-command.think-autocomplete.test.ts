@@ -37,7 +37,7 @@ const resolveConfiguredBindingRouteMock = vi.hoisted(() =>
   >(() => null),
 );
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
+vi.mock("agdi/plugin-sdk/conversation-runtime", async (importOriginal) => {
   return await createConfiguredBindingConversationRuntimeModuleMock(
     {
       ensureConfiguredBindingRouteReadyMock,

@@ -265,7 +265,7 @@ export function computeJobNextRunAtMs(job: CronJob, nowMs: number): number | und
   }
   if (job.schedule.kind === "at") {
     // Handle both canonical `at` (string) and legacy `atMs` (number) fields.
-    // The store migration should convert atMs→at, but be defensive in case
+    // The store migration should convert atMsâ†’at, but be defensive in case
     // the migration hasn't run yet or was bypassed.
     const schedule = job.schedule as { at?: string; atMs?: number | string };
     const atMs =
@@ -326,7 +326,7 @@ export function recordScheduleComputeError(params: {
     );
 
     // Notify the user so the auto-disable is not silent (#28861).
-    const notifyText = `⚠️ Cron job "${job.name}" has been auto-disabled after ${errorCount} consecutive schedule errors. Last error: ${errText}`;
+    const notifyText = `âš ï¸ Cron job "${job.name}" has been auto-disabled after ${errorCount} consecutive schedule errors. Last error: ${errText}`;
     state.deps.enqueueSystemEvent(notifyText, {
       agentId: job.agentId,
       sessionKey: job.sessionKey,

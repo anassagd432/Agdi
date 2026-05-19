@@ -41,7 +41,7 @@ const DEFAULT_CLEAR_ENV = ["ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY_OLD"];
 
 function randomImageProbeCode(len = 6): string {
   // Chosen to avoid common OCR confusions in our 5x7 bitmap font.
-  // Notably: 0↔8, B↔8, 6↔9, 3↔B, D↔0.
+  // Notably: 0â†”8, Bâ†”8, 6â†”9, 3â†”B, Dâ†”0.
   // Must stay within the glyph set in `src/gateway/live-image-probe.ts`.
   const alphabet = "24567ACEF";
   const bytes = randomBytes(len);

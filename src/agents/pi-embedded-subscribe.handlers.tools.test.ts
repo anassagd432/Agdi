@@ -499,7 +499,7 @@ describe("messaging tool media URL tracking", () => {
     }
     expect(ctx.state.messagingToolSentMediaUrls).toHaveLength(200);
 
-    // Commit one more via start → end
+    // Commit one more via start â†’ end
     const startEvt: ToolExecutionStartEvent = {
       type: "tool_execution_start",
       toolName: "message",

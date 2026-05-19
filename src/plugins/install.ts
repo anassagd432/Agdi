@@ -30,7 +30,7 @@ type PackageManifest = PluginPackageManifest & {
 };
 
 const MISSING_EXTENSIONS_ERROR =
-  'package.json missing openclaw.extensions; update the plugin package to include openclaw.extensions (for example ["./dist/index.js"]). See https://docs.openclaw.ai/help/troubleshooting#plugin-install-fails-with-missing-openclaw-extensions';
+  'package.json missing openclaw.extensions; update the plugin package to include openclaw.extensions (for example ["./dist/index.js"]). See https://docs.agdi.ai/help/troubleshooting#plugin-install-fails-with-missing-openclaw-extensions';
 const PLUGIN_ARCHIVE_ROOT_MARKERS = [
   "package.json",
   "openclaw.plugin.json",
@@ -571,7 +571,7 @@ async function installPluginFromPackageDir(
     dryRun,
     copyErrorPrefix: "failed to copy plugin",
     hasDeps: Object.keys(deps).length > 0,
-    depsLogMessage: "Installing plugin dependencies…",
+    depsLogMessage: "Installing plugin dependenciesâ€¦",
     nameEncoder: encodePluginInstallDirName,
     afterCopy: async (installedDir) => {
       for (const entry of extensions) {
@@ -686,7 +686,7 @@ export async function installPluginFromFile(params: {
     return buildFileInstallResult(pluginId, targetFile);
   }
 
-  logger.info?.(`Installing to ${targetFile}…`);
+  logger.info?.(`Installing to ${targetFile}â€¦`);
   try {
     await runtime.writeFileFromPathWithinRoot({
       rootDir: extensionsDir,
@@ -727,7 +727,7 @@ export async function installPluginFromNpmSpec(params: {
     };
   }
 
-  logger.info?.(`Downloading ${spec}…`);
+  logger.info?.(`Downloading ${spec}â€¦`);
   const flowResult = await runtime.installFromNpmSpecArchiveWithInstaller({
     tempDirPrefix: "openclaw-npm-pack-",
     spec,

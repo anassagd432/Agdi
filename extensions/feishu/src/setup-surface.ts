@@ -15,7 +15,7 @@ import {
   type ChannelSetupWizard,
   type OpenClawConfig,
   type SecretInput,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 import { inspectFeishuCredentials, listFeishuAccountIds } from "./accounts.js";
 import { probeFeishu } from "./probe.js";
 import { feishuSetupAdapter } from "./setup-core.js";

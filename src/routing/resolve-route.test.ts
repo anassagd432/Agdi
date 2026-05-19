@@ -538,7 +538,7 @@ describe("parentPeer binding inheritance (thread support)", () => {
   });
 });
 
-describe("backward compatibility: peer.kind dm → direct", () => {
+describe("backward compatibility: peer.kind dm â†’ direct", () => {
   test("legacy dm in config matches runtime direct peer", () => {
     const cfg: OpenClawConfig = {
       bindings: [
@@ -588,7 +588,7 @@ describe("backward compatibility: peer.kind dm → direct", () => {
   });
 });
 
-describe("backward compatibility: peer.kind group ↔ channel", () => {
+describe("backward compatibility: peer.kind group â†” channel", () => {
   test("config group binding matches runtime channel scope", () => {
     const cfg: OpenClawConfig = {
       bindings: [

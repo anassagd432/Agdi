@@ -1,6 +1,6 @@
-import type { BaseProbeResult } from "openclaw/plugin-sdk/channel-contract";
-import { resolveFetch } from "openclaw/plugin-sdk/infra-runtime";
-import { fetchWithTimeout } from "openclaw/plugin-sdk/text-runtime";
+import type { BaseProbeResult } from "agdi/plugin-sdk/channel-contract";
+import { resolveFetch } from "agdi/plugin-sdk/infra-runtime";
+import { fetchWithTimeout } from "agdi/plugin-sdk/text-runtime";
 import { normalizeDiscordToken } from "./token.js";
 
 const DISCORD_API_BASE = "https://discord.com/api/v10";

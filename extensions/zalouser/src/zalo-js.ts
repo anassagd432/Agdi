@@ -3,7 +3,7 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { resolveStateDir as resolvePluginStateDir } from "openclaw/plugin-sdk/state-paths";
+import { resolveStateDir as resolvePluginStateDir } from "agdi/plugin-sdk/state-paths";
 import { loadOutboundMediaFromUrl } from "../runtime-api.js";
 import { normalizeZaloReactionIcon } from "./reaction.js";
 import type {

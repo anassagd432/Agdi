@@ -42,8 +42,8 @@ export async function statusAllCommand(
   runtime: RuntimeEnv,
   opts?: { timeoutMs?: number },
 ): Promise<void> {
-  await withProgress({ label: "Scanning status --all…", total: 11 }, async (progress) => {
-    progress.setLabel("Loading config…");
+  await withProgress({ label: "Scanning status --allâ€¦", total: 11 }, async (progress) => {
+    progress.setLabel("Loading configâ€¦");
     const loadedRaw = await readBestEffortConfig();
     const { resolvedConfig: cfg, diagnostics: secretDiagnostics } =
       await resolveCommandSecretRefsViaGateway({
@@ -56,7 +56,7 @@ export async function statusAllCommand(
     const snap = await readConfigFileSnapshot().catch(() => null);
     progress.tick();
 
-    progress.setLabel("Checking Tailscale…");
+    progress.setLabel("Checking Tailscaleâ€¦");
     const tailscaleMode = cfg.gateway?.tailscale?.mode ?? "off";
     const tailscale = await (async () => {
       try {
@@ -93,7 +93,7 @@ export async function statusAllCommand(
         : null;
     progress.tick();
 
-    progress.setLabel("Checking for updates…");
+    progress.setLabel("Checking for updatesâ€¦");
     const root = await resolveOpenClawPackageRoot({
       moduleUrl: import.meta.url,
       argv1: process.argv[1],
@@ -116,7 +116,7 @@ export async function statusAllCommand(
     const gitLabel = formatGitInstallLabel(update);
     progress.tick();
 
-    progress.setLabel("Probing gateway…");
+    progress.setLabel("Probing gatewayâ€¦");
     const connection = buildGatewayConnectionDetails({ config: cfg });
     const isRemoteMode = cfg.gateway?.mode === "remote";
     const remoteUrlRaw =
@@ -140,7 +140,7 @@ export async function statusAllCommand(
     const gatewaySelf = pickGatewaySelfPresence(gatewayProbe?.presence ?? null);
     progress.tick();
 
-    progress.setLabel("Checking services…");
+    progress.setLabel("Checking servicesâ€¦");
     const readServiceSummary = async (service: GatewayService) => {
       try {
         const summary = await readServiceStatusSummary(service, service.label);
@@ -160,10 +160,10 @@ export async function statusAllCommand(
     const nodeService = await readServiceSummary(resolveNodeService());
     progress.tick();
 
-    progress.setLabel("Scanning agents…");
+    progress.setLabel("Scanning agentsâ€¦");
     const agentStatus = await getAgentLocalStatuses(cfg);
     progress.tick();
-    progress.setLabel("Summarizing channels…");
+    progress.setLabel("Summarizing channelsâ€¦");
     const channels = await buildChannelsTable(cfg, {
       showSecrets: false,
       sourceConfig: loadedRaw,
@@ -194,7 +194,7 @@ export async function statusAllCommand(
         }
       : {};
 
-    progress.setLabel("Querying gateway…");
+    progress.setLabel("Querying gatewayâ€¦");
     const health = gatewayReachable
       ? await callGateway({
           config: cfg,
@@ -216,7 +216,7 @@ export async function statusAllCommand(
     const channelIssues = channelsStatus ? collectChannelStatusIssues(channelsStatus) : [];
     progress.tick();
 
-    progress.setLabel("Checking local state…");
+    progress.setLabel("Checking local stateâ€¦");
     const sentinel = await readRestartSentinel().catch(() => null);
     const lastErr = await readLastGatewayErrorLine(process.env).catch(() => null);
     const port = resolveGatewayPort(cfg);
@@ -260,7 +260,7 @@ export async function statusAllCommand(
       : gatewayProbe?.error
         ? `unreachable (${gatewayProbe.error})`
         : "unreachable";
-    const gatewayAuth = gatewayReachable ? ` · auth ${formatGatewayAuthUsed(probeAuth)}` : "";
+    const gatewayAuth = gatewayReachable ? ` Â· auth ${formatGatewayAuthUsed(probeAuth)}` : "";
     const gatewaySelfLine =
       gatewaySelf?.host || gatewaySelf?.ip || gatewaySelf?.version || gatewaySelf?.platform
         ? [
@@ -293,22 +293,22 @@ export async function statusAllCommand(
         Item: "Tailscale",
         Value:
           tailscaleMode === "off"
-            ? `off${tailscale.backendState ? ` · ${tailscale.backendState}` : ""}${tailscale.dnsName ? ` · ${tailscale.dnsName}` : ""}`
+            ? `off${tailscale.backendState ? ` Â· ${tailscale.backendState}` : ""}${tailscale.dnsName ? ` Â· ${tailscale.dnsName}` : ""}`
             : tailscale.dnsName && tailscaleHttpsUrl
-              ? `${tailscaleMode} · ${tailscale.backendState ?? "unknown"} · ${tailscale.dnsName} · ${tailscaleHttpsUrl}`
-              : `${tailscaleMode} · ${tailscale.backendState ?? "unknown"} · magicdns unknown`,
+              ? `${tailscaleMode} Â· ${tailscale.backendState ?? "unknown"} Â· ${tailscale.dnsName} Â· ${tailscaleHttpsUrl}`
+              : `${tailscaleMode} Â· ${tailscale.backendState ?? "unknown"} Â· magicdns unknown`,
       },
       { Item: "Channel", Value: channelLabel },
       ...(gitLabel ? [{ Item: "Git", Value: gitLabel }] : []),
       { Item: "Update", Value: updateLine },
       {
         Item: "Gateway",
-        Value: `${gatewayMode}${remoteUrlMissing ? " (remote.url missing)" : ""} · ${gatewayTarget} (${connection.urlSource}) · ${gatewayStatus}${gatewayAuth}`,
+        Value: `${gatewayMode}${remoteUrlMissing ? " (remote.url missing)" : ""} Â· ${gatewayTarget} (${connection.urlSource}) Â· ${gatewayStatus}${gatewayAuth}`,
       },
       ...(probeAuthResolution.warning
         ? [{ Item: "Gateway auth warning", Value: probeAuthResolution.warning }]
         : []),
-      { Item: "Security", Value: `Run: ${formatCliCommand("openclaw security audit --deep")}` },
+      { Item: "Security", Value: `Run: ${formatCliCommand("agdi security audit --deep")}` },
       gatewaySelfLine
         ? { Item: "Gateway self", Value: gatewaySelfLine }
         : { Item: "Gateway self", Value: "unknown" },
@@ -317,7 +317,7 @@ export async function statusAllCommand(
             Item: "Gateway service",
             Value: !daemon.installed
               ? `${daemon.label} not installed`
-              : `${daemon.label} ${daemon.managedByOpenClaw ? "installed · " : ""}${daemon.loadedText}${daemon.runtime?.status ? ` · ${daemon.runtime.status}` : ""}${daemon.runtime?.pid ? ` (pid ${daemon.runtime.pid})` : ""}`,
+              : `${daemon.label} ${daemon.managedByOpenClaw ? "installed Â· " : ""}${daemon.loadedText}${daemon.runtime?.status ? ` Â· ${daemon.runtime.status}` : ""}${daemon.runtime?.pid ? ` (pid ${daemon.runtime.pid})` : ""}`,
           }
         : { Item: "Gateway service", Value: "unknown" },
       nodeService
@@ -325,12 +325,12 @@ export async function statusAllCommand(
             Item: "Node service",
             Value: !nodeService.installed
               ? `${nodeService.label} not installed`
-              : `${nodeService.label} ${nodeService.managedByOpenClaw ? "installed · " : ""}${nodeService.loadedText}${nodeService.runtime?.status ? ` · ${nodeService.runtime.status}` : ""}${nodeService.runtime?.pid ? ` (pid ${nodeService.runtime.pid})` : ""}`,
+              : `${nodeService.label} ${nodeService.managedByOpenClaw ? "installed Â· " : ""}${nodeService.loadedText}${nodeService.runtime?.status ? ` Â· ${nodeService.runtime.status}` : ""}${nodeService.runtime?.pid ? ` (pid ${nodeService.runtime.pid})` : ""}`,
           }
         : { Item: "Node service", Value: "unknown" },
       {
         Item: "Agents",
-        Value: `${agentStatus.agents.length} total · ${agentStatus.bootstrapPendingCount} bootstrapping · ${aliveAgents} active · ${agentStatus.totalSessions} sessions`,
+        Value: `${agentStatus.agents.length} total Â· ${agentStatus.bootstrapPendingCount} bootstrapping Â· ${aliveAgents} active Â· ${agentStatus.totalSessions} sessions`,
       },
       {
         Item: "Secrets",
@@ -371,7 +371,7 @@ export async function statusAllCommand(
       },
     });
 
-    progress.setLabel("Rendering…");
+    progress.setLabel("Renderingâ€¦");
     runtime.log(lines.join("\n"));
     progress.tick();
   });

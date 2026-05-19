@@ -141,7 +141,7 @@ async function waitForLocalCallback(params: {
       reject(err);
     });
     server.listen(port, hostname, () => {
-      params.onProgress?.(`Waiting for OAuth callback on ${redirectUrl.origin}${expectedPath}…`);
+      params.onProgress?.(`Waiting for OAuth callback on ${redirectUrl.origin}${expectedPath}â€¦`);
     });
 
     timeout = setTimeout(() => {
@@ -182,7 +182,7 @@ export async function loginChutes(params: {
   let codeAndState: { code: string; state: string };
   if (params.manual) {
     await params.onAuth({ url });
-    params.onProgress?.("Waiting for redirect URL…");
+    params.onProgress?.("Waiting for redirect URLâ€¦");
     const input = await params.onPrompt({
       message: "Paste the redirect URL (or authorization code)",
       placeholder: `${params.app.redirectUri}?code=...&state=...`,
@@ -195,7 +195,7 @@ export async function loginChutes(params: {
       timeoutMs,
       onProgress: params.onProgress,
     }).catch(async () => {
-      params.onProgress?.("OAuth callback not detected; paste redirect URL…");
+      params.onProgress?.("OAuth callback not detected; paste redirect URLâ€¦");
       const input = await params.onPrompt({
         message: "Paste the redirect URL (or authorization code)",
         placeholder: `${params.app.redirectUri}?code=...&state=...`,
@@ -207,7 +207,7 @@ export async function loginChutes(params: {
     codeAndState = await callback;
   }
 
-  params.onProgress?.("Exchanging code for tokens…");
+  params.onProgress?.("Exchanging code for tokensâ€¦");
   return await exchangeChutesCodeForTokens({
     app: params.app,
     code: codeAndState.code,

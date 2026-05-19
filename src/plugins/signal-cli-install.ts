@@ -77,7 +77,7 @@ export function pickAsset(
     if (arch === "x64") {
       return byName(/linux-native/) || byName(/linux/) || archives[0];
     }
-    // No native release for this arch — caller should fall back.
+    // No native release for this arch â€” caller should fall back.
     return undefined;
   }
 
@@ -175,7 +175,7 @@ async function installSignalCliViaBrew(runtime: RuntimeEnv): Promise<SignalInsta
     };
   }
 
-  runtime.log(`Installing signal-cli via Homebrew (${brewExe})…`);
+  runtime.log(`Installing signal-cli via Homebrew (${brewExe})â€¦`);
   const result = await runCommandWithTimeout([brewExe, "install", "signal-cli"], {
     timeoutMs: 15 * 60_000, // brew builds from source; can take a while
   });
@@ -245,7 +245,7 @@ async function installSignalCliFromRelease(runtime: RuntimeEnv): Promise<SignalI
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-signal-"));
   const archivePath = path.join(tmpDir, asset.name);
 
-  runtime.log(`Downloading signal-cli ${version} (${asset.name})…`);
+  runtime.log(`Downloading signal-cli ${version} (${asset.name})â€¦`);
   await downloadToFile(asset.browser_download_url, archivePath);
 
   const installRoot = path.join(CONFIG_DIR, "tools", "signal-cli", version);

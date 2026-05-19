@@ -30,7 +30,7 @@ export async function handleSubagentsKillAction(
       runs,
     });
     if (result.status === "forbidden") {
-      return stopWithText(`⚠️ ${result.error}`);
+      return stopWithText(`âš ï¸ ${result.error}`);
     }
     if (result.killed > 0) {
       return { shouldContinue: false };
@@ -50,7 +50,7 @@ export async function handleSubagentsKillAction(
     entry: targetResolution.entry,
   });
   if (result.status === "forbidden") {
-    return stopWithText(`⚠️ ${result.error}`);
+    return stopWithText(`âš ï¸ ${result.error}`);
   }
   if (result.status === "done") {
     return stopWithText(result.text);

@@ -41,7 +41,7 @@ describe("legacy config detection", () => {
       {
         name: "whatsapp configured",
         input: { routing: { allowFrom: ["+15555550123"] }, channels: { whatsapp: {} } },
-        expectedChange: "Moved routing.allowFrom → channels.whatsapp.allowFrom.",
+        expectedChange: "Moved routing.allowFrom â†’ channels.whatsapp.allowFrom.",
         expectWhatsappAllowFrom: true,
       },
       {
@@ -79,21 +79,21 @@ describe("legacy config detection", () => {
     for (const testCase of cases) {
       const res = migrateLegacyConfig(testCase.input);
       expect(res.changes, testCase.name).toContain(
-        'Moved routing.groupChat.requireMention → channels.telegram.groups."*".requireMention.',
+        'Moved routing.groupChat.requireMention â†’ channels.telegram.groups."*".requireMention.',
       );
       expect(res.changes, testCase.name).toContain(
-        'Moved routing.groupChat.requireMention → channels.imessage.groups."*".requireMention.',
+        'Moved routing.groupChat.requireMention â†’ channels.imessage.groups."*".requireMention.',
       );
       if (testCase.expectWhatsapp) {
         expect(res.changes, testCase.name).toContain(
-          'Moved routing.groupChat.requireMention → channels.whatsapp.groups."*".requireMention.',
+          'Moved routing.groupChat.requireMention â†’ channels.whatsapp.groups."*".requireMention.',
         );
         expect(res.config?.channels?.whatsapp?.groups?.["*"]?.requireMention, testCase.name).toBe(
           false,
         );
       } else {
         expect(res.changes, testCase.name).not.toContain(
-          'Moved routing.groupChat.requireMention → channels.whatsapp.groups."*".requireMention.',
+          'Moved routing.groupChat.requireMention â†’ channels.whatsapp.groups."*".requireMention.',
         );
         expect(res.config?.channels?.whatsapp, testCase.name).toBeUndefined();
       }
@@ -111,7 +111,7 @@ describe("legacy config detection", () => {
       routing: { groupChat: { mentionPatterns: ["@openclaw"] } },
     });
     expect(res.changes).toContain(
-      "Moved routing.groupChat.mentionPatterns → messages.groupChat.mentionPatterns.",
+      "Moved routing.groupChat.mentionPatterns â†’ messages.groupChat.mentionPatterns.",
     );
     expect(res.config?.messages?.groupChat?.mentionPatterns).toEqual(["@openclaw"]);
     expect(getLegacyRouting(res.config)?.groupChat).toBeUndefined();
@@ -127,9 +127,9 @@ describe("legacy config detection", () => {
         },
       },
     });
-    expect(res.changes).toContain("Moved routing.agentToAgent → tools.agentToAgent.");
-    expect(res.changes).toContain("Moved routing.queue → messages.queue.");
-    expect(res.changes).toContain("Moved routing.transcribeAudio → tools.media.audio.models.");
+    expect(res.changes).toContain("Moved routing.agentToAgent â†’ tools.agentToAgent.");
+    expect(res.changes).toContain("Moved routing.queue â†’ messages.queue.");
+    expect(res.changes).toContain("Moved routing.transcribeAudio â†’ tools.media.audio.models.");
     expect(res.config?.tools?.agentToAgent).toEqual({
       enabled: true,
       allow: ["main"],
@@ -150,7 +150,7 @@ describe("legacy config detection", () => {
         },
       },
     });
-    expect(res.changes).toContain("Moved audio.transcription → tools.media.audio.models.");
+    expect(res.changes).toContain("Moved audio.transcription â†’ tools.media.audio.models.");
     expect(res.config?.tools?.media?.audio).toEqual({
       enabled: true,
       models: [
@@ -187,13 +187,13 @@ describe("legacy config detection", () => {
         subagents: { tools: { deny: ["sandbox"] } },
       },
     });
-    expect(res.changes).toContain("Moved agent.tools.allow → tools.allow.");
-    expect(res.changes).toContain("Moved agent.tools.deny → tools.deny.");
-    expect(res.changes).toContain("Moved agent.elevated → tools.elevated.");
-    expect(res.changes).toContain("Moved agent.bash → tools.exec.");
-    expect(res.changes).toContain("Moved agent.sandbox.tools → tools.sandbox.tools.");
-    expect(res.changes).toContain("Moved agent.subagents.tools → tools.subagents.tools.");
-    expect(res.changes).toContain("Moved agent → agents.defaults.");
+    expect(res.changes).toContain("Moved agent.tools.allow â†’ tools.allow.");
+    expect(res.changes).toContain("Moved agent.tools.deny â†’ tools.deny.");
+    expect(res.changes).toContain("Moved agent.elevated â†’ tools.elevated.");
+    expect(res.changes).toContain("Moved agent.bash â†’ tools.exec.");
+    expect(res.changes).toContain("Moved agent.sandbox.tools â†’ tools.sandbox.tools.");
+    expect(res.changes).toContain("Moved agent.subagents.tools â†’ tools.subagents.tools.");
+    expect(res.changes).toContain("Moved agent â†’ agents.defaults.");
     expect(res.config?.agents?.defaults?.model).toEqual({
       primary: "openai/gpt-5.2",
       fallbacks: [],
@@ -221,7 +221,7 @@ describe("legacy config detection", () => {
         query: { maxResults: 7 },
       },
     });
-    expect(res.changes).toContain("Moved memorySearch → agents.defaults.memorySearch.");
+    expect(res.changes).toContain("Moved memorySearch â†’ agents.defaults.memorySearch.");
     expect(res.config?.agents?.defaults?.memorySearch).toMatchObject({
       provider: "local",
       fallback: "none",
@@ -246,7 +246,7 @@ describe("legacy config detection", () => {
       },
     });
     expect(res.changes).toContain(
-      "Merged memorySearch → agents.defaults.memorySearch (filled missing fields from legacy; kept explicit agents.defaults values).",
+      "Merged memorySearch â†’ agents.defaults.memorySearch (filled missing fields from legacy; kept explicit agents.defaults values).",
     );
     expect(res.config?.agents?.defaults?.memorySearch).toMatchObject({
       provider: "openai",
@@ -290,7 +290,7 @@ describe("legacy config detection", () => {
         bash: { timeoutSec: 12 },
       },
     });
-    expect(res.changes).toContain("Moved tools.bash → tools.exec.");
+    expect(res.changes).toContain("Moved tools.bash â†’ tools.exec.");
     expect(res.config?.tools?.exec).toEqual({ timeoutSec: 12 });
     expect((res.config?.tools as { bash?: unknown } | undefined)?.bash).toBeUndefined();
   });
@@ -346,7 +346,7 @@ describe("legacy config detection", () => {
     const res = migrateLegacyConfig({
       gateway: { token: "legacy-token" },
     });
-    expect(res.changes).toContain("Moved gateway.token → gateway.auth.token.");
+    expect(res.changes).toContain("Moved gateway.token â†’ gateway.auth.token.");
     expect(res.config?.gateway?.auth?.token).toBe("legacy-token");
     expect(res.config?.gateway?.auth?.mode).toBe("token");
     expect((res.config?.gateway as { token?: string })?.token).toBeUndefined();
@@ -382,7 +382,7 @@ describe("legacy config detection", () => {
         gateway: { bind: testCase.input },
       });
       expect(res.changes).toContain(
-        `Normalized gateway.bind "${testCase.input}" → "${testCase.expected}".`,
+        `Normalized gateway.bind "${testCase.input}" â†’ "${testCase.expected}".`,
       );
       expect(res.config?.gateway?.bind).toBe(testCase.expected);
 
@@ -410,7 +410,7 @@ describe("legacy config detection", () => {
     const res = migrateLegacyConfig({
       gateway: { bind: "\r\n0.0.0.0\r\n" },
     });
-    expect(res.changes).toContain('Normalized gateway.bind "\\r\\n0.0.0.0\\r\\n" → "lan".');
+    expect(res.changes).toContain('Normalized gateway.bind "\\r\\n0.0.0.0\\r\\n" â†’ "lan".');
   });
   it('enforces dmPolicy="open" allowFrom wildcard for supported providers', async () => {
     const cases = [
@@ -537,15 +537,15 @@ describe("legacy config detection", () => {
       {
         name: "boolean streaming=true",
         input: { channels: { discord: { streaming: true } } },
-        expectedChanges: ["Normalized channels.discord.streaming boolean → enum (partial)."],
+        expectedChanges: ["Normalized channels.discord.streaming boolean â†’ enum (partial)."],
         expectedStreaming: "partial",
       },
       {
         name: "streamMode with streaming boolean",
         input: { channels: { discord: { streaming: false, streamMode: "block" } } },
         expectedChanges: [
-          "Moved channels.discord.streamMode → channels.discord.streaming (block).",
-          "Normalized channels.discord.streaming boolean → enum (block).",
+          "Moved channels.discord.streamMode â†’ channels.discord.streaming (block).",
+          "Normalized channels.discord.streaming boolean â†’ enum (block).",
         ],
         expectedStreaming: "block",
       },

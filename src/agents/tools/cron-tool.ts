@@ -243,8 +243,8 @@ SESSION TARGET OPTIONS:
 - "session:<custom-id>": Run in a persistent named session (e.g., "session:project-alpha-daily")
 
 DEFAULT BEHAVIOR (unchanged for backward compatibility):
-- payload.kind="systemEvent" → defaults to "main"
-- payload.kind="agentTurn" → defaults to "isolated"
+- payload.kind="systemEvent" â†’ defaults to "main"
+- payload.kind="agentTurn" â†’ defaults to "isolated"
 To use current session binding, explicitly set sessionTarget="current".
 
 SCHEDULE TYPES (schedule.kind):

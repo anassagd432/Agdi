@@ -173,7 +173,7 @@ describe("buildWorkspaceSkillSnapshot", () => {
       }),
     );
 
-    expect(snapshot.prompt).toContain("⚠️ Skills truncated");
+    expect(snapshot.prompt).toContain("âš ï¸ Skills truncated");
     expect(snapshot.prompt.length).toBeLessThan(2000);
   });
 

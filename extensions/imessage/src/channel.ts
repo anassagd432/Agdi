@@ -1,13 +1,13 @@
-import { buildDmGroupAccountAllowlistAdapter } from "openclaw/plugin-sdk/allowlist-config-edit";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/core";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
-import { createLazyRuntimeModule } from "openclaw/plugin-sdk/lazy-runtime";
-import { resolveOutboundSendDep } from "openclaw/plugin-sdk/outbound-runtime";
-import { buildOutboundBaseSessionKey, type RoutePeer } from "openclaw/plugin-sdk/routing";
+import { buildDmGroupAccountAllowlistAdapter } from "agdi/plugin-sdk/allowlist-config-edit";
+import { createChatChannelPlugin } from "agdi/plugin-sdk/core";
+import { buildPassiveProbedChannelStatusSummary } from "agdi/plugin-sdk/extension-shared";
+import { createLazyRuntimeModule } from "agdi/plugin-sdk/lazy-runtime";
+import { resolveOutboundSendDep } from "agdi/plugin-sdk/outbound-runtime";
+import { buildOutboundBaseSessionKey, type RoutePeer } from "agdi/plugin-sdk/routing";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "agdi/plugin-sdk/status-helpers";
 import {
   collectStatusIssuesFromLastError,
   DEFAULT_ACCOUNT_ID,

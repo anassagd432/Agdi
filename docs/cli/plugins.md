@@ -35,7 +35,7 @@ agdi plugins marketplace list <marketplace>
 Bundled plugins ship with Agdi but start disabled. Use `plugins enable` to
 activate them.
 
-Native Agdi plugins must ship `agdi.plugin.json` with an inline JSON
+Native Agdi plugins must ship `openclaw.plugin.json` with an inline JSON
 Schema (`configSchema`, even if empty). Compatible bundles use their own bundle
 manifests instead.
 
@@ -127,7 +127,7 @@ plugin sources from remote manifests.
 
 For local paths and archives, Agdi auto-detects:
 
-- native Agdi plugins (`agdi.plugin.json`)
+- native Agdi plugins (`openclaw.plugin.json`)
 - Codex-compatible bundles (`.codex-plugin/plugin.json`)
 - Claude-compatible bundles (`.claude-plugin/plugin.json` or the default Claude
   component layout)
@@ -172,7 +172,7 @@ state dir extensions root (`$OPENCLAW_STATE_DIR/extensions/<id>`). Use
 agdi plugins update <id-or-npm-spec>
 agdi plugins update --all
 agdi plugins update <id-or-npm-spec> --dry-run
-agdi plugins update @agdi/voice-call@beta
+agdi plugins update @openclaw/voice-call@beta
 ```
 
 Updates apply to tracked installs in `plugins.installs` and tracked hook-pack

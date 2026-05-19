@@ -237,7 +237,7 @@ export async function modelsStatusCommand(
   let probeSummary: AuthProbeSummary | undefined;
   if (opts.probe) {
     probeSummary = await withProgressTotals(
-      { label: "Probing auth profiles…", total: 1 },
+      { label: "Probing auth profilesâ€¦", total: 1 },
       async (update) => {
         return await runAuthProbes({
           cfg,
@@ -653,8 +653,8 @@ export async function modelsStatusCommand(
         const modeLabel = result.mode ? ` ${colorize(rich, theme.muted, `(${result.mode})`)}` : "";
         const profile = `${colorize(rich, theme.accent, result.label)}${modeLabel}`;
         const detail = result.error?.trim();
-        const detailLabel = detail ? `\n${colorize(rich, theme.muted, `↳ ${detail}`)}` : "";
-        const statusLabel = `${status}${colorize(rich, theme.muted, ` · ${latency}`)}${detailLabel}`;
+        const detailLabel = detail ? `\n${colorize(rich, theme.muted, `â†³ ${detail}`)}` : "";
+        const statusLabel = `${status}${colorize(rich, theme.muted, ` Â· ${latency}`)}${detailLabel}`;
         return {
           Model: colorize(rich, theme.heading, modelLabel),
           Profile: profile,

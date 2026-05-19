@@ -1,9 +1,9 @@
-import { OPENCODE_ZEN_DEFAULT_MODEL_REF } from "openclaw/plugin-sdk/provider-models";
+import { OPENCODE_ZEN_DEFAULT_MODEL_REF } from "agdi/plugin-sdk/provider-models";
 import {
   applyAgentDefaultModelPrimary,
   withAgentModelAliases,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+} from "agdi/plugin-sdk/provider-onboard";
 
 export { OPENCODE_ZEN_DEFAULT_MODEL_REF };
 

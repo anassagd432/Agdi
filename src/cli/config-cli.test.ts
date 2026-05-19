@@ -209,7 +209,7 @@ describe("config cli", () => {
             maxTokens: 16_000,
           },
         } as never,
-        messages: { ackReaction: "✅" } as never,
+        messages: { ackReaction: "âœ…" } as never,
         sessions: { persistence: { enabled: true } } as never,
       } as unknown as OpenClawConfig;
       setSnapshot(resolved, runtimeMerged);
@@ -589,14 +589,12 @@ describe("config cli", () => {
       expect(helpText).toContain("--batch-json");
       expect(helpText).toContain("--dry-run");
       expect(helpText).toContain("--allow-exec");
-      expect(helpText).toContain("openclaw config set gateway.port 19001 --strict-json");
+      expect(helpText).toContain("agdi config set gateway.port 19001 --strict-json");
       expect(helpText).toContain(
-        "openclaw config set channels.discord.token --ref-provider default --ref-source",
+        "agdi config set channels.discord.token --ref-provider default --ref-source",
       );
       expect(helpText).toContain("--ref-id DISCORD_BOT_TOKEN");
-      expect(helpText).toContain(
-        "openclaw config set --batch-file ./config-set.batch.json --dry-run",
-      );
+      expect(helpText).toContain("agdi config set --batch-file ./config-set.batch.json --dry-run");
     });
   });
 

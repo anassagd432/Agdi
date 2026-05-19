@@ -105,7 +105,7 @@ type MessageEnrichedBodyHookContext = {
   from?: string;
   /** Recipient identifier */
   to?: string;
-  /** Original raw message body (e.g., "🎤 [Audio]") */
+  /** Original raw message body (e.g., "ðŸŽ¤ [Audio]") */
   body?: string;
   /** Enriched body shown to the agent, including transcript */
   bodyForAgent?: string;

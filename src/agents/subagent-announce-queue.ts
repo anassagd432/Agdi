@@ -53,7 +53,7 @@ type AnnounceQueueState = {
   droppedCount: number;
   summaryLines: string[];
   send: (item: AnnounceQueueItem) => Promise<void>;
-  /** Consecutive drain failures — drives exponential backoff on errors. */
+  /** Consecutive drain failures â€” drives exponential backoff on errors. */
   consecutiveFailures: number;
 };
 
@@ -187,7 +187,7 @@ function scheduleAnnounceDrain(key: string) {
           break;
         }
       }
-      // Drain succeeded — reset failure counter.
+      // Drain succeeded â€” reset failure counter.
       queue.consecutiveFailures = 0;
     } catch (err) {
       queue.consecutiveFailures++;

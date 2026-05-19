@@ -1,7 +1,7 @@
 import {
   getScopedCredentialValue,
   resolveWebSearchProviderCredential,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "agdi/plugin-sdk/provider-web-search";
 import { describe, expect, it } from "vitest";
 import { withEnv } from "../../test/helpers/extensions/env.js";
 import { resolveXaiCatalogEntry } from "./model-definitions.js";

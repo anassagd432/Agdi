@@ -59,7 +59,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
         delete dm.policy;
         dmChanged = true;
       }
-      changes.push(`Moved ${params.pathPrefix}.dm.policy → ${params.pathPrefix}.dmPolicy.`);
+      changes.push(`Moved ${params.pathPrefix}.dm.policy â†’ ${params.pathPrefix}.dmPolicy.`);
     } else if (topDmPolicy !== undefined && legacyDmPolicy !== undefined) {
       if (topDmPolicy === legacyDmPolicy) {
         if (dm) {
@@ -79,7 +79,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
         delete dm.allowFrom;
         dmChanged = true;
       }
-      changes.push(`Moved ${params.pathPrefix}.dm.allowFrom → ${params.pathPrefix}.allowFrom.`);
+      changes.push(`Moved ${params.pathPrefix}.dm.allowFrom â†’ ${params.pathPrefix}.allowFrom.`);
     } else if (topAllowFrom !== undefined && legacyAllowFrom !== undefined) {
       if (allowFromEqual(topAllowFrom, legacyAllowFrom)) {
         if (dm) {
@@ -135,14 +135,14 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
       updated = rest;
       changed = true;
       changes.push(
-        `Moved ${params.pathPrefix}.streamMode → ${params.pathPrefix}.streaming (${resolved}).`,
+        `Moved ${params.pathPrefix}.streamMode â†’ ${params.pathPrefix}.streaming (${resolved}).`,
       );
     }
     if (typeof beforeStreaming === "boolean") {
-      changes.push(`Normalized ${params.pathPrefix}.streaming boolean → enum (${resolved}).`);
+      changes.push(`Normalized ${params.pathPrefix}.streaming boolean â†’ enum (${resolved}).`);
     } else if (typeof beforeStreaming === "string" && beforeStreaming !== resolved) {
       changes.push(
-        `Normalized ${params.pathPrefix}.streaming (${beforeStreaming}) → (${resolved}).`,
+        `Normalized ${params.pathPrefix}.streaming (${beforeStreaming}) â†’ (${resolved}).`,
       );
     }
     if (
@@ -201,7 +201,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
       );
     } else if (typeof legacyStreaming === "string" && legacyStreaming !== resolvedStreaming) {
       changes.push(
-        `Normalized ${params.pathPrefix}.streaming (${legacyStreaming}) → (${resolvedStreaming}).`,
+        `Normalized ${params.pathPrefix}.streaming (${legacyStreaming}) â†’ (${resolvedStreaming}).`,
       );
     }
 
@@ -349,7 +349,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
       };
       profilesChanged = true;
       changes.push(
-        `Moved browser.profiles.${profileName}.driver "extension" → "existing-session" (Chrome MCP attach).`,
+        `Moved browser.profiles.${profileName}.driver "extension" â†’ "existing-session" (Chrome MCP attach).`,
       );
     }
 
@@ -488,7 +488,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
       browser: migratedBrowser as OpenClawConfig["browser"],
     };
     changes.push(
-      `Moved browser.ssrfPolicy.allowPrivateNetwork → browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (${String(resolvedDangerousAllowPrivateNetwork)}).`,
+      `Moved browser.ssrfPolicy.allowPrivateNetwork â†’ browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (${String(resolvedDangerousAllowPrivateNetwork)}).`,
     );
   };
 
@@ -553,7 +553,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
         },
       };
       changes.push(
-        `Moved skills.entries.${NANO_BANANA_SKILL_KEY} → agents.defaults.imageGenerationModel.primary (${NANO_BANANA_MODEL}).`,
+        `Moved skills.entries.${NANO_BANANA_SKILL_KEY} â†’ agents.defaults.imageGenerationModel.primary (${NANO_BANANA_MODEL}).`,
       );
     }
 
@@ -593,7 +593,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
         models: rawModels as OpenClawConfig["models"],
       };
       changes.push(
-        `Moved skills.entries.${NANO_BANANA_SKILL_KEY}.${legacyEnvApiKey ? "env.GEMINI_API_KEY" : "apiKey"} → models.providers.google.apiKey.`,
+        `Moved skills.entries.${NANO_BANANA_SKILL_KEY}.${legacyEnvApiKey ? "env.GEMINI_API_KEY" : "apiKey"} â†’ models.providers.google.apiKey.`,
       );
     }
 
@@ -652,7 +652,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
     }
 
     changes.push(
-      `Moved legacy talk flat fields → talk.provider/talk.providers.${DEFAULT_TALK_PROVIDER}.`,
+      `Moved legacy talk flat fields â†’ talk.provider/talk.providers.${DEFAULT_TALK_PROVIDER}.`,
     );
   };
 
@@ -682,7 +682,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
       rawCrossContext.allowAcrossProviders = true;
       nextMessage.crossContext = rawCrossContext;
       changes.push(
-        "Moved tools.message.allowCrossContextSend → tools.message.crossContext.allowWithinProvider/allowAcrossProviders (true).",
+        "Moved tools.message.allowCrossContextSend â†’ tools.message.crossContext.allowWithinProvider/allowAcrossProviders (true).",
       );
     } else {
       changes.push(
@@ -742,8 +742,8 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
     const hadCanonicalDeepgram = Object.keys(currentDeepgram).length > 0;
     changes.push(
       hadCanonicalDeepgram
-        ? `Merged ${params.pathPrefix}.deepgram → ${params.pathPrefix}.providerOptions.deepgram (filled missing canonical fields from legacy).`
-        : `Moved ${params.pathPrefix}.deepgram → ${params.pathPrefix}.providerOptions.deepgram.`,
+        ? `Merged ${params.pathPrefix}.deepgram â†’ ${params.pathPrefix}.providerOptions.deepgram (filled missing canonical fields from legacy).`
+        : `Moved ${params.pathPrefix}.deepgram â†’ ${params.pathPrefix}.providerOptions.deepgram.`,
     );
     return true;
   };
@@ -865,7 +865,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
 
         modelsChanged = true;
         changes.push(
-          `Normalized models.providers.${providerId}.models[${index}].maxTokens (${maxTokens} → ${normalizedMaxTokens}) to avoid Mistral context-window rejects.`,
+          `Normalized models.providers.${providerId}.models[${index}].maxTokens (${maxTokens} â†’ ${normalizedMaxTokens}) to avoid Mistral context-window rejects.`,
         );
         return {
           ...model,
@@ -936,7 +936,7 @@ export function normalizeCompatibilityConfigValues(cfg: OpenClawConfig): {
         },
       };
       changes.push(
-        `Copied messages.ackReaction → channels.whatsapp.ackReaction (scope: ${legacyScope}).`,
+        `Copied messages.ackReaction â†’ channels.whatsapp.ackReaction (scope: ${legacyScope}).`,
       );
     }
   }

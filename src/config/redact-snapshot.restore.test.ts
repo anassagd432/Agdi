@@ -170,7 +170,7 @@ describe("restoreRedactedValues", () => {
     expect(result.custom.items[0]).toBe(REDACTED_SENTINEL);
   });
 
-  it("round-trips config through redact → restore", () => {
+  it("round-trips config through redact â†’ restore", () => {
     const originalConfig = {
       gateway: { auth: { token: "gateway-auth-secret-token-value" }, port: 18789 },
       channels: {

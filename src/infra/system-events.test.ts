@@ -31,15 +31,15 @@ describe("system events (session routing)", () => {
   });
 
   it("does not leak session-scoped events into main", async () => {
-    enqueueSystemEvent("Discord reaction added: ✅", {
+    enqueueSystemEvent("Discord reaction added: âœ…", {
       sessionKey: "discord:group:123",
-      contextKey: "discord:reaction:added:msg:user:✅",
+      contextKey: "discord:reaction:added:msg:user:âœ…",
     });
 
     expect(peekSystemEvents(mainKey)).toEqual([]);
-    expect(peekSystemEvents("discord:group:123")).toEqual(["Discord reaction added: ✅"]);
+    expect(peekSystemEvents("discord:group:123")).toEqual(["Discord reaction added: âœ…"]);
 
-    // Main session gets no events — undefined returned
+    // Main session gets no events â€” undefined returned
     const main = await drainFormattedSystemEvents({
       cfg,
       sessionKey: mainKey,
@@ -48,7 +48,7 @@ describe("system events (session routing)", () => {
     });
     expect(main).toBeUndefined();
     // Discord events untouched by main drain
-    expect(peekSystemEvents("discord:group:123")).toEqual(["Discord reaction added: ✅"]);
+    expect(peekSystemEvents("discord:group:123")).toEqual(["Discord reaction added: âœ…"]);
 
     // Discord session gets its own events block
     const discord = await drainFormattedSystemEvents({
@@ -57,7 +57,7 @@ describe("system events (session routing)", () => {
       isMainSession: false,
       isNewSession: false,
     });
-    expect(discord).toMatch(/System:\s+\[[^\]]+\] Discord reaction added: ✅/);
+    expect(discord).toMatch(/System:\s+\[[^\]]+\] Discord reaction added: âœ…/);
     expect(peekSystemEvents("discord:group:123")).toEqual([]);
   });
 
@@ -205,7 +205,7 @@ describe("system events (session routing)", () => {
 
   it("scrubs node last-input suffix", async () => {
     const key = "agent:main:test-node-scrub";
-    enqueueSystemEvent("Node: Mac Studio · last input /tmp/secret.txt", { sessionKey: key });
+    enqueueSystemEvent("Node: Mac Studio Â· last input /tmp/secret.txt", { sessionKey: key });
 
     const result = await drainFormattedSystemEvents({
       cfg,
@@ -226,7 +226,7 @@ describe("isCronSystemEvent", () => {
 
   it("returns false for heartbeat ack markers", () => {
     expect(isCronSystemEvent("HEARTBEAT_OK")).toBe(false);
-    expect(isCronSystemEvent("HEARTBEAT_OK 🦞")).toBe(false);
+    expect(isCronSystemEvent("HEARTBEAT_OK ðŸ¦ž")).toBe(false);
     expect(isCronSystemEvent("heartbeat_ok")).toBe(false);
     expect(isCronSystemEvent("HEARTBEAT_OK:")).toBe(false);
     expect(isCronSystemEvent("HEARTBEAT_OK, continue")).toBe(false);

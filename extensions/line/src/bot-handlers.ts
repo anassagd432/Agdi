@@ -11,30 +11,30 @@ import {
   buildMentionRegexes,
   matchesMentionPatterns,
   resolveMentionGatingWithBypass,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { hasControlCommand, resolveControlCommandGate } from "openclaw/plugin-sdk/command-auth";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { createChannelPairingChallengeIssuer } from "agdi/plugin-sdk/channel-pairing";
+import { hasControlCommand, resolveControlCommandGate } from "agdi/plugin-sdk/command-auth";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/config-runtime";
 import {
   readChannelAllowFromStore,
   resolvePairingIdLabel,
   upsertChannelPairingRequest,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { evaluateMatchedGroupAccessForPolicy } from "openclaw/plugin-sdk/group-access";
+} from "agdi/plugin-sdk/conversation-runtime";
+import { evaluateMatchedGroupAccessForPolicy } from "agdi/plugin-sdk/group-access";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   clearHistoryEntriesIfEnabled,
   recordPendingHistoryEntryIfEnabled,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime";
-import { danger, logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/reply-history";
+import { resolveAgentRoute } from "agdi/plugin-sdk/routing";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime";
+import { danger, logVerbose } from "agdi/plugin-sdk/runtime-env";
 import {
   firstDefined,
   isSenderAllowed,

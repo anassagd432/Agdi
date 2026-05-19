@@ -242,8 +242,8 @@ describe("runPreparedReply media-only handling", () => {
     const resetNoticeCall = vi.mocked(routeReply).mock.calls[0]?.[0] as
       | { payload?: { text?: string } }
       | undefined;
-    expect(resetNoticeCall?.payload?.text).toContain("✅ New session started · model:");
-    expect(resetNoticeCall?.payload?.text).not.toContain("🔑");
+    expect(resetNoticeCall?.payload?.text).toContain("âœ… New session started Â· model:");
+    expect(resetNoticeCall?.payload?.text).not.toContain("ðŸ”‘");
     expect(resetNoticeCall?.payload?.text).not.toContain("api-key");
     expect(resetNoticeCall?.payload?.text).not.toContain("env:");
   });
@@ -381,7 +381,7 @@ describe("runPreparedReply media-only handling", () => {
 
     const call = vi.mocked(runReplyAgent).mock.calls[0]?.[0];
     expect(call).toBeTruthy();
-    // Think hint extracted before events arrived — level must be "low", not the model default.
+    // Think hint extracted before events arrived â€” level must be "low", not the model default.
     expect(call?.followupRun.run.thinkLevel).toBe("low");
     // The stripped user text (no "low" token) must still appear after the event block.
     expect(call?.commandBody).toContain("tell me about cats");

@@ -17,7 +17,7 @@ describe("sanitizeForPromptLiteral (OC-19 hardening)", () => {
   });
 
   it("preserves ordinary Unicode + spaces", () => {
-    const value = "/tmp/my project/日本語-folder.v2";
+    const value = "/tmp/my project/æ—¥æœ¬èªž-folder.v2";
     expect(sanitizeForPromptLiteral(value)).toBe(value);
   });
 });

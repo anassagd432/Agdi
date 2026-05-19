@@ -54,10 +54,10 @@ describe("failover-error", () => {
     expect(
       resolveFailoverReasonFromError({
         status: 402,
-        message: "insufficient credits — please top up your account",
+        message: "insufficient credits â€” please top up your account",
       }),
     ).toBe("billing");
-    // Ambiguous "quota exceeded" + billing signal → billing wins
+    // Ambiguous "quota exceeded" + billing signal â†’ billing wins
     expect(
       resolveFailoverReasonFromError({
         status: 402,

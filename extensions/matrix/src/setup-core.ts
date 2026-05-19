@@ -3,7 +3,7 @@ import {
   normalizeAccountId,
   prepareScopedSetupConfig,
   type ChannelSetupAdapter,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 import { updateMatrixAccountConfig } from "./matrix/config-update.js";
 import { runMatrixSetupBootstrapAfterConfigWrite } from "./setup-bootstrap.js";
 import { applyMatrixSetupAccountConfig, validateMatrixSetupInput } from "./setup-config.js";

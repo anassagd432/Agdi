@@ -27,7 +27,7 @@ function summarizeInstallOutput(text: string): string | undefined {
   }
   const normalized = preferred.replace(/\s+/g, " ").trim();
   const maxLen = 200;
-  return normalized.length > maxLen ? `${normalized.slice(0, maxLen - 1)}…` : normalized;
+  return normalized.length > maxLen ? `${normalized.slice(0, maxLen - 1)}â€¦` : normalized;
 }
 
 export function formatInstallFailureMessage(result: InstallCommandResult): string {

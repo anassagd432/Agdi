@@ -1,7 +1,7 @@
 import type { EventEmitter } from "node:events";
 import type { Client } from "@buape/carbon";
-import { danger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import { danger } from "agdi/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 import { getDiscordGatewayEmitter } from "../monitor.gateway.js";
 
 export type DiscordGatewayEventType =

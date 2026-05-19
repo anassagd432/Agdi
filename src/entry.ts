@@ -42,7 +42,7 @@ if (
     wrapperEntryPairs: [...ENTRY_WRAPPER_PAIRS],
   })
 ) {
-  // Imported as a dependency — skip all entry-point side effects.
+  // Imported as a dependency â€” skip all entry-point side effects.
 } else {
   const { installGaxiosFetchCompat } = await import("./infra/gaxios-fetch-compat.js");
 

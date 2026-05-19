@@ -1,5 +1,5 @@
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/core";
-import { registerSandboxBackend } from "openclaw/plugin-sdk/sandbox";
+import type { OpenClawPluginApi } from "agdi/plugin-sdk/core";
+import { registerSandboxBackend } from "agdi/plugin-sdk/sandbox";
 import {
   createOpenShellSandboxBackendFactory,
   createOpenShellSandboxBackendManager,

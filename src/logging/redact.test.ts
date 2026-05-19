@@ -10,7 +10,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe("OPENAI_API_KEY=sk-123…cdef");
+    expect(output).toBe("OPENAI_API_KEY=sk-123â€¦cdef");
   });
 
   it("masks CLI flags", () => {
@@ -19,7 +19,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe("curl --token abcdef…ghij https://api.test");
+    expect(output).toBe("curl --token abcdefâ€¦ghij https://api.test");
   });
 
   it("masks JSON fields", () => {
@@ -28,7 +28,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe('{"token":"abcdef…ghij"}');
+    expect(output).toBe('{"token":"abcdefâ€¦ghij"}');
   });
 
   it("masks bearer tokens", () => {
@@ -37,7 +37,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe("Authorization: Bearer abcdef…ghij");
+    expect(output).toBe("Authorization: Bearer abcdefâ€¦ghij");
   });
 
   it("masks Telegram-style tokens", () => {
@@ -46,7 +46,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe("123456…cdef");
+    expect(output).toBe("123456â€¦cdef");
   });
 
   it("masks Telegram Bot API URL tokens", () => {
@@ -56,7 +56,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toBe("GET https://api.telegram.org/bot123456…cdef/getMe HTTP/1.1");
+    expect(output).toBe("GET https://api.telegram.org/bot123456â€¦cdef/getMe HTTP/1.1");
   });
 
   it("redacts short tokens fully", () => {
@@ -80,7 +80,7 @@ describe("redactSensitiveText", () => {
       patterns: defaults,
     });
     expect(output).toBe(
-      ["-----BEGIN PRIVATE KEY-----", "…redacted…", "-----END PRIVATE KEY-----"].join("\n"),
+      ["-----BEGIN PRIVATE KEY-----", "â€¦redactedâ€¦", "-----END PRIVATE KEY-----"].join("\n"),
     );
   });
 
@@ -90,7 +90,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: ["/token=([A-Za-z0-9]+)/i"],
     });
-    expect(output).toBe("token=abcdef…ghij");
+    expect(output).toBe("token=abcdefâ€¦ghij");
   });
 
   it("ignores unsafe nested-repetition custom patterns", () => {
@@ -108,7 +108,7 @@ describe("redactSensitiveText", () => {
       mode: "tools",
       patterns: defaults,
     });
-    expect(output).toContain("OPENAI_API_KEY=sk-123…cdef");
+    expect(output).toContain("OPENAI_API_KEY=sk-123â€¦cdef");
   });
 
   it("skips redaction when mode is off", () => {

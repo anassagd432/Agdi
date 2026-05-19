@@ -85,7 +85,7 @@ async function runFastModeCase(params: {
   });
 }
 
-describe("runCronIsolatedAgentTurn — fast mode", () => {
+describe("runCronIsolatedAgentTurn â€” fast mode", () => {
   setupRunCronIsolatedAgentTurnSuite();
 
   it("passes config-driven fast mode into embedded cron runs", async () => {

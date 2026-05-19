@@ -6,7 +6,7 @@ import {
   readStringParam,
   setScopedCredentialValue,
   type WebSearchProviderPlugin,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "agdi/plugin-sdk/provider-web-search";
 import { runDuckDuckGoSearch } from "./ddg-client.js";
 
 const DuckDuckGoSearchSchema = Type.Object(

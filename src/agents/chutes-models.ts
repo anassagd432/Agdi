@@ -546,7 +546,7 @@ export async function discoverChutesModels(accessToken?: string): Promise<ModelD
     return CHUTES_MODEL_CATALOG.map(buildChutesModelDefinition);
   }
 
-  // If auth fails the result comes from the public endpoint — cache it under ""
+  // If auth fails the result comes from the public endpoint â€” cache it under ""
   // so the original token key stays uncached and retries cleanly next TTL window.
   let effectiveKey = trimmedKey;
   const staticCatalog = () =>
@@ -564,7 +564,7 @@ export async function discoverChutesModels(accessToken?: string): Promise<ModelD
     });
 
     if (response.status === 401 && trimmedKey) {
-      // Auth failed — fall back to the public (unauthenticated) endpoint.
+      // Auth failed â€” fall back to the public (unauthenticated) endpoint.
       // Cache the result under "" so the bad token stays uncached and can
       // be retried with a refreshed credential after the TTL expires.
       effectiveKey = "";

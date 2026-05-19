@@ -10,7 +10,7 @@ describe("stripModelSpecialTokens", () => {
   });
 
   it("strips full-width pipe variants (DeepSeek U+FF5C)", () => {
-    expect(stripModelSpecialTokens("<｜begin▁of▁sentence｜>Hello there")).toBe("Hello there");
+    expect(stripModelSpecialTokens("<ï½œbeginâ–ofâ–sentenceï½œ>Hello there")).toBe("Hello there");
   });
 
   it("does not strip normal angle brackets or HTML", () => {

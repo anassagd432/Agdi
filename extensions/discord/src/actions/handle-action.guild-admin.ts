@@ -4,8 +4,8 @@ import {
   readNumberParam,
   readStringArrayParam,
   readStringParam,
-} from "openclaw/plugin-sdk/agent-runtime";
-import type { ChannelMessageActionContext } from "openclaw/plugin-sdk/channel-contract";
+} from "agdi/plugin-sdk/agent-runtime";
+import type { ChannelMessageActionContext } from "agdi/plugin-sdk/channel-contract";
 import { handleDiscordAction } from "./runtime.js";
 import {
   isDiscordModerationAction,

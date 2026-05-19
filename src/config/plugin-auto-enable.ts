@@ -278,7 +278,7 @@ function resolveConfiguredPlugins(
   registry: PluginManifestRegistry,
 ): PluginEnableChange[] {
   const changes: PluginEnableChange[] = [];
-  // Build reverse map: channel ID → plugin ID from installed plugin manifests.
+  // Build reverse map: channel ID â†’ plugin ID from installed plugin manifests.
   const channelToPluginId = buildChannelToPluginIdMap(registry);
   for (const channelId of collectCandidateChannelIds(cfg)) {
     const pluginId = resolvePluginIdForChannel(channelId, channelToPluginId);

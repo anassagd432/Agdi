@@ -1,4 +1,4 @@
-import type { OutputRuntimeEnv } from "openclaw/plugin-sdk/runtime";
+import type { OutputRuntimeEnv } from "agdi/plugin-sdk/runtime";
 import { afterEach, vi } from "vitest";
 import type { RuntimeEnv, WizardPrompter } from "../runtime-api.js";
 import { matrixOnboardingAdapter } from "./onboarding.js";

@@ -117,7 +117,7 @@ function compactExecEventOutput(raw: string) {
     return normalized;
   }
   const safe = Math.max(1, MAX_EXEC_EVENT_OUTPUT_CHARS - 1);
-  return `${normalized.slice(0, safe)}…`;
+  return `${normalized.slice(0, safe)}â€¦`;
 }
 
 function compactNotificationEventText(raw: string) {
@@ -129,7 +129,7 @@ function compactNotificationEventText(raw: string) {
     return normalized;
   }
   const safe = Math.max(1, MAX_NOTIFICATION_EVENT_TEXT_CHARS - 1);
-  return `${normalized.slice(0, safe)}…`;
+  return `${normalized.slice(0, safe)}â€¦`;
 }
 
 type LoadedSessionEntry = ReturnType<typeof loadSessionEntry>;

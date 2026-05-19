@@ -11,7 +11,7 @@ describe("resolveEffectiveAgentDir via findDuplicateAgentDirs", () => {
     // findDuplicateAgentDirs calls resolveEffectiveAgentDir internally.
     // With a single agent there are no duplicates, but we can inspect the
     // resolved dir indirectly by triggering a duplicate with two agents
-    // that both fall through to the same default dir — which can't happen
+    // that both fall through to the same default dir â€” which can't happen
     // since they have different IDs.  Instead we just verify no crash and
     // that the env flows through by checking a two-agent config produces
     // distinct dirs (no duplicates).
@@ -32,7 +32,7 @@ describe("resolveEffectiveAgentDir via findDuplicateAgentDirs", () => {
 
   it("resolves agent dir under OPENCLAW_HOME state dir", () => {
     // Force two agents to the same explicit agentDir to verify the path
-    // that doesn't use the default — then test the default path by
+    // that doesn't use the default â€” then test the default path by
     // checking that a single-agent config resolves without duplicates.
     const cfg: OpenClawConfig = {};
 

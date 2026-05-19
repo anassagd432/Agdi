@@ -1,4 +1,4 @@
-import type { ChannelOnboardingAdapter, AGDIConfig, WizardPrompter } from "agdi/plugin-sdk";
+import type { ChannelOnboardingAdapter, AGDIConfig, WizardPrompter } from "agdi/plugin-sdk/setup";
 import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "agdi/plugin-sdk/account-id";
 import {
   listMattermostAccountIds,

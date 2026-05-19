@@ -3,7 +3,7 @@ import {
   DEEPSEEK_BASE_URL,
   DEEPSEEK_MODEL_CATALOG,
   type ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export function buildDeepSeekProvider(): ModelProviderConfig {
   return {

@@ -76,7 +76,7 @@ export async function configureGatewayForSetup(
             { value: "loopback", label: "Loopback (127.0.0.1)" },
             { value: "lan", label: "LAN (0.0.0.0)" },
             { value: "tailnet", label: "Tailnet (Tailscale IP)" },
-            { value: "auto", label: "Auto (Loopback → LAN)" },
+            { value: "auto", label: "Auto (Loopback â†’ LAN)" },
             { value: "custom", label: "Custom IP" },
           ],
         });
@@ -192,10 +192,10 @@ export async function configureGatewayForSetup(
           provider: "gateway-auth-token",
           config: nextConfig,
           prompter,
-          preferredEnvVar: "OPENCLAW_GATEWAY_TOKEN",
+          preferredEnvVar: "AGDI_GATEWAY_TOKEN",
           copy: {
             sourceMessage: "Where is this gateway token stored?",
-            envVarPlaceholder: "OPENCLAW_GATEWAY_TOKEN",
+            envVarPlaceholder: "AGDI_GATEWAY_TOKEN",
           },
         });
         gatewayTokenInput = resolved.ref;
@@ -203,7 +203,10 @@ export async function configureGatewayForSetup(
       }
     } else if (flow === "quickstart") {
       gatewayToken =
-        (quickstartTokenString ?? normalizeGatewayTokenInput(process.env.OPENCLAW_GATEWAY_TOKEN)) ||
+        (quickstartTokenString ??
+          normalizeGatewayTokenInput(
+            process.env.AGDI_GATEWAY_TOKEN ?? process.env.OPENCLAW_GATEWAY_TOKEN,
+          )) ||
         randomToken();
       gatewayTokenInput = gatewayToken;
     } else {
@@ -212,7 +215,9 @@ export async function configureGatewayForSetup(
         placeholder: "Needed for multi-machine or non-loopback access",
         initialValue:
           quickstartTokenString ??
-          normalizeGatewayTokenInput(process.env.OPENCLAW_GATEWAY_TOKEN) ??
+          normalizeGatewayTokenInput(
+            process.env.AGDI_GATEWAY_TOKEN ?? process.env.OPENCLAW_GATEWAY_TOKEN,
+          ) ??
           "",
       });
       gatewayToken = normalizeGatewayTokenInput(tokenInput) || randomToken();
@@ -238,10 +243,10 @@ export async function configureGatewayForSetup(
           provider: "gateway-auth-password",
           config: nextConfig,
           prompter,
-          preferredEnvVar: "OPENCLAW_GATEWAY_PASSWORD",
+          preferredEnvVar: "AGDI_GATEWAY_PASSWORD",
           copy: {
             sourceMessage: "Where is this gateway password stored?",
-            envVarPlaceholder: "OPENCLAW_GATEWAY_PASSWORD",
+            envVarPlaceholder: "AGDI_GATEWAY_PASSWORD",
           },
         });
         password = resolved.ref;

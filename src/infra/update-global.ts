@@ -135,8 +135,10 @@ export function resolveGlobalInstallSpec(params: {
   env?: NodeJS.ProcessEnv;
 }): string {
   const override =
+    params.env?.AGDI_UPDATE_PACKAGE_SPEC?.trim() ||
     params.env?.OPENCLAW_UPDATE_PACKAGE_SPEC?.trim() ||
-    process.env.OPENCLAW_UPDATE_PACKAGE_SPEC?.trim();
+    (process.env.AGDI_UPDATE_PACKAGE_SPEC ??
+    process.env.OPENCLAW_UPDATE_PACKAGE_SPEC?.trim());
   if (override) {
     return override;
   }

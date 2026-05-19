@@ -156,7 +156,7 @@ function mergeConsecutiveAssistantTurns(
 
 /**
  * Validates and fixes conversation turn sequences for Gemini API.
- * Gemini requires strict alternating user→assistant→tool→user pattern.
+ * Gemini requires strict alternating userâ†’assistantâ†’toolâ†’user pattern.
  * Merges consecutive assistant messages together.
  */
 export function validateGeminiTurns(messages: AgentMessage[]): AgentMessage[] {
@@ -185,7 +185,7 @@ export function mergeConsecutiveUserTurns(
 
 /**
  * Validates and fixes conversation turn sequences for Anthropic API.
- * Anthropic requires strict alternating user→assistant pattern.
+ * Anthropic requires strict alternating userâ†’assistant pattern.
  * Merges consecutive user messages together.
  * Also strips dangling tool_use blocks that lack corresponding tool_result blocks.
  */

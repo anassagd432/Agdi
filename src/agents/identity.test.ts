@@ -5,8 +5,8 @@ import { resolveAckReaction } from "./identity.js";
 describe("resolveAckReaction", () => {
   it("prefers account-level overrides", () => {
     const cfg: OpenClawConfig = {
-      messages: { ackReaction: "👀" },
-      agents: { list: [{ id: "main", identity: { emoji: "✅" } }] },
+      messages: { ackReaction: "ðŸ‘€" },
+      agents: { list: [{ id: "main", identity: { emoji: "âœ…" } }] },
       channels: {
         slack: {
           ackReaction: "eyes",
@@ -24,8 +24,8 @@ describe("resolveAckReaction", () => {
 
   it("falls back to channel-level overrides", () => {
     const cfg: OpenClawConfig = {
-      messages: { ackReaction: "👀" },
-      agents: { list: [{ id: "main", identity: { emoji: "✅" } }] },
+      messages: { ackReaction: "ðŸ‘€" },
+      agents: { list: [{ id: "main", identity: { emoji: "âœ…" } }] },
       channels: {
         slack: {
           ackReaction: "eyes",
@@ -43,30 +43,30 @@ describe("resolveAckReaction", () => {
 
   it("uses the global ackReaction when channel overrides are missing", () => {
     const cfg: OpenClawConfig = {
-      messages: { ackReaction: "✅" },
-      agents: { list: [{ id: "main", identity: { emoji: "😺" } }] },
+      messages: { ackReaction: "âœ…" },
+      agents: { list: [{ id: "main", identity: { emoji: "ðŸ˜º" } }] },
     };
 
-    expect(resolveAckReaction(cfg, "main", { channel: "discord" })).toBe("✅");
+    expect(resolveAckReaction(cfg, "main", { channel: "discord" })).toBe("âœ…");
   });
 
   it("falls back to the agent identity emoji when global config is unset", () => {
     const cfg: OpenClawConfig = {
-      agents: { list: [{ id: "main", identity: { emoji: "🔥" } }] },
+      agents: { list: [{ id: "main", identity: { emoji: "ðŸ”¥" } }] },
     };
 
-    expect(resolveAckReaction(cfg, "main", { channel: "discord" })).toBe("🔥");
+    expect(resolveAckReaction(cfg, "main", { channel: "discord" })).toBe("ðŸ”¥");
   });
 
   it("returns the default emoji when no config is present", () => {
     const cfg: OpenClawConfig = {};
 
-    expect(resolveAckReaction(cfg, "main")).toBe("👀");
+    expect(resolveAckReaction(cfg, "main")).toBe("ðŸ‘€");
   });
 
   it("allows empty strings to disable reactions", () => {
     const cfg: OpenClawConfig = {
-      messages: { ackReaction: "👀" },
+      messages: { ackReaction: "ðŸ‘€" },
       channels: {
         telegram: {
           ackReaction: "",

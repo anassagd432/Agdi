@@ -1,5 +1,5 @@
-import { resolveMergedAccountConfig } from "openclaw/plugin-sdk/account-resolution";
-import { tryReadSecretFileSync } from "openclaw/plugin-sdk/infra-runtime";
+import { resolveMergedAccountConfig } from "agdi/plugin-sdk/account-resolution";
+import { tryReadSecretFileSync } from "agdi/plugin-sdk/infra-runtime";
 import {
   createAccountListHelpers,
   DEFAULT_ACCOUNT_ID,

@@ -1021,7 +1021,7 @@ describe("compaction-safeguard recent-turn preservation", () => {
         "None.",
       ].join("\n"),
       identifiers: [],
-      latestAsk: "请提供状态更新",
+      latestAsk: "è¯·æä¾›çŠ¶æ€æ›´æ–°",
     });
 
     expect(quality.ok).toBe(false);
@@ -1038,12 +1038,12 @@ describe("compaction-safeguard recent-turn preservation", () => {
         "## Constraints/Rules",
         "Preserve safety checks.",
         "## Pending user asks",
-        "状态更新 pending.",
+        "çŠ¶æ€æ›´æ–° pending.",
         "## Exact identifiers",
         "None.",
       ].join("\n"),
       identifiers: [],
-      latestAsk: "请提供状态更新",
+      latestAsk: "è¯·æä¾›çŠ¶æ€æ›´æ–°",
     });
 
     expect(quality.ok).toBe(true);
@@ -1754,7 +1754,7 @@ describe("compaction-safeguard double-compaction guard", () => {
       signal: new AbortController().signal,
     };
 
-    // First call — writes boundary
+    // First call â€” writes boundary
     const { result: result1 } = await runCompactionScenario({
       sessionManager,
       event: mockEvent,
@@ -1801,7 +1801,7 @@ describe("compaction-safeguard double-compaction guard", () => {
       event: mockEvent,
       apiKey: null,
     });
-    // Should NOT take the boundary fast-path — falls through to normal compaction
+    // Should NOT take the boundary fast-path â€” falls through to normal compaction
     // (which cancels due to no API key, but that's the expected normal path)
     expect(result).toEqual({ cancel: true });
   });

@@ -5,13 +5,13 @@ Twitch channel plugin for OpenClaw.
 ## Install (local checkout)
 
 ```bash
-openclaw plugins install ./extensions/twitch
+agdi plugins install ./extensions/twitch
 ```
 
 ## Install (npm)
 
 ```bash
-openclaw plugins install @openclaw/twitch
+agdi plugins install @openclaw/twitch
 ```
 
 Onboarding: select Twitch and confirm the install prompt to fetch the plugin automatically.

@@ -265,12 +265,22 @@ export function buildServiceEnvironment(params: {
     extraPathDirs,
     params.execPath,
   );
-  const profile = env.OPENCLAW_PROFILE;
+  const profile = env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE;
   const resolvedLaunchdLabel =
     launchdLabel || (platform === "darwin" ? resolveGatewayLaunchAgentLabel(profile) : undefined);
   const systemdUnit = `${resolveGatewaySystemdServiceName(profile)}.service`;
   return {
     ...buildCommonServiceEnvironment(env, sharedEnv),
+    // Canonical AGDI_* env vars
+    AGDI_PROFILE: profile,
+    AGDI_GATEWAY_PORT: String(port),
+    AGDI_LAUNCHD_LABEL: resolvedLaunchdLabel,
+    AGDI_SYSTEMD_UNIT: systemdUnit,
+    AGDI_WINDOWS_TASK_NAME: resolveGatewayWindowsTaskName(profile),
+    AGDI_SERVICE_MARKER: GATEWAY_SERVICE_MARKER,
+    AGDI_SERVICE_KIND: GATEWAY_SERVICE_KIND,
+    AGDI_SERVICE_VERSION: VERSION,
+    // Backward compat: legacy OPENCLAW_* names for deployed services
     OPENCLAW_PROFILE: profile,
     OPENCLAW_GATEWAY_PORT: String(port),
     OPENCLAW_LAUNCHD_LABEL: resolvedLaunchdLabel,
@@ -296,9 +306,20 @@ export function buildNodeServiceEnvironment(params: {
     extraPathDirs,
     params.execPath,
   );
-  const gatewayToken = env.OPENCLAW_GATEWAY_TOKEN?.trim() || undefined;
+  const gatewayToken = (env.AGDI_GATEWAY_TOKEN ?? env.OPENCLAW_GATEWAY_TOKEN)?.trim() || undefined;
   return {
     ...buildCommonServiceEnvironment(env, sharedEnv),
+    // Canonical AGDI_* env vars
+    AGDI_GATEWAY_TOKEN: gatewayToken,
+    AGDI_LAUNCHD_LABEL: resolveNodeLaunchAgentLabel(),
+    AGDI_SYSTEMD_UNIT: resolveNodeSystemdServiceName(),
+    AGDI_WINDOWS_TASK_NAME: resolveNodeWindowsTaskName(),
+    AGDI_TASK_SCRIPT_NAME: NODE_WINDOWS_TASK_SCRIPT_NAME,
+    AGDI_LOG_PREFIX: "node",
+    AGDI_SERVICE_MARKER: NODE_SERVICE_MARKER,
+    AGDI_SERVICE_KIND: NODE_SERVICE_KIND,
+    AGDI_SERVICE_VERSION: VERSION,
+    // Backward compat: legacy OPENCLAW_* names
     OPENCLAW_GATEWAY_TOKEN: gatewayToken,
     OPENCLAW_LAUNCHD_LABEL: resolveNodeLaunchAgentLabel(),
     OPENCLAW_SYSTEMD_UNIT: resolveNodeSystemdServiceName(),
@@ -321,6 +342,10 @@ function buildCommonServiceEnvironment(
     ...sharedEnv.proxyEnv,
     NODE_EXTRA_CA_CERTS: sharedEnv.nodeCaCerts,
     NODE_USE_SYSTEM_CA: sharedEnv.nodeUseSystemCa,
+    // Canonical AGDI_* env vars
+    AGDI_STATE_DIR: sharedEnv.stateDir,
+    AGDI_CONFIG_PATH: sharedEnv.configPath,
+    // Backward compat
     OPENCLAW_STATE_DIR: sharedEnv.stateDir,
     OPENCLAW_CONFIG_PATH: sharedEnv.configPath,
   };
@@ -336,8 +361,8 @@ function resolveSharedServiceEnvironmentFields(
   extraPathDirs: string[] | undefined,
   execPath?: string,
 ): SharedServiceEnvironmentFields {
-  const stateDir = env.OPENCLAW_STATE_DIR;
-  const configPath = env.OPENCLAW_CONFIG_PATH;
+  const stateDir = env.AGDI_STATE_DIR ?? env.OPENCLAW_STATE_DIR;
+  const configPath = env.AGDI_CONFIG_PATH ?? env.OPENCLAW_CONFIG_PATH;
   // Keep a usable temp directory for supervised services even when the host env omits TMPDIR.
   const tmpDir = env.TMPDIR?.trim() || os.tmpdir();
   const proxyEnv = readServiceProxyEnvironment(env);

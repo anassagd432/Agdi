@@ -82,7 +82,7 @@ export async function gatewayStatusCommand(
 
   const probePass = await withProgress(
     {
-      label: "Inspecting gateways…",
+      label: "Inspecting gatewaysâ€¦",
       indeterminate: true,
       enabled: opts.json !== true,
     },

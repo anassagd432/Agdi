@@ -1,5 +1,5 @@
 /**
- * Sandbox security validation — blocks dangerous Docker configurations.
+ * Sandbox security validation â€” blocks dangerous Docker configurations.
  *
  * Threat model: local-trusted config, but protect against foot-guns and config injection.
  * Enforced at runtime when creating sandbox containers.
@@ -227,7 +227,7 @@ function formatBindBlockedError(params: { bind: string; reason: BlockedBindReaso
 }
 
 /**
- * Validate bind mounts — throws if any source path is dangerous.
+ * Validate bind mounts â€” throws if any source path is dangerous.
  * Includes a symlink/realpath pass via existing ancestors so non-existent leaf
  * paths cannot bypass source-root and blocked-path checks.
  */

@@ -47,7 +47,7 @@ describe("embedding chunk limits", () => {
 
   it("does not split inside surrogate pairs (emoji)", () => {
     const provider = createProvider(8192);
-    const emoji = "😀";
+    const emoji = "ðŸ˜€";
     const inputText = `${emoji.repeat(2100)}\n${emoji.repeat(2100)}`;
 
     const out = enforceEmbeddingMaxInputTokens(provider, [

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { Readable } from "stream";
-import { mediaKindFromMime } from "openclaw/plugin-sdk/media-runtime";
+import { mediaKindFromMime } from "agdi/plugin-sdk/media-runtime";
 import { withTempDownloadPath, type ClawdbotConfig } from "../runtime-api.js";
 import { resolveFeishuRuntimeAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";

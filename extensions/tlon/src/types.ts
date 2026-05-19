@@ -3,8 +3,8 @@ import {
   listCombinedAccountIds,
   normalizeAccountId,
   resolveMergedAccountConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/account-resolution";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 
 type TlonAccountConfig = {
   name?: string;

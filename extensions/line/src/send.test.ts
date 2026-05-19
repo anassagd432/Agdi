@@ -47,7 +47,7 @@ vi.mock("@line/bot-sdk", () => ({
   messagingApi: { MessagingApiClient: MessagingApiClientMock },
 }));
 
-vi.mock("openclaw/plugin-sdk/config-runtime", () => ({
+vi.mock("agdi/plugin-sdk/config-runtime", () => ({
   loadConfig: loadConfigMock,
 }));
 
@@ -59,12 +59,12 @@ vi.mock("./channel-access-token.js", () => ({
   resolveLineChannelAccessToken: resolveLineChannelAccessTokenMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/infra-runtime", () => ({
+vi.mock("agdi/plugin-sdk/infra-runtime", () => ({
   recordChannelActivity: recordChannelActivityMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/runtime-env")>();
+vi.mock("agdi/plugin-sdk/runtime-env", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/runtime-env")>();
   return {
     ...actual,
     logVerbose: logVerboseMock,

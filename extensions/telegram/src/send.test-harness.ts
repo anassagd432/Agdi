@@ -1,4 +1,4 @@
-import type { MockFn } from "openclaw/plugin-sdk/testing";
+import type { MockFn } from "agdi/plugin-sdk/testing";
 import { beforeEach, vi } from "vitest";
 
 const { botApi, botCtorSpy } = vi.hoisted(() => ({
@@ -81,12 +81,12 @@ type TelegramSendTestMocks = {
   imageMetadata: { width: number | undefined; height: number | undefined };
 };
 
-vi.mock("openclaw/plugin-sdk/web-media", () => ({
+vi.mock("agdi/plugin-sdk/web-media", () => ({
   loadWebMedia,
 }));
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/media-runtime")>();
+vi.mock("agdi/plugin-sdk/media-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/media-runtime")>();
   return {
     ...actual,
     getImageMetadata: vi.fn(async () => ({ ...imageMetadata })),
@@ -132,8 +132,8 @@ vi.mock("undici", () => ({
   setGlobalDispatcher: undiciSetGlobalDispatcher,
 }));
 
-vi.mock("openclaw/plugin-sdk/config-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/config-runtime")>();
+vi.mock("agdi/plugin-sdk/config-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/config-runtime")>();
   return {
     ...actual,
     loadConfig,

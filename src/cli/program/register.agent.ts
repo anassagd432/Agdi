@@ -70,7 +70,7 @@ ${formatHelpExamples([
   ],
 ])}
 
-${theme.muted("Docs:")} ${formatDocsLink("/cli/agent", "docs.openclaw.ai/cli/agent")}`,
+${theme.muted("Docs:")} ${formatDocsLink("/cli/agent", "docs.agdi.ai/cli/agent")}`,
     )
     .action(async (opts) => {
       const verboseLevel = typeof opts.verbose === "string" ? opts.verbose.toLowerCase() : "";
@@ -88,7 +88,7 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/agent", "docs.openclaw.ai/cli/age
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/agents", "docs.openclaw.ai/cli/agents")}\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/agents", "docs.agdi.ai/cli/agents")}\n`,
     );
 
   agents
@@ -219,7 +219,7 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/agent", "docs.openclaw.ai/cli/age
         `
 ${theme.heading("Examples:")}
 ${formatHelpExamples([
-  ['agdi agents set-identity --agent main --name "Agdi" --emoji "🦞"', "Set name + emoji."],
+  ['agdi agents set-identity --agent main --name "Agdi" --emoji "ðŸ¦ž"', "Set name + emoji."],
   ["agdi agents set-identity --agent main --avatar avatars/agdi.png", "Set avatar path."],
   [
     "agdi agents set-identity --workspace ~/.agdi/workspace --from-identity",

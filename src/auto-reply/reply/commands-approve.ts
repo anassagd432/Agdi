@@ -31,7 +31,7 @@ type ParsedApproveCommand =
 function parseApproveCommand(raw: string): ParsedApproveCommand | null {
   const trimmed = raw.trim();
   if (FOREIGN_COMMAND_MENTION_REGEX.test(trimmed)) {
-    return { ok: false, error: "❌ This /approve command targets a different Telegram bot." };
+    return { ok: false, error: "âŒ This /approve command targets a different Telegram bot." };
   }
   const commandMatch = trimmed.match(COMMAND_REGEX);
   if (!commandMatch) {
@@ -98,7 +98,7 @@ export const handleApproveCommand: CommandHandler = async (params, allowTextComm
     ) {
       return {
         shouldContinue: false,
-        reply: { text: "❌ Telegram exec approvals are not enabled for this bot account." },
+        reply: { text: "âŒ Telegram exec approvals are not enabled for this bot account." },
       };
     }
     if (
@@ -110,7 +110,7 @@ export const handleApproveCommand: CommandHandler = async (params, allowTextComm
     ) {
       return {
         shouldContinue: false,
-        reply: { text: "❌ You are not authorized to approve exec requests on Telegram." },
+        reply: { text: "âŒ You are not authorized to approve exec requests on Telegram." },
       };
     }
   }
@@ -118,7 +118,7 @@ export const handleApproveCommand: CommandHandler = async (params, allowTextComm
   const missingScope = requireGatewayClientScopeForInternalChannel(params, {
     label: "/approve",
     allowedScopes: ["operator.approvals", "operator.admin"],
-    missingText: "❌ /approve requires operator.approvals for gateway clients.",
+    missingText: "âŒ /approve requires operator.approvals for gateway clients.",
   });
   if (missingScope) {
     return missingScope;
@@ -137,13 +137,13 @@ export const handleApproveCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: `❌ Failed to submit approval: ${String(err)}`,
+        text: `âŒ Failed to submit approval: ${String(err)}`,
       },
     };
   }
 
   return {
     shouldContinue: false,
-    reply: { text: `✅ Exec approval ${parsed.decision} submitted for ${parsed.id}.` },
+    reply: { text: `âœ… Exec approval ${parsed.decision} submitted for ${parsed.id}.` },
   };
 };

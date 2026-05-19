@@ -1,78 +1,78 @@
 # Bundled Hooks
 
-This directory contains hooks that ship with OpenClaw. These hooks are automatically discovered and can be enabled/disabled via CLI or configuration.
+This directory contains hooks that ship with Agdi. These hooks are automatically discovered and can be enabled or disabled by CLI or configuration.
 
 ## Available Hooks
 
-### 💾 session-memory
+### session-memory
 
 Automatically saves session context to memory when you issue `/new` or `/reset`.
 
 **Events**: `command:new`, `command:reset`
-**What it does**: Creates a dated memory file with LLM-generated slug based on conversation content.
-**Output**: `<workspace>/memory/YYYY-MM-DD-slug.md` (defaults to `~/.openclaw/workspace`)
+**What it does**: Creates a dated memory file with an LLM-generated slug based on conversation content.
+**Output**: `<workspace>/memory/YYYY-MM-DD-slug.md` (defaults to `~/.agdi/workspace`)
 
 **Enable**:
 
 ```bash
-openclaw hooks enable session-memory
+agdi hooks enable session-memory
 ```
 
-### 📎 bootstrap-extra-files
+### bootstrap-extra-files
 
 Injects extra bootstrap files (for example monorepo `AGENTS.md`/`TOOLS.md`) during prompt assembly.
 
 **Events**: `agent:bootstrap`
 **What it does**: Expands configured workspace glob/path patterns and appends matching bootstrap files to injected context.
-**Output**: No files written; context is modified in-memory only.
+**Output**: No files written; context is modified in memory only.
 
 **Enable**:
 
 ```bash
-openclaw hooks enable bootstrap-extra-files
+agdi hooks enable bootstrap-extra-files
 ```
 
-### 📝 command-logger
+### command-logger
 
 Logs all command events to a centralized audit file.
 
 **Events**: `command` (all commands)
-**What it does**: Appends JSONL entries to command log file.
-**Output**: `~/.openclaw/logs/commands.log`
+**What it does**: Appends JSONL entries to the command log file.
+**Output**: `~/.agdi/logs/commands.log`
 
 **Enable**:
 
 ```bash
-openclaw hooks enable command-logger
+agdi hooks enable command-logger
 ```
 
-### 🚀 boot-md
+### boot-md
 
-Runs `BOOT.md` whenever the gateway starts (after channels start).
+Runs `BOOT.md` whenever the gateway starts after channels start.
 
 **Events**: `gateway:startup`
-**What it does**: Executes BOOT.md instructions via the agent runner.
-**Output**: Whatever the instructions request (for example, outbound messages).
+**What it does**: Executes BOOT.md instructions through the agent runner.
+**Output**: Whatever the instructions request, such as outbound messages.
 
 **Enable**:
 
 ```bash
-openclaw hooks enable boot-md
+agdi hooks enable boot-md
 ```
 
 ## Hook Structure
 
 Each hook is a directory containing:
 
-- **HOOK.md**: Metadata and documentation in YAML frontmatter + Markdown
-- **handler.ts**: The hook handler function (default export)
+- **HOOK.md**: Metadata and documentation in YAML frontmatter plus Markdown.
+- **handler.ts**: The hook handler function as the default export.
 
 Example structure:
 
-```
+```text
 session-memory/
-├── HOOK.md          # Metadata + docs
-└── handler.ts       # Handler implementation
+|-- HOOK.md          # Metadata and docs
+`-- handler.ts       # Handler implementation
 ```
 
 ## HOOK.md Format
@@ -81,9 +81,9 @@ session-memory/
 ---
 name: my-hook
 description: "Short description"
-homepage: https://docs.openclaw.ai/automation/hooks#my-hook
+homepage: https://docs.agdi.ai/automation/hooks#my-hook
 metadata:
-  { "openclaw": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
+  { "openclaw": { "emoji": "link", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 # Hook Title
 
@@ -92,22 +92,22 @@ Documentation goes here...
 
 ### Metadata Fields
 
-- **emoji**: Display emoji for CLI
-- **events**: Array of events to listen for (e.g., `["command:new", "session:start"]`)
-- **requires**: Optional requirements
-  - **bins**: Required binaries on PATH
-  - **anyBins**: At least one of these binaries must be present
-  - **env**: Required environment variables
-  - **config**: Required config paths (e.g., `["workspace.dir"]`)
-  - **os**: Required platforms (e.g., `["darwin", "linux"]`)
-- **install**: Installation methods (for bundled hooks: `[{"id":"bundled","kind":"bundled"}]`)
+- **emoji**: Display marker for CLI output.
+- **events**: Array of events to listen for, such as `["command:new", "session:start"]`.
+- **requires**: Optional requirements.
+  - **bins**: Required binaries on PATH.
+  - **anyBins**: At least one of these binaries must be present.
+  - **env**: Required environment variables.
+  - **config**: Required config paths, such as `["workspace.dir"]`.
+  - **os**: Required platforms, such as `["darwin", "linux"]`.
+- **install**: Installation methods. Bundled hooks use `[{"id":"bundled","kind":"bundled"}]`.
 
 ## Creating Custom Hooks
 
 To create your own hooks, place them in:
 
 - **Workspace hooks**: `<workspace>/hooks/` (highest precedence)
-- **Managed hooks**: `~/.openclaw/hooks/` (shared across workspaces)
+- **Managed hooks**: `~/.agdi/hooks/` (shared across workspaces)
 
 Custom hooks follow the same structure as bundled hooks.
 
@@ -116,31 +116,31 @@ Custom hooks follow the same structure as bundled hooks.
 List all hooks:
 
 ```bash
-openclaw hooks list
+agdi hooks list
 ```
 
 Show hook details:
 
 ```bash
-openclaw hooks info session-memory
+agdi hooks info session-memory
 ```
 
 Check hook status:
 
 ```bash
-openclaw hooks check
+agdi hooks check
 ```
 
-Enable/disable:
+Enable or disable:
 
 ```bash
-openclaw hooks enable session-memory
-openclaw hooks disable command-logger
+agdi hooks enable session-memory
+agdi hooks disable command-logger
 ```
 
 ## Configuration
 
-Hooks can be configured in `~/.openclaw/openclaw.json`:
+Hooks can be configured in `~/.agdi/agdi.json`:
 
 ```json
 {
@@ -164,14 +164,14 @@ Hooks can be configured in `~/.openclaw/openclaw.json`:
 
 Currently supported events:
 
-- **command**: All command events
-- **command:new**: `/new` command specifically
-- **command:reset**: `/reset` command
-- **command:stop**: `/stop` command
-- **agent:bootstrap**: Before workspace bootstrap files are injected
-- **gateway:startup**: Gateway startup (after channels start)
+- **command**: All command events.
+- **command:new**: `/new` command specifically.
+- **command:reset**: `/reset` command.
+- **command:stop**: `/stop` command.
+- **agent:bootstrap**: Before workspace bootstrap files are injected.
+- **gateway:startup**: Gateway startup after channels start.
 
-More event types coming soon (session lifecycle, agent errors, etc.).
+More event types are planned, such as session lifecycle and agent errors.
 
 ## Handler API
 
@@ -180,11 +180,11 @@ Hook handlers receive an `InternalHookEvent` object:
 ```typescript
 interface InternalHookEvent {
   type: "command" | "session" | "agent" | "gateway";
-  action: string; // e.g., 'new', 'reset', 'stop'
+  action: string;
   sessionKey: string;
   context: Record<string, unknown>;
   timestamp: Date;
-  messages: string[]; // Push messages here to send to user
+  messages: string[];
 }
 ```
 
@@ -198,11 +198,8 @@ const myHandler: HookHandler = async (event) => {
     return;
   }
 
-  // Your logic here
   console.log("New command triggered!");
-
-  // Optionally send message to user
-  event.messages.push("✨ Hook executed!");
+  event.messages.push("Hook executed!");
 };
 
 export default myHandler;
@@ -212,12 +209,12 @@ export default myHandler;
 
 Test your hooks by:
 
-1. Place hook in workspace hooks directory
-2. Restart gateway: `pkill -9 -f 'openclaw.*gateway' && pnpm openclaw gateway`
-3. Enable the hook: `openclaw hooks enable my-hook`
-4. Trigger the event (e.g., send `/new` command)
-5. Check gateway logs for hook execution
+1. Place the hook in the workspace hooks directory.
+2. Restart the gateway.
+3. Enable the hook: `agdi hooks enable my-hook`.
+4. Trigger the event, such as sending `/new`.
+5. Check gateway logs for hook execution.
 
 ## Documentation
 
-Full documentation: https://docs.openclaw.ai/automation/hooks
+Full documentation: https://docs.agdi.ai/automation/hooks

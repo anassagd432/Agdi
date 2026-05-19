@@ -31,7 +31,7 @@ export async function maybeOfferUpdateBeforeDoctor(params: {
   confirm: (p: { message: string; initialValue: boolean }) => Promise<boolean>;
   outro: (message: string) => void;
 }) {
-  const updateInProgress = isTruthyEnvValue(process.env.OPENCLAW_UPDATE_IN_PROGRESS);
+  const updateInProgress = isTruthyEnvValue(process.env.AGDI_UPDATE_IN_PROGRESS ?? process.env.OPENCLAW_UPDATE_IN_PROGRESS);
   const canOfferUpdate =
     !updateInProgress &&
     params.options.nonInteractive !== true &&
@@ -51,7 +51,7 @@ export async function maybeOfferUpdateBeforeDoctor(params: {
     if (!shouldUpdate) {
       return { updated: false };
     }
-    note("Running update (fetch/rebase/build/ui:build/doctor)…", "Update");
+    note("Running update (fetch/rebase/build/ui:build/doctor)â€¦", "Update");
     const result = await runGatewayUpdate({
       cwd: params.root,
       argv1: process.argv[1],

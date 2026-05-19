@@ -13,7 +13,7 @@ function summarizeInstallFailure(message: string): string | undefined {
     return undefined;
   }
   const maxLen = 140;
-  return cleaned.length > maxLen ? `${cleaned.slice(0, maxLen - 1)}…` : cleaned;
+  return cleaned.length > maxLen ? `${cleaned.slice(0, maxLen - 1)}â€¦` : cleaned;
 }
 
 function formatSkillHint(skill: {
@@ -22,12 +22,12 @@ function formatSkillHint(skill: {
 }): string {
   const desc = skill.description?.trim();
   const installLabel = skill.install[0]?.label?.trim();
-  const combined = desc && installLabel ? `${desc} — ${installLabel}` : desc || installLabel;
+  const combined = desc && installLabel ? `${desc} â€” ${installLabel}` : desc || installLabel;
   if (!combined) {
     return "install";
   }
   const maxLen = 90;
-  return combined.length > maxLen ? `${combined.slice(0, maxLen - 1)}…` : combined;
+  return combined.length > maxLen ? `${combined.slice(0, maxLen - 1)}â€¦` : combined;
 }
 
 function upsertSkillEntry(
@@ -96,7 +96,7 @@ export async function setupSkills(
         },
         ...installable.map((skill) => ({
           value: skill.name,
-          label: `${skill.emoji ?? "🧩"} ${skill.name}`,
+          label: `${skill.emoji ?? "ðŸ§©"} ${skill.name}`,
           hint: formatSkillHint(skill),
         })),
       ],
@@ -165,7 +165,7 @@ export async function setupSkills(
       if (!installId) {
         continue;
       }
-      const spin = prompter.progress(`Installing ${name}…`);
+      const spin = prompter.progress(`Installing ${name}â€¦`);
       const result = await installSkill({
         workspaceDir,
         skillName: target.name,
@@ -182,7 +182,7 @@ export async function setupSkills(
       }
       const code = result.code == null ? "" : ` (exit ${result.code})`;
       const detail = summarizeInstallFailure(result.message);
-      spin.stop(`Install failed: ${name}${code}${detail ? ` — ${detail}` : ""}`);
+      spin.stop(`Install failed: ${name}${code}${detail ? ` â€” ${detail}` : ""}`);
       for (const warning of warnings) {
         runtime.log(warning);
       }
@@ -194,7 +194,7 @@ export async function setupSkills(
       runtime.log(
         `Tip: run \`${formatCliCommand("openclaw doctor")}\` to review skills + requirements.`,
       );
-      runtime.log("Docs: https://docs.openclaw.ai/skills");
+      runtime.log("Docs: https://docs.agdi.ai/skills");
     }
   }
 

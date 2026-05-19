@@ -23,7 +23,7 @@ const CHROMIUM_BUNDLE_IDS = new Set([
   "com.microsoft.EdgeBeta",
   "com.microsoft.EdgeDev",
   "com.microsoft.EdgeCanary",
-  // Edge LaunchServices IDs (used in macOS default browser registration —
+  // Edge LaunchServices IDs (used in macOS default browser registration â€”
   // these differ from CFBundleIdentifier and are what plutil returns)
   "com.microsoft.edgemac",
   "com.microsoft.edgemac.beta",

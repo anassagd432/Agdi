@@ -1,5 +1,5 @@
 export type AutonomousAgentConfig = {
-  /** Master switch — set `true` to enable the autonomous agent feature. Default: false */
+  /** Master switch â€” set `true` to enable the autonomous agent feature. Default: false */
   enabled?: boolean;
   /** Run browser in headless mode. Default: true */
   headless?: boolean;
@@ -29,11 +29,11 @@ export type AutonomousAgentConfig = {
     sttEngine?: "whisper-local" | "whisper-api";
     /** Whisper model size for local mode. Default: "base". */
     whisperModel?: "tiny" | "base" | "small" | "medium";
-    /** Voice activity detection sensitivity (0.0–1.0). Default: 0.02. */
+    /** Voice activity detection sensitivity (0.0â€“1.0). Default: 0.02. */
     vadSensitivity?: number;
     /** TTS engine: "system" | "browser" | "off". Default: "system". */
     ttsEngine?: "system" | "browser" | "off";
-    /** Speech rate (0.5–2.0). Default: 1.0. */
+    /** Speech rate (0.5â€“2.0). Default: 1.0. */
     ttsRate?: number;
     /** Seconds of silence before speech capture ends. Default: 1.5. */
     silenceTimeout?: number;

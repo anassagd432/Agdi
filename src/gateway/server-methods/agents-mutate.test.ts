@@ -93,7 +93,7 @@ vi.mock("../../infra/fs-safe.js", async () => {
   };
 });
 
-// Mock node:fs/promises – agents.ts uses `import fs from "node:fs/promises"`
+// Mock node:fs/promises â€“ agents.ts uses `import fs from "node:fs/promises"`
 // which resolves to the module namespace default, so we spread actual and
 // override the methods we need, plus set `default` explicitly.
 vi.mock("node:fs/promises", async () => {
@@ -373,7 +373,7 @@ describe("agents.create", () => {
     const { promise } = makeCall("agents.create", {
       name: "Fancy Agent",
       workspace: "/tmp/ws",
-      emoji: "🤖",
+      emoji: "ðŸ¤–",
       avatar: "https://example.com/avatar.png",
     });
     await promise;
@@ -382,7 +382,7 @@ describe("agents.create", () => {
       expect.objectContaining({
         rootDir: "/resolved/tmp/ws",
         relativePath: "IDENTITY.md",
-        data: expect.stringMatching(/- Name: Fancy Agent[\s\S]*- Emoji: 🤖[\s\S]*- Avatar:/),
+        data: expect.stringMatching(/- Name: Fancy Agent[\s\S]*- Emoji: ðŸ¤–[\s\S]*- Avatar:/),
         encoding: "utf8",
       }),
     );

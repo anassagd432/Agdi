@@ -66,7 +66,7 @@ export function resolveProxyFetchFromEnv(
       }) as unknown as Promise<Response>) as typeof fetch;
   } catch (err) {
     logWarn(
-      `Proxy env var set but agent creation failed — falling back to direct fetch: ${err instanceof Error ? err.message : String(err)}`,
+      `Proxy env var set but agent creation failed â€” falling back to direct fetch: ${err instanceof Error ? err.message : String(err)}`,
     );
     return undefined;
   }

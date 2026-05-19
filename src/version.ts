@@ -132,5 +132,8 @@ export const VERSION = resolveBinaryVersion({
   injectedVersion:
     (typeof __AGDI_VERSION__ === "string" ? __AGDI_VERSION__ : undefined) ||
     (typeof __OPENCLAW_VERSION__ === "string" ? __OPENCLAW_VERSION__ : undefined),
-  bundledVersion: process.env.AGDI_BUNDLED_VERSION ?? process.env.OPENCLAW_BUNDLED_VERSION,
+  bundledVersion:
+    process.env.AGDI_BUNDLED_VERSION ??
+    process.env.OPENCLAW_BUNDLED_VERSION ??
+    process.env.npm_package_version,
 });

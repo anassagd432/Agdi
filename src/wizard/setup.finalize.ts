@@ -147,7 +147,7 @@ export async function finalizeSetupWizard(
           "Gateway service",
           { doneMessage: () => restartDoneMessage },
           async (progress) => {
-            progress.update("Restarting Gateway service…");
+            progress.update("Restarting Gateway serviceâ€¦");
             const restartResult = await service.restart({
               env: process.env,
               stdout: process.stdout,
@@ -162,7 +162,7 @@ export async function finalizeSetupWizard(
           "Gateway service",
           { doneMessage: "Gateway service uninstalled." },
           async (progress) => {
-            progress.update("Uninstalling Gateway service…");
+            progress.update("Uninstalling Gateway serviceâ€¦");
             await service.uninstall({ env: process.env, stdout: process.stdout });
           },
         );
@@ -176,7 +176,7 @@ export async function finalizeSetupWizard(
       const progress = prompter.progress("Gateway service");
       let installError: string | null = null;
       try {
-        progress.update("Preparing Gateway service…");
+        progress.update("Preparing Gateway serviceâ€¦");
         const tokenResolution = await resolveGatewayInstallToken({
           config: nextConfig,
           env: process.env,
@@ -201,7 +201,7 @@ export async function finalizeSetupWizard(
             },
           );
 
-          progress.update("Installing Gateway service…");
+          progress.update("Installing Gateway serviceâ€¦");
           await service.install({
             env: process.env,
             stdout: process.stdout,
@@ -438,7 +438,7 @@ export async function finalizeSetupWizard(
   );
 
   await prompter.note(
-    "Running agents on your computer is risky — harden your setup: https://docs.agdi.ai/security",
+    "Running agents on your computer is risky â€” harden your setup: https://docs.agdi.ai/security",
     "Security",
   );
 

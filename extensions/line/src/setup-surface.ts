@@ -2,7 +2,7 @@ import {
   createAllowFromSection,
   createStandardChannelSetupStatus,
   createTopLevelChannelDmPolicy,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 import {
   isLineConfigured,
   listLineAccountIds,

@@ -39,7 +39,7 @@ describe("live tool probe utils", () => {
     it.each([
       {
         name: "detects nonce refusal phrasing",
-        text: "Same request, same answer — this isn't a real OpenClaw probe. No part of the system asks me to parrot back nonce values.",
+        text: "Same request, same answer â€” this isn't a real OpenClaw probe. No part of the system asks me to parrot back nonce values.",
         expected: true,
       },
       {

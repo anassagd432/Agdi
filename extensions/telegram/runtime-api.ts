@@ -7,13 +7,13 @@ export type {
   TelegramAccountConfig,
   TelegramActionConfig,
   TelegramNetworkConfig,
-} from "openclaw/plugin-sdk/telegram";
+} from "agdi/plugin-sdk/telegram";
 export type { TelegramApiOverride } from "./src/send.js";
 export type {
   OpenClawPluginService,
   OpenClawPluginServiceContext,
   PluginLogger,
-} from "openclaw/plugin-sdk/core";
+} from "agdi/plugin-sdk/core";
 export type {
   AcpRuntime,
   AcpRuntimeCapabilities,
@@ -25,8 +25,8 @@ export type {
   AcpRuntimeTurnInput,
   AcpRuntimeErrorCode,
   AcpSessionUpdateTag,
-} from "openclaw/plugin-sdk/acp-runtime";
-export { AcpRuntimeError } from "openclaw/plugin-sdk/acp-runtime";
+} from "agdi/plugin-sdk/acp-runtime";
+export { AcpRuntimeError } from "agdi/plugin-sdk/acp-runtime";
 
 export {
   buildTokenChannelStatusSummary,
@@ -38,7 +38,7 @@ export {
   projectCredentialSnapshotFields,
   resolveConfiguredFromCredentialStatuses,
   resolveTelegramPollVisibility,
-} from "openclaw/plugin-sdk/telegram";
+} from "agdi/plugin-sdk/telegram";
 export {
   buildChannelConfigSchema,
   getChatChannelMeta,
@@ -50,7 +50,7 @@ export {
   readStringParam,
   resolvePollMaxSelections,
   TelegramConfigSchema,
-} from "openclaw/plugin-sdk/telegram-core";
+} from "agdi/plugin-sdk/telegram-core";
 export type { TelegramProbe } from "./src/probe.js";
 export { auditTelegramGroupMembership, collectTelegramUnmentionedGroupIds } from "./src/audit.js";
 export { telegramMessageActions } from "./src/channel-actions.js";

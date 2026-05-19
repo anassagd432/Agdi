@@ -2,7 +2,7 @@ import { constants as fsConstants } from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { basenameFromMediaSource, safeFileURLToPath } from "openclaw/plugin-sdk/infra-runtime";
+import { basenameFromMediaSource, safeFileURLToPath } from "agdi/plugin-sdk/infra-runtime";
 import { resolveBlueBubblesAccount } from "./accounts.js";
 import { sendBlueBubblesAttachment } from "./attachments.js";
 import { resolveBlueBubblesMessageId } from "./monitor.js";

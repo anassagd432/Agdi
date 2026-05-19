@@ -102,7 +102,7 @@ describe("cron isolated job HEARTBEAT_OK summary suppression (#32013)", () => {
     const requestHeartbeatNow = vi.fn();
     const cron = createCronServiceForSummary({
       storePath,
-      summary: "Weather update: sunny, 72°F",
+      summary: "Weather update: sunny, 72Â°F",
       enqueueSystemEvent,
       requestHeartbeatNow,
     });

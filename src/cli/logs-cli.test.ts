@@ -132,7 +132,7 @@ describe("logs cli", () => {
     it("formats local time in pretty mode when localTime is true", () => {
       const utcTime = "2025-01-01T12:00:00.000Z";
       const result = formatLogTimestamp(utcTime, "pretty", true);
-      // Should be HH:MM:SS±HH:MM format with timezone offset.
+      // Should be HH:MM:SSÂ±HH:MM format with timezone offset.
       expect(result).toMatch(/^\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/);
     });
 

@@ -1,6 +1,6 @@
-import type { DmPolicy, GroupPolicy } from "openclaw/plugin-sdk/setup";
+import type { DmPolicy, GroupPolicy } from "agdi/plugin-sdk/setup";
 
-export type { DmPolicy, GroupPolicy } from "openclaw/plugin-sdk/setup";
+export type { DmPolicy, GroupPolicy } from "agdi/plugin-sdk/setup";
 
 export type BlueBubblesGroupConfig = {
   /** If true, only respond in this group when mentioned. */

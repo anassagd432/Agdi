@@ -34,8 +34,8 @@ function resolveAnthropicVertexMaxTokens(params: {
 /**
  * Create a StreamFn that routes through pi-ai's `streamAnthropic` with an
  * injected `AnthropicVertex` client.  All streaming, message conversion, and
- * event handling is handled by pi-ai — we only supply the GCP-authenticated
- * client and map SimpleStreamOptions → AnthropicOptions.
+ * event handling is handled by pi-ai â€” we only supply the GCP-authenticated
+ * client and map SimpleStreamOptions â†’ AnthropicOptions.
  */
 export function createAnthropicVertexStreamFn(
   projectId: string | undefined,

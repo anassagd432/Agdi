@@ -100,7 +100,7 @@ export async function persistSessionUsageUpdate(params: {
           // Use last-call usage for totalTokens when available. The accumulated
           // `usage.input` sums input tokens from every API call in the run
           // (tool-use loops, compaction retries), overstating actual context.
-          // `lastCallUsage` reflects only the final API call — the true context.
+          // `lastCallUsage` reflects only the final API call â€” the true context.
           const usageForContext = params.lastCallUsage ?? (hasUsage ? params.usage : undefined);
           const totalTokens = hasFreshContextSnapshot
             ? deriveSessionTotalTokens({

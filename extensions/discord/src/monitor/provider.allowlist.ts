@@ -4,11 +4,11 @@ import {
   canonicalizeAllowlistWithResolvedIds,
   patchAllowlistUsersInConfigEntries,
   summarizeMapping,
-} from "openclaw/plugin-sdk/allow-from";
-import type { DiscordGuildEntry } from "openclaw/plugin-sdk/config-runtime";
-import { formatErrorMessage } from "openclaw/plugin-sdk/infra-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/allow-from";
+import type { DiscordGuildEntry } from "agdi/plugin-sdk/config-runtime";
+import { formatErrorMessage } from "agdi/plugin-sdk/infra-runtime";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { normalizeStringEntries } from "agdi/plugin-sdk/text-runtime";
 import { resolveDiscordChannelAllowlist } from "../resolve-channels.js";
 import { resolveDiscordUserAllowlist } from "../resolve-users.js";
 

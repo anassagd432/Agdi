@@ -49,9 +49,9 @@ vi.mock("./login.js", () => ({
   loginWeb: hoisted.loginWeb,
 }));
 
-vi.mock("openclaw/plugin-sdk/setup", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/setup")>(
-    "openclaw/plugin-sdk/setup",
+vi.mock("agdi/plugin-sdk/setup", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/setup")>(
+    "agdi/plugin-sdk/setup",
   );
   return {
     ...actual,

@@ -1,4 +1,4 @@
-import { defineChannelPluginEntry } from "openclaw/plugin-sdk/core";
+import { defineChannelPluginEntry } from "agdi/plugin-sdk/core";
 import { matrixPlugin } from "./src/channel.js";
 import { registerMatrixCli } from "./src/cli.js";
 import { setMatrixRuntime } from "./src/runtime.js";

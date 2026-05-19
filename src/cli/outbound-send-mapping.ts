@@ -25,7 +25,7 @@ const CHANNEL_TO_LEGACY_DEP_KEY = {
 } as const;
 
 /**
- * Pass CLI send sources through as-is — both CliOutboundSendSource and
+ * Pass CLI send sources through as-is â€” both CliOutboundSendSource and
  * OutboundSendDeps are now channel-ID-keyed records.
  */
 export function createOutboundSendDepsFromCliSource(deps: CliOutboundSendSource): OutboundSendDeps {

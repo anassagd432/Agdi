@@ -4,7 +4,7 @@ import {
   type ModelProviderConfig,
   HUGGINGFACE_BASE_URL,
   HUGGINGFACE_MODEL_CATALOG,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export async function buildHuggingfaceProvider(
   discoveryApiKey?: string,

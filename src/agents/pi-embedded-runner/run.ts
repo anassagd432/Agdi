@@ -1049,7 +1049,7 @@ export async function runEmbeddedPiAgent(
               ? lastAssistant.errorMessage?.trim() || formattedAssistantErrorText
               : undefined;
 
-          // ── Timeout-triggered compaction ──────────────────────────────────
+          // â”€â”€ Timeout-triggered compaction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           // When the LLM times out with high context usage, compact before
           // retrying to break the death spiral of repeated timeouts.
           if (timedOut && !timedOutDuringCompaction) {
@@ -1326,7 +1326,7 @@ export async function runEmbeddedPiAgent(
                   log.info(
                     `[context-overflow-recovery] Truncated ${truncResult.truncatedCount} tool result(s); retrying prompt`,
                   );
-                  // Do NOT reset overflowCompactionAttempts here — the global cap must remain
+                  // Do NOT reset overflowCompactionAttempts here â€” the global cap must remain
                   // enforced across all iterations to prevent unbounded compaction cycles (OC-65).
                   continue;
                 }
@@ -1756,7 +1756,7 @@ export async function runEmbeddedPiAgent(
             if (incompleteStopReason === "toolUse" || incompleteStopReason === "error") {
               log.warn(
                 `incomplete turn detected: runId=${params.runId} sessionId=${params.sessionId} ` +
-                  `stopReason=${incompleteStopReason} payloads=0 — surfacing error to user`,
+                  `stopReason=${incompleteStopReason} payloads=0 â€” surfacing error to user`,
               );
 
               // Mark the failing profile for cooldown so multi-profile setups
@@ -1775,8 +1775,8 @@ export async function runEmbeddedPiAgent(
                 isLikelyMutatingToolName(t.toolName),
               );
               const errorText = hadMutatingTools
-                ? "⚠️ Agent couldn't generate a response. Note: some tool actions may have already been executed — please verify before retrying."
-                : "⚠️ Agent couldn't generate a response. Please try again.";
+                ? "âš ï¸ Agent couldn't generate a response. Note: some tool actions may have already been executed â€” please verify before retrying."
+                : "âš ï¸ Agent couldn't generate a response. Please try again.";
 
               return {
                 payloads: [

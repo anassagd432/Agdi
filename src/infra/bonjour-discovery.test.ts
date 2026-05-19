@@ -7,7 +7,7 @@ const WIDE_AREA_DOMAIN = "openclaw.internal.";
 describe("bonjour-discovery", () => {
   it("discovers beacons on darwin across local + wide-area domains", async () => {
     const calls: Array<{ argv: string[]; timeoutMs: number }> = [];
-    const studioInstance = "Peter’s Mac Studio Gateway";
+    const studioInstance = "Peterâ€™s Mac Studio Gateway";
 
     const run = vi.fn(async (argv: string[], options: { timeoutMs: number }) => {
       calls.push({ argv, timeoutMs: options.timeoutMs });
@@ -51,7 +51,7 @@ describe("bonjour-discovery", () => {
         const tailnetDns = instance === "Tailnet Gateway" ? "studio.tailnet.ts.net" : "";
         const displayName =
           instance === studioInstance
-            ? "Peter’s\\032Mac\\032Studio"
+            ? "Peterâ€™s\\032Mac\\032Studio"
             : instance.replace(" Gateway", "");
         const txtParts = [
           "txtvers=1",
@@ -90,7 +90,7 @@ describe("bonjour-discovery", () => {
       expect.arrayContaining([
         expect.objectContaining({
           instanceName: studioInstance,
-          displayName: "Peter’s Mac Studio",
+          displayName: "Peterâ€™s Mac Studio",
         }),
       ]),
     );
@@ -156,9 +156,9 @@ describe("bonjour-discovery", () => {
       expect.objectContaining({
         domain: "local.",
         instanceName: "Studio Gateway",
-        displayName: "Peter’s Mac Studio",
+        displayName: "Peterâ€™s Mac Studio",
         txt: expect.objectContaining({
-          displayName: "Peter’s Mac Studio",
+          displayName: "Peterâ€™s Mac Studio",
         }),
       }),
     ]);

@@ -1,6 +1,6 @@
-import { DEFAULT_ACCOUNT_ID, type OpenClawConfig } from "openclaw/plugin-sdk/account-resolution";
-import { waitUntilAbort } from "openclaw/plugin-sdk/channel-lifecycle";
-import { registerPluginHttpRoute } from "openclaw/plugin-sdk/webhook-ingress";
+import { DEFAULT_ACCOUNT_ID, type OpenClawConfig } from "agdi/plugin-sdk/account-resolution";
+import { waitUntilAbort } from "agdi/plugin-sdk/channel-lifecycle";
+import { registerPluginHttpRoute } from "agdi/plugin-sdk/webhook-ingress";
 import { listAccountIds, resolveAccount } from "./accounts.js";
 import { dispatchSynologyChatInboundTurn } from "./inbound-turn.js";
 import type { ResolvedSynologyChatAccount } from "./types.js";

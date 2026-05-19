@@ -53,23 +53,39 @@ vi.mock("./container-target.js", async (importOriginal) => {
 import { runCli } from "./run-main.js";
 
 describe("runCli profile env bootstrap", () => {
+  const originalAgdiProfile = process.env.AGDI_PROFILE;
   const originalProfile = process.env.OPENCLAW_PROFILE;
+  const originalAgdiStateDir = process.env.AGDI_STATE_DIR;
   const originalStateDir = process.env.OPENCLAW_STATE_DIR;
+  const originalAgdiConfigPath = process.env.AGDI_CONFIG_PATH;
   const originalConfigPath = process.env.OPENCLAW_CONFIG_PATH;
+  const originalAgdiContainer = process.env.AGDI_CONTAINER;
   const originalContainer = process.env.OPENCLAW_CONTAINER;
+  const originalAgdiGatewayPort = process.env.AGDI_GATEWAY_PORT;
   const originalGatewayPort = process.env.OPENCLAW_GATEWAY_PORT;
+  const originalAgdiGatewayUrl = process.env.AGDI_GATEWAY_URL;
   const originalGatewayUrl = process.env.OPENCLAW_GATEWAY_URL;
+  const originalAgdiGatewayToken = process.env.AGDI_GATEWAY_TOKEN;
   const originalGatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN;
+  const originalAgdiGatewayPassword = process.env.AGDI_GATEWAY_PASSWORD;
   const originalGatewayPassword = process.env.OPENCLAW_GATEWAY_PASSWORD;
 
   beforeEach(() => {
+    delete process.env.AGDI_PROFILE;
     delete process.env.OPENCLAW_PROFILE;
+    delete process.env.AGDI_STATE_DIR;
     delete process.env.OPENCLAW_STATE_DIR;
+    delete process.env.AGDI_CONFIG_PATH;
     delete process.env.OPENCLAW_CONFIG_PATH;
+    delete process.env.AGDI_CONTAINER;
     delete process.env.OPENCLAW_CONTAINER;
+    delete process.env.AGDI_GATEWAY_PORT;
     delete process.env.OPENCLAW_GATEWAY_PORT;
+    delete process.env.AGDI_GATEWAY_URL;
     delete process.env.OPENCLAW_GATEWAY_URL;
+    delete process.env.AGDI_GATEWAY_TOKEN;
     delete process.env.OPENCLAW_GATEWAY_TOKEN;
+    delete process.env.AGDI_GATEWAY_PASSWORD;
     delete process.env.OPENCLAW_GATEWAY_PASSWORD;
     dotenvState.state.profileAtDotenvLoad = undefined;
     dotenvState.state.containerAtDotenvLoad = undefined;
@@ -78,40 +94,80 @@ describe("runCli profile env bootstrap", () => {
   });
 
   afterEach(() => {
+    if (originalAgdiProfile === undefined) {
+      delete process.env.AGDI_PROFILE;
+    } else {
+      process.env.AGDI_PROFILE = originalAgdiProfile;
+    }
     if (originalProfile === undefined) {
       delete process.env.OPENCLAW_PROFILE;
     } else {
       process.env.OPENCLAW_PROFILE = originalProfile;
+    }
+    if (originalAgdiContainer === undefined) {
+      delete process.env.AGDI_CONTAINER;
+    } else {
+      process.env.AGDI_CONTAINER = originalAgdiContainer;
     }
     if (originalContainer === undefined) {
       delete process.env.OPENCLAW_CONTAINER;
     } else {
       process.env.OPENCLAW_CONTAINER = originalContainer;
     }
+    if (originalAgdiStateDir === undefined) {
+      delete process.env.AGDI_STATE_DIR;
+    } else {
+      process.env.AGDI_STATE_DIR = originalAgdiStateDir;
+    }
     if (originalStateDir === undefined) {
       delete process.env.OPENCLAW_STATE_DIR;
     } else {
       process.env.OPENCLAW_STATE_DIR = originalStateDir;
+    }
+    if (originalAgdiConfigPath === undefined) {
+      delete process.env.AGDI_CONFIG_PATH;
+    } else {
+      process.env.AGDI_CONFIG_PATH = originalAgdiConfigPath;
     }
     if (originalConfigPath === undefined) {
       delete process.env.OPENCLAW_CONFIG_PATH;
     } else {
       process.env.OPENCLAW_CONFIG_PATH = originalConfigPath;
     }
+    if (originalAgdiGatewayPort === undefined) {
+      delete process.env.AGDI_GATEWAY_PORT;
+    } else {
+      process.env.AGDI_GATEWAY_PORT = originalAgdiGatewayPort;
+    }
     if (originalGatewayPort === undefined) {
       delete process.env.OPENCLAW_GATEWAY_PORT;
     } else {
       process.env.OPENCLAW_GATEWAY_PORT = originalGatewayPort;
+    }
+    if (originalAgdiGatewayUrl === undefined) {
+      delete process.env.AGDI_GATEWAY_URL;
+    } else {
+      process.env.AGDI_GATEWAY_URL = originalAgdiGatewayUrl;
     }
     if (originalGatewayUrl === undefined) {
       delete process.env.OPENCLAW_GATEWAY_URL;
     } else {
       process.env.OPENCLAW_GATEWAY_URL = originalGatewayUrl;
     }
+    if (originalAgdiGatewayToken === undefined) {
+      delete process.env.AGDI_GATEWAY_TOKEN;
+    } else {
+      process.env.AGDI_GATEWAY_TOKEN = originalAgdiGatewayToken;
+    }
     if (originalGatewayToken === undefined) {
       delete process.env.OPENCLAW_GATEWAY_TOKEN;
     } else {
       process.env.OPENCLAW_GATEWAY_TOKEN = originalGatewayToken;
+    }
+    if (originalAgdiGatewayPassword === undefined) {
+      delete process.env.AGDI_GATEWAY_PASSWORD;
+    } else {
+      process.env.AGDI_GATEWAY_PASSWORD = originalAgdiGatewayPassword;
     }
     if (originalGatewayPassword === undefined) {
       delete process.env.OPENCLAW_GATEWAY_PASSWORD;
@@ -125,6 +181,7 @@ describe("runCli profile env bootstrap", () => {
 
     expect(dotenvState.loadDotEnv).toHaveBeenCalledOnce();
     expect(dotenvState.state.profileAtDotenvLoad).toBe("rawdog");
+    expect(process.env.AGDI_PROFILE).toBe("rawdog");
     expect(process.env.OPENCLAW_PROFILE).toBe("rawdog");
   });
 
@@ -168,8 +225,8 @@ describe("runCli profile env bootstrap", () => {
     });
   });
 
-  it("allows container mode when OPENCLAW_PROFILE is already set in env", async () => {
-    process.env.OPENCLAW_PROFILE = "work";
+  it("allows container mode when AGDI_PROFILE is already set in env", async () => {
+    process.env.AGDI_PROFILE = "work";
 
     await expect(
       runCli(["node", "openclaw", "--container", "demo", "status"]),
@@ -177,10 +234,10 @@ describe("runCli profile env bootstrap", () => {
   });
 
   it.each([
-    ["OPENCLAW_GATEWAY_PORT", "19001"],
-    ["OPENCLAW_GATEWAY_URL", "ws://127.0.0.1:18789"],
-    ["OPENCLAW_GATEWAY_TOKEN", "demo-token"],
-    ["OPENCLAW_GATEWAY_PASSWORD", "demo-password"],
+    ["AGDI_GATEWAY_PORT", "19001"],
+    ["AGDI_GATEWAY_URL", "ws://127.0.0.1:18789"],
+    ["AGDI_GATEWAY_TOKEN", "demo-token"],
+    ["AGDI_GATEWAY_PASSWORD", "demo-password"],
   ])("allows container mode when %s is set in env", async (key, value) => {
     process.env[key] = value;
 
@@ -189,16 +246,16 @@ describe("runCli profile env bootstrap", () => {
     ).resolves.toBeUndefined();
   });
 
-  it("allows container mode when only OPENCLAW_STATE_DIR is set in env", async () => {
-    process.env.OPENCLAW_STATE_DIR = "/tmp/openclaw-host-state";
+  it("allows container mode when only AGDI_STATE_DIR is set in env", async () => {
+    process.env.AGDI_STATE_DIR = "/tmp/agdi-host-state";
 
     await expect(
       runCli(["node", "openclaw", "--container", "demo", "status"]),
     ).resolves.toBeUndefined();
   });
 
-  it("allows container mode when only OPENCLAW_CONFIG_PATH is set in env", async () => {
-    process.env.OPENCLAW_CONFIG_PATH = "/tmp/openclaw-host-state/openclaw.json";
+  it("allows container mode when only AGDI_CONFIG_PATH is set in env", async () => {
+    process.env.AGDI_CONFIG_PATH = "/tmp/agdi-host-state/agdi.json";
 
     await expect(
       runCli(["node", "openclaw", "--container", "demo", "status"]),

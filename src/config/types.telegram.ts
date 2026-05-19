@@ -190,7 +190,7 @@ export type TelegramAccountConfig = {
   /**
    * Controls agent's reaction capability:
    * - "off": agent cannot react
-   * - "ack" (default): bot sends acknowledgment reactions (👀 while processing)
+   * - "ack" (default): bot sends acknowledgment reactions (ðŸ‘€ while processing)
    * - "minimal": agent can react sparingly (guideline: 1 per 5-10 exchanges)
    * - "extensive": agent can react liberally when appropriate
    */
@@ -213,7 +213,7 @@ export type TelegramAccountConfig = {
   responsePrefix?: string;
   /**
    * Per-channel ack reaction override.
-   * Telegram expects unicode emoji (e.g., "👀") rather than shortcodes.
+   * Telegram expects unicode emoji (e.g., "ðŸ‘€") rather than shortcodes.
    */
   ackReaction?: string;
   /** Custom Telegram Bot API root URL (e.g. "https://my-proxy.example.com" or a local Bot API server). */

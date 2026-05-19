@@ -15,7 +15,7 @@ import {
 
 const runCronIsolatedAgentTurn = await loadRunCronIsolatedAgentTurn();
 
-describe("runCronIsolatedAgentTurn — interim ack retry", () => {
+describe("runCronIsolatedAgentTurn â€” interim ack retry", () => {
   setupRunCronIsolatedAgentTurnSuite();
 
   const runTurnAndExpectOk = async (expectedFallbackCalls: number, expectedAgentCalls: number) => {

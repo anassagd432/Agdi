@@ -372,7 +372,7 @@ export type ChannelThreadingContext = {
   ReplyToIdFull?: string;
   ThreadLabel?: string;
   MessageThreadId?: string | number;
-  /** Platform-native channel/conversation id (e.g. Slack DM channel "D…" id). */
+  /** Platform-native channel/conversation id (e.g. Slack DM channel "Dâ€¦" id). */
   NativeChannelId?: string;
 };
 

@@ -1,10 +1,10 @@
-import type { ChannelGroupContext } from "openclaw/plugin-sdk/channel-contract";
+import type { ChannelGroupContext } from "agdi/plugin-sdk/channel-contract";
 import {
   resolveToolsBySender,
   type GroupToolPolicyBySenderConfig,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
-import { normalizeAtHashSlug } from "openclaw/plugin-sdk/core";
+} from "agdi/plugin-sdk/channel-policy";
+import { normalizeAtHashSlug } from "agdi/plugin-sdk/core";
 import type { DiscordConfig } from "./runtime-api.js";
 
 function normalizeDiscordSlug(value?: string | null) {

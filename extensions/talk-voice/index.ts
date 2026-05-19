@@ -1,5 +1,5 @@
-import { resolveActiveTalkProviderConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { SpeechVoiceOption } from "openclaw/plugin-sdk/speech";
+import { resolveActiveTalkProviderConfig } from "agdi/plugin-sdk/config-runtime";
+import type { SpeechVoiceOption } from "agdi/plugin-sdk/speech";
 import { definePluginEntry, type OpenClawPluginApi } from "./api.js";
 
 function mask(s: string, keep: number = 6): string {

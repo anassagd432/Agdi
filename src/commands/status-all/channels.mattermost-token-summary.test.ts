@@ -287,7 +287,7 @@ describe("buildChannelsTable - mattermost token summary", () => {
     expectTableDetailRows(table, "Slack accounts", [
       {
         Account: "primary (Primary)",
-        Notes: "bot:config · app:config · secret unavailable in this command path",
+        Notes: "bot:config Â· app:config Â· secret unavailable in this command path",
         Status: "WARN",
       },
     ]);
@@ -319,7 +319,7 @@ describe("buildChannelsTable - mattermost token summary", () => {
     expectTableDetailRows(table, "Slack accounts", [
       {
         Account: "primary (Primary)",
-        Notes: "bot:config · signing:config · secret unavailable in this command path",
+        Notes: "bot:config Â· signing:config Â· secret unavailable in this command path",
         Status: "WARN",
       },
     ]);

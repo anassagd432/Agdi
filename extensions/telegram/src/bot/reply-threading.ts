@@ -1,4 +1,4 @@
-import type { ReplyToMode } from "openclaw/plugin-sdk/config-runtime";
+import type { ReplyToMode } from "agdi/plugin-sdk/config-runtime";
 
 export type DeliveryProgress = {
   hasReplied: boolean;

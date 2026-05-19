@@ -90,7 +90,7 @@ describe("formatUpdateOneLiner", () => {
     });
 
     expect(formatUpdateOneLiner(update)).toBe(
-      `Update: git main · ↔ origin/main · dirty · behind 2 · npm latest ${VERSION} · deps ok`,
+      `Update: git main Â· â†” origin/main Â· dirty Â· behind 2 Â· npm latest ${VERSION} Â· deps ok`,
     );
   });
 
@@ -118,7 +118,7 @@ describe("formatUpdateOneLiner", () => {
     });
 
     expect(formatUpdateOneLiner(update)).toBe(
-      `Update: git main · ↔ origin/main · up to date · npm latest ${VERSION} · deps ok`,
+      `Update: git main Â· â†” origin/main Â· up to date Â· npm latest ${VERSION} Â· deps ok`,
     );
   });
 
@@ -136,7 +136,7 @@ describe("formatUpdateOneLiner", () => {
     });
 
     expect(formatUpdateOneLiner(update)).toBe(
-      `Update: npm · up to date · npm latest ${VERSION} · deps ok`,
+      `Update: npm Â· up to date Â· npm latest ${VERSION} Â· deps ok`,
     );
   });
 
@@ -153,7 +153,7 @@ describe("formatUpdateOneLiner", () => {
       },
     });
 
-    expect(formatUpdateOneLiner(update)).toBe("Update: npm · npm latest unknown · deps missing");
+    expect(formatUpdateOneLiner(update)).toBe("Update: npm Â· npm latest unknown Â· deps missing");
   });
 });
 
@@ -187,7 +187,7 @@ describe("formatUpdateAvailableHint", () => {
     });
 
     expect(formatUpdateAvailableHint(update)).toBe(
-      `Update available (git behind 2 · npm ${latestVersion}). Run: openclaw update`,
+      `Update available (git behind 2 Â· npm ${latestVersion}). Run: agdi update`,
     );
   });
 });

@@ -78,7 +78,7 @@ export async function emitResetCommandHooks(params: {
     }
   }
 
-  // Fire before_reset plugin hook — extract memories before session history is lost
+  // Fire before_reset plugin hook â€” extract memories before session history is lost
   const hookRunner = getGlobalHookRunner();
   if (hookRunner?.hasHooks("before_reset")) {
     const prevEntry = params.previousSessionEntry;
@@ -221,21 +221,21 @@ export async function handleCommands(params: HandleCommandsParams): Promise<Comm
         }
         return {
           shouldContinue: false,
-          reply: { text: "✅ ACP session reset in place." },
+          reply: { text: "âœ… ACP session reset in place." },
         };
       }
       if (resetResult.skipped) {
         return {
           shouldContinue: false,
           reply: {
-            text: "⚠️ ACP session reset unavailable for this bound conversation. Rebind with /acp bind or /acp spawn.",
+            text: "âš ï¸ ACP session reset unavailable for this bound conversation. Rebind with /acp bind or /acp spawn.",
           },
         };
       }
       return {
         shouldContinue: false,
         reply: {
-          text: "⚠️ ACP session reset failed. Check /acp status and try again.",
+          text: "âš ï¸ ACP session reset failed. Check /acp status and try again.",
         },
       };
     }

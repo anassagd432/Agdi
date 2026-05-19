@@ -188,7 +188,7 @@ describe("directive behavior", () => {
       expect(loadSessionStore(storePath)["agent:main:main"]?.fastMode).toBe(true);
 
       const statusText = await runCommand(home, "/status");
-      const optionsLine = statusText?.split("\n").find((line) => line.trim().startsWith("⚙️"));
+      const optionsLine = statusText?.split("\n").find((line) => line.trim().startsWith("âš™ï¸"));
       expect(optionsLine).toContain("Fast: on");
 
       const offText = await runCommand(home, "/fast off");
@@ -214,7 +214,7 @@ describe("directive behavior", () => {
 
       await runElevatedCommand(home, "/elevated on");
       const onStatusText = replyText(await runElevatedCommand(home, "/status"));
-      const optionsLine = onStatusText?.split("\n").find((line) => line.trim().startsWith("⚙️"));
+      const optionsLine = onStatusText?.split("\n").find((line) => line.trim().startsWith("âš™ï¸"));
       expect(optionsLine).toBeTruthy();
       expect(optionsLine).toContain("elevated");
 
@@ -327,7 +327,7 @@ describe("directive behavior", () => {
       const storePath = sessionStorePath(home);
 
       const interruptText = await runQueueDirective(home, "/queue interrupt");
-      expect(interruptText).toMatch(/^⚙️ Queue mode set to interrupt\./);
+      expect(interruptText).toMatch(/^âš™ï¸ Queue mode set to interrupt\./);
       let store = loadSessionStore(storePath);
       let entry = Object.values(store)[0];
       expect(entry?.queueMode).toBe("interrupt");
@@ -337,7 +337,7 @@ describe("directive behavior", () => {
         "/queue collect debounce:2s cap:5 drop:old",
       );
 
-      expect(collectText).toMatch(/^⚙️ Queue mode set to collect\./);
+      expect(collectText).toMatch(/^âš™ï¸ Queue mode set to collect\./);
       expect(collectText).toMatch(/Queue debounce set to 2000ms/);
       expect(collectText).toMatch(/Queue cap set to 5/);
       expect(collectText).toMatch(/Queue drop set to old/);
@@ -349,7 +349,7 @@ describe("directive behavior", () => {
       expect(entry?.queueDrop).toBe("old");
 
       const resetText = await runQueueDirective(home, "/queue reset");
-      expect(resetText).toMatch(/^⚙️ Queue mode reset to default\./);
+      expect(resetText).toMatch(/^âš™ï¸ Queue mode reset to default\./);
       store = loadSessionStore(storePath);
       entry = Object.values(store)[0];
       expect(entry?.queueMode).toBeUndefined();

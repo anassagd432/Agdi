@@ -2,21 +2,21 @@ import {
   attachChannelToResult,
   type ChannelOutboundAdapter,
   createAttachedChannelResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
+} from "agdi/plugin-sdk/channel-send-result";
 import {
   resolveInteractiveTextFallback,
   type InteractiveReply,
-} from "openclaw/plugin-sdk/interactive-runtime";
+} from "agdi/plugin-sdk/interactive-runtime";
 import {
   resolveOutboundSendDep,
   type OutboundIdentity,
-} from "openclaw/plugin-sdk/outbound-runtime";
-import { getGlobalHookRunner } from "openclaw/plugin-sdk/plugin-runtime";
+} from "agdi/plugin-sdk/outbound-runtime";
+import { getGlobalHookRunner } from "agdi/plugin-sdk/plugin-runtime";
 import {
   resolvePayloadMediaUrls,
   sendPayloadMediaSequenceAndFinalize,
   sendTextMediaPayload,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import { parseSlackBlocksInput } from "./blocks-input.js";
 import { buildSlackInteractiveBlocks, type SlackBlock } from "./blocks-render.js";
 import { SLACK_TEXT_LIMIT } from "./limits.js";

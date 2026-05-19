@@ -192,7 +192,7 @@ export function chunkByParagraph(
   const normalized = text.replace(/\r\n?/g, "\n");
 
   // Fast-path: if there are no blank-line paragraph separators, do not split.
-  // (We *do not* early-return based on `limit` — newline mode is about paragraph
+  // (We *do not* early-return based on `limit` â€” newline mode is about paragraph
   // boundaries, not only exceeding a length limit.)
   const paragraphRe = /\n[\t ]*\n+/;
   if (!paragraphRe.test(normalized)) {

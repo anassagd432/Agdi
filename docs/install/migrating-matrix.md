@@ -12,7 +12,7 @@ This page covers upgrades from the previous public `matrix` plugin to the curren
 
 For most users, the upgrade is in place:
 
-- the plugin stays `@agdi/matrix`
+- the plugin stays `@openclaw/matrix`
 - the channel stays `matrix`
 - your config stays under `channels.matrix`
 - cached credentials stay under `~/.agdi/credentials/matrix/`
@@ -194,12 +194,12 @@ If the old store reports room keys that were never backed up, Agdi warns instead
 - Meaning: Agdi detected old Matrix state, but the migration is still blocked on missing identity or credential data.
 - What to do: finish Matrix login or config setup, then rerun `agdi doctor --fix` or restart the gateway.
 
-`Legacy Matrix encrypted state was detected, but the Matrix plugin helper is unavailable. Install or repair @agdi/matrix so Agdi can inspect the old rust crypto store before upgrading.`
+`Legacy Matrix encrypted state was detected, but the Matrix plugin helper is unavailable. Install or repair @openclaw/matrix so Agdi can inspect the old rust crypto store before upgrading.`
 
 - Meaning: Agdi found old encrypted Matrix state, but it could not load the helper entrypoint from the Matrix plugin that normally inspects that store.
-- What to do: reinstall or repair the Matrix plugin (`agdi plugins install @agdi/matrix`, or `agdi plugins install ./extensions/matrix` for a repo checkout), then rerun `agdi doctor --fix` or restart the gateway.
+- What to do: reinstall or repair the Matrix plugin (`agdi plugins install @openclaw/matrix`, or `agdi plugins install ./extensions/matrix` for a repo checkout), then rerun `agdi doctor --fix` or restart the gateway.
 
-`Matrix plugin helper path is unsafe: ... Reinstall @agdi/matrix and try again.`
+`Matrix plugin helper path is unsafe: ... Reinstall @openclaw/matrix and try again.`
 
 - Meaning: Agdi found a helper file path that escapes the plugin root or fails plugin boundary checks, so it refused to import it.
 - What to do: reinstall the Matrix plugin from a trusted path, then rerun `agdi doctor --fix` or restart the gateway.
@@ -219,7 +219,7 @@ If the old store reports room keys that were never backed up, Agdi warns instead
 `Matrix is installed from a custom path: ...`
 
 - Meaning: Matrix is pinned to a path install, so mainline updates do not automatically replace it with the repo's standard Matrix package.
-- What to do: reinstall with `agdi plugins install @agdi/matrix` when you want to return to the default Matrix plugin.
+- What to do: reinstall with `agdi plugins install @openclaw/matrix` when you want to return to the default Matrix plugin.
 
 ### Encrypted-state recovery messages
 
@@ -312,7 +312,7 @@ If you accept losing unrecoverable old encrypted history, you can instead reset 
 `Matrix is installed from a custom path that no longer exists: ...`
 
 - Meaning: your plugin install record points at a local path that is gone.
-- What to do: reinstall with `agdi plugins install @agdi/matrix`, or if you are running from a repo checkout, `agdi plugins install ./extensions/matrix`.
+- What to do: reinstall with `agdi plugins install @openclaw/matrix`, or if you are running from a repo checkout, `agdi plugins install ./extensions/matrix`.
 
 ## If encrypted history still does not come back
 

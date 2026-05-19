@@ -141,7 +141,7 @@ function formatApprovalCommand(command: string): { inline: boolean; text: string
 }
 
 function buildRequestMessage(request: ExecApprovalRequest, nowMs: number) {
-  const lines: string[] = ["🔒 Exec approval required", `ID: ${request.id}`];
+  const lines: string[] = ["ðŸ”’ Exec approval required", `ID: ${request.id}`];
   const command = formatApprovalCommand(
     resolveExecApprovalCommandDisplay(request.request).commandText,
   );
@@ -193,13 +193,13 @@ function decisionLabel(decision: ExecApprovalDecision): string {
 }
 
 function buildResolvedMessage(resolved: ExecApprovalResolved) {
-  const base = `✅ Exec approval ${decisionLabel(resolved.decision)}.`;
+  const base = `âœ… Exec approval ${decisionLabel(resolved.decision)}.`;
   const by = resolved.resolvedBy ? ` Resolved by ${resolved.resolvedBy}.` : "";
   return `${base}${by} ID: ${resolved.id}`;
 }
 
 function buildExpiredMessage(request: ExecApprovalRequest) {
-  return `⏱️ Exec approval expired. ID: ${request.id}`;
+  return `â±ï¸ Exec approval expired. ID: ${request.id}`;
 }
 
 function normalizeTurnSourceChannel(value?: string | null): DeliverableMessageChannel | undefined {

@@ -1,13 +1,13 @@
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/config-runtime";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { resolveMarkdownTableMode } from "agdi/plugin-sdk/config-runtime";
 import {
   deliverTextOrMediaReply,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import { chunkTextWithMode, resolveChunkMode } from "openclaw/plugin-sdk/reply-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/reply-payload";
+import { chunkTextWithMode, resolveChunkMode } from "agdi/plugin-sdk/reply-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { convertMarkdownTables } from "agdi/plugin-sdk/text-runtime";
 import type { createIMessageRpcClient } from "../client.js";
 import { sendMessageIMessage } from "../send.js";
 import type { SentMessageCache } from "./echo-cache.js";

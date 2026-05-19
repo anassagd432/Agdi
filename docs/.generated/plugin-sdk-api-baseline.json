@@ -636,7 +636,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk",
+      "importSpecifier": "agdi/plugin-sdk",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/index.ts"
@@ -890,7 +890,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/allow-from",
+      "importSpecifier": "agdi/plugin-sdk/allow-from",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/allow-from.ts"
@@ -946,7 +946,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-actions",
+      "importSpecifier": "agdi/plugin-sdk/channel-actions",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-actions.ts"
@@ -1029,7 +1029,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-config-schema",
+      "importSpecifier": "agdi/plugin-sdk/channel-config-schema",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-config-schema.ts"
@@ -1166,7 +1166,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-contract",
+      "importSpecifier": "agdi/plugin-sdk/channel-contract",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-contract.ts"
@@ -1231,7 +1231,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-pairing",
+      "importSpecifier": "agdi/plugin-sdk/channel-pairing",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-pairing.ts"
@@ -1305,7 +1305,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-reply-pipeline",
+      "importSpecifier": "agdi/plugin-sdk/channel-reply-pipeline",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-reply-pipeline.ts"
@@ -2216,7 +2216,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-runtime",
+      "importSpecifier": "agdi/plugin-sdk/channel-runtime",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-runtime.ts"
@@ -2344,7 +2344,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/channel-setup",
+      "importSpecifier": "agdi/plugin-sdk/channel-setup",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/channel-setup.ts"
@@ -2967,7 +2967,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/command-auth",
+      "importSpecifier": "agdi/plugin-sdk/command-auth",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/command-auth.ts"
@@ -3072,7 +3072,7 @@
           "exportName": "definePluginEntry",
           "kind": "function",
           "source": {
-            "line": 88,
+            "line": 89,
             "path": "src/plugin-sdk/plugin-entry.ts"
           }
         },
@@ -3234,7 +3234,7 @@
           "exportName": "resolveGatewayPort",
           "kind": "function",
           "source": {
-            "line": 285,
+            "line": 291,
             "path": "src/config/paths.ts"
           }
         },
@@ -3317,6 +3317,15 @@
           "source": {
             "line": 5,
             "path": "src/infra/secret-file.ts"
+          }
+        },
+        {
+          "declaration": "export type OpenClawPluginApi = OpenClawPluginApi;",
+          "exportName": "AGDIPluginApi",
+          "kind": "type",
+          "source": {
+            "line": 1314,
+            "path": "src/plugins/types.ts"
           }
         },
         {
@@ -3860,7 +3869,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/core",
+      "importSpecifier": "agdi/plugin-sdk/core",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/core.ts"
@@ -3875,7 +3884,7 @@
           "exportName": "definePluginEntry",
           "kind": "function",
           "source": {
-            "line": 88,
+            "line": 89,
             "path": "src/plugin-sdk/plugin-entry.ts"
           }
         },
@@ -3886,6 +3895,15 @@
           "source": {
             "line": 13,
             "path": "src/plugins/config-schema.ts"
+          }
+        },
+        {
+          "declaration": "export type OpenClawPluginApi = OpenClawPluginApi;",
+          "exportName": "AGDIPluginApi",
+          "kind": "type",
+          "source": {
+            "line": 1314,
+            "path": "src/plugins/types.ts"
           }
         },
         {
@@ -4249,7 +4267,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/plugin-entry",
+      "importSpecifier": "agdi/plugin-sdk/plugin-entry",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/plugin-entry.ts"
@@ -4485,7 +4503,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/provider-onboard",
+      "importSpecifier": "agdi/plugin-sdk/provider-onboard",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/provider-onboard.ts"
@@ -4721,7 +4739,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/reply-payload",
+      "importSpecifier": "agdi/plugin-sdk/reply-payload",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/reply-payload.ts"
@@ -4750,7 +4768,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/runtime-store",
+      "importSpecifier": "agdi/plugin-sdk/runtime-store",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/runtime-store.ts"
@@ -4824,7 +4842,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/secret-input",
+      "importSpecifier": "agdi/plugin-sdk/secret-input",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/secret-input.ts"
@@ -4925,7 +4943,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/testing",
+      "importSpecifier": "agdi/plugin-sdk/testing",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/testing.ts"
@@ -5278,7 +5296,7 @@
           }
         }
       ],
-      "importSpecifier": "openclaw/plugin-sdk/webhook-ingress",
+      "importSpecifier": "agdi/plugin-sdk/webhook-ingress",
       "source": {
         "line": 1,
         "path": "src/plugin-sdk/webhook-ingress.ts"

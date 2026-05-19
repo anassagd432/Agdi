@@ -44,7 +44,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("runHeartbeatOnce – heartbeat model override", () => {
+describe("runHeartbeatOnce â€“ heartbeat model override", () => {
   async function runHeartbeatWithSeed(params: {
     seedSession: (sessionKey: string, input: SeedSessionInput) => Promise<void>;
     cfg: OpenClawConfig;

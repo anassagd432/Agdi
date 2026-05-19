@@ -4,8 +4,8 @@ import {
   normalizeAccountId,
   resolveAccountEntry,
   resolveMergedAccountConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { isSecretRef, type OpenClawConfig } from "openclaw/plugin-sdk/core";
+} from "agdi/plugin-sdk/account-resolution";
+import { isSecretRef, type OpenClawConfig } from "agdi/plugin-sdk/core";
 import type { GoogleChatAccountConfig } from "./types.config.js";
 
 export type GoogleChatCredentialSource = "file" | "inline" | "env" | "none";

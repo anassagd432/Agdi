@@ -4,8 +4,8 @@
  * Consolidates 7+ scattered implementations (formatAge, formatAgeShort, formatAgo,
  * formatRelativeTime, formatElapsedTime) into two functions:
  *
- * - `formatTimeAgo(durationMs)` — format a duration as "5m ago" / "5m" (for known elapsed time)
- * - `formatRelativeTimestamp(epochMs)` — format an epoch timestamp relative to now (handles future)
+ * - `formatTimeAgo(durationMs)` â€” format a duration as "5m ago" / "5m" (for known elapsed time)
+ * - `formatRelativeTimestamp(epochMs)` â€” format an epoch timestamp relative to now (handles future)
  */
 
 export type FormatTimeAgoOptions = {

@@ -258,7 +258,7 @@ function formatAuthIssueLine(issue: AuthIssue): string {
     issue.remainingMs !== undefined ? ` (${formatRemainingShort(issue.remainingMs)})` : "";
   const hint = formatAuthIssueHint(issue);
   const reason = issue.reasonCode ? ` [${issue.reasonCode}]` : "";
-  return `- ${issue.profileId}: ${issue.status}${reason}${remaining}${hint ? ` — ${hint}` : ""}`;
+  return `- ${issue.profileId}: ${issue.status}${reason}${remaining}${hint ? ` â€” ${hint}` : ""}`;
 }
 
 export async function noteAuthProfileHealth(params: {
@@ -287,7 +287,7 @@ export async function noteAuthProfileHealth(params: {
         kind: disabledActive ? "disabled" : "cooldown",
         reason: stats?.disabledReason,
       });
-      out.push(`- ${profileId}: ${kind} (${remaining})${hint ? ` — ${hint}` : ""}`);
+      out.push(`- ${profileId}: ${kind} (${remaining})${hint ? ` â€” ${hint}` : ""}`);
     }
     return out;
   })();

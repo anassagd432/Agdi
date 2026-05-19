@@ -1,17 +1,17 @@
-import { resolveAckReaction } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveAckReaction } from "agdi/plugin-sdk/agent-runtime";
 import {
   createStatusReactionController,
   shouldAckReaction as shouldAckReactionGate,
   type StatusReactionController,
-} from "openclaw/plugin-sdk/channel-feedback";
-import { logInboundDrop } from "openclaw/plugin-sdk/channel-inbound";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { TelegramDirectConfig, TelegramGroupConfig } from "openclaw/plugin-sdk/config-runtime";
-import { ensureConfiguredBindingRouteReady } from "openclaw/plugin-sdk/conversation-runtime";
-import { recordChannelActivity } from "openclaw/plugin-sdk/infra-runtime";
-import { deriveLastRoutePolicy } from "openclaw/plugin-sdk/routing";
-import { DEFAULT_ACCOUNT_ID, resolveThreadSessionKeys } from "openclaw/plugin-sdk/routing";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/channel-feedback";
+import { logInboundDrop } from "agdi/plugin-sdk/channel-inbound";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import type { TelegramDirectConfig, TelegramGroupConfig } from "agdi/plugin-sdk/config-runtime";
+import { ensureConfiguredBindingRouteReady } from "agdi/plugin-sdk/conversation-runtime";
+import { recordChannelActivity } from "agdi/plugin-sdk/infra-runtime";
+import { deriveLastRoutePolicy } from "agdi/plugin-sdk/routing";
+import { DEFAULT_ACCOUNT_ID, resolveThreadSessionKeys } from "agdi/plugin-sdk/routing";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import { firstDefined, normalizeAllowFrom, normalizeDmAllowFromWithStore } from "./bot-access.js";
 import { resolveTelegramInboundBody } from "./bot-message-context.body.js";

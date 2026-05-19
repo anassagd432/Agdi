@@ -1,4 +1,4 @@
-import { mapAllowlistResolutionInputs } from "openclaw/plugin-sdk/allow-from";
+import { mapAllowlistResolutionInputs } from "agdi/plugin-sdk/allow-from";
 import { searchGraphUsers } from "./graph-users.js";
 import {
   listChannelsForTeam,

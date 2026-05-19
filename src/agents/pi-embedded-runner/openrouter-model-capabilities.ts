@@ -9,7 +9,7 @@
  * 2. On-disk JSON file (<stateDir>/cache/openrouter-models.json)
  * 3. OpenRouter API fetch (populates both layers)
  *
- * Model capabilities are assumed stable — the cache has no TTL expiry.
+ * Model capabilities are assumed stable â€” the cache has no TTL expiry.
  * A background refresh is triggered only when a model is not found in
  * the cache (i.e. a newly added model on OpenRouter).
  *
@@ -235,7 +235,7 @@ function triggerFetch(): void {
 /**
  * Ensure the cache is populated. Checks in-memory first, then disk, then
  * triggers a background API fetch as a last resort.
- * Does not block — returns immediately.
+ * Does not block â€” returns immediately.
  */
 export function ensureOpenRouterModelCache(): void {
   if (cache) {
@@ -288,7 +288,7 @@ export function getOpenRouterModelCapabilities(
   ensureOpenRouterModelCache();
   const result = cache?.get(modelId);
 
-  // Model not found but cache exists — may be a newly added model.
+  // Model not found but cache exists â€” may be a newly added model.
   // Trigger a refresh so the next call picks it up.
   if (!result && skipNextMissRefresh.delete(modelId)) {
     return undefined;

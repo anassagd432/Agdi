@@ -29,9 +29,9 @@ vi.mock("node:child_process", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/provider-auth", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/provider-auth")>(
-    "openclaw/plugin-sdk/provider-auth",
+vi.mock("agdi/plugin-sdk/provider-auth", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/provider-auth")>(
+    "agdi/plugin-sdk/provider-auth",
   );
   return {
     ...actual,

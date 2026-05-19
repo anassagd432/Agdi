@@ -35,7 +35,11 @@ export function buildCliRespawnPlan(
   const execArgv = params.execArgv ?? process.execArgv;
   const execPath = params.execPath ?? process.execPath;
 
-  if (shouldSkipRespawnForArgv(argv) || isTruthyEnvValue(env.OPENCLAW_NO_RESPAWN)) {
+  if (
+    shouldSkipRespawnForArgv(argv) ||
+    isTruthyEnvValue(env.AGDI_NO_RESPAWN) ||
+    isTruthyEnvValue(env.OPENCLAW_NO_RESPAWN)
+  ) {
     return null;
   }
 

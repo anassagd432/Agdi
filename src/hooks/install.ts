@@ -296,7 +296,7 @@ async function installHookPackageFromDir(
     timeoutMs,
     logger,
     copyErrorPrefix: "failed to copy hook pack",
-    depsLogMessage: "Installing hook pack dependencies…",
+    depsLogMessage: "Installing hook pack dependenciesâ€¦",
     manifestDependencies: manifest.dependencies,
   });
   if (!installRes.ok) {
@@ -360,7 +360,7 @@ async function installHookFromDir(params: {
     logger,
     copyErrorPrefix: "failed to copy hook",
     hasDeps: false,
-    depsLogMessage: "Installing hook dependencies…",
+    depsLogMessage: "Installing hook dependenciesâ€¦",
   });
   if (!installRes.ok) {
     return installRes;
@@ -420,7 +420,7 @@ export async function installHooksFromNpmSpec(params: {
   const expectedHookPackId = params.expectedHookPackId;
   const spec = params.spec;
 
-  logger.info?.(`Downloading ${spec.trim()}…`);
+  logger.info?.(`Downloading ${spec.trim()}â€¦`);
   return await runtime.installFromValidatedNpmSpecArchive({
     tempDirPrefix: "openclaw-hook-pack-",
     spec,

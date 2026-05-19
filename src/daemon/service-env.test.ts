@@ -285,15 +285,21 @@ describe("buildServiceEnvironment", () => {
     } else {
       expect(env.PATH).toContain("/usr/bin");
     }
+    expect(env.AGDI_GATEWAY_PORT).toBe("18789");
+    expect(env.AGDI_SERVICE_MARKER).toBe("agdi");
+    expect(env.AGDI_SERVICE_KIND).toBe("gateway");
+    expect(env.AGDI_SYSTEMD_UNIT).toBe("agdi-gateway.service");
+    expect(env.AGDI_WINDOWS_TASK_NAME).toBe("Agdi Gateway");
     expect(env.OPENCLAW_GATEWAY_PORT).toBe("18789");
     expect(env.OPENCLAW_GATEWAY_TOKEN).toBeUndefined();
-    expect(env.OPENCLAW_SERVICE_MARKER).toBe("openclaw");
+    expect(env.OPENCLAW_SERVICE_MARKER).toBe("agdi");
     expect(env.OPENCLAW_SERVICE_KIND).toBe("gateway");
     expect(typeof env.OPENCLAW_SERVICE_VERSION).toBe("string");
-    expect(env.OPENCLAW_SYSTEMD_UNIT).toBe("openclaw-gateway.service");
-    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("OpenClaw Gateway");
+    expect(env.OPENCLAW_SYSTEMD_UNIT).toBe("agdi-gateway.service");
+    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("Agdi Gateway");
     if (process.platform === "darwin") {
-      expect(env.OPENCLAW_LAUNCHD_LABEL).toBe("ai.openclaw.gateway");
+      expect(env.AGDI_LAUNCHD_LABEL).toBe("ai.agdi.gateway");
+      expect(env.OPENCLAW_LAUNCHD_LABEL).toBe("ai.agdi.gateway");
     }
   });
 
@@ -315,13 +321,18 @@ describe("buildServiceEnvironment", () => {
 
   it("uses profile-specific unit and label", () => {
     const env = buildServiceEnvironment({
-      env: { HOME: "/home/user", OPENCLAW_PROFILE: "work" },
+      env: { HOME: "/home/user", AGDI_PROFILE: "work", OPENCLAW_PROFILE: "legacy" },
       port: 18789,
     });
-    expect(env.OPENCLAW_SYSTEMD_UNIT).toBe("openclaw-gateway-work.service");
-    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("OpenClaw Gateway (work)");
+    expect(env.AGDI_PROFILE).toBe("work");
+    expect(env.OPENCLAW_PROFILE).toBe("work");
+    expect(env.AGDI_SYSTEMD_UNIT).toBe("agdi-gateway-work.service");
+    expect(env.OPENCLAW_SYSTEMD_UNIT).toBe("agdi-gateway-work.service");
+    expect(env.AGDI_WINDOWS_TASK_NAME).toBe("Agdi Gateway (work)");
+    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("Agdi Gateway (work)");
     if (process.platform === "darwin") {
-      expect(env.OPENCLAW_LAUNCHD_LABEL).toBe("ai.openclaw.work");
+      expect(env.AGDI_LAUNCHD_LABEL).toBe("ai.agdi.work");
+      expect(env.OPENCLAW_LAUNCHD_LABEL).toBe("ai.agdi.work");
     }
   });
 
@@ -356,7 +367,8 @@ describe("buildServiceEnvironment", () => {
     });
 
     expect(env).not.toHaveProperty("PATH");
-    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("OpenClaw Gateway");
+    expect(env.AGDI_WINDOWS_TASK_NAME).toBe("Agdi Gateway");
+    expect(env.OPENCLAW_WINDOWS_TASK_NAME).toBe("Agdi Gateway");
   });
 
   it("prepends extra runtime directories to the gateway service PATH", () => {
@@ -381,11 +393,16 @@ describe("buildNodeServiceEnvironment", () => {
     expect(env.HOME).toBe("/home/user");
   });
 
-  it("passes through OPENCLAW_GATEWAY_TOKEN for node services", () => {
+  it("prefers AGDI_GATEWAY_TOKEN for node services", () => {
     const env = buildNodeServiceEnvironment({
-      env: { HOME: "/home/user", OPENCLAW_GATEWAY_TOKEN: " node-token " },
+      env: {
+        HOME: "/home/user",
+        AGDI_GATEWAY_TOKEN: " agdi-token ",
+        OPENCLAW_GATEWAY_TOKEN: " legacy-token ",
+      },
     });
-    expect(env.OPENCLAW_GATEWAY_TOKEN).toBe("node-token");
+    expect(env.AGDI_GATEWAY_TOKEN).toBe("agdi-token");
+    expect(env.OPENCLAW_GATEWAY_TOKEN).toBe("agdi-token");
   });
 
   it("omits OPENCLAW_GATEWAY_TOKEN when the env var is empty", () => {
@@ -499,7 +516,16 @@ describe("resolveGatewayStateDir", () => {
     expect(resolveGatewayStateDir(env)).toBe(path.join("/Users/test", ".openclaw"));
   });
 
-  it("uses OPENCLAW_STATE_DIR when provided", () => {
+  it("uses AGDI_STATE_DIR when provided", () => {
+    const env = {
+      HOME: "/Users/test",
+      AGDI_STATE_DIR: "/var/lib/agdi",
+      OPENCLAW_STATE_DIR: "/var/lib/openclaw",
+    };
+    expect(resolveGatewayStateDir(env)).toBe(path.resolve("/var/lib/agdi"));
+  });
+
+  it("falls back to OPENCLAW_STATE_DIR when AGDI_STATE_DIR is absent", () => {
     const env = { HOME: "/Users/test", OPENCLAW_STATE_DIR: "/var/lib/openclaw" };
     expect(resolveGatewayStateDir(env)).toBe(path.resolve("/var/lib/openclaw"));
   });

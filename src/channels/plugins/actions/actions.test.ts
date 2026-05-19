@@ -1119,7 +1119,7 @@ describe("signalMessageActions", () => {
       channels: { signal: { account: "+15550001111", actions: { reactions: false } } },
     } as OpenClawConfig;
     await expectSignalActionRejected(
-      { to: "+15550001111", messageId: "123", emoji: "✅" },
+      { to: "+15550001111", messageId: "123", emoji: "âœ…" },
       /actions\.reactions/,
       cfg,
     );
@@ -1131,10 +1131,10 @@ describe("signalMessageActions", () => {
         name: "uses account-level actions when enabled",
         cfg: createSignalAccountOverrideCfg(),
         accountId: "work",
-        params: { to: "+15550001111", messageId: "123", emoji: "👍" },
+        params: { to: "+15550001111", messageId: "123", emoji: "ðŸ‘" },
         expectedRecipient: "+15550001111",
         expectedTimestamp: 123,
-        expectedEmoji: "👍",
+        expectedEmoji: "ðŸ‘",
         expectedOptions: { accountId: "work" },
       },
       {
@@ -1144,11 +1144,11 @@ describe("signalMessageActions", () => {
         params: {
           recipient: "uuid:123e4567-e89b-12d3-a456-426614174000",
           messageId: "123",
-          emoji: "🔥",
+          emoji: "ðŸ”¥",
         },
         expectedRecipient: "123e4567-e89b-12d3-a456-426614174000",
         expectedTimestamp: 123,
-        expectedEmoji: "🔥",
+        expectedEmoji: "ðŸ”¥",
         expectedOptions: {},
       },
       {
@@ -1159,11 +1159,11 @@ describe("signalMessageActions", () => {
           to: "signal:group:group-id",
           targetAuthor: "uuid:123e4567-e89b-12d3-a456-426614174000",
           messageId: "123",
-          emoji: "✅",
+          emoji: "âœ…",
         },
         expectedRecipient: "",
         expectedTimestamp: 123,
-        expectedEmoji: "✅",
+        expectedEmoji: "âœ…",
         expectedOptions: {
           groupId: "group-id",
           targetAuthor: "uuid:123e4567-e89b-12d3-a456-426614174000",
@@ -1174,10 +1174,10 @@ describe("signalMessageActions", () => {
         name: "falls back to toolContext.currentMessageId when messageId is omitted",
         cfg: { channels: { signal: { account: "+15550001111" } } } as OpenClawConfig,
         accountId: undefined,
-        params: { to: "+15559999999", emoji: "🔥" },
+        params: { to: "+15559999999", emoji: "ðŸ”¥" },
         expectedRecipient: "+15559999999",
         expectedTimestamp: 1737630212345,
-        expectedEmoji: "🔥",
+        expectedEmoji: "ðŸ”¥",
         expectedOptions: {},
         toolContext: { currentMessageId: "1737630212345" },
       },
@@ -1208,11 +1208,11 @@ describe("signalMessageActions", () => {
     } as OpenClawConfig;
     for (const testCase of [
       {
-        params: { to: "+15559999999", emoji: "✅" },
+        params: { to: "+15559999999", emoji: "âœ…" },
         error: /messageId.*required/,
       },
       {
-        params: { to: "signal:group:group-id", messageId: "123", emoji: "✅" },
+        params: { to: "signal:group:group-id", messageId: "123", emoji: "âœ…" },
         error: /targetAuthor/,
       },
     ] as const) {

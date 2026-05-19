@@ -376,7 +376,7 @@ function recordPluginError(params: {
   diagnosticMessagePrefix: string;
 }) {
   const errorText =
-    process.env.OPENCLAW_PLUGIN_LOADER_DEBUG_STACKS === "1" &&
+    (process.env.AGDI_PLUGIN_LOADER_DEBUG_STACKS ?? process.env.OPENCLAW_PLUGIN_LOADER_DEBUG_STACKS) === "1" &&
     params.error instanceof Error &&
     typeof params.error.stack === "string"
       ? params.error.stack
@@ -687,7 +687,7 @@ export function loadOpenClawPlugins(options: PluginLoadOptions = {}): PluginRegi
   // NOTE: `activate` is intentionally excluded from the cache key. All non-activating
   // (snapshot) callers pass `cache: false` via loadOnboardingPluginRegistry(), so they
   // never read from or write to the cache. Including `activate` here would be misleading
-  // — it would imply mixed-activate caching is supported, when in practice it is not.
+  // â€” it would imply mixed-activate caching is supported, when in practice it is not.
   const cacheKey = buildCacheKey({
     workspaceDir: options.workspaceDir,
     plugins: normalized,

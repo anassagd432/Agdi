@@ -180,7 +180,7 @@ export function registerFounderOpsCli(program: Command) {
       .addHelpText(
         "after",
         () =>
-          `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/status", "docs.openclaw.ai/cli/status")}\n`,
+          `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/status", "docs.agdi.ai/cli/status")}\n`,
       ),
   );
 

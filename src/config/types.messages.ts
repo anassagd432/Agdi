@@ -99,7 +99,7 @@ export type MessagesConfig = {
    * - `{thinkingLevel}` or `{think}` - current thinking level (`high`, `low`, `off`)
    * - `{identity.name}` or `{identityName}` - agent identity name
    *
-   * Example: `"[{model} | think:{thinkingLevel}]"` → `"[claude-opus-4-6 | think:high]"`
+   * Example: `"[{model} | think:{thinkingLevel}]"` â†’ `"[claude-opus-4-6 | think:high]"`
    *
    * Unresolved variables remain as literal text (e.g., `{model}` if context unavailable).
    *
@@ -118,7 +118,7 @@ export type MessagesConfig = {
   removeAckAfterReply?: boolean;
   /** Lifecycle status reactions configuration. */
   statusReactions?: StatusReactionsConfig;
-  /** When true, suppress ⚠️ tool-error warnings from being shown to the user. Default: false. */
+  /** When true, suppress âš ï¸ tool-error warnings from being shown to the user. Default: false. */
   suppressToolErrors?: boolean;
   /** Text-to-speech settings for outbound replies. */
   tts?: TtsConfig;

@@ -1,15 +1,15 @@
-import type { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
+import type { createChannelPairingChallengeIssuer } from "agdi/plugin-sdk/channel-pairing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const createChannelPairingChallengeIssuerMock = vi.hoisted(() => vi.fn());
 const upsertChannelPairingRequestMock = vi.hoisted(() => vi.fn(async () => undefined));
 const withTelegramApiErrorLoggingMock = vi.hoisted(() => vi.fn(async ({ fn }) => await fn()));
 
-vi.mock("openclaw/plugin-sdk/channel-pairing", () => ({
+vi.mock("agdi/plugin-sdk/channel-pairing", () => ({
   createChannelPairingChallengeIssuer: createChannelPairingChallengeIssuerMock,
 }));
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", () => ({
+vi.mock("agdi/plugin-sdk/conversation-runtime", () => ({
   upsertChannelPairingRequest: upsertChannelPairingRequestMock,
 }));
 

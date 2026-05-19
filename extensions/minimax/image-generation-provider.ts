@@ -1,5 +1,5 @@
-import type { ImageGenerationProvider } from "openclaw/plugin-sdk/image-generation";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth";
+import type { ImageGenerationProvider } from "agdi/plugin-sdk/image-generation";
+import { resolveApiKeyForProvider } from "agdi/plugin-sdk/provider-auth";
 
 const DEFAULT_MINIMAX_IMAGE_BASE_URL = "https://api.minimax.io";
 const DEFAULT_MODEL = "image-01";

@@ -402,7 +402,7 @@ describe("channel-health-monitor", () => {
     monitor.stop();
   });
 
-  it("applies cooldown — skips recently restarted channels for 2 cycles", async () => {
+  it("applies cooldown â€” skips recently restarted channels for 2 cycles", async () => {
     const manager = createSnapshotManager({
       discord: {
         default: managedStoppedAccount("crashed"),

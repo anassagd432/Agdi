@@ -504,7 +504,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     };
     fs.writeFileSync(fixture.storePath(), JSON.stringify(store), "utf-8");
 
-    // Pass a mixed-case key — append should still find the entry via normalization
+    // Pass a mixed-case key â€” append should still find the entry via normalization
     const result = await appendAssistantMessageToSessionTranscript({
       sessionKey: "agent:main:BlueBubbles:direct:+15551234567",
       text: "Hello normalized!",
@@ -527,7 +527,7 @@ describe("appendAssistantMessageToSessionTranscript", () => {
     };
     fs.writeFileSync(fixture.storePath(), JSON.stringify(store), "utf-8");
 
-    // Pass a mixed-case key (as resolveSlackSession might produce) — normalization should match
+    // Pass a mixed-case key (as resolveSlackSession might produce) â€” normalization should match
     const result = await appendAssistantMessageToSessionTranscript({
       sessionKey: "agent:main:slack:direct:U12345ABC",
       text: "Hello Slack user!",

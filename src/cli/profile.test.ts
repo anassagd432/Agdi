@@ -5,13 +5,7 @@ import { applyCliProfileEnv, parseCliProfileArgs } from "./profile.js";
 
 describe("parseCliProfileArgs", () => {
   it("leaves gateway --dev for subcommands", () => {
-    const res = parseCliProfileArgs([
-      "node",
-      "agdi",
-      "gateway",
-      "--dev",
-      "--allow-unconfigured",
-    ]);
+    const res = parseCliProfileArgs(["node", "agdi", "gateway", "--dev", "--allow-unconfigured"]);
     if (!res.ok) {
       throw new Error(res.error);
     }
@@ -235,8 +229,14 @@ describe("formatCliCommand", () => {
   });
 
   it("keeps legacy openclaw command names when invoked through the compatibility wrapper", () => {
-    expect(formatCliCommand("openclaw doctor --fix", { AGDI_PROFILE: "work" })).toBe(
-      "openclaw --profile work doctor --fix",
-    );
+    const originalArgv = process.argv;
+    process.argv = ["node", "openclaw", "status"];
+    try {
+      expect(formatCliCommand("agdi doctor --fix", { AGDI_PROFILE: "work" })).toBe(
+        "openclaw --profile work doctor --fix",
+      );
+    } finally {
+      process.argv = originalArgv;
+    }
   });
 });

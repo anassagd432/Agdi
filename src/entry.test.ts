@@ -5,7 +5,7 @@ describe("entry root help fast path", () => {
   it("renders root help without importing the full program", () => {
     const outputRootHelpMock = vi.fn();
 
-    const handled = tryHandleRootHelpFastPath(["node", "openclaw", "--help"], {
+    const handled = tryHandleRootHelpFastPath(["node", "agdi", "--help"], {
       outputRootHelp: outputRootHelpMock,
       env: {},
     });
@@ -17,7 +17,7 @@ describe("entry root help fast path", () => {
   it("ignores non-root help invocations", () => {
     const outputRootHelpMock = vi.fn();
 
-    const handled = tryHandleRootHelpFastPath(["node", "openclaw", "status", "--help"], {
+    const handled = tryHandleRootHelpFastPath(["node", "agdi", "status", "--help"], {
       outputRootHelp: outputRootHelpMock,
       env: {},
     });
@@ -29,13 +29,10 @@ describe("entry root help fast path", () => {
   it("skips the host help fast path when a container target is active", () => {
     const outputRootHelpMock = vi.fn();
 
-    const handled = tryHandleRootHelpFastPath(
-      ["node", "openclaw", "--container", "demo", "--help"],
-      {
-        outputRootHelp: outputRootHelpMock,
-        env: {},
-      },
-    );
+    const handled = tryHandleRootHelpFastPath(["node", "agdi", "--container", "demo", "--help"], {
+      outputRootHelp: outputRootHelpMock,
+      env: {},
+    });
 
     expect(handled).toBe(false);
     expect(outputRootHelpMock).not.toHaveBeenCalled();

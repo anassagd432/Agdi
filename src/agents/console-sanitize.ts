@@ -19,5 +19,5 @@ export function sanitizeForConsole(text: string | undefined, maxChars = 200): st
     .replace(/[\r\n\t]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  return sanitized.length > maxChars ? `${sanitized.slice(0, maxChars)}…` : sanitized;
+  return sanitized.length > maxChars ? `${sanitized.slice(0, maxChars)}â€¦` : sanitized;
 }

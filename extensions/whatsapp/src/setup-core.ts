@@ -3,7 +3,7 @@ import {
   type ChannelSetupAdapter,
   migrateBaseNameToDefaultAccount,
   normalizeAccountId,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 
 const channel = "whatsapp" as const;
 

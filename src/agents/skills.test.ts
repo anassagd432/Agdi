@@ -143,7 +143,7 @@ describe("buildWorkspaceSkillCommandSpecs", () => {
     const shortCmd = commands.find((entry) => entry.skillName === "short-desc");
 
     expect(longCmd?.description.length).toBeLessThanOrEqual(100);
-    expect(longCmd?.description.endsWith("…")).toBe(true);
+    expect(longCmd?.description.endsWith("â€¦")).toBe(true);
     expect(shortCmd?.description).toBe("Short description");
   });
 

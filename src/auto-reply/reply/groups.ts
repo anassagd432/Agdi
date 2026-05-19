@@ -164,7 +164,7 @@ export function buildGroupChatContext(params: { sessionCtx: TemplateContext }): 
     lines.push(`Participants: ${members}.`);
   }
   lines.push(
-    "Your replies are automatically sent to this group chat. Do not use the message tool to send to this same group — just reply normally.",
+    "Your replies are automatically sent to this group chat. Do not use the message tool to send to this same group â€” just reply normally.",
   );
   return lines.join(" ");
 }

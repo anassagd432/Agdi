@@ -76,7 +76,7 @@ describe("node-host sanitizeEnv", () => {
 describe("node-host output decoding", () => {
   it("parses code pages from chcp output text", () => {
     expect(parseWindowsCodePage("Active code page: 936")).toBe(936);
-    expect(parseWindowsCodePage("活动代码页: 65001")).toBe(65001);
+    expect(parseWindowsCodePage("æ´»åŠ¨ä»£ç é¡µ: 65001")).toBe(65001);
     expect(parseWindowsCodePage("no code page")).toBeNull();
   });
 
@@ -96,10 +96,10 @@ describe("node-host output decoding", () => {
     });
 
     if (!supportsGbk) {
-      expect(decoded).toContain("�");
+      expect(decoded).toContain("ï¿½");
       return;
     }
-    expect(decoded).toBe("测试～；");
+    expect(decoded).toBe("æµ‹è¯•ï½žï¼›");
   });
 });
 

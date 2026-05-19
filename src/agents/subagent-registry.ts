@@ -810,7 +810,7 @@ function restoreSubagentRunsOnce() {
         scheduleOrphanRecovery({ getActiveRuns: () => subagentRuns });
       },
       () => {
-        // Ignore import failures — orphan recovery is best-effort.
+        // Ignore import failures â€” orphan recovery is best-effort.
       },
     );
   } catch {

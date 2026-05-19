@@ -461,7 +461,7 @@ describe("runWithModelFallback", () => {
       run,
     });
 
-    // Override model failed with model_not_found → falls back to configured primary.
+    // Override model failed with model_not_found â†’ falls back to configured primary.
     // (Same candidate-resolution path as other override-model failures.)
     expect(result.result).toBe("ok");
     expect(run).toHaveBeenCalledTimes(2);
@@ -483,7 +483,7 @@ describe("runWithModelFallback", () => {
       run,
     });
 
-    // Override model failed with model_not_found → tries fallbacks first (same provider).
+    // Override model failed with model_not_found â†’ tries fallbacks first (same provider).
     expect(result.result).toBe("ok");
     expect(run).toHaveBeenCalledTimes(2);
     expect(run.mock.calls[1]?.[0]).toBe("anthropic");

@@ -112,11 +112,11 @@ function isAbortError(err: unknown): boolean {
  * After the last entry the delay stays constant.
  */
 const DEFAULT_BACKOFF_SCHEDULE_MS = [
-  30_000, // 1st error  →  30 s
-  60_000, // 2nd error  →   1 min
-  5 * 60_000, // 3rd error  →   5 min
-  15 * 60_000, // 4th error  →  15 min
-  60 * 60_000, // 5th+ error →  60 min
+  30_000, // 1st error  â†’  30 s
+  60_000, // 2nd error  â†’   1 min
+  5 * 60_000, // 3rd error  â†’   5 min
+  15 * 60_000, // 4th error  â†’  15 min
+  60 * 60_000, // 5th+ error â†’  60 min
 ];
 
 function errorBackoffMs(
@@ -378,7 +378,7 @@ export function applyJobResult(
       } else if (result.status === "error") {
         const retryConfig = resolveRetryConfig(state.deps.cronConfig);
         const transient = isTransientCronError(result.error, retryConfig.retryOn);
-        // consecutiveErrors is always set to ≥1 by the increment block above.
+        // consecutiveErrors is always set to â‰¥1 by the increment block above.
         const consecutive = job.state.consecutiveErrors;
         if (transient && consecutive <= retryConfig.maxAttempts) {
           // Schedule retry with backoff (#24355).
@@ -483,7 +483,7 @@ function applyOutcomeToStoredJob(state: CronServiceState, result: TimedCronRunOu
   if (!job) {
     state.deps.log.warn(
       { jobId: result.jobId },
-      "cron: applyOutcomeToStoredJob — job not found after forceReload, result discarded",
+      "cron: applyOutcomeToStoredJob â€” job not found after forceReload, result discarded",
     );
     return;
   }
@@ -691,7 +691,7 @@ export async function onTimer(state: CronServiceState) {
   } finally {
     // Piggyback session reaper on timer tick (self-throttled to every 5 min).
     // Placed in `finally` so the reaper runs even when a long-running job keeps
-    // `state.running` true across multiple timer ticks — the early return at the
+    // `state.running` true across multiple timer ticks â€” the early return at the
     // top of onTimer would otherwise skip the reaper indefinitely.
     const storePaths = new Set<string>();
     if (state.deps.resolveSessionStorePath) {

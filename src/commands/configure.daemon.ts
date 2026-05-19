@@ -49,7 +49,7 @@ export async function maybeInstallDaemon(params: {
       await withProgress(
         { label: "Gateway service", indeterminate: true, delayMs: 0 },
         async (progress) => {
-          progress.setLabel("Restarting Gateway service…");
+          progress.setLabel("Restarting Gateway serviceâ€¦");
           const restartResult = await service.restart({
             env: process.env,
             stdout: process.stdout,
@@ -69,7 +69,7 @@ export async function maybeInstallDaemon(params: {
       await withProgress(
         { label: "Gateway service", indeterminate: true, delayMs: 0 },
         async (progress) => {
-          progress.setLabel("Uninstalling Gateway service…");
+          progress.setLabel("Uninstalling Gateway serviceâ€¦");
           await service.uninstall({ env: process.env, stdout: process.stdout });
           progress.setLabel("Gateway service uninstalled.");
         },
@@ -96,7 +96,7 @@ export async function maybeInstallDaemon(params: {
     await withProgress(
       { label: "Gateway service", indeterminate: true, delayMs: 0 },
       async (progress) => {
-        progress.setLabel("Preparing Gateway service…");
+        progress.setLabel("Preparing Gateway serviceâ€¦");
 
         const cfg = loadConfig();
         const tokenResolution = await resolveGatewayInstallToken({
@@ -123,7 +123,7 @@ export async function maybeInstallDaemon(params: {
           config: cfg,
         });
 
-        progress.setLabel("Installing Gateway service…");
+        progress.setLabel("Installing Gateway serviceâ€¦");
         try {
           await service.install({
             env: process.env,

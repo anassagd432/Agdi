@@ -56,7 +56,7 @@ function formatNodeVersions(node: {
   if (ui) {
     parts.push(`ui ${formatVersionLabel(ui)}`);
   }
-  return parts.length > 0 ? parts.join(" · ") : null;
+  return parts.length > 0 ? parts.join(" Â· ") : null;
 }
 
 function formatPathEnv(raw?: string): string | null {
@@ -69,7 +69,7 @@ function formatPathEnv(raw?: string): string | null {
   }
   const parts = trimmed.split(":").filter(Boolean);
   const display =
-    parts.length <= 3 ? trimmed : `${parts.slice(0, 2).join(":")}:…:${parts.slice(-1)[0]}`;
+    parts.length <= 3 ? trimmed : `${parts.slice(0, 2).join(":")}:â€¦:${parts.slice(-1)[0]}`;
   return shortenHomeInString(display);
 }
 
@@ -155,7 +155,7 @@ export function registerNodesStatusCommands(nodes: Command) {
           const connectedCount = filtered.filter((n) => Boolean(n.connected)).length;
           const filteredLabel = filtered.length !== nodes.length ? ` (of ${nodes.length})` : "";
           defaultRuntime.log(
-            `Known: ${filtered.length}${filteredLabel} · Paired: ${pairedCount} · Connected: ${connectedCount}`,
+            `Known: ${filtered.length}${filteredLabel} Â· Paired: ${pairedCount} Â· Connected: ${connectedCount}`,
           );
           if (filtered.length === 0) {
             return;
@@ -187,8 +187,8 @@ export function registerNodesStatusCommands(nodes: Command) {
               Node: name,
               ID: n.nodeId,
               IP: n.remoteIp ?? "",
-              Detail: detailParts.join(" · "),
-              Status: `${paired} · ${connected}${since}`,
+              Detail: detailParts.join(" Â· "),
+              Status: `${paired} Â· ${connected}${since}`,
               Caps: caps,
             };
           });
@@ -253,7 +253,7 @@ export function registerNodesStatusCommands(nodes: Command) {
           );
 
           const { heading, ok, warn, muted } = getNodesTheme();
-          const status = `${paired ? ok("paired") : warn("unpaired")} · ${
+          const status = `${paired ? ok("paired") : warn("unpaired")} Â· ${
             connected ? ok("connected") : muted("disconnected")
           }`;
           const tableWidth = getTerminalTableWidth();
@@ -346,7 +346,7 @@ export function registerNodesStatusCommands(nodes: Command) {
           const filteredLabel =
             hasFilters && filteredPaired.length !== paired.length ? ` (of ${paired.length})` : "";
           defaultRuntime.log(
-            `Pending: ${pendingRows.length} · Paired: ${filteredPaired.length}${filteredLabel}`,
+            `Pending: ${pendingRows.length} Â· Paired: ${filteredPaired.length}${filteredLabel}`,
           );
 
           if (opts.json) {

@@ -693,7 +693,7 @@ describe("resolveSessionDeliveryTarget", () => {
   });
 });
 
-describe("resolveSessionDeliveryTarget — cross-channel reply guard (#24152)", () => {
+describe("resolveSessionDeliveryTarget â€” cross-channel reply guard (#24152)", () => {
   it("uses turnSourceChannel over session lastChannel when provided", () => {
     // Simulate: WhatsApp message originated the turn, but a Slack message
     // arrived concurrently and updated lastChannel to "slack"

@@ -22,7 +22,7 @@ function makeStoreWithProfiles(): AuthProfileStore {
   };
 }
 
-describe("resolveAuthProfileOrder — cooldown auto-expiry", () => {
+describe("resolveAuthProfileOrder â€” cooldown auto-expiry", () => {
   it("places profile with expired cooldown in available list (round-robin path)", () => {
     const store = makeStoreWithProfiles();
     store.usageStats = {
@@ -59,7 +59,7 @@ describe("resolveAuthProfileOrder — cooldown auto-expiry", () => {
 
     const order = resolveAuthProfileOrder({ store, provider: "anthropic" });
 
-    // Both profiles available — explicit order respected
+    // Both profiles available â€” explicit order respected
     expect(order[0]).toBe("anthropic:secondary");
     expect(order).toContain("anthropic:default");
 
@@ -88,7 +88,7 @@ describe("resolveAuthProfileOrder — cooldown auto-expiry", () => {
     expect(store.usageStats?.["anthropic:default"]?.errorCount).toBe(3);
   });
 
-  it("expired cooldown resets error count — prevents escalation on next failure", () => {
+  it("expired cooldown resets error count â€” prevents escalation on next failure", () => {
     const store = makeStoreWithProfiles();
     store.usageStats = {
       "anthropic:default": {
@@ -152,7 +152,7 @@ describe("resolveAuthProfileOrder — cooldown auto-expiry", () => {
     resolveAuthProfileOrder({ store, provider: "anthropic" });
 
     // Both should be cleared since clearExpiredCooldowns sweeps all profiles
-    // in the store — this is intentional for correctness.
+    // in the store â€” this is intentional for correctness.
     expect(store.usageStats?.["anthropic:default"]?.errorCount).toBe(0);
     expect(store.usageStats?.["openai:default"]?.errorCount).toBe(0);
   });

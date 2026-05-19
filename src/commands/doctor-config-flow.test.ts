@@ -579,11 +579,11 @@ describe("doctor config flow", () => {
             lifecycle: {
               enabled: true,
               reactions: {
-                queued: "⏳",
-                thinking: "🧠",
-                tool: "🔧",
-                done: "✅",
-                error: "❌",
+                queued: "â³",
+                thinking: "ðŸ§ ",
+                tool: "ðŸ”§",
+                done: "âœ…",
+                error: "âŒ",
               },
             },
           },

@@ -3,7 +3,7 @@ import type { PluginRuntimeCore, RuntimeLogger } from "./types-core.js";
 
 export type { RuntimeLogger };
 
-// ── Subagent runtime types ──────────────────────────────────────────
+// â”€â”€ Subagent runtime types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type SubagentRunParams = {
   sessionKey: string;

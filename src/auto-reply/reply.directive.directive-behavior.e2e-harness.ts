@@ -129,7 +129,7 @@ export function assertModelSelection(
 
 export function assertElevatedOffStatusReply(text: string | undefined) {
   expect(text).toContain("Elevated mode disabled.");
-  const optionsLine = text?.split("\n").find((line) => line.trim().startsWith("⚙️"));
+  const optionsLine = text?.split("\n").find((line) => line.trim().startsWith("âš™ï¸"));
   expect(optionsLine).toBeTruthy();
   expect(optionsLine).not.toContain("elevated");
 }

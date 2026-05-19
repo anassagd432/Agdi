@@ -1,8 +1,8 @@
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
+import { describeAccountSnapshot } from "agdi/plugin-sdk/account-helpers";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
+} from "agdi/plugin-sdk/channel-config-helpers";
 import type { ChannelPlugin } from "../runtime-api.js";
 import { buildChannelConfigSchema, formatAllowFromLowercase } from "../runtime-api.js";
 import {

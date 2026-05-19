@@ -1,6 +1,6 @@
 import { formatTerminalLink } from "../utils.js";
 
-export const DOCS_ROOT = "https://docs.openclaw.ai";
+export const DOCS_ROOT = "https://agdiai-597e782f.mintlify.app";
 
 export function formatDocsLink(
   path: string,

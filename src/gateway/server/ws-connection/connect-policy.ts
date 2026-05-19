@@ -99,7 +99,7 @@ export function evaluateMissingDeviceIdentity(params: {
     return { kind: "allow" };
   }
   if (params.isControlUi && params.controlUiAuthPolicy.allowBypass && params.role === "operator") {
-    // dangerouslyDisableDeviceAuth: true — operator has explicitly opted out of
+    // dangerouslyDisableDeviceAuth: true â€” operator has explicitly opted out of
     // device-identity enforcement for this Control UI.  Allow for operator-role
     // sessions only; node-role sessions must still satisfy device identity so
     // that the break-glass flag cannot be abused to admit device-less node

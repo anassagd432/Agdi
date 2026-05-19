@@ -41,12 +41,12 @@ ${formatHelpExamples([
     "Create a Discord poll.",
   ],
   [
-    'openclaw message react --channel discord --target 123 --message-id 456 --emoji "✅"',
+    'openclaw message react --channel discord --target 123 --message-id 456 --emoji "âœ…"',
     "React to a message.",
   ],
 ])}
 
-${theme.muted("Docs:")} ${formatDocsLink("/cli/message", "docs.openclaw.ai/cli/message")}`,
+${theme.muted("Docs:")} ${formatDocsLink("/cli/message", "docs.agdi.ai/cli/message")}`,
     )
     .action(() => {
       message.help({ error: true });

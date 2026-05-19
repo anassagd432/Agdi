@@ -59,7 +59,7 @@ function sanitizeFilename(name: string): string {
 
 /**
  * Extract original filename from path if it matches the embedded format.
- * Pattern: {original}---{uuid}.{ext} → returns "{original}.{ext}"
+ * Pattern: {original}---{uuid}.{ext} â†’ returns "{original}.{ext}"
  * Falls back to basename if no pattern match, or "file.bin" if empty.
  */
 export function extractOriginalFilename(filePath: string): string {

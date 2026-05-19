@@ -68,7 +68,7 @@ export function formatGitInstallLabel(update: UpdateCheckResult): string | null 
     tag ? `tag ${tag}` : null,
     shortSha ? `@ ${shortSha}` : null,
   ].filter(Boolean);
-  return parts.join(" · ");
+  return parts.join(" Â· ");
 }
 
 async function exists(p: string): Promise<boolean> {

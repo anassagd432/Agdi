@@ -268,7 +268,7 @@ describe("remapChunkLines", () => {
     remapChunkLines(chunks, lineMap);
 
     // After remapping, line numbers should reference original JSONL lines
-    // Content line 1 → JSONL line 4, content line 5 → JSONL line 13
+    // Content line 1 â†’ JSONL line 4, content line 5 â†’ JSONL line 13
     expect(chunks[0].startLine).toBe(4);
     const lastChunk = chunks[chunks.length - 1];
     expect(lastChunk.endLine).toBe(13);
@@ -306,7 +306,7 @@ describe("remapChunkLines", () => {
     // Last chunk should end at JSONL line 29
     expect(chunks[chunks.length - 1].endLine).toBe(29);
 
-    // Each chunk's startLine should be ≤ its endLine
+    // Each chunk's startLine should be â‰¤ its endLine
     for (const chunk of chunks) {
       expect(chunk.startLine).toBeLessThanOrEqual(chunk.endLine);
     }

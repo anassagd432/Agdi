@@ -34,13 +34,13 @@ const TRUSTED_BASE = new Set([
   "builtin\\administrators",
   "creator owner",
   // Localized SYSTEM account names (French, German, Spanish, Portuguese)
-  "autorite nt\\système",
-  "nt-autorität\\system",
+  "autorite nt\\systÃ¨me",
+  "nt-autoritÃ¤t\\system",
   "autoridad nt\\system",
   "autoridade nt\\system",
 ]);
 const WORLD_SUFFIXES = ["\\users", "\\authenticated users"];
-const TRUSTED_SUFFIXES = ["\\administrators", "\\system", "\\système"];
+const TRUSTED_SUFFIXES = ["\\administrators", "\\system", "\\systÃ¨me"];
 
 // Accept an optional leading * which icacls prefixes to SIDs when invoked with /sid
 // (e.g. *S-1-5-18 instead of S-1-5-18).

@@ -29,10 +29,10 @@ describe("config issue format", () => {
           { path: "", message: "first" },
           { path: "channels.signal.dmPolicy", message: "second" },
         ],
-        "×",
+        "Ã—",
         { normalizeRoot: true },
       ),
-    ).toEqual(["× <root>: first", "× channels.signal.dmPolicy: second"]);
+    ).toEqual(["Ã— <root>: first", "Ã— channels.signal.dmPolicy: second"]);
   });
 
   it("sanitizes control characters and ANSI sequences in formatted lines", () => {

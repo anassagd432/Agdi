@@ -264,7 +264,7 @@ export class SearchableSelectList implements Component {
     width: number,
     query: string,
   ): string {
-    const prefix = isSelected ? "→ " : "  ";
+    const prefix = isSelected ? "â†’ " : "  ";
     const prefixWidth = prefix.length;
     const displayValue = this.getItemLabel(item);
 

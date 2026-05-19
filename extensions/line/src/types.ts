@@ -7,7 +7,7 @@ import type {
   VideoMessage,
   WebhookEvent,
 } from "@line/bot-sdk";
-import type { BaseProbeResult } from "openclaw/plugin-sdk/channel-contract";
+import type { BaseProbeResult } from "agdi/plugin-sdk/channel-contract";
 
 export type LineTokenSource = "config" | "env" | "file" | "none";
 

@@ -61,7 +61,7 @@ agdi channels status --probe
 </Steps>
 
 <Note>
-Gateway config reload watches the active config file path (resolved from profile/state defaults, or `OPENCLAW_CONFIG_PATH` when set).
+Gateway config reload watches the active config file path (resolved from profile/state defaults, or `AGDI_CONFIG_PATH` when set).
 Default mode is `gateway.reload.mode="hybrid"`.
 </Note>
 
@@ -73,7 +73,7 @@ Default mode is `gateway.reload.mode="hybrid"`.
   - HTTP APIs, OpenAI compatible (`/v1/models`, `/v1/embeddings`, `/v1/chat/completions`, `/v1/responses`, `/tools/invoke`)
   - Control UI and hooks
 - Default bind mode: `loopback`.
-- Auth is required by default (`gateway.auth.token` / `gateway.auth.password`, or `OPENCLAW_GATEWAY_TOKEN` / `OPENCLAW_GATEWAY_PASSWORD`).
+- Auth is required by default (`gateway.auth.token` / `gateway.auth.password`, or `AGDI_GATEWAY_TOKEN` / `AGDI_GATEWAY_PASSWORD`).
 
 ## OpenAI-compatible endpoints
 
@@ -101,10 +101,10 @@ All of these run on the main Gateway port and use the same trusted operator auth
 
 ### Port and bind precedence
 
-| Setting      | Resolution order                                              |
-| ------------ | ------------------------------------------------------------- |
-| Gateway port | `--port` → `OPENCLAW_GATEWAY_PORT` → `gateway.port` → `18789` |
-| Bind mode    | CLI/override → `gateway.bind` → `loopback`                    |
+| Setting      | Resolution order                                          |
+| ------------ | --------------------------------------------------------- |
+| Gateway port | `--port` → `AGDI_GATEWAY_PORT` → `gateway.port` → `18789` |
+| Bind mode    | CLI/override → `gateway.bind` → `loopback`                |
 
 ### Hot reload modes
 
@@ -200,15 +200,15 @@ Use multiple only for strict isolation/redundancy (for example a rescue profile)
 Checklist per instance:
 
 - Unique `gateway.port`
-- Unique `OPENCLAW_CONFIG_PATH`
-- Unique `OPENCLAW_STATE_DIR`
+- Unique `AGDI_CONFIG_PATH`
+- Unique `AGDI_STATE_DIR`
 - Unique `agents.defaults.workspace`
 
 Example:
 
 ```bash
-OPENCLAW_CONFIG_PATH=~/.agdi/a.json OPENCLAW_STATE_DIR=~/.agdi-a agdi gateway --port 19001
-OPENCLAW_CONFIG_PATH=~/.agdi/b.json OPENCLAW_STATE_DIR=~/.agdi-b agdi gateway --port 19002
+AGDI_CONFIG_PATH=~/.agdi/a.json AGDI_STATE_DIR=~/.agdi-a agdi gateway --port 19001
+AGDI_CONFIG_PATH=~/.agdi/b.json AGDI_STATE_DIR=~/.agdi-b agdi gateway --port 19002
 ```
 
 See: [Multiple gateways](/gateway/multiple-gateways).

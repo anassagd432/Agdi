@@ -272,7 +272,7 @@ describe("resolveModel", () => {
           custom: {
             baseUrl: "http://localhost:9999",
             api: "openai-completions",
-            // Intentionally keep this minimal — the discovered model provides the rest.
+            // Intentionally keep this minimal â€” the discovered model provides the rest.
             models: [{ id: "missing-input", name: "missing-input" }],
           },
         },

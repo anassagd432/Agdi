@@ -14,13 +14,13 @@ import type {
   ChannelStatusIssue as ContractChannelStatusIssue,
   ChannelThreadingContext as ContractChannelThreadingContext,
   ChannelThreadingToolContext as ContractChannelThreadingToolContext,
-} from "openclaw/plugin-sdk/channel-contract";
+} from "agdi/plugin-sdk/channel-contract";
 import type {
   ChannelMessageActionContext as CoreChannelMessageActionContext,
   OpenClawPluginApi as CoreOpenClawPluginApi,
   PluginRuntime as CorePluginRuntime,
-} from "openclaw/plugin-sdk/core";
-import * as providerEntrySdk from "openclaw/plugin-sdk/provider-entry";
+} from "agdi/plugin-sdk/core";
+import * as providerEntrySdk from "agdi/plugin-sdk/provider-entry";
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type { ChannelMessageActionContext } from "../channels/plugins/types.js";
 import type {
@@ -582,14 +582,14 @@ describe("plugin-sdk subpath exports", () => {
       channelReplyPipelineSdk,
       ...representativeModules
     ] = await Promise.all([
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/core"),
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/text-runtime"),
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/plugin-entry"),
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/channel-lifecycle"),
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/channel-pairing"),
-      importResolvedPluginSdkSubpath("openclaw/plugin-sdk/channel-reply-pipeline"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/core"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/text-runtime"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/plugin-entry"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/channel-lifecycle"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/channel-pairing"),
+      importResolvedPluginSdkSubpath("agdi/plugin-sdk/channel-reply-pipeline"),
       ...representativeRuntimeSmokeSubpaths.map((id) =>
-        importResolvedPluginSdkSubpath(`openclaw/plugin-sdk/${id}`),
+        importResolvedPluginSdkSubpath(`agdi/plugin-sdk/${id}`),
       ),
     ]);
 

@@ -35,7 +35,7 @@ capabilities to the agent as a node.
 ## Launchd control
 
 The app manages a per‑user LaunchAgent labeled `ai.agdi.gateway`
-(or `ai.agdi.<profile>` when using `--profile`/`OPENCLAW_PROFILE`; legacy `com.agdi.*` still unloads).
+(or `ai.agdi.<profile>` when using `--profile`/`AGDI_PROFILE`; legacy `com.agdi.*` still unloads).
 
 ```bash
 launchctl kickstart -k gui/$UID/ai.agdi.gateway
@@ -152,7 +152,7 @@ sessions and credentials.
 Prefer a local non-synced state path such as:
 
 ```bash
-OPENCLAW_STATE_DIR=~/.agdi
+AGDI_STATE_DIR=~/.agdi
 ```
 
 If `agdi doctor` detects state under:

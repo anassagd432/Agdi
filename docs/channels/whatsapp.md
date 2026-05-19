@@ -16,12 +16,12 @@ Status: production-ready via WhatsApp Web (Baileys). Gateway owns linked session
 - `agdi channels login --channel whatsapp` also offers the install flow when
   the plugin is not present yet.
 - Dev channel + git checkout: defaults to the local plugin path.
-- Stable/Beta: defaults to the npm package `@agdi/whatsapp`.
+- Stable/Beta: defaults to the npm package `@openclaw/whatsapp`.
 
 Manual install stays available:
 
 ```bash
-agdi plugins install @agdi/whatsapp
+agdi plugins install @openclaw/whatsapp
 ```
 
 <CardGroup cols={3}>

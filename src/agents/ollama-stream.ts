@@ -36,7 +36,7 @@ export function resolveOllamaBaseUrlForRun(params: {
   return OLLAMA_NATIVE_BASE_URL;
 }
 
-// ── Ollama /api/chat request types ──────────────────────────────────────────
+// â”€â”€ Ollama /api/chat request types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface OllamaChatRequest {
   model: string;
@@ -194,7 +194,7 @@ function parseJsonPreservingUnsafeIntegers(input: string): unknown {
   return JSON.parse(quoteUnsafeIntegerLiterals(input)) as unknown;
 }
 
-// ── Ollama /api/chat response types ─────────────────────────────────────────
+// â”€â”€ Ollama /api/chat response types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface OllamaChatResponse {
   model: string;
@@ -216,7 +216,7 @@ interface OllamaChatResponse {
   eval_duration?: number;
 }
 
-// ── Message conversion ──────────────────────────────────────────────────────
+// â”€â”€ Message conversion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type InputContentPart =
   | { type: "text"; text: string }
@@ -310,7 +310,7 @@ export function convertToOllamaMessages(
   return result;
 }
 
-// ── Tool extraction ─────────────────────────────────────────────────────────
+// â”€â”€ Tool extraction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function extractOllamaTools(tools: Tool[] | undefined): OllamaTool[] {
   if (!tools || !Array.isArray(tools)) {
@@ -333,7 +333,7 @@ function extractOllamaTools(tools: Tool[] | undefined): OllamaTool[] {
   return result;
 }
 
-// ── Response conversion ─────────────────────────────────────────────────────
+// â”€â”€ Response conversion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function buildAssistantMessage(
   response: OllamaChatResponse,
@@ -374,7 +374,7 @@ export function buildAssistantMessage(
   });
 }
 
-// ── NDJSON streaming parser ─────────────────────────────────────────────────
+// â”€â”€ NDJSON streaming parser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export async function* parseNdjsonStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
@@ -413,7 +413,7 @@ export async function* parseNdjsonStream(
   }
 }
 
-// ── Main StreamFn factory ───────────────────────────────────────────────────
+// â”€â”€ Main StreamFn factory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function resolveOllamaChatUrl(baseUrl: string): string {
   const trimmed = baseUrl.trim().replace(/\/+$/, "");

@@ -87,6 +87,7 @@ export function getPluginBoundaryJiti(
     modulePath,
   });
   const aliasMap = {
+    ...(pluginSdkAlias ? { "agdi/plugin-sdk": pluginSdkAlias } : {}),
     ...(pluginSdkAlias ? { "openclaw/plugin-sdk": pluginSdkAlias } : {}),
     ...resolvePluginSdkScopedAliasMap({ modulePath }),
   };

@@ -78,7 +78,7 @@ describe("entry root version fast path", () => {
     originalArgv = [...process.argv];
     originalGatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN;
     delete process.env.OPENCLAW_GATEWAY_TOKEN;
-    process.argv = ["node", "openclaw", "--version"];
+    process.argv = ["node", "agdi", "--version"];
     exitSpy = vi
       .spyOn(process, "exit")
       .mockImplementation(((_code?: number) => undefined) as typeof process.exit);
@@ -100,7 +100,7 @@ describe("entry root version fast path", () => {
     await import("./entry.js");
 
     await vi.waitFor(() => {
-      expect(logSpy).toHaveBeenCalledWith("OpenClaw 9.9.9-test (abc1234)");
+      expect(logSpy).toHaveBeenCalledWith("Agdi 9.9.9-test (abc1234)");
       expect(exitSpy).toHaveBeenCalledWith(0);
     });
 
@@ -114,7 +114,7 @@ describe("entry root version fast path", () => {
     await import("./entry.js");
 
     await vi.waitFor(() => {
-      expect(logSpy).toHaveBeenCalledWith("OpenClaw 9.9.9-test");
+      expect(logSpy).toHaveBeenCalledWith("Agdi 9.9.9-test");
       expect(exitSpy).toHaveBeenCalledWith(0);
     });
 
@@ -128,7 +128,7 @@ describe("entry root version fast path", () => {
     await import("./entry.js");
 
     await vi.waitFor(() => {
-      expect(runCliMock).toHaveBeenCalledWith(["node", "openclaw", "--version"]);
+      expect(runCliMock).toHaveBeenCalledWith(["node", "agdi", "--version"]);
     });
     expect(logSpy).not.toHaveBeenCalled();
     expect(exitSpy).not.toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe("entry root version fast path", () => {
     await import("./entry.js");
 
     await vi.waitFor(() => {
-      expect(runCliMock).toHaveBeenCalledWith(["node", "openclaw", "--version"]);
+      expect(runCliMock).toHaveBeenCalledWith(["node", "agdi", "--version"]);
     });
     expect(errorSpy).not.toHaveBeenCalled();
     expect(exitSpy).not.toHaveBeenCalled();

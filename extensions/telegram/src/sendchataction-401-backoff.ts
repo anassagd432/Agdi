@@ -2,7 +2,7 @@ import {
   computeBackoff,
   sleepWithAbort,
   type BackoffPolicy,
-} from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
 
 export type TelegramSendChatActionLogger = (message: string) => void;
 

@@ -12332,7 +12332,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
     "gateway.remote.tlsFingerprint": {
       label: "Remote Gateway TLS Fingerprint",
       help: "Expected sha256 TLS fingerprint for the remote gateway (pin to avoid MITM).",
-      placeholder: "sha256:ab12cd34…",
+      placeholder: "sha256:ab12cd34â€¦",
       tags: ["security", "auth", "network"],
     },
     "gateway.auth.token": {
@@ -12549,7 +12549,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
     },
     "tools.media.audio.echoFormat": {
       label: "Transcript Echo Format",
-      help: "Format string for the echoed transcript message. Use `{transcript}` as a placeholder for the transcribed text. Default: '📝 \"{transcript}\"'.",
+      help: "Format string for the echoed transcript message. Use `{transcript}` as a placeholder for the transcribed text. Default: 'ðŸ“ \"{transcript}\"'.",
       tags: ["media", "tools"],
     },
     "tools.media.video.enabled": {
@@ -15101,7 +15101,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
     },
     "messages.queue.byChannel": {
       label: "Queue Mode by Channel",
-      help: "Per-channel queue mode overrides keyed by provider id (for example telegram, discord, slack). Use this when one channel’s traffic pattern needs different queue behavior than global defaults.",
+      help: "Per-channel queue mode overrides keyed by provider id (for example telegram, discord, slack). Use this when one channelâ€™s traffic pattern needs different queue behavior than global defaults.",
       tags: ["advanced"],
     },
     "messages.queue.debounceMs": {
@@ -15131,7 +15131,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
     },
     "messages.suppressToolErrors": {
       label: "Suppress Tool Error Warnings",
-      help: "When true, suppress ⚠️ tool-error warnings from being shown to the user. The agent already sees errors in context and can retry. Default: false.",
+      help: "When true, suppress âš ï¸ tool-error warnings from being shown to the user. The agent already sees errors in context and can retry. Default: false.",
       tags: ["advanced"],
     },
     "messages.ackReaction": {
@@ -15151,7 +15151,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
     },
     "messages.statusReactions": {
       label: "Status Reactions",
-      help: "Lifecycle status reactions that update the emoji on the trigger message as the agent progresses (queued → thinking → tool → done/error).",
+      help: "Lifecycle status reactions that update the emoji on the trigger message as the agent progresses (queued â†’ thinking â†’ tool â†’ done/error).",
       tags: ["advanced"],
     },
     "messages.statusReactions.enabled": {

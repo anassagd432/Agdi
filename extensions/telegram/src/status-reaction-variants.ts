@@ -1,4 +1,4 @@
-import { DEFAULT_EMOJIS, type StatusReactionEmojis } from "openclaw/plugin-sdk/channel-feedback";
+import { DEFAULT_EMOJIS, type StatusReactionEmojis } from "agdi/plugin-sdk/channel-feedback";
 
 type StatusReactionEmojiKey = keyof Required<StatusReactionEmojis>;
 

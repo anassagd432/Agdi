@@ -41,7 +41,7 @@ export const formatTokensCompact = (
         ? used
         : cacheRead + (typeof cacheWrite === "number" ? cacheWrite : 0);
     const hitRate = Math.round((cacheRead / total) * 100);
-    result += ` · 🗄️ ${hitRate}% cached`;
+    result += ` Â· ðŸ—„ï¸ ${hitRate}% cached`;
   }
 
   return result;

@@ -50,14 +50,14 @@ const actionCases: ActionCase[] = [
     key: "message:transcribed",
     action: "transcribed",
     context: {
-      body: "🎤 [Audio]",
+      body: "ðŸŽ¤ [Audio]",
       bodyForAgent: "[Audio] Transcript: Hello from voice",
       transcript: "Hello from voice",
       channelId: "telegram",
       mediaType: "audio/ogg",
     },
     assertContext: (context) => {
-      expect(context.body).toBe("🎤 [Audio]");
+      expect(context.body).toBe("ðŸŽ¤ [Audio]");
       expect(context.bodyForAgent).toContain("Transcript:");
       expect(context.transcript).toBe("Hello from voice");
       expect(context.mediaType).toBe("audio/ogg");
@@ -68,7 +68,7 @@ const actionCases: ActionCase[] = [
     key: "message:preprocessed",
     action: "preprocessed",
     context: {
-      body: "🎤 [Audio]",
+      body: "ðŸŽ¤ [Audio]",
       bodyForAgent: "[Audio] Transcript: Check https://example.com\n[Link summary: Example site]",
       transcript: "Check https://example.com",
       channelId: "telegram",

@@ -1,4 +1,4 @@
-import { mapAllowFromEntries } from "openclaw/plugin-sdk/channel-config-helpers";
+import { mapAllowFromEntries } from "agdi/plugin-sdk/channel-config-helpers";
 import { normalizeChatType, type ChatType } from "../../channels/chat-type.js";
 import type { ChannelOutboundTargetMode } from "../../channels/plugins/types.js";
 import { formatCliCommand } from "../../cli/command-format.js";
@@ -103,11 +103,11 @@ export function resolveSessionDeliveryTarget(params: {
    * @see https://github.com/openclaw/openclaw/issues/24152
    */
   turnSourceChannel?: DeliverableMessageChannel;
-  /** Turn-source `to` — paired with `turnSourceChannel`. */
+  /** Turn-source `to` â€” paired with `turnSourceChannel`. */
   turnSourceTo?: string;
-  /** Turn-source `accountId` — paired with `turnSourceChannel`. */
+  /** Turn-source `accountId` â€” paired with `turnSourceChannel`. */
   turnSourceAccountId?: string;
-  /** Turn-source `threadId` — paired with `turnSourceChannel`. */
+  /** Turn-source `threadId` â€” paired with `turnSourceChannel`. */
   turnSourceThreadId?: string | number;
 }): SessionDeliveryTarget {
   const context = deliveryContextFromSession(params.entry);
@@ -307,7 +307,7 @@ export function resolveHeartbeatDeliveryTarget(params: {
     turnSourceTo: resolvedTurnSource?.to,
     turnSourceAccountId: resolvedTurnSource?.accountId,
     // Only pass threadId from an explicit turn source (e.g., restart sentinel's
-    // delivery context). Do NOT fall back to session-stored threadId here —
+    // delivery context). Do NOT fall back to session-stored threadId here â€”
     // heartbeat mode intentionally drops inherited thread IDs to avoid replying
     // in stale threads (e.g., Slack thread_ts). The sentinel's delivery context
     // carries the correct topic/thread ID when present.

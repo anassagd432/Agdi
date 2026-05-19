@@ -21,7 +21,7 @@ export function normalizeCdpWsUrl(wsUrl: string, cdpUrl: string): string {
   const cdp = new URL(cdpUrl);
   // Treat 0.0.0.0 and :: as wildcard bind addresses that need rewriting.
   // Containerized browsers (e.g. browserless) report ws://0.0.0.0:<internal-port>
-  // in /json/version — these must be rewritten to the external cdpUrl host:port.
+  // in /json/version â€” these must be rewritten to the external cdpUrl host:port.
   const isWildcardBind = ws.hostname === "0.0.0.0" || ws.hostname === "[::]";
   if ((isLoopbackHost(ws.hostname) || isWildcardBind) && !isLoopbackHost(cdp.hostname)) {
     ws.hostname = cdp.hostname;
@@ -112,10 +112,10 @@ export async function createTargetViaCdp(opts: {
 
   let wsUrl: string;
   if (isWebSocketUrl(opts.cdpUrl)) {
-    // Direct WebSocket URL — skip /json/version discovery.
+    // Direct WebSocket URL â€” skip /json/version discovery.
     wsUrl = opts.cdpUrl;
   } else {
-    // Standard HTTP(S) CDP endpoint — discover WebSocket URL via /json/version.
+    // Standard HTTP(S) CDP endpoint â€” discover WebSocket URL via /json/version.
     const version = await fetchJson<{ webSocketDebuggerUrl?: string }>(
       appendCdpPath(opts.cdpUrl, "/json/version"),
       1500,
@@ -323,7 +323,7 @@ export async function snapshotDom(opts: {
       const name = el.getAttribute && el.getAttribute("aria-label") ? String(el.getAttribute("aria-label")) : undefined;
       let text = "";
       try { text = String(el.innerText || "").trim(); } catch {}
-      if (maxText && text.length > maxText) text = text.slice(0, maxText) + "…";
+      if (maxText && text.length > maxText) text = text.slice(0, maxText) + "â€¦";
       const href = (el.href !== undefined && el.href !== null) ? String(el.href) : undefined;
       const type = (el.type !== undefined && el.type !== null) ? String(el.type) : undefined;
       const value = (el.value !== undefined && el.value !== null) ? String(el.value).slice(0, 500) : undefined;
@@ -399,7 +399,7 @@ export async function getDomText(opts: {
       const el = pick || document.documentElement;
       try { out = String(el && el.outerHTML ? el.outerHTML : ""); } catch { out = ""; }
     }
-    if (max && out.length > max) out = out.slice(0, max) + "\\n<!-- …truncated… -->";
+    if (max && out.length > max) out = out.slice(0, max) + "\\n<!-- â€¦truncatedâ€¦ -->";
     return out;
   })()`;
 
@@ -444,12 +444,12 @@ export async function querySelector(opts: {
       const className = el.className ? String(el.className).slice(0, 300) : undefined;
       let text = "";
       try { text = String(el.innerText || "").trim(); } catch {}
-      if (maxText && text.length > maxText) text = text.slice(0, maxText) + "…";
+      if (maxText && text.length > maxText) text = text.slice(0, maxText) + "â€¦";
       const value = (el.value !== undefined && el.value !== null) ? String(el.value).slice(0, 500) : undefined;
       const href = (el.href !== undefined && el.href !== null) ? String(el.href) : undefined;
       let outerHTML = "";
       try { outerHTML = String(el.outerHTML || ""); } catch {}
-      if (maxHtml && outerHTML.length > maxHtml) outerHTML = outerHTML.slice(0, maxHtml) + "…";
+      if (maxHtml && outerHTML.length > maxHtml) outerHTML = outerHTML.slice(0, maxHtml) + "â€¦";
       return {
         index: i + 1,
         tag,

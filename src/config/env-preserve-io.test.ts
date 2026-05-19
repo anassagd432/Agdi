@@ -77,7 +77,7 @@ describe("env snapshot TOCTOU via createConfigIO", () => {
       // Instance B: write config using explicit read context from A
       const ioB = createConfigIO({ configPath, env: env as unknown as NodeJS.ProcessEnv });
 
-      // Write the resolved config back — should restore ${MY_API_KEY}
+      // Write the resolved config back â€” should restore ${MY_API_KEY}
       await ioB.writeConfigFile(firstRead.snapshot.config, firstRead.writeOptions);
 
       // Verify the written file still has ${MY_API_KEY}, not the resolved value
@@ -99,16 +99,16 @@ describe("env snapshot TOCTOU via createConfigIO", () => {
 
       // Instance B: write WITHOUT snapshot bridging (simulates the old bug)
       const ioB = createConfigIO({ configPath, env: env as unknown as NodeJS.ProcessEnv });
-      // No explicit writeOptions — ioB uses live env
+      // No explicit writeOptions â€” ioB uses live env
 
       await ioB.writeConfigFile(snapshot.config);
 
       // The written file should have the raw value because the live env
-      // no longer matches — restoreEnvVarRefs won't find a match
+      // no longer matches â€” restoreEnvVarRefs won't find a match
       const written = await fs.readFile(configPath, "utf-8");
       const parsed = JSON.parse(written);
       // Without snapshot, the resolved value "original-key-123" doesn't match
-      // live env "mutated-key-456", so restoration fails — value is written as-is
+      // live env "mutated-key-456", so restoration fails â€” value is written as-is
       expect(parsed.gateway.remote.token).toBe("original-key-123");
     });
   });

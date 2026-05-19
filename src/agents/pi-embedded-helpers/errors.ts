@@ -44,14 +44,14 @@ export function formatBillingErrorMessage(provider?: string, model?: string): st
   const providerLabel =
     providerName && modelName ? `${providerName} (${modelName})` : providerName || undefined;
   if (providerLabel) {
-    return `⚠️ ${providerLabel} returned a billing error — your API key has run out of credits or has an insufficient balance. Check your ${providerName} billing dashboard and top up or switch to a different API key.`;
+    return `âš ï¸ ${providerLabel} returned a billing error â€” your API key has run out of credits or has an insufficient balance. Check your ${providerName} billing dashboard and top up or switch to a different API key.`;
   }
-  return "⚠️ API provider returned a billing error — your API key has run out of credits or has an insufficient balance. Check your provider's billing dashboard and top up or switch to a different API key.";
+  return "âš ï¸ API provider returned a billing error â€” your API key has run out of credits or has an insufficient balance. Check your provider's billing dashboard and top up or switch to a different API key.";
 }
 
 export const BILLING_ERROR_USER_MESSAGE = formatBillingErrorMessage();
 
-const RATE_LIMIT_ERROR_USER_MESSAGE = "⚠️ API rate limit reached. Please try again later.";
+const RATE_LIMIT_ERROR_USER_MESSAGE = "âš ï¸ API rate limit reached. Please try again later.";
 const OVERLOADED_ERROR_USER_MESSAGE =
   "The AI service is temporarily overloaded. Please try again in a moment.";
 
@@ -174,11 +174,11 @@ export function isContextOverflowError(errorMessage?: string): boolean {
     // when the context window is exceeded. pi-ai surfaces it as "Unhandled stop reason: model_context_window_exceeded".
     lower.includes("context_window_exceeded") ||
     // Chinese proxy error messages for context overflow
-    errorMessage.includes("上下文过长") ||
-    errorMessage.includes("上下文超出") ||
-    errorMessage.includes("上下文长度超") ||
-    errorMessage.includes("超出最大上下文") ||
-    errorMessage.includes("请压缩上下文")
+    errorMessage.includes("ä¸Šä¸‹æ–‡è¿‡é•¿") ||
+    errorMessage.includes("ä¸Šä¸‹æ–‡è¶…å‡º") ||
+    errorMessage.includes("ä¸Šä¸‹æ–‡é•¿åº¦è¶…") ||
+    errorMessage.includes("è¶…å‡ºæœ€å¤§ä¸Šä¸‹æ–‡") ||
+    errorMessage.includes("è¯·åŽ‹ç¼©ä¸Šä¸‹æ–‡")
   );
 }
 
@@ -204,7 +204,7 @@ export function isLikelyContextOverflowError(errorMessage?: string): boolean {
 
   // Billing/quota errors can contain patterns like "request size exceeds" or
   // "maximum token limit exceeded" that match the context overflow heuristic.
-  // Billing is a more specific error class — exclude it early.
+  // Billing is a more specific error class â€” exclude it early.
   if (isBillingErrorMessage(errorMessage)) {
     return false;
   }
@@ -638,7 +638,7 @@ export function formatAssistantErrorText(
   if (raw.length > 600) {
     log.warn(`Long error truncated: ${raw.slice(0, 200)}`);
   }
-  return raw.length > 600 ? `${raw.slice(0, 600)}…` : raw;
+  return raw.length > 600 ? `${raw.slice(0, 600)}â€¦` : raw;
 }
 
 export function sanitizeUserFacingText(text: string, opts?: { errorContext?: boolean }): string {

@@ -1,20 +1,20 @@
 import type { WebhookRequestBody } from "@line/bot-sdk";
-import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   dispatchReplyWithBufferedBlockDispatcher,
   chunkMarkdownText,
-} from "openclaw/plugin-sdk/reply-runtime";
+} from "agdi/plugin-sdk/reply-runtime";
 import {
   danger,
   logVerbose,
   waitForAbortSignal,
   type RuntimeEnv,
-} from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/runtime-env";
 import {
   normalizePluginHttpPath,
   registerPluginHttpRoute,
-} from "openclaw/plugin-sdk/webhook-ingress";
+} from "agdi/plugin-sdk/webhook-ingress";
 import { deliverLineAutoReply } from "./auto-reply-delivery.js";
 import { createLineBot } from "./bot.js";
 import { processLineMessage } from "./markdown-to-line.js";

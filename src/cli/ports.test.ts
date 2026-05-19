@@ -57,7 +57,7 @@ describe("probePortFree", () => {
   it("resolves true when the port is free", async () => {
     // Mock a successful bind: the "listening" event fires immediately without
     // acquiring a real socket, making this deterministic and avoiding TOCTOU races.
-    // (A real-socket approach would bind to :0, release, then reprobe — the OS can
+    // (A real-socket approach would bind to :0, release, then reprobe â€” the OS can
     // reassign the ephemeral port in between, causing a flaky EADDRINUSE failure.)
     const fakeServer = new EventEmitter() as unknown as net.Server;
     (fakeServer as unknown as { close: (cb?: () => void) => net.Server }).close = (
@@ -111,14 +111,14 @@ describe("waitForPortBindable", () => {
   });
 
   it("propagates EACCES rejection immediately without retrying", async () => {
-    // Every call to createServer will emit EACCES — so if waitForPortBindable retried,
+    // Every call to createServer will emit EACCES â€” so if waitForPortBindable retried,
     // mockCreateServer would be called many times. We assert it's called exactly once.
     mockCreateServer.mockClear();
     mockCreateServer.mockReturnValue(makeErrServer("EACCES"));
     await expect(
       waitForPortBindable(80, { timeoutMs: 5000, intervalMs: 50 }),
     ).rejects.toMatchObject({ code: "EACCES" });
-    // Only one probe should have been attempted — no spinning through the retry loop.
+    // Only one probe should have been attempted â€” no spinning through the retry loop.
     expect(mockCreateServer).toHaveBeenCalledTimes(1);
   });
 });

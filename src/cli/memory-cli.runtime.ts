@@ -349,18 +349,18 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
         let indexError: string | undefined;
         const syncFn = manager.sync ? manager.sync.bind(manager) : undefined;
         if (deep) {
-          await withProgress({ label: "Checking memory…", total: 2 }, async (progress) => {
-            progress.setLabel("Probing vector…");
+          await withProgress({ label: "Checking memoryâ€¦", total: 2 }, async (progress) => {
+            progress.setLabel("Probing vectorâ€¦");
             await manager.probeVectorAvailability();
             progress.tick();
-            progress.setLabel("Probing embeddings…");
+            progress.setLabel("Probing embeddingsâ€¦");
             embeddingProbe = await manager.probeEmbeddingAvailability();
             progress.tick();
           });
           if (opts.index && syncFn) {
             await withProgressTotals(
               {
-                label: "Indexing memory…",
+                label: "Indexing memoryâ€¦",
                 total: 0,
                 fallback: opts.verbose ? "line" : undefined,
               },
@@ -432,8 +432,8 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
     const totalFiles = scan?.totalFiles ?? null;
     const indexedLabel =
       totalFiles === null
-        ? `${filesIndexed}/? files · ${chunksIndexed} chunks`
-        : `${filesIndexed}/${totalFiles} files · ${chunksIndexed} chunks`;
+        ? `${filesIndexed}/? files Â· ${chunksIndexed} chunks`
+        : `${filesIndexed}/${totalFiles} files Â· ${chunksIndexed} chunks`;
     if (opts.index) {
       const line = indexError ? `Memory index failed: ${indexError}` : "Memory index complete.";
       defaultRuntime.log(line);
@@ -473,9 +473,9 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
         )?.totalFiles;
         const counts =
           total === null
-            ? `${entry.files}/? files · ${entry.chunks} chunks`
-            : `${entry.files}/${total} files · ${entry.chunks} chunks`;
-        lines.push(`  ${accent(entry.source)} ${muted("·")} ${muted(counts)}`);
+            ? `${entry.files}/? files Â· ${entry.chunks} chunks`
+            : `${entry.files}/${total} files Â· ${entry.chunks} chunks`;
+        lines.push(`  ${accent(entry.source)} ${muted("Â·")} ${muted(counts)}`);
       }
     }
     if (status.fallback) {
@@ -607,7 +607,7 @@ export async function runMemoryIndex(opts: MemoryCommandOptions) {
             defaultRuntime.log("");
           }
           const startedAt = Date.now();
-          let lastLabel = "Indexing memory…";
+          let lastLabel = "Indexing memoryâ€¦";
           let lastCompleted = 0;
           let lastTotal = 0;
           const formatElapsed = () => {
@@ -636,8 +636,8 @@ export async function runMemoryIndex(opts: MemoryCommandOptions) {
             const elapsed = formatElapsed();
             const eta = formatEta();
             return eta
-              ? `${lastLabel} · elapsed ${elapsed} · eta ${eta}`
-              : `${lastLabel} · elapsed ${elapsed}`;
+              ? `${lastLabel} Â· elapsed ${elapsed} Â· eta ${eta}`
+              : `${lastLabel} Â· elapsed ${elapsed}`;
           };
           if (!syncFn) {
             defaultRuntime.log("Memory backend does not support manual reindex.");
@@ -645,7 +645,7 @@ export async function runMemoryIndex(opts: MemoryCommandOptions) {
           }
           await withProgressTotals(
             {
-              label: "Indexing memory…",
+              label: "Indexing memoryâ€¦",
               total: 0,
               fallback: opts.verbose ? "line" : undefined,
             },

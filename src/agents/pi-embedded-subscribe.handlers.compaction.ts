@@ -48,7 +48,7 @@ export function handleAutoCompactionEnd(
   // Increment counter whenever compaction actually produced a result,
   // regardless of willRetry.  Overflow-triggered compaction sets willRetry=true
   // (the framework retries the LLM request), but the compaction itself succeeded
-  // and context was trimmed — the counter must reflect that.  (#38905)
+  // and context was trimmed â€” the counter must reflect that.  (#38905)
   const hasResult = evt.result != null;
   const wasAborted = Boolean(evt.aborted);
   if (hasResult && !wasAborted) {

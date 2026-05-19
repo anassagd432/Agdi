@@ -3,7 +3,7 @@ import {
   createRateLimitRetryRunner,
   type RetryConfig,
   type RetryRunner,
-} from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
 
 export const DISCORD_RETRY_DEFAULTS = {
   attempts: 3,

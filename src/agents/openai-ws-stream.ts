@@ -51,9 +51,9 @@ import {
   buildStreamErrorAssistantMessage,
 } from "./stream-message-shared.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Per-session state
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface WsSession {
   manager: OpenAIWebSocketManager;
@@ -67,7 +67,7 @@ interface WsSession {
   broken: boolean;
 }
 
-/** Module-level registry: sessionId → WsSession */
+/** Module-level registry: sessionId â†’ WsSession */
 const wsRegistry = new Map<string, WsSession>();
 
 type OpenAIWsStreamDeps = {
@@ -162,9 +162,9 @@ function createEventStream(): AssistantMessageEventStream {
     : (new LocalAssistantMessageEventStream() as unknown as AssistantMessageEventStream);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Public registry helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Release and close the WebSocket session for the given sessionId.
@@ -176,7 +176,7 @@ export function releaseWsSession(sessionId: string): void {
     try {
       session.manager.close();
     } catch {
-      // Ignore close errors — connection may already be gone.
+      // Ignore close errors â€” connection may already be gone.
     }
     wsRegistry.delete(sessionId);
   }
@@ -190,9 +190,9 @@ export function hasWsSession(sessionId: string): boolean {
   return !!(s && !s.broken && s.manager.isConnected());
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Message format converters
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type AnyMessage = Message & { role: string; content: unknown };
 type AssistantMessageWithPhase = AssistantMessage & { phase?: OpenAIResponsesAssistantPhase };
@@ -527,9 +527,9 @@ export function convertMessagesToInputItems(
   return items;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Response object → AssistantMessage
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Response object â†’ AssistantMessage
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function buildAssistantMessageFromResponse(
   response: ResponseObject,
@@ -596,9 +596,9 @@ export function buildAssistantMessageFromResponse(
     : message;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // StreamFn factory
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface OpenAIWebSocketStreamOptions {
   /** Manager options (url override, retry counts, etc.) */
@@ -706,7 +706,7 @@ export function createOpenAIWebSocketStreamFn(
         return fallbackToHttp(model, context, options, eventStream, opts.signal);
       }
 
-      // ── 1. Get or create session state ──────────────────────────────────
+      // â”€â”€ 1. Get or create session state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       let session = wsRegistry.get(sessionId);
 
       if (!session) {
@@ -721,7 +721,7 @@ export function createOpenAIWebSocketStreamFn(
         wsRegistry.set(sessionId, session);
       }
 
-      // ── 2. Ensure connection is open ─────────────────────────────────────
+      // â”€â”€ 2. Ensure connection is open â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       if (!session.manager.isConnected() && !session.broken) {
         try {
           await session.manager.connect(apiKey);
@@ -810,14 +810,14 @@ export function createOpenAIWebSocketStreamFn(
         }
       }
 
-      // ── 3. Compute incremental vs full input ─────────────────────────────
+      // â”€â”€ 3. Compute incremental vs full input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const prevResponseId = session.manager.previousResponseId;
       let inputItems: InputItem[];
 
       if (prevResponseId && session.lastContextLength > 0) {
         // Subsequent turn: only send new messages (tool results) since last call
         const newMessages = context.messages.slice(session.lastContextLength);
-        // Filter to only tool results — the assistant message is already in server context
+        // Filter to only tool results â€” the assistant message is already in server context
         const toolResults = newMessages.filter((m) => (m as AnyMessage).role === "toolResult");
         if (toolResults.length === 0) {
           // Shouldn't happen in a well-formed turn, but fall back to full context
@@ -839,7 +839,7 @@ export function createOpenAIWebSocketStreamFn(
         );
       }
 
-      // ── 4. Build & send response.create ──────────────────────────────────
+      // â”€â”€ 4. Build & send response.create â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const tools = convertTools(context.tools);
 
       // Forward generation options that the HTTP path (openai-responses provider) also uses.
@@ -876,7 +876,7 @@ export function createOpenAIWebSocketStreamFn(
         extraParams.reasoning = reasoning;
       }
 
-      // Respect compat.supportsStore — providers like Gemini reject unknown
+      // Respect compat.supportsStore â€” providers like Gemini reject unknown
       // fields such as `store` with a 400 error.  Fixes #39086.
       const supportsStore = (model as { compat?: { supportsStore?: boolean } }).compat
         ?.supportsStore;
@@ -925,7 +925,7 @@ export function createOpenAIWebSocketStreamFn(
         }),
       });
 
-      // ── 5. Wait for response.completed ───────────────────────────────────
+      // â”€â”€ 5. Wait for response.completed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const capturedContextLength = context.messages.length;
 
       await new Promise<void>((resolve, reject) => {
@@ -1015,9 +1015,9 @@ export function createOpenAIWebSocketStreamFn(
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /** Build full input items from context (system prompt is passed via `instructions` field). */
 function buildFullInput(context: Context, model: ReplayModelInfo): InputItem[] {

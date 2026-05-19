@@ -26,14 +26,14 @@ const INLINE_CODE_PLACEHOLDER = "\x00CODE";
  * Convert standard Markdown bold/italic/strikethrough to WhatsApp formatting.
  *
  * Order of operations matters:
- * 1. Protect fenced code blocks (```...```) — already WhatsApp-compatible
- * 2. Protect inline code (`...`) — leave as-is
- * 3. Convert **bold** → *bold* and __bold__ → *bold*
- * 4. Convert ~~strike~~ → ~strike~
+ * 1. Protect fenced code blocks (```...```) â€” already WhatsApp-compatible
+ * 2. Protect inline code (`...`) â€” leave as-is
+ * 3. Convert **bold** â†’ *bold* and __bold__ â†’ *bold*
+ * 4. Convert ~~strike~~ â†’ ~strike~
  * 5. Restore protected spans
  *
  * Italic *text* and _text_ are left alone since WhatsApp uses _text_ for italic
- * and single * is already WhatsApp bold — no conversion needed for single markers.
+ * and single * is already WhatsApp bold â€” no conversion needed for single markers.
  */
 export function markdownToWhatsApp(text: string): string {
   if (!text) {
@@ -54,11 +54,11 @@ export function markdownToWhatsApp(text: string): string {
     return `${INLINE_CODE_PLACEHOLDER}${inlineCodes.length - 1}`;
   });
 
-  // 3. Convert **bold** → *bold* and __bold__ → *bold*
+  // 3. Convert **bold** â†’ *bold* and __bold__ â†’ *bold*
   result = result.replace(/\*\*(.+?)\*\*/g, "*$1*");
   result = result.replace(/__(.+?)__/g, "*$1*");
 
-  // 4. Convert ~~strikethrough~~ → ~strikethrough~
+  // 4. Convert ~~strikethrough~~ â†’ ~strikethrough~
   result = result.replace(/~~(.+?)~~/g, "~$1~");
 
   // 5. Restore inline code

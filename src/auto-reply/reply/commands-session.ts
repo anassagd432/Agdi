@@ -182,7 +182,7 @@ export const handleActivationCommand: CommandHandler = async (params, allowTextC
   if (!params.isGroup) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Group activation only applies to group chats." },
+      reply: { text: "âš™ï¸ Group activation only applies to group chats." },
     };
   }
   if (!params.command.isAuthorizedSender) {
@@ -194,7 +194,7 @@ export const handleActivationCommand: CommandHandler = async (params, allowTextC
   if (!activationCommand.mode) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Usage: /activation mention|always" },
+      reply: { text: "âš™ï¸ Usage: /activation mention|always" },
     };
   }
   if (params.sessionEntry && params.sessionStore && params.sessionKey) {
@@ -205,7 +205,7 @@ export const handleActivationCommand: CommandHandler = async (params, allowTextC
   return {
     shouldContinue: false,
     reply: {
-      text: `⚙️ Group activation set to ${activationCommand.mode}.`,
+      text: `âš™ï¸ Group activation set to ${activationCommand.mode}.`,
     },
   };
 };
@@ -229,7 +229,7 @@ export const handleSendPolicyCommand: CommandHandler = async (params, allowTextC
   if (!sendPolicyCommand.mode) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Usage: /send on|off|inherit" },
+      reply: { text: "âš™ï¸ Usage: /send on|off|inherit" },
     };
   }
   if (params.sessionEntry && params.sessionStore && params.sessionKey) {
@@ -248,7 +248,7 @@ export const handleSendPolicyCommand: CommandHandler = async (params, allowTextC
         : "off";
   return {
     shouldContinue: false,
-    reply: { text: `⚙️ Send policy set to ${label}.` },
+    reply: { text: `âš™ï¸ Send policy set to ${label}.` },
   };
 };
 
@@ -287,7 +287,7 @@ export const handleUsageCommand: CommandHandler = async (params, allowTextComman
     const sessionSuffix = sessionMissing > 0 ? " (partial)" : "";
     const sessionLine =
       sessionCost || sessionTokens
-        ? `Session ${sessionCost ?? "n/a"}${sessionSuffix}${sessionTokens ? ` · ${sessionTokens} tokens` : ""}`
+        ? `Session ${sessionCost ?? "n/a"}${sessionSuffix}${sessionTokens ? ` Â· ${sessionTokens} tokens` : ""}`
         : "Session n/a";
 
     const todayKey = new Date().toLocaleDateString("en-CA");
@@ -304,14 +304,14 @@ export const handleUsageCommand: CommandHandler = async (params, allowTextComman
 
     return {
       shouldContinue: false,
-      reply: { text: `💸 Usage cost\n${sessionLine}\n${todayLine}\n${last30Line}` },
+      reply: { text: `ðŸ’¸ Usage cost\n${sessionLine}\n${todayLine}\n${last30Line}` },
     };
   }
 
   if (rawArgs && !requested) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Usage: /usage off|tokens|full|cost" },
+      reply: { text: "âš™ï¸ Usage: /usage off|tokens|full|cost" },
     };
   }
 
@@ -333,7 +333,7 @@ export const handleUsageCommand: CommandHandler = async (params, allowTextComman
   return {
     shouldContinue: false,
     reply: {
-      text: `⚙️ Usage footer: ${next}.`,
+      text: `âš™ï¸ Usage footer: ${next}.`,
     },
   };
 };
@@ -373,7 +373,7 @@ export const handleFastCommand: CommandHandler = async (params, allowTextCommand
             : "";
     return {
       shouldContinue: false,
-      reply: { text: `⚙️ Current fast mode: ${state.enabled ? "on" : "off"}${suffix}.` },
+      reply: { text: `âš™ï¸ Current fast mode: ${state.enabled ? "on" : "off"}${suffix}.` },
     };
   }
 
@@ -381,7 +381,7 @@ export const handleFastCommand: CommandHandler = async (params, allowTextCommand
   if (nextMode === undefined) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Usage: /fast status|on|off" },
+      reply: { text: "âš™ï¸ Usage: /fast status|on|off" },
     };
   }
 
@@ -392,7 +392,7 @@ export const handleFastCommand: CommandHandler = async (params, allowTextCommand
 
   return {
     shouldContinue: false,
-    reply: { text: `⚙️ Fast mode ${nextMode ? "enabled" : "disabled"}.` },
+    reply: { text: `âš™ï¸ Fast mode ${nextMode ? "enabled" : "disabled"}.` },
   };
 };
 
@@ -428,7 +428,7 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: "⚠️ /session idle and /session max-age are currently available for Discord, Matrix, and Telegram bound sessions.",
+        text: "âš ï¸ /session idle and /session max-age are currently available for Discord, Matrix, and Telegram bound sessions.",
       },
     };
   }
@@ -470,7 +470,7 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
   if (onDiscord && !discordManager) {
     return {
       shouldContinue: false,
-      reply: { text: "⚠️ Discord thread bindings are unavailable for this account." },
+      reply: { text: "âš ï¸ Discord thread bindings are unavailable for this account." },
     };
   }
 
@@ -500,13 +500,13 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       return {
         shouldContinue: false,
         reply: {
-          text: "⚠️ /session idle and /session max-age must be run inside a focused Discord thread.",
+          text: "âš ï¸ /session idle and /session max-age must be run inside a focused Discord thread.",
         },
       };
     }
     return {
       shouldContinue: false,
-      reply: { text: "ℹ️ This thread is not currently focused." },
+      reply: { text: "â„¹ï¸ This thread is not currently focused." },
     };
   }
   if (onMatrix && !matrixBinding) {
@@ -514,13 +514,13 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       return {
         shouldContinue: false,
         reply: {
-          text: "⚠️ /session idle and /session max-age must be run inside a focused Matrix thread.",
+          text: "âš ï¸ /session idle and /session max-age must be run inside a focused Matrix thread.",
         },
       };
     }
     return {
       shouldContinue: false,
-      reply: { text: "ℹ️ This thread is not currently focused." },
+      reply: { text: "â„¹ï¸ This thread is not currently focused." },
     };
   }
   if (onTelegram && !telegramBinding) {
@@ -528,13 +528,13 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       return {
         shouldContinue: false,
         reply: {
-          text: "⚠️ /session idle and /session max-age on Telegram require a topic context in groups, or a direct-message conversation.",
+          text: "âš ï¸ /session idle and /session max-age on Telegram require a topic context in groups, or a direct-message conversation.",
         },
       };
     }
     return {
       shouldContinue: false,
-      reply: { text: "ℹ️ This conversation is not currently focused." },
+      reply: { text: "â„¹ï¸ This conversation is not currently focused." },
     };
   }
 
@@ -583,13 +583,13 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
         return {
           shouldContinue: false,
           reply: {
-            text: `ℹ️ Idle timeout active (${formatThreadBindingDurationLabel(idleTimeoutMs)}, next auto-unfocus at ${formatSessionExpiry(idleExpiresAt)}).`,
+            text: `â„¹ï¸ Idle timeout active (${formatThreadBindingDurationLabel(idleTimeoutMs)}, next auto-unfocus at ${formatSessionExpiry(idleExpiresAt)}).`,
           },
         };
       }
       return {
         shouldContinue: false,
-        reply: { text: "ℹ️ Idle timeout is currently disabled for this focused session." },
+        reply: { text: "â„¹ï¸ Idle timeout is currently disabled for this focused session." },
       };
     }
 
@@ -601,13 +601,13 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       return {
         shouldContinue: false,
         reply: {
-          text: `ℹ️ Max age active (${formatThreadBindingDurationLabel(maxAgeMs)}, hard auto-unfocus at ${formatSessionExpiry(maxAgeExpiresAt)}).`,
+          text: `â„¹ï¸ Max age active (${formatThreadBindingDurationLabel(maxAgeMs)}, hard auto-unfocus at ${formatSessionExpiry(maxAgeExpiresAt)}).`,
         },
       };
     }
     return {
       shouldContinue: false,
-      reply: { text: "ℹ️ Max age is currently disabled for this focused session." },
+      reply: { text: "â„¹ï¸ Max age is currently disabled for this focused session." },
     };
   }
 
@@ -620,10 +620,10 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       shouldContinue: false,
       reply: {
         text: onDiscord
-          ? `⚠️ Only ${boundBy} can update session lifecycle settings for this thread.`
+          ? `âš ï¸ Only ${boundBy} can update session lifecycle settings for this thread.`
           : onMatrix
-            ? `⚠️ Only ${boundBy} can update session lifecycle settings for this thread.`
-            : `⚠️ Only ${boundBy} can update session lifecycle settings for this conversation.`,
+            ? `âš ï¸ Only ${boundBy} can update session lifecycle settings for this thread.`
+            : `âš ï¸ Only ${boundBy} can update session lifecycle settings for this conversation.`,
       },
     };
   }
@@ -683,8 +683,8 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       reply: {
         text:
           action === SESSION_ACTION_IDLE
-            ? "⚠️ Failed to update idle timeout for the current binding."
-            : "⚠️ Failed to update max age for the current binding.",
+            ? "âš ï¸ Failed to update idle timeout for the current binding."
+            : "âš ï¸ Failed to update max age for the current binding.",
       },
     };
   }
@@ -695,8 +695,8 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
       reply: {
         text:
           action === SESSION_ACTION_IDLE
-            ? `✅ Idle timeout disabled for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"}.`
-            : `✅ Max age disabled for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"}.`,
+            ? `âœ… Idle timeout disabled for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"}.`
+            : `âœ… Max age disabled for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"}.`,
       },
     };
   }
@@ -715,8 +715,8 @@ export const handleSessionCommand: CommandHandler = async (params, allowTextComm
     reply: {
       text:
         action === SESSION_ACTION_IDLE
-          ? `✅ Idle timeout set to ${formatThreadBindingDurationLabel(durationMs)} for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"} (next auto-unfocus at ${expiryLabel}).`
-          : `✅ Max age set to ${formatThreadBindingDurationLabel(durationMs)} for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"} (hard auto-unfocus at ${expiryLabel}).`,
+          ? `âœ… Idle timeout set to ${formatThreadBindingDurationLabel(durationMs)} for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"} (next auto-unfocus at ${expiryLabel}).`
+          : `âœ… Max age set to ${formatThreadBindingDurationLabel(durationMs)} for ${updatedBindings.length} binding${updatedBindings.length === 1 ? "" : "s"} (hard auto-unfocus at ${expiryLabel}).`,
     },
   };
 };
@@ -737,7 +737,7 @@ export const handleRestartCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: "⚠️ /restart is disabled (commands.restart=false).",
+        text: "âš ï¸ /restart is disabled (commands.restart=false).",
       },
     };
   }
@@ -747,7 +747,7 @@ export const handleRestartCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: "⚙️ Restarting OpenClaw in-process (SIGUSR1); back in a few seconds.",
+        text: "âš™ï¸ Restarting OpenClaw in-process (SIGUSR1); back in a few seconds.",
       },
     };
   }
@@ -757,14 +757,14 @@ export const handleRestartCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: `⚠️ Restart failed (${restartMethod.method}).${detail}`,
+        text: `âš ï¸ Restart failed (${restartMethod.method}).${detail}`,
       },
     };
   }
   return {
     shouldContinue: false,
     reply: {
-      text: `⚙️ Restarting OpenClaw via ${restartMethod.method}; give me a few seconds to come back online.`,
+      text: `âš™ï¸ Restarting OpenClaw via ${restartMethod.method}; give me a few seconds to come back online.`,
     },
   };
 };

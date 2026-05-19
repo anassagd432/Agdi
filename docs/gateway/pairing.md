@@ -85,7 +85,7 @@ Pairing state is stored under the Gateway state directory (default `~/.agdi`):
 - `~/.agdi/nodes/paired.json`
 - `~/.agdi/nodes/pending.json`
 
-If you override `OPENCLAW_STATE_DIR`, the `nodes/` folder moves with it.
+If you override `AGDI_STATE_DIR`, the `nodes/` folder moves with it.
 
 Security notes:
 

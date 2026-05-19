@@ -1,6 +1,6 @@
-import type { ChannelSetupAdapter } from "openclaw/plugin-sdk/channel-setup";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
+import type { ChannelSetupAdapter } from "agdi/plugin-sdk/channel-setup";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/routing";
 import {
   createTopLevelChannelParsedAllowFromPrompt,
   createTopLevelChannelDmPolicy,
@@ -9,10 +9,10 @@ import {
   parseSetupEntriesWithParser,
   patchTopLevelChannelConfigSection,
   splitSetupEntries,
-} from "openclaw/plugin-sdk/setup";
-import type { ChannelSetupDmPolicy } from "openclaw/plugin-sdk/setup";
-import type { ChannelSetupWizard } from "openclaw/plugin-sdk/setup";
-import { formatDocsLink } from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
+import type { ChannelSetupDmPolicy } from "agdi/plugin-sdk/setup";
+import type { ChannelSetupWizard } from "agdi/plugin-sdk/setup";
+import { formatDocsLink } from "agdi/plugin-sdk/setup";
 import { DEFAULT_RELAYS } from "./default-relays.js";
 import { getPublicKeyFromPrivate, normalizePubkey } from "./nostr-bus.js";
 import { resolveNostrAccount } from "./types.js";

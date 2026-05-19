@@ -313,7 +313,7 @@ export function resolveConfiguredModelRef(params: {
       return resolved.ref;
     }
 
-    // User specified a model but it could not be resolved — warn before falling back.
+    // User specified a model but it could not be resolved â€” warn before falling back.
     const safe = sanitizeForLog(trimmed);
     const safeFallback = sanitizeForLog(`${params.defaultProvider}/${params.defaultModel}`);
     getLog().warn(

@@ -54,7 +54,7 @@ export async function handleSubagentsSendAction(
     if (result.status === "error") {
       return stopWithText(`send failed: ${result.error ?? "error"}`);
     }
-    return stopWithText(`⚠️ ${result.error ?? "send failed"}`);
+    return stopWithText(`âš ï¸ ${result.error ?? "send failed"}`);
   }
 
   const result = await sendControlledSubagentMessage({
@@ -64,19 +64,19 @@ export async function handleSubagentsSendAction(
     message,
   });
   if (result.status === "timeout") {
-    return stopWithText(`⏳ Subagent still running (run ${result.runId.slice(0, 8)}).`);
+    return stopWithText(`â³ Subagent still running (run ${result.runId.slice(0, 8)}).`);
   }
   if (result.status === "error") {
-    return stopWithText(`⚠️ Subagent error: ${result.error} (run ${result.runId.slice(0, 8)}).`);
+    return stopWithText(`âš ï¸ Subagent error: ${result.error} (run ${result.runId.slice(0, 8)}).`);
   }
   if (result.status === "forbidden") {
-    return stopWithText(`⚠️ ${result.error ?? "send failed"}`);
+    return stopWithText(`âš ï¸ ${result.error ?? "send failed"}`);
   }
   if (result.status === "done") {
     return stopWithText(result.text);
   }
   return stopWithText(
     result.replyText ??
-      `✅ Sent to ${formatRunLabel(targetResolution.entry)} (run ${result.runId.slice(0, 8)}).`,
+      `âœ… Sent to ${formatRunLabel(targetResolution.entry)} (run ${result.runId.slice(0, 8)}).`,
   );
 }

@@ -13,7 +13,7 @@ type PdfInput = {
 };
 
 // ---------------------------------------------------------------------------
-// Anthropic – native PDF via Messages API
+// Anthropic â€“ native PDF via Messages API
 // ---------------------------------------------------------------------------
 
 type AnthropicDocBlock = {
@@ -106,7 +106,7 @@ export async function anthropicAnalyzePdf(params: {
 }
 
 // ---------------------------------------------------------------------------
-// Google Gemini – native PDF via generateContent API
+// Google Gemini â€“ native PDF via generateContent API
 // ---------------------------------------------------------------------------
 
 type GeminiPart = { inline_data: { mime_type: string; data: string } } | { text: string };

@@ -13,7 +13,7 @@ export type SandboxToolPolicySource = {
   source: "agent" | "global" | "default";
   /**
    * Config key path hint for humans.
-   * (Arrays use `agents.list[].…` form.)
+   * (Arrays use `agents.list[].â€¦` form.)
    */
   key: string;
 };

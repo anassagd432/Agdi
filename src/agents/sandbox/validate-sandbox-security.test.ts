@@ -106,7 +106,7 @@ describe("validateBindMounts", () => {
     if (process.platform === "win32") {
       // Symlinks to non-existent targets like /etc require
       // SeCreateSymbolicLinkPrivilege on Windows.  The Windows branch of this
-      // test does not need a real symlink — it only asserts that Windows source
+      // test does not need a real symlink â€” it only asserts that Windows source
       // paths are rejected as non-POSIX.
       const dir = mkdtempSync(join(tmpdir(), "openclaw-sbx-"));
       const fakePath = join(dir, "etc-link", "passwd");

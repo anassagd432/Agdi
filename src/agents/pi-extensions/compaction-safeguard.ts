@@ -790,14 +790,14 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
     if (!hasRealSummarizable && !hasRealTurnPrefix) {
       // When there are no summarizable messages AND no real turn-prefix content,
       // cancelling compaction leaves context unchanged but the SDK re-triggers
-      // _checkCompaction after every assistant response — creating a cancel loop
+      // _checkCompaction after every assistant response â€” creating a cancel loop
       // that blocks cron lanes (#41981).
       //
       // Strategy: always return a minimal compaction result so the SDK writes a
       // boundary entry. The SDK's prepareCompaction() returns undefined when the
       // last entry is a compaction, which blocks immediate re-triggering within
       // the same turn. After a new assistant message arrives, if the SDK triggers
-      // compaction again with an empty preparation, we write another boundary —
+      // compaction again with an empty preparation, we write another boundary â€”
       // this is bounded to at most one boundary per LLM round-trip, not a tight
       // loop.
       log.info(
@@ -1083,7 +1083,7 @@ export default function compactionSafeguardExtension(api: ExtensionAPI): void {
       // Cap the main history body first, then append split-turn context, preserved
       // turns, diagnostics, and workspace rules so they survive truncation.
       // Truncation keeps the prefix (slice(0, budget)), so sections at the end
-      // of the body would be dropped first—split-turn, preserved turns, tool
+      // of the body would be dropped firstâ€”split-turn, preserved turns, tool
       // failures, and file ops must be in the suffix.
       const reservedSuffix = appendSummarySection(
         appendSummarySection(

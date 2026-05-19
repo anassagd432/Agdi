@@ -232,7 +232,7 @@ describe("command queue", () => {
       expect(getActiveTaskCount()).toBeGreaterThanOrEqual(1);
     });
 
-    // Enqueue another task — it should be stuck behind the blocker
+    // Enqueue another task â€” it should be stuck behind the blocker
     let task2Ran = false;
     const task2 = enqueueCommandInLane(lane, async () => {
       task2Ran = true;
@@ -244,7 +244,7 @@ describe("command queue", () => {
     expect(task2Ran).toBe(false);
 
     // Simulate SIGUSR1: reset all lanes. Queued work (task2) should be
-    // drained immediately — no fresh enqueue needed.
+    // drained immediately â€” no fresh enqueue needed.
     resetAllLanes();
 
     // Complete the stale in-flight task; generation mismatch makes its

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "n8n": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\anass\\plugins\\local-n8n-mcp\\node_modules\\n8n-mcp\\dist\\mcp\\stdio-wrapper.js"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "https://n8ndockersokvutel.site/",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NDAwMDcyMC03ZDc3LTQ2ZDUtOWJkNi1hYjRhMmQ2ZmY1NmIiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiOTI2YmMyODUtMDEzYS00ODY3LTlkY2UtNWE2MDE1MWEwYjU0IiwiaWF0IjoxNzc4NzkyNTQzfQ.rfCcNEIuDthy3m53S8Odr2llQUfVByv09-jX-Ts1BIk"
+      }
+    }
+  }
+}

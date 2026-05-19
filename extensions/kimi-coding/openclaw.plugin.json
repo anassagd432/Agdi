@@ -1,5 +1,5 @@
 {
-  "id": "kimi",
+  "id": "kimi-coding",
   "providers": ["kimi", "kimi-coding"],
   "providerAuthEnvVars": {
     "kimi": ["KIMI_API_KEY", "KIMICODE_API_KEY"],

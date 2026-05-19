@@ -1,6 +1,6 @@
-import { readAcpSessionEntry, type AcpSessionStoreEntry } from "openclaw/plugin-sdk/acp-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { normalizeAccountId } from "openclaw/plugin-sdk/routing";
+import { readAcpSessionEntry, type AcpSessionStoreEntry } from "agdi/plugin-sdk/acp-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { normalizeAccountId } from "agdi/plugin-sdk/routing";
 import { parseDiscordTarget } from "../targets.js";
 import { resolveChannelIdForBinding } from "./thread-bindings.discord-api.js";
 import { getThreadBindingManager } from "./thread-bindings.manager.js";

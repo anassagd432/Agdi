@@ -266,7 +266,7 @@ describe("markAuthProfileFailure", () => {
       const now = Date.now();
       // Simulate state left on disk after 3 rapid failures within a 1-min cooldown
       // window. The cooldown has since expired, but clearExpiredCooldowns() only
-      // ran in-memory and never persisted — so disk still carries errorCount: 3.
+      // ran in-memory and never persisted â€” so disk still carries errorCount: 3.
       fs.writeFileSync(
         authPath,
         JSON.stringify({
@@ -303,7 +303,7 @@ describe("markAuthProfileFailure", () => {
       expect(stats?.errorCount).toBe(1);
       expect(stats?.failureCounts?.rate_limit).toBe(1);
       const cooldownMs = (stats?.cooldownUntil ?? 0) - now;
-      // calculateAuthProfileCooldownMs(1) = 30_000 (stepped: 30s → 1m → 5m)
+      // calculateAuthProfileCooldownMs(1) = 30_000 (stepped: 30s â†’ 1m â†’ 5m)
       expect(cooldownMs).toBeLessThan(60_000);
       expect(cooldownMs).toBeGreaterThan(0);
     } finally {

@@ -1,13 +1,13 @@
 import type {
   AudioTranscriptionRequest,
   AudioTranscriptionResult,
-} from "openclaw/plugin-sdk/media-understanding";
+} from "agdi/plugin-sdk/media-understanding";
 import {
   assertOkOrThrowHttpError,
   normalizeBaseUrl,
   postTranscriptionRequest,
   requireTranscriptionText,
-} from "openclaw/plugin-sdk/media-understanding";
+} from "agdi/plugin-sdk/media-understanding";
 
 export const DEFAULT_DEEPGRAM_AUDIO_BASE_URL = "https://api.deepgram.com/v1";
 export const DEFAULT_DEEPGRAM_AUDIO_MODEL = "nova-3";

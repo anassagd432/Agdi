@@ -4,8 +4,8 @@ import {
   transcribeOpenAiCompatibleAudio,
   type AudioTranscriptionRequest,
   type MediaUnderstandingProvider,
-} from "openclaw/plugin-sdk/media-understanding";
-import { OPENAI_DEFAULT_AUDIO_TRANSCRIPTION_MODEL } from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/media-understanding";
+import { OPENAI_DEFAULT_AUDIO_TRANSCRIPTION_MODEL } from "agdi/plugin-sdk/provider-models";
 
 export const DEFAULT_OPENAI_AUDIO_BASE_URL = "https://api.openai.com/v1";
 

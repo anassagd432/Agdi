@@ -7,11 +7,11 @@ import {
   makeWASocket,
   useMultiFileAuthState,
 } from "@whiskeysockets/baileys";
-import { formatCliCommand } from "openclaw/plugin-sdk/cli-runtime";
-import { VERSION } from "openclaw/plugin-sdk/cli-runtime";
-import { danger, success } from "openclaw/plugin-sdk/runtime-env";
-import { getChildLogger, toPinoLikeLogger } from "openclaw/plugin-sdk/runtime-env";
-import { ensureDir, resolveUserPath } from "openclaw/plugin-sdk/text-runtime";
+import { formatCliCommand } from "agdi/plugin-sdk/cli-runtime";
+import { VERSION } from "agdi/plugin-sdk/cli-runtime";
+import { danger, success } from "agdi/plugin-sdk/runtime-env";
+import { getChildLogger, toPinoLikeLogger } from "agdi/plugin-sdk/runtime-env";
+import { ensureDir, resolveUserPath } from "agdi/plugin-sdk/text-runtime";
 import qrcode from "qrcode-terminal";
 import {
   maybeRestoreCredsFromBackup,

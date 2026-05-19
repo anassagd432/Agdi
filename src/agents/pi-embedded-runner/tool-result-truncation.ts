@@ -8,7 +8,7 @@ import { rewriteTranscriptEntriesInSessionManager } from "./transcript-rewrite.j
 
 /**
  * Maximum share of the context window a single tool result should occupy.
- * This is intentionally conservative – a single tool result should not
+ * This is intentionally conservative â€“ a single tool result should not
  * consume more than 30% of the context window even without other messages.
  */
 const MAX_TOOL_RESULT_CONTEXT_SHARE = 0.3;
@@ -32,7 +32,7 @@ const MIN_KEEP_CHARS = 2_000;
  * Suffix appended to truncated tool results.
  */
 const TRUNCATION_SUFFIX =
-  "\n\n⚠️ [Content truncated — original was too large for the model's context window. " +
+  "\n\nâš ï¸ [Content truncated â€” original was too large for the model's context window. " +
   "The content above is a partial view. If you need more, request specific sections or use " +
   "offset/limit parameters to read smaller chunks.]";
 
@@ -45,7 +45,7 @@ type ToolResultTruncationOptions = {
  * Marker inserted between head and tail when using head+tail truncation.
  */
 const MIDDLE_OMISSION_MARKER =
-  "\n\n⚠️ [... middle content omitted — showing head and tail ...]\n\n";
+  "\n\nâš ï¸ [... middle content omitted â€” showing head and tail ...]\n\n";
 
 /**
  * Detect whether text likely contains error/diagnostic content near the end,
@@ -56,7 +56,7 @@ function hasImportantTail(text: string): boolean {
   const tail = text.slice(-2000).toLowerCase();
   return (
     /\b(error|exception|failed|fatal|traceback|panic|stack trace|errno|exit code)\b/.test(tail) ||
-    // JSON closing — if the output is JSON, the tail has closing structure
+    // JSON closing â€” if the output is JSON, the tail has closing structure
     /\}\s*$/.test(tail.trim()) ||
     // Summary/result lines often appear at the end
     /\b(total|summary|result|complete|finished|done)\b/.test(tail)
@@ -119,7 +119,7 @@ export function truncateToolResultText(
  * Calculate the maximum allowed characters for a single tool result
  * based on the model's context window tokens.
  *
- * Uses a rough 4 chars ≈ 1 token heuristic (conservative for English text;
+ * Uses a rough 4 chars â‰ˆ 1 token heuristic (conservative for English text;
  * actual ratio varies by tokenizer).
  */
 export function calculateMaxToolResultChars(contextWindowTokens: number): number {

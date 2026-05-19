@@ -1,4 +1,4 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
 import { buildOpenAIImageGenerationProvider } from "./image-generation-provider.js";
 import {
   openaiCodexMediaUnderstandingProvider,

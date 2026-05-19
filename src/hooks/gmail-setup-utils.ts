@@ -20,7 +20,7 @@ function trimOutput(value: string): string {
   if (trimmed.length <= MAX_OUTPUT_CHARS) {
     return trimmed;
   }
-  return `${trimmed.slice(0, MAX_OUTPUT_CHARS)}…`;
+  return `${trimmed.slice(0, MAX_OUTPUT_CHARS)}â€¦`;
 }
 
 function formatCommandResultInternal(

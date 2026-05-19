@@ -5,7 +5,7 @@ import {
   DOUBAO_CODING_MODEL_CATALOG,
   DOUBAO_MODEL_CATALOG,
   type ModelProviderConfig,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export function buildDoubaoProvider(): ModelProviderConfig {
   return {

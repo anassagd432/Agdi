@@ -140,10 +140,10 @@ vi.mock("./abort.runtime.js", () => ({
   tryFastAbortFromMessage: mocks.tryFastAbortFromMessage,
   formatAbortReplyText: (stoppedSubagents?: number) => {
     if (typeof stoppedSubagents !== "number" || stoppedSubagents <= 0) {
-      return "⚙️ Agent was aborted.";
+      return "âš™ï¸ Agent was aborted.";
     }
     const label = stoppedSubagents === 1 ? "sub-agent" : "sub-agents";
-    return `⚙️ Agent was aborted. Stopped ${stoppedSubagents} ${label}.`;
+    return `âš™ï¸ Agent was aborted. Stopped ${stoppedSubagents} ${label}.`;
   },
 }));
 
@@ -738,7 +738,7 @@ describe("dispatchReplyFromConfig", () => {
       _cfg?: OpenClawConfig,
     ) => {
       expect(opts?.onToolResult).toBeDefined();
-      await opts?.onToolResult?.({ text: "🔧 exec: ls" });
+      await opts?.onToolResult?.({ text: "ðŸ”§ exec: ls" });
       await opts?.onToolResult?.({
         text: "NO_REPLY",
         mediaUrls: ["https://example.com/tts-group.opus"],
@@ -771,13 +771,13 @@ describe("dispatchReplyFromConfig", () => {
       opts?: GetReplyOptions,
       _cfg?: OpenClawConfig,
     ) => {
-      await opts?.onToolResult?.({ text: "🔧 exec: ls" });
+      await opts?.onToolResult?.({ text: "ðŸ”§ exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
     };
 
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
     expect(dispatcher.sendToolResult).toHaveBeenCalledWith(
-      expect.objectContaining({ text: "🔧 exec: ls" }),
+      expect.objectContaining({ text: "ðŸ”§ exec: ls" }),
     );
     expect(dispatcher.sendToolResult).toHaveBeenCalledTimes(1);
     expect(dispatcher.sendFinalReply).toHaveBeenCalledTimes(1);
@@ -843,13 +843,13 @@ describe("dispatchReplyFromConfig", () => {
       _cfg?: OpenClawConfig,
     ) => {
       // Simulate tool result emission
-      await opts?.onToolResult?.({ text: "🔧 exec: ls" });
+      await opts?.onToolResult?.({ text: "ðŸ”§ exec: ls" });
       return { text: "done" } satisfies ReplyPayload;
     };
 
     await dispatchReplyFromConfig({ ctx, cfg, dispatcher, replyResolver });
     expect(dispatcher.sendToolResult).toHaveBeenCalledWith(
-      expect.objectContaining({ text: "🔧 exec: ls" }),
+      expect.objectContaining({ text: "ðŸ”§ exec: ls" }),
     );
     expect(dispatcher.sendFinalReply).toHaveBeenCalledTimes(1);
   });
@@ -870,7 +870,7 @@ describe("dispatchReplyFromConfig", () => {
       _cfg?: OpenClawConfig,
     ) => {
       expect(opts?.onToolResult).toBeDefined();
-      await opts?.onToolResult?.({ text: "🔧 tools/sessions_send" });
+      await opts?.onToolResult?.({ text: "ðŸ”§ tools/sessions_send" });
       await opts?.onToolResult?.({
         mediaUrl: "https://example.com/tts-native.opus",
       });
@@ -947,7 +947,7 @@ describe("dispatchReplyFromConfig", () => {
 
     expect(replyResolver).not.toHaveBeenCalled();
     expect(dispatcher.sendFinalReply).toHaveBeenCalledWith({
-      text: "⚙️ Agent was aborted.",
+      text: "âš™ï¸ Agent was aborted.",
     });
   });
 
@@ -972,7 +972,7 @@ describe("dispatchReplyFromConfig", () => {
     });
 
     expect(dispatcher.sendFinalReply).toHaveBeenCalledWith({
-      text: "⚙️ Agent was aborted. Stopped 2 sub-agents.",
+      text: "âš™ï¸ Agent was aborted. Stopped 2 sub-agents.",
     });
   });
 

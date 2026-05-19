@@ -207,7 +207,7 @@ describe("gateway bonjour advertiser", () => {
       sshPort: 2222,
     });
 
-    // 1 service × 2 listeners
+    // 1 service x 2 listeners
     expect(onCalls.map((c) => c.event)).toEqual(["name-change", "hostname-change"]);
 
     await started.stop();
@@ -428,10 +428,10 @@ describe("gateway bonjour advertiser", () => {
     });
 
     const [gatewayCall] = createService.mock.calls as Array<[ServiceCall]>;
-    expect(gatewayCall?.[0]?.name).toBe("openclaw (OpenClaw)");
+    expect(gatewayCall?.[0]?.name).toBe("agdi (Agdi)");
     expect(gatewayCall?.[0]?.domain).toBe("local");
-    expect(gatewayCall?.[0]?.hostname).toBe("openclaw");
-    expect((gatewayCall?.[0]?.txt as Record<string, string>)?.lanHost).toBe("openclaw.local");
+    expect(gatewayCall?.[0]?.hostname).toBe("agdi");
+    expect((gatewayCall?.[0]?.txt as Record<string, string>)?.lanHost).toBe("agdi.local");
 
     await started.stop();
   });

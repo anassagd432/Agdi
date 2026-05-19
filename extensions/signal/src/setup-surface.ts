@@ -2,8 +2,8 @@ import {
   createDetectedBinaryStatus,
   setSetupChannelEnabled,
   type ChannelSetupWizard,
-} from "openclaw/plugin-sdk/setup";
-import { detectBinary, installSignalCli } from "openclaw/plugin-sdk/setup-tools";
+} from "agdi/plugin-sdk/setup";
+import { detectBinary, installSignalCli } from "agdi/plugin-sdk/setup-tools";
 import { listSignalAccountIds, resolveSignalAccount } from "./accounts.js";
 import {
   createSignalCliPathTextInput,

@@ -171,7 +171,7 @@ describe("compaction hook wiring", () => {
     );
 
     expect(hookMocks.runner.runAfterCompaction).not.toHaveBeenCalled();
-    // Counter is incremented even with willRetry — compaction succeeded (#38905)
+    // Counter is incremented even with willRetry â€” compaction succeeded (#38905)
     expect(ctx.incrementCompactionCount).toHaveBeenCalledTimes(1);
     expect(ctx.noteCompactionRetry).toHaveBeenCalledTimes(1);
     expect(ctx.resetForCompactionRetry).toHaveBeenCalledTimes(1);

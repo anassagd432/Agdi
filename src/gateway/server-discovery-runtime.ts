@@ -24,7 +24,7 @@ export async function startGatewayDiscovery(params: {
   // mDNS can be disabled via config (mdnsMode: off) or env var.
   const bonjourEnabled =
     mdnsMode !== "off" &&
-    process.env.OPENCLAW_DISABLE_BONJOUR !== "1" &&
+    (process.env.AGDI_DISABLE_BONJOUR ?? process.env.OPENCLAW_DISABLE_BONJOUR) !== "1" &&
     process.env.NODE_ENV !== "test" &&
     !process.env.VITEST;
   const mdnsMinimal = mdnsMode !== "full";
@@ -33,7 +33,7 @@ export async function startGatewayDiscovery(params: {
   const tailnetDns = needsTailnetDns
     ? await resolveTailnetDnsHint({ enabled: tailscaleEnabled })
     : undefined;
-  const sshPortEnv = mdnsMinimal ? undefined : process.env.OPENCLAW_SSH_PORT?.trim();
+  const sshPortEnv = mdnsMinimal ? undefined : (process.env.AGDI_SSH_PORT ?? process.env.OPENCLAW_SSH_PORT)?.trim();
   const sshPortParsed = sshPortEnv ? Number.parseInt(sshPortEnv, 10) : NaN;
   const sshPort = Number.isFinite(sshPortParsed) && sshPortParsed > 0 ? sshPortParsed : undefined;
   const cliPath = mdnsMinimal ? undefined : resolveBonjourCliPath();
@@ -88,7 +88,7 @@ export async function startGatewayDiscovery(params: {
           cliPath: resolveBonjourCliPath(),
         });
         params.logDiscovery.info(
-          `wide-area DNS-SD ${result.changed ? "updated" : "unchanged"} (${wideAreaDomain} → ${result.zonePath})`,
+          `wide-area DNS-SD ${result.changed ? "updated" : "unchanged"} (${wideAreaDomain} â†’ ${result.zonePath})`,
         );
       } catch (err) {
         params.logDiscovery.warn(`wide-area discovery update failed: ${String(err)}`);

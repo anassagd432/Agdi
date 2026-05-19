@@ -27,9 +27,9 @@ vi.mock("../../../src/media/image-ops.js", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/media-runtime")>(
-    "openclaw/plugin-sdk/media-runtime",
+vi.mock("agdi/plugin-sdk/media-runtime", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/media-runtime")>(
+    "agdi/plugin-sdk/media-runtime",
   );
   return {
     ...actual,

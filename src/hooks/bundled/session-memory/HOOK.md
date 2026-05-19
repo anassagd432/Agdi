@@ -1,15 +1,15 @@
 ---
 name: session-memory
 description: "Save session context to memory when /new or /reset command is issued"
-homepage: https://docs.openclaw.ai/automation/hooks#session-memory
+homepage: https://docs.agdi.ai/automation/hooks#session-memory
 metadata:
   {
     "openclaw":
       {
-        "emoji": "💾",
+        "emoji": "memory",
         "events": ["command:new", "command:reset"],
         "requires": { "config": ["workspace.dir"] },
-        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with OpenClaw" }],
+        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with Agdi" }],
       },
   }
 ---
@@ -22,10 +22,10 @@ Automatically saves session context to your workspace memory when you issue `/ne
 
 When you run `/new` or `/reset` to start a fresh session:
 
-1. **Finds the previous session** - Uses the pre-reset session entry to locate the correct transcript
-2. **Extracts conversation** - Reads the last N user/assistant messages from the session (default: 15, configurable)
-3. **Generates descriptive slug** - Uses LLM to create a meaningful filename slug based on conversation content
-4. **Saves to memory** - Creates a new file at `<workspace>/memory/YYYY-MM-DD-slug.md`
+1. **Finds the previous session** - Uses the pre-reset session entry to locate the correct transcript.
+2. **Extracts conversation** - Reads the last N user/assistant messages from the session. The default is 15 and can be configured.
+3. **Generates descriptive slug** - Uses the LLM to create a meaningful filename slug based on conversation content.
+4. **Saves to memory** - Creates a new file at `<workspace>/memory/YYYY-MM-DD-slug.md`.
 
 ## Output Format
 
@@ -43,16 +43,16 @@ Memory files are created with the following format:
 
 The LLM generates descriptive slugs based on your conversation:
 
-- `2026-01-16-vendor-pitch.md` - Discussion about vendor evaluation
-- `2026-01-16-api-design.md` - API architecture planning
-- `2026-01-16-bug-fix.md` - Debugging session
-- `2026-01-16-1430.md` - Fallback timestamp if slug generation fails
+- `2026-01-16-vendor-pitch.md` - Discussion about vendor evaluation.
+- `2026-01-16-api-design.md` - API architecture planning.
+- `2026-01-16-bug-fix.md` - Debugging session.
+- `2026-01-16-1430.md` - Fallback timestamp if slug generation fails.
 
 ## Requirements
 
-- **Config**: `workspace.dir` must be set (automatically configured during setup)
+- **Config**: `workspace.dir` must be set. Setup configures it automatically.
 
-The hook uses your configured LLM provider to generate slugs, so it works with any provider (Anthropic, OpenAI, etc.).
+The hook uses your configured LLM provider to generate slugs, so it works with any provider.
 
 ## Configuration
 
@@ -81,16 +81,16 @@ Example configuration:
 
 The hook automatically:
 
-- Uses your workspace directory (`~/.openclaw/workspace` by default)
-- Uses your configured LLM for slug generation
-- Falls back to timestamp slugs if LLM is unavailable
+- Uses your workspace directory (`~/.agdi/workspace` by default).
+- Uses your configured LLM for slug generation.
+- Falls back to timestamp slugs if the LLM is unavailable.
 
 ## Disabling
 
 To disable this hook:
 
 ```bash
-openclaw hooks disable session-memory
+agdi hooks disable session-memory
 ```
 
 Or remove it from your config:

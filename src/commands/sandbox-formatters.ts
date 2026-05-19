@@ -3,7 +3,7 @@
  */
 
 export function formatStatus(running: boolean): string {
-  return running ? "🟢 running" : "⚫ stopped";
+  return running ? "ðŸŸ¢ running" : "âš« stopped";
 }
 
 export function formatSimpleStatus(running: boolean): string {
@@ -11,7 +11,7 @@ export function formatSimpleStatus(running: boolean): string {
 }
 
 export function formatImageMatch(matches: boolean): string {
-  return matches ? "✓" : "⚠️  mismatch";
+  return matches ? "âœ“" : "âš ï¸  mismatch";
 }
 
 /**

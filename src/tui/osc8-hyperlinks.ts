@@ -151,7 +151,7 @@ function applyOsc8Ranges(line: string, ranges: UrlRange[]): string {
     return line;
   }
 
-  // Build a lookup: visible position → URL
+  // Build a lookup: visible position â†’ URL
   const urlAt = new Map<number, string>();
   for (const r of ranges) {
     for (let p = r.start; p < r.end; p++) {
@@ -184,7 +184,7 @@ function applyOsc8Ranges(line: string, ranges: UrlRange[]): string {
       }
     }
 
-    // Visible character — toggle OSC 8 at range boundaries
+    // Visible character â€” toggle OSC 8 at range boundaries
     const targetUrl = urlAt.get(visiblePos) ?? null;
     if (targetUrl !== activeUrl) {
       if (activeUrl !== null) {

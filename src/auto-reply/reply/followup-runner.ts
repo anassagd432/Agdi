@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import { resolveRunModelFallbacksOverride } from "../../agents/agent-scope.js";
 import { resolveBootstrapWarningSignaturesSeen } from "../../agents/bootstrap-budget.js";
 import { lookupContextTokens } from "../../agents/context.js";
@@ -385,7 +385,7 @@ export function createFollowupRunner(params: {
         if (queued.run.verboseLevel && queued.run.verboseLevel !== "off") {
           const suffix = typeof count === "number" ? ` (count ${count})` : "";
           finalPayloads.unshift({
-            text: `🧹 Auto-compaction complete${suffix}.`,
+            text: `ðŸ§¹ Auto-compaction complete${suffix}.`,
           });
         }
       }
@@ -395,7 +395,7 @@ export function createFollowupRunner(params: {
       // Both signals are required for the typing controller to clean up.
       // The main inbound dispatch path calls markDispatchIdle() from the
       // buffered dispatcher's finally block, but followup turns bypass the
-      // dispatcher entirely — so we must fire both signals here.  Without
+      // dispatcher entirely â€” so we must fire both signals here.  Without
       // this, NO_REPLY / empty-payload followups leave the typing indicator
       // stuck (the keepalive loop keeps sending "typing" to Telegram
       // indefinitely until the TTL expires).

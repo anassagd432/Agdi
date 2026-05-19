@@ -1,16 +1,16 @@
-import { createPairingPrefixStripper } from "openclaw/plugin-sdk/channel-pairing";
-import { createRestrictSendersChannelSecurity } from "openclaw/plugin-sdk/channel-policy";
+import { createPairingPrefixStripper } from "agdi/plugin-sdk/channel-pairing";
+import { createRestrictSendersChannelSecurity } from "agdi/plugin-sdk/channel-policy";
 import {
   createAttachedChannelResultAdapter,
   createEmptyChannelResult,
-} from "openclaw/plugin-sdk/channel-send-result";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/core";
-import { createEmptyChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { resolveOutboundMediaUrls } from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/channel-send-result";
+import { createChatChannelPlugin } from "agdi/plugin-sdk/core";
+import { createEmptyChannelDirectoryAdapter } from "agdi/plugin-sdk/directory-runtime";
+import { resolveOutboundMediaUrls } from "agdi/plugin-sdk/reply-payload";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "agdi/plugin-sdk/status-helpers";
 import {
   buildTokenChannelStatusSummary,
   clearAccountEntryFields,

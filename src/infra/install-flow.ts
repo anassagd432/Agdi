@@ -39,7 +39,7 @@ export async function withExtractedArchiveRoot<TResult extends { ok: boolean }>(
     const extractDir = path.join(tmpDir, "extract");
     await fs.mkdir(extractDir, { recursive: true });
 
-    params.logger?.info?.(`Extracting ${params.archivePath}…`);
+    params.logger?.info?.(`Extracting ${params.archivePath}â€¦`);
     try {
       await extractArchive({
         archivePath: params.archivePath,

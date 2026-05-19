@@ -5,7 +5,7 @@ import { resolveResponsePrefix, resolveEffectiveMessagesConfig } from "./identit
 const makeConfig = <T extends OpenClawConfig>(cfg: T) => cfg;
 
 describe("resolveResponsePrefix with per-channel override", () => {
-  // ─── Backward compatibility ─────────────────────────────────────────
+  // â”€â”€â”€ Backward compatibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("backward compatibility (no channel param)", () => {
     it("returns undefined when no prefix configured anywhere", () => {
@@ -34,7 +34,7 @@ describe("resolveResponsePrefix with per-channel override", () => {
     });
   });
 
-  // ─── Channel-level prefix ──────────────────────────────────────────
+  // â”€â”€â”€ Channel-level prefix â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("channel-level prefix", () => {
     it("returns channel prefix when set, ignoring global", () => {
@@ -84,12 +84,12 @@ describe("resolveResponsePrefix with per-channel override", () => {
         channels: {
           whatsapp: { responsePrefix: "[WA Bot] " },
           telegram: { responsePrefix: "" },
-          discord: { responsePrefix: "🤖 " },
+          discord: { responsePrefix: "ðŸ¤– " },
         },
       } satisfies OpenClawConfig);
       expect(resolveResponsePrefix(cfg, "main", { channel: "whatsapp" })).toBe("[WA Bot] ");
       expect(resolveResponsePrefix(cfg, "main", { channel: "telegram" })).toBe("");
-      expect(resolveResponsePrefix(cfg, "main", { channel: "discord" })).toBe("🤖 ");
+      expect(resolveResponsePrefix(cfg, "main", { channel: "discord" })).toBe("ðŸ¤– ");
     });
 
     it("returns undefined when channel not in config", () => {
@@ -102,7 +102,7 @@ describe("resolveResponsePrefix with per-channel override", () => {
     });
   });
 
-  // ─── Account-level prefix ─────────────────────────────────────────
+  // â”€â”€â”€ Account-level prefix â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("account-level prefix", () => {
     it("returns account prefix when set, ignoring channel and global", () => {
@@ -226,7 +226,7 @@ describe("resolveResponsePrefix with per-channel override", () => {
     });
   });
 
-  // ─── Full cascade ─────────────────────────────────────────────────
+  // â”€â”€â”€ Full cascade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("full 4-level cascade", () => {
     const fullCfg = makeConfig({
@@ -270,7 +270,7 @@ describe("resolveResponsePrefix with per-channel override", () => {
     });
   });
 
-  // ─── resolveEffectiveMessagesConfig integration ────────────────────
+  // â”€â”€â”€ resolveEffectiveMessagesConfig integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("resolveEffectiveMessagesConfig with channel context", () => {
     it("passes channel context through to responsePrefix resolution", () => {

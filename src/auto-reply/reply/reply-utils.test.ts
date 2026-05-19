@@ -110,9 +110,9 @@ describe("normalizeReplyPayload", () => {
   });
 
   it("strips NO_REPLY from mixed emoji message (#30916)", () => {
-    const result = normalizeReplyPayload({ text: "😄 NO_REPLY" });
+    const result = normalizeReplyPayload({ text: "ðŸ˜„ NO_REPLY" });
     expect(result).not.toBeNull();
-    expect(result!.text).toContain("😄");
+    expect(result!.text).toContain("ðŸ˜„");
     expect(result!.text).not.toContain("NO_REPLY");
   });
 

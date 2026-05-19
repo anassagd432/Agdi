@@ -26,27 +26,27 @@ function isBatchSafe(value: string): boolean {
 }
 
 function resolveSystemdUnit(env: NodeJS.ProcessEnv): string {
-  const override = env.OPENCLAW_SYSTEMD_UNIT?.trim();
+  const override = (env.AGDI_SYSTEMD_UNIT ?? env.OPENCLAW_SYSTEMD_UNIT)?.trim();
   if (override) {
     return override.endsWith(".service") ? override : `${override}.service`;
   }
-  return `${resolveGatewaySystemdServiceName(env.OPENCLAW_PROFILE)}.service`;
+  return `${resolveGatewaySystemdServiceName(env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE)}.service`;
 }
 
 function resolveLaunchdLabel(env: NodeJS.ProcessEnv): string {
-  const override = env.OPENCLAW_LAUNCHD_LABEL?.trim();
+  const override = (env.AGDI_LAUNCHD_LABEL ?? env.OPENCLAW_LAUNCHD_LABEL)?.trim();
   if (override) {
     return override;
   }
-  return resolveGatewayLaunchAgentLabel(env.OPENCLAW_PROFILE);
+  return resolveGatewayLaunchAgentLabel(env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE);
 }
 
 function resolveWindowsTaskName(env: NodeJS.ProcessEnv): string {
-  const override = env.OPENCLAW_WINDOWS_TASK_NAME?.trim();
+  const override = (env.AGDI_WINDOWS_TASK_NAME ?? env.OPENCLAW_WINDOWS_TASK_NAME)?.trim();
   if (override) {
     return override;
   }
-  return resolveGatewayWindowsTaskName(env.OPENCLAW_PROFILE);
+  return resolveGatewayWindowsTaskName(env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE);
 }
 
 /**
@@ -72,7 +72,7 @@ export async function prepareRestartScript(
       const escaped = shellEscape(unitName);
       filename = `openclaw-restart-${timestamp}.sh`;
       scriptContent = `#!/bin/sh
-# Standalone restart script — survives parent process termination.
+# Standalone restart script â€” survives parent process termination.
 # Wait briefly to ensure file locks are released after update.
 sleep 1
 systemctl --user restart '${escaped}'
@@ -91,7 +91,7 @@ rm -f "$0"
       const escapedPlistPath = shellEscape(plistPath);
       filename = `openclaw-restart-${timestamp}.sh`;
       scriptContent = `#!/bin/sh
-# Standalone restart script — survives parent process termination.
+# Standalone restart script â€” survives parent process termination.
 # Wait briefly to ensure file locks are released after update.
 sleep 1
 # Try kickstart first (works when the service is still registered).
@@ -114,7 +114,7 @@ rm -f "$0"
         Number.isFinite(gatewayPort) && gatewayPort > 0 ? gatewayPort : DEFAULT_GATEWAY_PORT;
       filename = `openclaw-restart-${timestamp}.bat`;
       scriptContent = `@echo off
-REM Standalone restart script — survives parent process termination.
+REM Standalone restart script â€” survives parent process termination.
 REM Wait briefly to ensure file locks are released after update.
 timeout /t 2 /nobreak >nul
 schtasks /End /TN "${taskName}"
@@ -154,7 +154,7 @@ del "%~f0"
  * Executes the prepared restart script as a **detached** process.
  *
  * The script must outlive the CLI process because the CLI itself is part
- * of the service being restarted — `systemctl restart` / `launchctl
+ * of the service being restarted â€” `systemctl restart` / `launchctl
  * kickstart -k` will terminate the current process tree.  Using
  * `spawn({ detached: true })` + `unref()` ensures the script survives
  * the parent's exit.

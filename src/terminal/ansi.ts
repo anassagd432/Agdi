@@ -29,7 +29,7 @@ export function splitGraphemes(input: string): string[] {
 
 /**
  * Sanitize a value for safe interpolation into log messages.
- * Strips ANSI escape sequences, C0 control characters (U+0000–U+001F),
+ * Strips ANSI escape sequences, C0 control characters (U+0000â€“U+001F),
  * and DEL (U+007F) to prevent log forging / terminal escape injection (CWE-117).
  */
 export function sanitizeForLog(v: string): string {

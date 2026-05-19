@@ -1,9 +1,9 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   ensureConfiguredBindingRouteReady,
   resolveConfiguredBindingRoute,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import type { ResolvedAgentRoute } from "openclaw/plugin-sdk/routing";
+} from "agdi/plugin-sdk/conversation-runtime";
+import type { ResolvedAgentRoute } from "agdi/plugin-sdk/routing";
 import {
   resolveDiscordBoundConversationRoute,
   resolveDiscordEffectiveRoute,

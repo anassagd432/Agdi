@@ -21,7 +21,7 @@ If you are using an older build or a custom install that does not include bundle
 Feishu, install it manually:
 
 ```bash
-agdi plugins install @agdi/feishu
+agdi plugins install @openclaw/feishu
 ```
 
 ---

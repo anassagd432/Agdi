@@ -13,8 +13,8 @@ describe("markdownToIR tableMode bullets", () => {
     const ir = markdownToIR(md, { tableMode: "bullets" });
 
     // Should contain bullet points with header:value format
-    expect(ir.text).toContain("• Value: 1");
-    expect(ir.text).toContain("• Value: 2");
+    expect(ir.text).toContain("â€¢ Value: 1");
+    expect(ir.text).toContain("â€¢ Value: 2");
     // Should use first column as labels
     expect(ir.text).toContain("A");
     expect(ir.text).toContain("B");
@@ -34,10 +34,10 @@ describe("markdownToIR tableMode bullets", () => {
     expect(ir.text).toContain("Speed");
     expect(ir.text).toContain("Scale");
     // Other columns become bullet points
-    expect(ir.text).toContain("• SQLite: Fast");
-    expect(ir.text).toContain("• Postgres: Medium");
-    expect(ir.text).toContain("• SQLite: Small");
-    expect(ir.text).toContain("• Postgres: Large");
+    expect(ir.text).toContain("â€¢ SQLite: Fast");
+    expect(ir.text).toContain("â€¢ Postgres: Medium");
+    expect(ir.text).toContain("â€¢ SQLite: Small");
+    expect(ir.text).toContain("â€¢ Postgres: Large");
   });
 
   it("leaves table syntax untouched by default", () => {
@@ -52,7 +52,7 @@ describe("markdownToIR tableMode bullets", () => {
     // No table conversion by default
     expect(ir.text).toContain("| A | B |");
     expect(ir.text).toContain("| 1 | 2 |");
-    expect(ir.text).not.toContain("•");
+    expect(ir.text).not.toContain("â€¢");
     expect(ir.styles.some((style) => style.style === "code_block")).toBe(false);
   });
 
@@ -68,7 +68,7 @@ describe("markdownToIR tableMode bullets", () => {
 
     // Should handle empty cell without crashing
     expect(ir.text).toContain("B");
-    expect(ir.text).toContain("• Value: 2");
+    expect(ir.text).toContain("â€¢ Value: 2");
   });
 
   it("bolds row labels in bullets mode", () => {

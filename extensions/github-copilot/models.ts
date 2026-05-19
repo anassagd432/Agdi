@@ -1,8 +1,8 @@
 import type {
   ProviderResolveDynamicModelContext,
   ProviderRuntimeModel,
-} from "openclaw/plugin-sdk/core";
-import { normalizeModelCompat } from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/core";
+import { normalizeModelCompat } from "agdi/plugin-sdk/provider-models";
 
 export const PROVIDER_ID = "github-copilot";
 const CODEX_GPT_54_MODEL_ID = "gpt-5.4";

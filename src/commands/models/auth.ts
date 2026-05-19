@@ -502,7 +502,7 @@ type LoginOptions = {
 
 /**
  * Clear stale cooldown/disabled state for all profiles matching a provider.
- * When a user explicitly runs `models auth login`, they intend to fix auth —
+ * When a user explicitly runs `models auth login`, they intend to fix auth â€”
  * stale `auth_permanent` / `billing` lockouts should not persist across
  * a deliberate re-authentication attempt.
  */
@@ -514,7 +514,7 @@ async function clearStaleProfileLockouts(provider: string, agentDir: string): Pr
       await clearAuthProfileCooldown({ store, profileId, agentDir });
     }
   } catch {
-    // Best-effort housekeeping — never block re-authentication.
+    // Best-effort housekeeping â€” never block re-authentication.
   }
 }
 

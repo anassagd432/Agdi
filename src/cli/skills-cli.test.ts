@@ -18,7 +18,7 @@ function createMockSkill(overrides: Partial<SkillStatusEntry> = {}): SkillStatus
     filePath: "/path/to/SKILL.md",
     baseDir: "/path/to",
     skillKey: "test-skill",
-    emoji: "🧪",
+    emoji: "ðŸ§ª",
     homepage: "https://example.com",
     always: false,
     disabled: false,
@@ -51,14 +51,14 @@ describe("skills-cli", () => {
         createMockSkill({
           name: "peekaboo",
           description: "Capture UI screenshots",
-          emoji: "📸",
+          emoji: "ðŸ“¸",
           eligible: true,
         }),
       ]);
       const output = formatSkillsList(report, {});
       expect(output).toContain("peekaboo");
-      expect(output).toContain("📸");
-      expect(output).toContain("✓");
+      expect(output).toContain("ðŸ“¸");
+      expect(output).toContain("âœ“");
     });
 
     it("formats skills list with disabled skill", () => {
@@ -153,12 +153,12 @@ describe("skills-cli", () => {
       const report = createMockReport([
         createMockSkill({
           name: "info-emoji",
-          emoji: "🎛\uFE0E",
+          emoji: "ðŸŽ›\uFE0E",
         }),
       ]);
 
       const output = formatSkillInfo(report, "info-emoji", {});
-      expect(output).toContain("🎛️");
+      expect(output).toContain("ðŸŽ›ï¸");
     });
   });
 
@@ -185,18 +185,18 @@ describe("skills-cli", () => {
 
     it("normalizes text-presentation emoji selectors in check output", () => {
       const report = createMockReport([
-        createMockSkill({ name: "ready-emoji", emoji: "🎛\uFE0E", eligible: true }),
+        createMockSkill({ name: "ready-emoji", emoji: "ðŸŽ›\uFE0E", eligible: true }),
         createMockSkill({
           name: "missing-emoji",
-          emoji: "🎙\uFE0E",
+          emoji: "ðŸŽ™\uFE0E",
           eligible: false,
           missing: { bins: ["ffmpeg"], anyBins: [], env: [], config: [], os: [] },
         }),
       ]);
 
       const output = formatSkillsCheck(report, {});
-      expect(output).toContain("🎛️ ready-emoji");
-      expect(output).toContain("🎙️ missing-emoji");
+      expect(output).toContain("ðŸŽ›ï¸ ready-emoji");
+      expect(output).toContain("ðŸŽ™ï¸ missing-emoji");
     });
   });
 
@@ -248,7 +248,7 @@ describe("skills-cli", () => {
       const report = createMockReport([
         createMockSkill({
           name: "json-skill",
-          emoji: "\u001b[31m📧\u001b[0m\u009f",
+          emoji: "\u001b[31mðŸ“§\u001b[0m\u009f",
           description: "desc\u0093\u001b[2J\u001b[33m colored\u001b[0m",
         }),
       ]);
@@ -258,7 +258,7 @@ describe("skills-cli", () => {
         skills: Array<{ emoji: string; description: string }>;
       };
 
-      expect(parsed.skills[0]?.emoji).toBe("📧");
+      expect(parsed.skills[0]?.emoji).toBe("ðŸ“§");
       expect(parsed.skills[0]?.description).toBe("desc colored");
       expect(output).not.toContain("\\u001b");
     });
@@ -267,7 +267,7 @@ describe("skills-cli", () => {
       const report = createMockReport([
         createMockSkill({
           name: "info-json",
-          emoji: "\u001b[31m🎙\u001b[0m\u009f",
+          emoji: "\u001b[31mðŸŽ™\u001b[0m\u009f",
           description: "hi\u0091",
           homepage: "https://example.com/\u0092docs",
         }),
@@ -280,7 +280,7 @@ describe("skills-cli", () => {
         homepage: string;
       };
 
-      expect(parsed.emoji).toBe("🎙");
+      expect(parsed.emoji).toBe("ðŸŽ™");
       expect(parsed.description).toBe("hi");
       expect(parsed.homepage).toBe("https://example.com/docs");
     });

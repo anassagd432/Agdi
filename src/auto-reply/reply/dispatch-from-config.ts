@@ -1,4 +1,4 @@
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
+import { resolveSendableOutboundReplyParts } from "agdi/plugin-sdk/reply-payload";
 import { resolveSessionAgentId } from "../../agents/agent-scope.js";
 import {
   resolveConversationBindingRecord,
@@ -550,7 +550,7 @@ export async function dispatchReplyFromConfig(params: {
       };
     };
 
-    // Run before_dispatch hook — let plugins inspect or handle before model dispatch.
+    // Run before_dispatch hook â€” let plugins inspect or handle before model dispatch.
     if (hookRunner?.hasHooks("before_dispatch")) {
       const beforeDispatchResult = await hookRunner.runBeforeDispatch(
         {
@@ -587,7 +587,7 @@ export async function dispatchReplyFromConfig(params: {
       }
     }
 
-    // Forum topics are threaded conversations within a group — verbose tool
+    // Forum topics are threaded conversations within a group â€” verbose tool
     // summaries should be delivered into the topic thread, same as DMs.
     const shouldSendToolSummaries =
       (ctx.ChatType !== "group" || ctx.IsForum === true) && ctx.CommandSource !== "native";
@@ -689,14 +689,14 @@ export async function dispatchReplyFromConfig(params: {
         },
         onBlockReply: (payload: ReplyPayload, context?: BlockReplyContext) => {
           const run = async () => {
-            // Suppress reasoning payloads — channels using this generic dispatch
+            // Suppress reasoning payloads â€” channels using this generic dispatch
             // path (WhatsApp, web, etc.) do not have a dedicated reasoning lane.
             // Telegram has its own dispatch path that handles reasoning splitting.
             if (payload.isReasoning === true) {
               return;
             }
             // Accumulate block text for TTS generation after streaming.
-            // Exclude compaction status notices — they are informational UI
+            // Exclude compaction status notices â€” they are informational UI
             // signals and must not be synthesised into the spoken reply.
             if (payload.text && !payload.isCompactionNotice) {
               if (accumulatedBlockText.length > 0) {
@@ -757,7 +757,7 @@ export async function dispatchReplyFromConfig(params: {
     let queuedFinal = false;
     let routedFinalCount = 0;
     for (const reply of replies) {
-      // Suppress reasoning payloads from channel delivery — channels using this
+      // Suppress reasoning payloads from channel delivery â€” channels using this
       // generic dispatch path do not have a dedicated reasoning lane.
       if (reply.isReasoning === true) {
         continue;

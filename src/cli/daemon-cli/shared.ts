@@ -107,6 +107,12 @@ export function pickProbeHostForBind(
 }
 
 const SAFE_DAEMON_ENV_KEYS = [
+  "AGDI_PROFILE",
+  "AGDI_STATE_DIR",
+  "AGDI_CONFIG_PATH",
+  "AGDI_GATEWAY_PORT",
+  "AGDI_NIX_MODE",
+  // Backward compat: also allow legacy OPENCLAW_* keys through
   "OPENCLAW_PROFILE",
   "OPENCLAW_STATE_DIR",
   "OPENCLAW_CONFIG_PATH",
@@ -173,8 +179,8 @@ export function renderRuntimeHints(
     hints.push(
       ...buildPlatformRuntimeLogHints({
         env,
-        systemdServiceName: resolveGatewaySystemdServiceName(env.OPENCLAW_PROFILE),
-        windowsTaskName: resolveGatewayWindowsTaskName(env.OPENCLAW_PROFILE),
+        systemdServiceName: resolveGatewaySystemdServiceName(env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE),
+        windowsTaskName: resolveGatewayWindowsTaskName(env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE),
       }),
     );
   }
@@ -182,7 +188,7 @@ export function renderRuntimeHints(
 }
 
 export function renderGatewayServiceStartHints(env: NodeJS.ProcessEnv = process.env): string[] {
-  const profile = env.OPENCLAW_PROFILE;
+  const profile = env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE;
   const container = resolveDaemonContainerContext(env);
   const hints = buildPlatformServiceStartHints({
     installCommand: formatCliCommand("openclaw gateway install", env),

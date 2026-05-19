@@ -64,7 +64,7 @@ export function coerceFiniteScheduleNumber(value: unknown): number | undefined {
 export function computeNextRunAtMs(schedule: CronSchedule, nowMs: number): number | undefined {
   if (schedule.kind === "at") {
     // Handle both canonical `at` (string) and legacy `atMs` (number) fields.
-    // The store migration should convert atMs→at, but be defensive in case
+    // The store migration should convert atMsâ†’at, but be defensive in case
     // the migration hasn't run yet or was bypassed.
     const sched = schedule as { at?: string; atMs?: number | string };
     const atMs =
@@ -123,7 +123,7 @@ export function computeNextRunAtMs(schedule: CronSchedule, nowMs: number): numbe
         return retryMs;
       }
     }
-    // Still in the past — try from start of tomorrow (UTC) as a broader reset.
+    // Still in the past â€” try from start of tomorrow (UTC) as a broader reset.
     const tomorrowMs = new Date(nowMs).setUTCHours(24, 0, 0, 0);
     const retry2 = cron.nextRun(new Date(tomorrowMs));
     if (retry2) {

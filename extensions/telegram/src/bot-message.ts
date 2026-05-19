@@ -1,7 +1,7 @@
-import type { ReplyToMode } from "openclaw/plugin-sdk/config-runtime";
-import type { TelegramAccountConfig } from "openclaw/plugin-sdk/config-runtime";
-import { danger, logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { ReplyToMode } from "agdi/plugin-sdk/config-runtime";
+import type { TelegramAccountConfig } from "agdi/plugin-sdk/config-runtime";
+import { danger, logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 import type { TelegramBotDeps } from "./bot-deps.js";
 import {
   buildTelegramMessageContext,

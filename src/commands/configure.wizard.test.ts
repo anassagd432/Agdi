@@ -338,7 +338,7 @@ describe("runConfigureWizard", () => {
         createSearchProviderOption({
           id: "gemini",
           label: "Gemini (Google Search)",
-          hint: "Requires Google Gemini API key · Google Search grounding",
+          hint: "Requires Google Gemini API key Â· Google Search grounding",
           credentialLabel: "Google Gemini API key",
           envVars: ["GEMINI_API_KEY"],
           placeholder: "AIza...",
@@ -411,7 +411,7 @@ describe("runConfigureWizard", () => {
         envVars: [],
         placeholder: "(no key needed)",
         signupUrl: "https://duckduckgo.com/",
-        docsUrl: "https://docs.openclaw.ai/tools/web",
+        docsUrl: "https://docs.agdi.ai/tools/web",
         credentialPath: "",
       }),
     ]);

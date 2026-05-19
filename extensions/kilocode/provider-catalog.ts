@@ -6,7 +6,7 @@ import {
   KILOCODE_DEFAULT_COST,
   KILOCODE_DEFAULT_MAX_TOKENS,
   KILOCODE_MODEL_CATALOG,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export function buildKilocodeProvider(): ModelProviderConfig {
   return {

@@ -52,7 +52,7 @@ describe("abort pattern: .bind() vs arrow closure (#7174)", () => {
     expect(child.signal.reason.name).toBe("AbortError");
   });
 
-  it("raw .abort.bind() leaks Event as reason — bindAbortRelay() does not", () => {
+  it("raw .abort.bind() leaks Event as reason â€” bindAbortRelay() does not", () => {
     // Demonstrates the bug: .abort.bind() passes the Event as abort reason
     const parentA = new AbortController();
     const childA = new AbortController();

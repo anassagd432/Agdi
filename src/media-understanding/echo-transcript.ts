@@ -11,7 +11,7 @@ function loadDeliverRuntime() {
   return deliverRuntimePromise;
 }
 
-export const DEFAULT_ECHO_TRANSCRIPT_FORMAT = '📝 "{transcript}"';
+export const DEFAULT_ECHO_TRANSCRIPT_FORMAT = 'ðŸ“ "{transcript}"';
 
 function formatEchoTranscript(transcript: string, format: string): string {
   return format.replace("{transcript}", transcript);

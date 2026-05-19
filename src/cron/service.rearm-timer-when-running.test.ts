@@ -86,7 +86,7 @@ describe("CronService - timer re-arm when running (#12025)", () => {
     expect(delays).toContain(60_000);
 
     // state.running should still be true (onTimer bailed out, didn't
-    // touch it — the original caller's finally block handles that).
+    // touch it â€” the original caller's finally block handles that).
     expect(state.running).toBe(true);
 
     timeoutSpy.mockRestore();

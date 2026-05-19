@@ -192,7 +192,7 @@ describe("resolveApiKeyForProfile config compatibility", () => {
       store,
       profileId,
     });
-    // token ↔ oauth are bidirectionally compatible bearer-token auth paths.
+    // token â†” oauth are bidirectionally compatible bearer-token auth paths.
     expect(result).toEqual({
       apiKey: "access-123", // pragma: allowlist secret
       provider: "anthropic",

@@ -1,4 +1,4 @@
-import { isBlockedHostnameOrIp } from "openclaw/plugin-sdk/infra-runtime";
+import { isBlockedHostnameOrIp } from "agdi/plugin-sdk/infra-runtime";
 
 export type UrbitBaseUrlValidation =
   | { ok: true; baseUrl: string; hostname: string }

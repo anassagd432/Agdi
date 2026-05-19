@@ -406,7 +406,7 @@ export function createChannelManager(opts: ChannelManagerOptions): ChannelManage
                   preserveManualStop: true,
                 });
               } catch {
-                // abort or startup failure — next crash will retry
+                // abort or startup failure â€” next crash will retry
               }
             })
             .finally(() => {

@@ -70,7 +70,7 @@ describe("buildContextReply", () => {
   it("shows bootstrap truncation warning in list output when context exceeds configured limits", async () => {
     const result = await buildContextReply(makeParams("/context list", true));
     expect(result.text).toContain("Bootstrap max/total: 150,000 chars");
-    expect(result.text).toContain("⚠ Bootstrap context is over configured limits");
+    expect(result.text).toContain("âš  Bootstrap context is over configured limits");
     expect(result.text).toContain("Causes: 1 file(s) exceeded max/file.");
   });
 

@@ -1,6 +1,6 @@
 import type { AgentToolResult } from "@mariozechner/pi-agent-core";
-import { readBooleanParam } from "openclaw/plugin-sdk/boolean-param";
-import { resolveReactionMessageId } from "openclaw/plugin-sdk/channel-actions";
+import { readBooleanParam } from "agdi/plugin-sdk/boolean-param";
+import { resolveReactionMessageId } from "agdi/plugin-sdk/channel-actions";
 import {
   jsonResult,
   readNumberParam,

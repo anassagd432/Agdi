@@ -80,7 +80,7 @@ describe("CronService - session reaper runs in finally block (#31946)", () => {
       await onTimer(state);
 
       // After onTimer finishes (even with a job error), state.running must be
-      // false — proving the finally block executed.
+      // false â€” proving the finally block executed.
       expect(state.running).toBe(false);
 
       // The timer must be re-armed.

@@ -151,7 +151,7 @@ export function formatConfigWriteDeniedMessage(params: {
   fallbackChannelId?: ChannelId | null;
 }): string {
   if (params.result.reason === "ambiguous-target") {
-    return "⚠️ Channel-initiated /config writes cannot replace channels, channel roots, or accounts collections. Use a more specific path or gateway operator.admin.";
+    return "âš ï¸ Channel-initiated /config writes cannot replace channels, channel roots, or accounts collections. Use a more specific path or gateway operator.admin.";
   }
 
   const blocked = params.result.blockedScope?.scope;
@@ -163,7 +163,7 @@ export function formatConfigWriteDeniedMessage(params: {
     : params.fallbackChannelId
       ? `channels.${params.fallbackChannelId}.configWrites=true`
       : "channels.<channel>.configWrites=true";
-  return `⚠️ Config writes are disabled for ${channelLabel}. Set ${hint} to enable.`;
+  return `âš ï¸ Config writes are disabled for ${channelLabel}. Set ${hint} to enable.`;
 }
 
 function listConfigWriteTargetScopes(target?: ConfigWriteTarget): ConfigWriteScope[] {

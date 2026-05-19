@@ -15,14 +15,14 @@ import type {
 } from "./openai-ws-connection.js";
 import { OpenAIWebSocketManager } from "./openai-ws-connection.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Mock WebSocket (hoisted so vi.mock factory can reference it)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // vi.mock() factories are hoisted before ES module imports are resolved.
 // vi.hoisted() allows us to define values that are available to both the
 // factory AND the test body. We avoid importing EventEmitter here because
-// ESM imports aren't available yet in the hoisted zone — instead we
+// ESM imports aren't available yet in the hoisted zone â€” instead we
 // implement a minimal listener pattern inline.
 const { MockWebSocket } = vi.hoisted(() => {
   type AnyFn = (...args: unknown[]) => void;
@@ -94,7 +94,7 @@ const { MockWebSocket } = vi.hoisted(() => {
       this.sentMessages.push(data);
     }
 
-    // ws-compatible close — triggers async close event
+    // ws-compatible close â€” triggers async close event
     close(code = 1000, reason = ""): void {
       this.readyState = MockWebSocket.CLOSING;
       setImmediate(() => {
@@ -103,7 +103,7 @@ const { MockWebSocket } = vi.hoisted(() => {
       });
     }
 
-    // ── Test helpers ──────────────────────────────────────────────────────
+    // â”€â”€ Test helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     simulateOpen(): void {
       this.readyState = MockWebSocket.OPEN;
@@ -136,9 +136,9 @@ const { MockWebSocket } = vi.hoisted(() => {
   return { MockWebSocket };
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Module Mock
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 vi.mock("ws", () => {
   // ws exports WebSocket as the default export; static constants (OPEN, etc.)
@@ -146,15 +146,15 @@ vi.mock("ws", () => {
   return { default: MockWebSocket };
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Type alias for the mock class (improves test readability)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type MockWS = typeof MockWebSocket extends { new (...a: infer _): infer R } ? R : never;
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function lastSocket(): MockWS {
   const sock = MockWebSocket.lastInstance;
@@ -201,9 +201,9 @@ function connectIgnoringFailure(manager: OpenAIWebSocketManager): Promise<void> 
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Tests
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("OpenAIWebSocketManager", () => {
   beforeEach(() => {
@@ -215,7 +215,7 @@ describe("OpenAIWebSocketManager", () => {
     vi.useRealTimers();
   });
 
-  // ─── connect() ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ connect() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("connect()", () => {
     it("opens a WebSocket with Bearer auth header", async () => {
@@ -287,7 +287,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── send() ────────────────────────────────────────────────────────────────
+  // â”€â”€â”€ send() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("send()", () => {
     it("sends a JSON-serialized event over the socket", async () => {
@@ -329,7 +329,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── onMessage() ───────────────────────────────────────────────────────────
+  // â”€â”€â”€ onMessage() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("onMessage()", () => {
     it("calls handler for each incoming message", async () => {
@@ -377,7 +377,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── previousResponseId ────────────────────────────────────────────────────
+  // â”€â”€â”€ previousResponseId â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("previousResponseId", () => {
     it("starts as null", () => {
@@ -420,7 +420,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── isConnected() ─────────────────────────────────────────────────────────
+  // â”€â”€â”€ isConnected() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("isConnected()", () => {
     it("returns false before connect", () => {
@@ -445,7 +445,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── close() ───────────────────────────────────────────────────────────────
+  // â”€â”€â”€ close() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("close()", () => {
     it("marks the manager as disconnected", async () => {
@@ -469,7 +469,7 @@ describe("OpenAIWebSocketManager", () => {
       const socketCountBefore = MockWebSocket.instances.length;
       manager.close();
 
-      // Simulate a network drop — should NOT trigger reconnect
+      // Simulate a network drop â€” should NOT trigger reconnect
       sock.simulateClose(1006, "Network error");
       await vi.runAllTimersAsync();
 
@@ -482,7 +482,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── Auto-reconnect ────────────────────────────────────────────────────────
+  // â”€â”€â”€ Auto-reconnect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("auto-reconnect", () => {
     it("reconnects on unexpected close", async () => {
@@ -514,7 +514,7 @@ describe("OpenAIWebSocketManager", () => {
       const errors: Error[] = [];
       manager.on("error", (e) => errors.push(e));
 
-      // Drop repeatedly — each reconnect attempt also drops immediately
+      // Drop repeatedly â€” each reconnect attempt also drops immediately
       for (let i = 0; i < 4; i++) {
         lastSocket().simulateClose(1006, "drop");
         await vi.advanceTimersByTimeAsync(20);
@@ -536,10 +536,10 @@ describe("OpenAIWebSocketManager", () => {
       lastSocket().simulateOpen();
       await p;
 
-      // Drop the established connection — triggers first reconnect schedule
+      // Drop the established connection â€” triggers first reconnect schedule
       lastSocket().simulateClose(1006, "Network error");
 
-      // Advance past first retry delay — a new socket is created
+      // Advance past first retry delay â€” a new socket is created
       await vi.advanceTimersByTimeAsync(10);
       const sock2 = lastSocket();
 
@@ -547,7 +547,7 @@ describe("OpenAIWebSocketManager", () => {
       sock2.simulateError(new Error("ECONNREFUSED"));
       sock2.simulateClose(1006, "Connection failed");
 
-      // Advance past second retry delay — another socket should be created
+      // Advance past second retry delay â€” another socket should be created
       // because we've only used 2 retries (not 3 from double-counting).
       await vi.advanceTimersByTimeAsync(10);
       const sock3 = lastSocket();
@@ -557,12 +557,12 @@ describe("OpenAIWebSocketManager", () => {
       sock3.simulateError(new Error("ECONNREFUSED"));
       sock3.simulateClose(1006, "Connection failed");
 
-      // Advance past third retry delay — one more attempt (retry 3 of 3)
+      // Advance past third retry delay â€” one more attempt (retry 3 of 3)
       await vi.advanceTimersByTimeAsync(10);
       const sock4 = lastSocket();
       expect(sock4).not.toBe(sock3);
 
-      // Fourth socket also fails — now retries should be exhausted (3/3)
+      // Fourth socket also fails â€” now retries should be exhausted (3/3)
       sock4.simulateError(new Error("ECONNREFUSED"));
       sock4.simulateClose(1006, "Connection failed");
       await vi.advanceTimersByTimeAsync(10);
@@ -584,7 +584,7 @@ describe("OpenAIWebSocketManager", () => {
 
       const socketCountAfterReconnect = MockWebSocket.instances.length;
 
-      // Drop again — should still retry (retry count was reset)
+      // Drop again â€” should still retry (retry count was reset)
       lastSocket().simulateClose(1006, "drop again");
       await vi.advanceTimersByTimeAsync(10);
 
@@ -592,7 +592,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── warmUp() ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ warmUp() â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("warmUp()", () => {
     it("sends a response.create event with generate: false", async () => {
@@ -622,7 +622,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── Error handling ─────────────────────────────────────────────────────────
+  // â”€â”€â”€ Error handling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("error handling", () => {
     it("emits error event on malformed JSON message", async () => {
@@ -663,7 +663,7 @@ describe("OpenAIWebSocketManager", () => {
       const p = connectIgnoringFailure(manager);
       const errors = attachErrorCollector(manager);
 
-      // Fire two errors in quick succession — previously the second would
+      // Fire two errors in quick succession â€” previously the second would
       // be unhandled because .once("error") removed the handler after #1.
       lastSocket().simulateError(new Error("first error"));
       lastSocket().simulateError(new Error("second error"));
@@ -675,7 +675,7 @@ describe("OpenAIWebSocketManager", () => {
     });
   });
 
-  // ─── Integration: full multi-turn sequence ────────────────────────────────
+  // â”€â”€â”€ Integration: full multi-turn sequence â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   describe("full turn sequence", () => {
     it("tracks previous_response_id across turns and sends continuation correctly", async () => {
@@ -721,9 +721,9 @@ describe("OpenAIWebSocketManager", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Test Fixtures
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function makeResponse(
   id: string,

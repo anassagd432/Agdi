@@ -162,7 +162,7 @@ describe("infra runtime", () => {
         setPreRestartDeferralCheck(() => pending);
         scheduleGatewaySigusr1Restart({ delayMs: 0 });
 
-        // After initial delay fires, deferral check returns 2 — should NOT emit yet
+        // After initial delay fires, deferral check returns 2 â€” should NOT emit yet
         await vi.advanceTimersByTimeAsync(0);
         expect(emitSpy).not.toHaveBeenCalledWith("SIGUSR1");
 

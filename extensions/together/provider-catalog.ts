@@ -3,7 +3,7 @@ import {
   type ModelProviderConfig,
   TOGETHER_BASE_URL,
   TOGETHER_MODEL_CATALOG,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export function buildTogetherProvider(): ModelProviderConfig {
   return {

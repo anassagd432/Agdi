@@ -3,7 +3,7 @@ import {
   applyOnboardAuthAgentModelsAndProviders,
   type ModelProviderConfig,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+} from "agdi/plugin-sdk/provider-onboard";
 import {
   buildMinimaxApiModelDefinition,
   MINIMAX_API_BASE_URL,

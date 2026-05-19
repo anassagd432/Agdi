@@ -14,13 +14,13 @@ describe("terminal ansi helpers", () => {
 
   it("measures wide graphemes by terminal cell width", () => {
     expect(visibleWidth("abc")).toBe(3);
-    expect(visibleWidth("📸 skill")).toBe(8);
-    expect(visibleWidth("表")).toBe(2);
-    expect(visibleWidth("\u001B[31m📸\u001B[0m")).toBe(2);
+    expect(visibleWidth("ðŸ“¸ skill")).toBe(8);
+    expect(visibleWidth("è¡¨")).toBe(2);
+    expect(visibleWidth("\u001B[31mðŸ“¸\u001B[0m")).toBe(2);
   });
 
   it("keeps emoji zwj sequences as single graphemes", () => {
-    expect(splitGraphemes("👨‍👩‍👧‍👦")).toEqual(["👨‍👩‍👧‍👦"]);
-    expect(visibleWidth("👨‍👩‍👧‍👦")).toBe(2);
+    expect(splitGraphemes("ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦")).toEqual(["ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦"]);
+    expect(visibleWidth("ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦")).toBe(2);
   });
 });

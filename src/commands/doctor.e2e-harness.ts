@@ -60,12 +60,13 @@ export const select = vi.fn().mockResolvedValue("node") as unknown as MockFn;
 export const note = vi.fn() as unknown as MockFn;
 export const writeConfigFile = vi.fn().mockResolvedValue(undefined) as unknown as MockFn;
 export const resolveOpenClawPackageRoot = vi.fn().mockResolvedValue(null) as unknown as MockFn;
+export const resolveAgdiPackageRoot = resolveOpenClawPackageRoot;
 export const runGatewayUpdate = vi
   .fn()
   .mockResolvedValue(createGatewayUpdateResult()) as unknown as MockFn;
 export const migrateLegacyConfig = vi.fn((raw: unknown) => ({
   config: raw as Record<string, unknown>,
-  changes: ["Moved routing.allowFrom → channels.whatsapp.allowFrom."],
+  changes: ["Moved routing.allowFrom â†’ channels.whatsapp.allowFrom."],
 })) as unknown as MockFn;
 
 export const runExec = vi.fn().mockResolvedValue({
@@ -266,6 +267,7 @@ vi.mock("../process/exec.js", () => ({
 }));
 
 vi.mock("../infra/openclaw-root.js", () => ({
+  resolveAgdiPackageRoot,
   resolveOpenClawPackageRoot,
 }));
 
@@ -425,7 +427,7 @@ beforeEach(() => {
   ensureAuthProfileStore.mockReset().mockReturnValue({ version: 1, profiles: {} });
   migrateLegacyConfig.mockReset().mockImplementation((raw: unknown) => ({
     config: raw as Record<string, unknown>,
-    changes: ["Moved routing.allowFrom → channels.whatsapp.allowFrom."],
+    changes: ["Moved routing.allowFrom â†’ channels.whatsapp.allowFrom."],
   }));
   findLegacyGatewayServices.mockReset().mockResolvedValue([]);
   uninstallLegacyGatewayServices.mockReset().mockResolvedValue([]);

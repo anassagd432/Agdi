@@ -1,10 +1,10 @@
 /**
  * Integration test: after_tool_call fires exactly once when both the adapter
  * (toToolDefinitions) and the subscription handler (handleToolExecutionEnd)
- * are active — the production scenario for embedded runs.
+ * are active â€” the production scenario for embedded runs.
  *
  * Regression guard for the double-fire bug fixed by removing the adapter-side
- * after_tool_call invocation (see PR #27283 → dedup in this fix).
+ * after_tool_call invocation (see PR #27283 â†’ dedup in this fix).
  */
 import type { AgentTool } from "@mariozechner/pi-agent-core";
 import { Type } from "@sinclair/typebox";
@@ -184,7 +184,7 @@ describe("after_tool_call fires exactly once in embedded runs", () => {
       result: { content: [{ type: "text", text: "ok" }] },
     });
 
-    // The hook must fire exactly once — not zero, not two.
+    // The hook must fire exactly once â€” not zero, not two.
     expect(hookMocks.runner.runAfterToolCall).toHaveBeenCalledTimes(1);
   });
 

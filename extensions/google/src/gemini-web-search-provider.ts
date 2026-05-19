@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import { DEFAULT_GOOGLE_API_BASE_URL } from "openclaw/plugin-sdk/provider-google";
+import { DEFAULT_GOOGLE_API_BASE_URL } from "agdi/plugin-sdk/provider-google";
 import {
   buildSearchCacheKey,
   buildUnsupportedSearchFilterResponse,
@@ -25,7 +25,7 @@ import {
   withTrustedWebSearchEndpoint,
   wrapWebContent,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "agdi/plugin-sdk/provider-web-search";
 
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_API_BASE = DEFAULT_GOOGLE_API_BASE_URL;

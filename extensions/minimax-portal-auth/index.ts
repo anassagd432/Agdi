@@ -1,9 +1,5 @@
-import {
-  emptyPluginConfigSchema,
-  type AGDIPluginApi,
-  type ProviderAuthContext,
-  type ProviderAuthResult,
-} from "agdi/plugin-sdk";
+import { emptyPluginConfigSchema, type AGDIPluginApi } from "agdi/plugin-sdk/plugin-entry";
+import type { ProviderAuthContext, ProviderAuthResult } from "agdi/plugin-sdk/provider-auth";
 import { loginMiniMaxPortalOAuth, type MiniMaxRegion } from "./oauth.js";
 
 const PROVIDER_ID = "minimax-portal";

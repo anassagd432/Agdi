@@ -101,7 +101,7 @@ export async function cleanOrphanBackups(
     if (validSuffixes.has(suffix)) {
       continue;
     }
-    // This is an orphan — remove it
+    // This is an orphan â€” remove it
     await ioFs.unlink(path.join(dir, entry)).catch(() => {
       // best-effort
     });

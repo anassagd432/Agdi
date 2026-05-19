@@ -10,27 +10,27 @@ import {
   type TopLevelComponents,
 } from "@buape/carbon";
 import { ButtonStyle, Routes } from "discord-api-types/v10";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { loadSessionStore, resolveStorePath } from "openclaw/plugin-sdk/config-runtime";
-import type { DiscordExecApprovalConfig } from "openclaw/plugin-sdk/config-runtime";
-import { GatewayClient } from "openclaw/plugin-sdk/gateway-runtime";
-import { createOperatorApprovalsGatewayClient } from "openclaw/plugin-sdk/gateway-runtime";
-import type { EventFrame } from "openclaw/plugin-sdk/gateway-runtime";
-import { resolveExecApprovalCommandDisplay } from "openclaw/plugin-sdk/infra-runtime";
-import { getExecApprovalApproverDmNoticeText } from "openclaw/plugin-sdk/infra-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { loadSessionStore, resolveStorePath } from "agdi/plugin-sdk/config-runtime";
+import type { DiscordExecApprovalConfig } from "agdi/plugin-sdk/config-runtime";
+import { GatewayClient } from "agdi/plugin-sdk/gateway-runtime";
+import { createOperatorApprovalsGatewayClient } from "agdi/plugin-sdk/gateway-runtime";
+import type { EventFrame } from "agdi/plugin-sdk/gateway-runtime";
+import { resolveExecApprovalCommandDisplay } from "agdi/plugin-sdk/infra-runtime";
+import { getExecApprovalApproverDmNoticeText } from "agdi/plugin-sdk/infra-runtime";
 import type {
   ExecApprovalDecision,
   ExecApprovalRequest,
   ExecApprovalResolved,
-} from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
 import {
   normalizeAccountId,
   normalizeMessageChannel,
   resolveAgentIdFromSessionKey,
-} from "openclaw/plugin-sdk/routing";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { compileSafeRegex, testRegexWithBoundedInput } from "openclaw/plugin-sdk/security-runtime";
-import { logDebug, logError } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/routing";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { compileSafeRegex, testRegexWithBoundedInput } from "agdi/plugin-sdk/security-runtime";
+import { logDebug, logError } from "agdi/plugin-sdk/text-runtime";
 import { createDiscordClient, stripUndefinedFields } from "../send.shared.js";
 import { DiscordUiContainer } from "../ui.js";
 

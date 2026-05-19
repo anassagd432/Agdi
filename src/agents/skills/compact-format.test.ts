@@ -80,7 +80,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     const prompt = buildPrompt(skills, { maxChars: 50_000 });
     expect(prompt).toContain("<description>");
     expect(prompt).toContain("Get weather data");
-    expect(prompt).not.toContain("⚠️");
+    expect(prompt).not.toContain("âš ï¸");
   });
 
   it("tier 2: compact when full exceeds budget but compact fits", () => {
@@ -93,7 +93,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     expect(compactLen + 150).toBeLessThan(budget);
     const prompt = buildPrompt(skills, { maxChars: budget });
     expect(prompt).not.toContain("<description>");
-    // All skills preserved — distinct message, no "included X of Y"
+    // All skills preserved â€” distinct message, no "included X of Y"
     expect(prompt).toContain("compact format (descriptions omitted)");
     expect(prompt).not.toContain("included");
     expect(prompt).toContain("skill-0");
@@ -119,7 +119,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     // Verify precondition: full format must not fit so tier 2 is actually exercised
     expect(formatSkillsForPrompt(skills).length).toBeGreaterThan(budget);
     const prompt = buildPrompt(skills, { maxChars: budget });
-    // All 50 fit in compact — no truncation, just compact notice
+    // All 50 fit in compact â€” no truncation, just compact notice
     expect(prompt).toContain("compact format");
     expect(prompt).not.toContain("included");
     expect(prompt).toContain("skill-0");
@@ -136,7 +136,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     // Verify precondition: full format of 10 skills exceeds budget
     expect(fullLen).toBeGreaterThan(budget);
     const prompt = buildPrompt(skills, { maxChars: budget, maxCount: 10 });
-    // Count-truncated (30→10) AND compact (full format of 10 exceeds budget)
+    // Count-truncated (30â†’10) AND compact (full format of 10 exceeds budget)
     expect(prompt).toContain("included 10 of 30");
     expect(prompt).toContain("compact format, descriptions omitted");
     expect(prompt).not.toContain("<description>");
@@ -166,7 +166,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     // warning line prepended by the caller would push the total over budget.
     const skills = Array.from({ length: 50 }, (_, i) => makeSkill(`s-${i}`, "A".repeat(200)));
     const compactLen = formatSkillsCompact(skills).length;
-    // Set budget = compactLen + 50 — less than the 150-char overhead reserve.
+    // Set budget = compactLen + 50 â€” less than the 150-char overhead reserve.
     // The function should NOT choose compact-only because the warning wouldn't fit.
     const prompt = buildPrompt(skills, { maxChars: compactLen + 50 });
     // Should fall through to compact + binary search (some skills dropped)
@@ -175,7 +175,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
   });
 
   it("budget check uses compacted home-dir paths, not canonical paths", () => {
-    // Skills with home-dir prefix get compacted (e.g. /home/user/... → ~/...).
+    // Skills with home-dir prefix get compacted (e.g. /home/user/... â†’ ~/...).
     // Budget check must use the compacted length, not the longer canonical path.
     // If it used canonical paths, it would overestimate and potentially drop
     // skills that actually fit after compaction.
@@ -196,7 +196,7 @@ describe("applySkillsPromptLimits (via buildWorkspaceSkillsPrompt)", () => {
     const canonicalCompactLen = formatSkillsCompact(skills).length;
     // Sanity: canonical paths are longer than compacted paths
     expect(canonicalCompactLen).toBeGreaterThan(compactedCompactLen);
-    // Set budget between compacted and canonical lengths — only fits if
+    // Set budget between compacted and canonical lengths â€” only fits if
     // budget check uses compacted paths (correct) not canonical (wrong).
     const budget = Math.floor((compactedCompactLen + canonicalCompactLen) / 2) + 150;
     const prompt = buildPrompt(skills, { maxChars: budget });

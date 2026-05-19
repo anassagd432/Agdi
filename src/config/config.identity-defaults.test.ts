@@ -9,7 +9,7 @@ describe("config identity defaults", () => {
   const defaultIdentity = {
     name: "Samantha",
     theme: "helpful sloth",
-    emoji: "🦥",
+    emoji: "ðŸ¦¥",
   };
 
   const configWithDefaultIdentity = (messages: Record<string, unknown>) => ({
@@ -71,18 +71,18 @@ describe("config identity defaults", () => {
               identity: {
                 name: "Samantha Sloth",
                 theme: "space lobster",
-                emoji: "🦞",
+                emoji: "ðŸ¦ž",
               },
               groupChat: { mentionPatterns: ["@openclaw"] },
             },
           ],
         },
         messages: {
-          responsePrefix: "✅",
+          responsePrefix: "âœ…",
         },
       });
 
-      expect(cfg.messages?.responsePrefix).toBe("✅");
+      expect(cfg.messages?.responsePrefix).toBe("âœ…");
       expect(cfg.agents?.list?.[0]?.groupChat?.mentionPatterns).toEqual(["@openclaw"]);
     });
   });
@@ -92,7 +92,7 @@ describe("config identity defaults", () => {
       const cfg = await writeAndLoadConfig(home, {
         messages: {
           messagePrefix: "[openclaw]",
-          responsePrefix: "🦞",
+          responsePrefix: "ðŸ¦ž",
         },
         channels: {
           whatsapp: { allowFrom: ["+15555550123"], textChunkLimit: 4444 },

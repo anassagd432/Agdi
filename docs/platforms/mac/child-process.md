@@ -19,7 +19,7 @@ If you need tighter coupling to the UI, run the Gateway manually in a terminal.
 ## Default behavior (launchd)
 
 - The app installs a per‑user LaunchAgent labeled `ai.agdi.gateway`
-  (or `ai.agdi.<profile>` when using `--profile`/`OPENCLAW_PROFILE`; legacy `com.agdi.*` is supported).
+  (or `ai.agdi.<profile>` when using `--profile`/`AGDI_PROFILE`; legacy `com.agdi.*` is supported).
 - When Local mode is enabled, the app ensures the LaunchAgent is loaded and
   starts the Gateway if needed.
 - Logs are written to the launchd gateway log path (visible in Debug Settings).

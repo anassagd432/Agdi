@@ -127,7 +127,7 @@ export async function processGatewayAllowlist(
   const obfuscation = detectCommandObfuscation(params.command);
   if (obfuscation.detected) {
     logInfo(`exec: obfuscation detected (gateway): ${obfuscation.reasons.join(", ")}`);
-    params.warnings.push(`⚠️ Obfuscated command detected: ${obfuscation.reasons.join("; ")}`);
+    params.warnings.push(`âš ï¸ Obfuscated command detected: ${obfuscation.reasons.join("; ")}`);
   }
   const recordMatchedAllowlistUse = (resolvedPath?: string) => {
     if (allowlistMatches.length === 0) {

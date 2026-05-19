@@ -4,8 +4,8 @@ import {
   normalizeAccountId,
   normalizeOptionalAccountId,
   resolveMergedAccountConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { coerceSecretRef } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/account-resolution";
+import { coerceSecretRef } from "agdi/plugin-sdk/config-runtime";
 import type { ClawdbotConfig } from "../runtime-api.js";
 import type {
   FeishuConfig,

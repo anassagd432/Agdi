@@ -7,7 +7,7 @@
  * limiter instance.
  *
  * Design decisions:
- * - Pure in-memory Map – no external dependencies; suitable for a single
+ * - Pure in-memory Map â€“ no external dependencies; suitable for a single
  *   gateway process.  The Map is periodically pruned to avoid unbounded
  *   growth.
  * - Loopback addresses (127.0.0.1 / ::1) are exempt by default so that local
@@ -160,7 +160,7 @@ export function createAuthRateLimiter(config?: RateLimitConfig): AuthRateLimiter
       };
     }
 
-    // Lockout expired – clear it.
+    // Lockout expired â€“ clear it.
     if (entry.lockedUntil && now >= entry.lockedUntil) {
       entry.lockedUntil = undefined;
       entry.attempts = [];

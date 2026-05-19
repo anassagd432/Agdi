@@ -2,9 +2,9 @@ import {
   completeWithPreparedSimpleCompletionModel,
   extractAssistantText,
   prepareSimpleCompletionModelForAgent,
-} from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/agent-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
 
 const DEFAULT_THREAD_TITLE_TIMEOUT_MS = 10_000;
 const MAX_THREAD_TITLE_SOURCE_CHARS = 600;

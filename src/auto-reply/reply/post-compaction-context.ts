@@ -99,7 +99,7 @@ export async function readPostCompactionContext(
     let sections = extractSections(content, sectionNames, foundSectionNames);
 
     // Fall back to legacy section names ("Every Session" / "Safety") when using
-    // defaults and the current headings aren't found — preserves compatibility
+    // defaults and the current headings aren't found â€” preserves compatibility
     // with older AGENTS.md templates. The fallback also applies when the user
     // explicitly configures the default pair, so that pinning the documented
     // defaults never silently changes behavior vs. leaving the field unset.
@@ -120,7 +120,7 @@ export async function readPostCompactionContext(
     const resolvedNowMs = nowMs ?? Date.now();
     const timezone = resolveUserTimezone(cfg?.agents?.defaults?.userTimezone);
     const dateStamp = formatDateStamp(resolvedNowMs, timezone);
-    // Always append the real runtime timestamp — AGENTS.md content may itself contain
+    // Always append the real runtime timestamp â€” AGENTS.md content may itself contain
     // "Current time:" as user-authored text, so we must not gate on that substring.
     const { timeLine } = resolveCronStyleNow(cfg ?? {}, resolvedNowMs);
 
@@ -132,11 +132,11 @@ export async function readPostCompactionContext(
 
     // When using the default section set, use precise prose that names the
     // "Session Startup" sequence explicitly. When custom sections are configured,
-    // use generic prose — referencing a hardcoded "Session Startup" sequence
+    // use generic prose â€” referencing a hardcoded "Session Startup" sequence
     // would be misleading for deployments that use different section names.
     const prose = isDefaultSections
       ? "Session was just compacted. The conversation summary above is a hint, NOT a substitute for your startup sequence. " +
-        "Run your Session Startup sequence — read the required files before responding to the user."
+        "Run your Session Startup sequence â€” read the required files before responding to the user."
       : `Session was just compacted. The conversation summary above is a hint, NOT a substitute for your full startup sequence. ` +
         `Re-read the sections injected below (${displayNames.join(", ")}) and follow your configured startup procedure before responding to the user.`;
 
@@ -208,11 +208,11 @@ export function extractSections(
             continue;
           }
         } else {
-          // We're in section — stop if we hit a heading of same or higher level
+          // We're in section â€” stop if we hit a heading of same or higher level
           if (level <= sectionLevel) {
             break;
           }
-          // Lower-level heading (e.g., ### inside ##) — include it
+          // Lower-level heading (e.g., ### inside ##) â€” include it
           sectionLines.push(line);
           continue;
         }

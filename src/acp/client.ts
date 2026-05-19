@@ -374,6 +374,7 @@ export function resolveAcpClientSpawnEnv(
   options: AcpClientSpawnEnvOptions = {},
 ): NodeJS.ProcessEnv {
   const env = omitEnvKeysCaseInsensitive(baseEnv, options.stripKeys ?? []);
+  env.AGDI_SHELL = "acp-client";
   env.OPENCLAW_SHELL = "acp-client";
   return env;
 }
@@ -573,7 +574,7 @@ export async function createAcpClient(opts: AcpClientOptions = {}): Promise<AcpC
       fs: { readTextFile: true, writeTextFile: true },
       terminal: true,
     },
-    clientInfo: { name: "openclaw-acp-client", version: "1.0.0" },
+    clientInfo: { name: "agdi-acp-client", version: "1.0.0" },
   });
 
   log("creating session");

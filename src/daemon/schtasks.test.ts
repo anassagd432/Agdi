@@ -84,7 +84,7 @@ describe("scheduled task runtime derivation", () => {
   it("detects running via result code when status is localized (German)", () => {
     expect(
       deriveScheduledTaskRuntimeStatus({
-        status: "Wird ausgeführt",
+        status: "Wird ausgefÃ¼hrt",
         lastRunResult: "0x41301",
       }),
     ).toEqual({ status: "running" });
@@ -102,7 +102,7 @@ describe("scheduled task runtime derivation", () => {
   it("treats localized status as stopped when result code is not a running code", () => {
     expect(
       deriveScheduledTaskRuntimeStatus({
-        status: "Wird ausgeführt",
+        status: "Wird ausgefÃ¼hrt",
         lastRunResult: "0x0",
       }),
     ).toEqual({
@@ -114,7 +114,7 @@ describe("scheduled task runtime derivation", () => {
   it("treats localized status without result code as unknown", () => {
     expect(
       deriveScheduledTaskRuntimeStatus({
-        status: "Wird ausgeführt",
+        status: "Wird ausgefÃ¼hrt",
       }),
     ).toEqual({
       status: "unknown",

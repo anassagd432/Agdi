@@ -30,8 +30,8 @@ function hasEnvVarRef(value: string): boolean {
  * Returns null if any referenced var is missing (instead of throwing).
  *
  * Mirrors the substitution semantics of `substituteString` in env-substitution.ts:
- * - `${VAR}` → env value (returns null if missing)
- * - `$${VAR}` → literal `${VAR}` (escape sequence)
+ * - `${VAR}` â†’ env value (returns null if missing)
+ * - `$${VAR}` â†’ literal `${VAR}` (escape sequence)
  */
 function tryResolveString(template: string, env: NodeJS.ProcessEnv): string | null {
   const ENV_VAR_NAME = /^[A-Z_][A-Z0-9_]*$/;
@@ -101,7 +101,7 @@ export function restoreEnvVarRefs(
     if (hasEnvVarRef(parsed)) {
       const resolved = tryResolveString(parsed, env);
       if (resolved === incoming) {
-        // The incoming value matches what the env var resolves to — restore the reference
+        // The incoming value matches what the env var resolves to â€” restore the reference
         return parsed;
       }
     }
@@ -122,13 +122,13 @@ export function restoreEnvVarRefs(
       if (key in parsed) {
         result[key] = restoreEnvVarRefs(value, parsed[key], env);
       } else {
-        // New key added by caller — keep as-is
+        // New key added by caller â€” keep as-is
         result[key] = value;
       }
     }
     return result;
   }
 
-  // Mismatched types or primitives — keep incoming
+  // Mismatched types or primitives â€” keep incoming
   return incoming;
 }

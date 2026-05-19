@@ -145,7 +145,7 @@ function makeBaseParams(overrides: {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("dispatchCronDelivery — double-announce guard", () => {
+describe("dispatchCronDelivery â€” double-announce guard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetCompletedDirectCronDeliveriesForTests();
@@ -162,7 +162,7 @@ describe("dispatchCronDelivery — double-announce guard", () => {
   });
 
   it("early return (active subagent) sets deliveryAttempted=true so timer skips enqueueSystemEvent", async () => {
-    // countActiveDescendantRuns returns >0 → enters wait block; still >0 after wait → early return
+    // countActiveDescendantRuns returns >0 â†’ enters wait block; still >0 after wait â†’ early return
     vi.mocked(countActiveDescendantRuns).mockReturnValue(2);
     vi.mocked(waitForDescendantSubagentSummary).mockResolvedValue(undefined);
     vi.mocked(readDescendantSubagentFallbackReply).mockResolvedValue(undefined);
@@ -192,11 +192,11 @@ describe("dispatchCronDelivery — double-announce guard", () => {
   it("early return (stale interim suppression) sets deliveryAttempted=true so timer skips enqueueSystemEvent", async () => {
     // First countActiveDescendantRuns call returns >0 (had descendants), second returns 0
     vi.mocked(countActiveDescendantRuns)
-      .mockReturnValueOnce(2) // initial check → hadDescendants=true, enters wait block
-      .mockReturnValueOnce(0); // second check after wait → activeSubagentRuns=0
+      .mockReturnValueOnce(2) // initial check â†’ hadDescendants=true, enters wait block
+      .mockReturnValueOnce(0); // second check after wait â†’ activeSubagentRuns=0
     vi.mocked(waitForDescendantSubagentSummary).mockResolvedValue(undefined);
     vi.mocked(readDescendantSubagentFallbackReply).mockResolvedValue(undefined);
-    // synthesizedText matches initialSynthesizedText & isLikelyInterimCronMessage → stale interim
+    // synthesizedText matches initialSynthesizedText & isLikelyInterimCronMessage â†’ stale interim
     vi.mocked(isLikelyInterimCronMessage).mockReturnValue(true);
 
     const params = makeBaseParams({ synthesizedText: "on it, pulling everything together" });

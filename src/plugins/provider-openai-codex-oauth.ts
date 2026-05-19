@@ -46,7 +46,7 @@ export async function loginOpenAICodexOAuth(params: {
     "OpenAI Codex OAuth",
   );
 
-  const spin = prompter.progress("Starting OAuth flow…");
+  const spin = prompter.progress("Starting OAuth flowâ€¦");
   try {
     const { onAuth: baseOnAuth, onPrompt } = createVpsAwareOAuthHandlers({
       isRemote,
@@ -54,7 +54,7 @@ export async function loginOpenAICodexOAuth(params: {
       runtime,
       spin,
       openUrl,
-      localBrowserMessage: localBrowserMessage ?? "Complete sign-in in browser…",
+      localBrowserMessage: localBrowserMessage ?? "Complete sign-in in browserâ€¦",
       manualPromptMessage: manualInputPromptMessage,
     });
 
@@ -74,7 +74,7 @@ export async function loginOpenAICodexOAuth(params: {
   } catch (err) {
     spin.stop("OpenAI OAuth failed");
     runtime.error(String(err));
-    await prompter.note("Trouble with OAuth? See https://docs.openclaw.ai/start/faq", "OAuth help");
+    await prompter.note("Trouble with OAuth? See https://docs.agdi.ai/start/faq", "OAuth help");
     throw err;
   }
 }

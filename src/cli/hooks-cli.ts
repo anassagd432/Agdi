@@ -98,16 +98,16 @@ function buildConfigWithHookEnabled(params: {
 
 function formatHookStatus(hook: HookStatusEntry): string {
   if (hook.loadable) {
-    return theme.success("✓ ready");
+    return theme.success("âœ“ ready");
   }
   if (!hook.enabledByConfig) {
-    return theme.warn("⏸ disabled");
+    return theme.warn("â¸ disabled");
   }
-  return theme.error("✗ missing");
+  return theme.error("âœ— missing");
 }
 
 function formatHookName(hook: HookStatusEntry): string {
-  const emoji = hook.emoji ?? "🔗";
+  const emoji = hook.emoji ?? "ðŸ”—";
   return `${emoji} ${theme.command(hook.name)}`;
 }
 
@@ -266,12 +266,12 @@ export function formatHookInfo(
   }
 
   const lines: string[] = [];
-  const emoji = hook.emoji ?? "🔗";
+  const emoji = hook.emoji ?? "ðŸ”—";
   const status = hook.loadable
-    ? theme.success("✓ Ready")
+    ? theme.success("âœ“ Ready")
     : !hook.enabledByConfig
-      ? theme.warn("⏸ Disabled")
-      : theme.error("✗ Missing requirements");
+      ? theme.warn("â¸ Disabled")
+      : theme.error("âœ— Missing requirements");
 
   lines.push(`${emoji} ${theme.heading(hook.name)} ${status}`);
   lines.push("");
@@ -314,35 +314,35 @@ export function formatHookInfo(
     if (hook.requirements.bins.length > 0) {
       const binsStatus = hook.requirements.bins.map((bin) => {
         const missing = hook.missing.bins.includes(bin);
-        return missing ? theme.error(`✗ ${bin}`) : theme.success(`✓ ${bin}`);
+        return missing ? theme.error(`âœ— ${bin}`) : theme.success(`âœ“ ${bin}`);
       });
       lines.push(`${theme.muted("  Binaries:")} ${binsStatus.join(", ")}`);
     }
     if (hook.requirements.anyBins.length > 0) {
       const anyBinsStatus =
         hook.missing.anyBins.length > 0
-          ? theme.error(`✗ (any of: ${hook.requirements.anyBins.join(", ")})`)
-          : theme.success(`✓ (any of: ${hook.requirements.anyBins.join(", ")})`);
+          ? theme.error(`âœ— (any of: ${hook.requirements.anyBins.join(", ")})`)
+          : theme.success(`âœ“ (any of: ${hook.requirements.anyBins.join(", ")})`);
       lines.push(`${theme.muted("  Any binary:")} ${anyBinsStatus}`);
     }
     if (hook.requirements.env.length > 0) {
       const envStatus = hook.requirements.env.map((env) => {
         const missing = hook.missing.env.includes(env);
-        return missing ? theme.error(`✗ ${env}`) : theme.success(`✓ ${env}`);
+        return missing ? theme.error(`âœ— ${env}`) : theme.success(`âœ“ ${env}`);
       });
       lines.push(`${theme.muted("  Environment:")} ${envStatus.join(", ")}`);
     }
     if (hook.requirements.config.length > 0) {
       const configStatus = hook.configChecks.map((check) => {
-        return check.satisfied ? theme.success(`✓ ${check.path}`) : theme.error(`✗ ${check.path}`);
+        return check.satisfied ? theme.success(`âœ“ ${check.path}`) : theme.error(`âœ— ${check.path}`);
       });
       lines.push(`${theme.muted("  Config:")} ${configStatus.join(", ")}`);
     }
     if (hook.requirements.os.length > 0) {
       const osStatus =
         hook.missing.os.length > 0
-          ? theme.error(`✗ (${hook.requirements.os.join(", ")})`)
-          : theme.success(`✓ (${hook.requirements.os.join(", ")})`);
+          ? theme.error(`âœ— (${hook.requirements.os.join(", ")})`)
+          : theme.success(`âœ“ (${hook.requirements.os.join(", ")})`);
       lines.push(`${theme.muted("  OS:")} ${osStatus}`);
     }
   }
@@ -409,7 +409,7 @@ export function formatHooksCheck(report: HookStatusReport, opts: HooksCheckOptio
       if (hook.missing.os.length > 0) {
         reasons.push(`os: ${hook.missing.os.join(", ")}`);
       }
-      lines.push(`  ${hook.emoji ?? "🔗"} ${hook.name} - ${reasons.join("; ")}`);
+      lines.push(`  ${hook.emoji ?? "ðŸ”—"} ${hook.name} - ${reasons.join("; ")}`);
     }
   }
 
@@ -428,7 +428,7 @@ export async function enableHook(hookName: string): Promise<void> {
 
   await writeConfigFile(nextConfig);
   defaultRuntime.log(
-    `${theme.success("✓")} Enabled hook: ${hook.emoji ?? "🔗"} ${theme.command(hookName)}`,
+    `${theme.success("âœ“")} Enabled hook: ${hook.emoji ?? "ðŸ”—"} ${theme.command(hookName)}`,
   );
 }
 
@@ -439,7 +439,7 @@ export async function disableHook(hookName: string): Promise<void> {
 
   await writeConfigFile(nextConfig);
   defaultRuntime.log(
-    `${theme.warn("⏸")} Disabled hook: ${hook.emoji ?? "🔗"} ${theme.command(hookName)}`,
+    `${theme.warn("â¸")} Disabled hook: ${hook.emoji ?? "ðŸ”—"} ${theme.command(hookName)}`,
   );
 }
 
@@ -450,7 +450,7 @@ export function registerHooksCli(program: Command): void {
     .addHelpText(
       "after",
       () =>
-        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/hooks", "docs.openclaw.ai/cli/hooks")}\n`,
+        `\n${theme.muted("Docs:")} ${formatDocsLink("/cli/hooks", "docs.agdi.ai/cli/hooks")}\n`,
     );
 
   hooks
@@ -511,26 +511,26 @@ export function registerHooksCli(program: Command): void {
 
   hooks
     .command("install")
-    .description("Deprecated: install a hook pack via `openclaw plugins install`")
+    .description("Deprecated: install a hook pack via `agdi plugins install`")
     .argument("<path-or-spec>", "Path to a hook pack or npm package spec")
     .option("-l, --link", "Link a local path instead of copying", false)
     .option("--pin", "Record npm installs as exact resolved <name>@<version>", false)
     .action(async (raw: string, opts: { link?: boolean; pin?: boolean }) => {
       defaultRuntime.log(
-        theme.warn("`openclaw hooks install` is deprecated; use `openclaw plugins install`."),
+        theme.warn("`agdi hooks install` is deprecated; use `agdi plugins install`."),
       );
       await runPluginInstallCommand({ raw, opts });
     });
 
   hooks
     .command("update")
-    .description("Deprecated: update hook packs via `openclaw plugins update`")
+    .description("Deprecated: update hook packs via `agdi plugins update`")
     .argument("[id]", "Hook pack id (omit with --all)")
     .option("--all", "Update all tracked hooks", false)
     .option("--dry-run", "Show what would change without writing", false)
     .action(async (id: string | undefined, opts: HooksUpdateOptions) => {
       defaultRuntime.log(
-        theme.warn("`openclaw hooks update` is deprecated; use `openclaw plugins update`."),
+        theme.warn("`agdi hooks update` is deprecated; use `agdi plugins update`."),
       );
       await runPluginUpdateCommand({ id, opts });
     });

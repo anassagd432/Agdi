@@ -1026,7 +1026,7 @@ export async function loadSessionLogs(params: {
       // Truncate very long content
       const maxLen = 2000;
       if (content.length > maxLen) {
-        content = content.slice(0, maxLen) + "…";
+        content = content.slice(0, maxLen) + "â€¦";
       }
 
       // Get timestamp

@@ -12,7 +12,7 @@ export function formatRunLabel(entry: SubagentRunRecord, options?: { maxLength?:
   if (!Number.isFinite(maxLength) || maxLength <= 0) {
     return raw;
   }
-  return raw.length > maxLength ? `${truncateUtf16Safe(raw, maxLength).trimEnd()}…` : raw;
+  return raw.length > maxLength ? `${truncateUtf16Safe(raw, maxLength).trimEnd()}â€¦` : raw;
 }
 
 export function formatRunStatus(entry: SubagentRunRecord) {

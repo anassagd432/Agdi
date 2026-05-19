@@ -3,7 +3,7 @@ import path from "node:path";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import {
   resolveAgentConfig,
   resolveAgentWorkspaceDir,
@@ -1146,7 +1146,7 @@ export function startHeartbeatRunner(opts: {
         continue;
       }
       if (res.status === "skipped" && res.reason === "requests-in-flight") {
-        // Do not advance the schedule — the main lane is busy and the wake
+        // Do not advance the schedule â€” the main lane is busy and the wake
         // layer will retry shortly (DEFAULT_RETRY_MS = 1 s).  Calling
         // scheduleNext() here would register a 0 ms timer that races with
         // the wake layer's 1 s retry and wins, bypassing the cooldown.

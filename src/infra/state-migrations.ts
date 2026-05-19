@@ -105,7 +105,7 @@ function isLegacyGroupKey(key: string): boolean {
 }
 
 function buildFileCopyPreview(plan: FileCopyPlan): string {
-  return `- ${plan.label}: ${plan.sourcePath} → ${plan.targetPath}`;
+  return `- ${plan.label}: ${plan.sourcePath} â†’ ${plan.targetPath}`;
 }
 
 async function runFileCopyPlans(
@@ -120,7 +120,7 @@ async function runFileCopyPlans(
     try {
       ensureDir(path.dirname(plan.targetPath));
       fs.copyFileSync(plan.sourcePath, plan.targetPath);
-      changes.push(`Copied ${plan.label} → ${plan.targetPath}`);
+      changes.push(`Copied ${plan.label} â†’ ${plan.targetPath}`);
     } catch (err) {
       warnings.push(`Failed migrating ${plan.label} (${plan.sourcePath}): ${String(err)}`);
     }
@@ -386,7 +386,7 @@ function resolveSymlinkTarget(linkPath: string): string | null {
 }
 
 function formatStateDirMigration(legacyDir: string, targetDir: string): string {
-  return `State dir: ${legacyDir} → ${targetDir} (legacy path now symlinked)`;
+  return `State dir: ${legacyDir} â†’ ${targetDir} (legacy path now symlinked)`;
 }
 
 function isDirPath(filePath: string): boolean {
@@ -531,7 +531,7 @@ export async function autoMigrateLegacyStateDir(params: {
       continue;
     }
     warnings.push(
-      `Legacy state dir is a symlink (${legacyDir ?? "unknown"} → ${legacyTarget}); skipping auto-migration.`,
+      `Legacy state dir is a symlink (${legacyDir ?? "unknown"} â†’ ${legacyTarget}); skipping auto-migration.`,
     );
     return { migrated: false, skipped: false, changes, warnings };
   }
@@ -553,7 +553,7 @@ export async function autoMigrateLegacyStateDir(params: {
     fs.renameSync(legacyDir, targetDir);
   } catch (err) {
     warnings.push(
-      `Failed to move legacy state dir (${legacyDir ?? "unknown"} → ${targetDir}): ${String(err)}`,
+      `Failed to move legacy state dir (${legacyDir ?? "unknown"} â†’ ${targetDir}): ${String(err)}`,
     );
     return { migrated: false, skipped: false, changes, warnings };
   }
@@ -588,12 +588,12 @@ export async function autoMigrateLegacyStateDir(params: {
         return { migrated: false, skipped: false, changes: [], warnings };
       } catch (rollbackErr) {
         warnings.push(
-          `State dir moved but failed to link legacy path (${legacyDir ?? "unknown"} → ${targetDir}): ${String(fallbackErr)}`,
+          `State dir moved but failed to link legacy path (${legacyDir ?? "unknown"} â†’ ${targetDir}): ${String(fallbackErr)}`,
         );
         warnings.push(
           `Rollback failed; set OPENCLAW_STATE_DIR=${targetDir} to avoid split state: ${String(rollbackErr)}`,
         );
-        changes.push(`State dir: ${legacyDir ?? "unknown"} → ${targetDir}`);
+        changes.push(`State dir: ${legacyDir ?? "unknown"} â†’ ${targetDir}`);
       }
     }
   }
@@ -670,16 +670,16 @@ export async function detectLegacyStateMigrations(params: {
 
   const preview: string[] = [];
   if (hasLegacySessions) {
-    preview.push(`- Sessions: ${sessionsLegacyDir} → ${sessionsTargetDir}`);
+    preview.push(`- Sessions: ${sessionsLegacyDir} â†’ ${sessionsTargetDir}`);
   }
   if (legacyKeys.length > 0) {
     preview.push(`- Sessions: canonicalize legacy keys in ${sessionsTargetStorePath}`);
   }
   if (hasLegacyAgentDir) {
-    preview.push(`- Agent dir: ${legacyAgentDir} → ${targetAgentDir}`);
+    preview.push(`- Agent dir: ${legacyAgentDir} â†’ ${targetAgentDir}`);
   }
   if (hasLegacyWhatsAppAuth) {
-    preview.push(`- WhatsApp auth: ${oauthDir} → ${targetWhatsAppAuthDir} (keep oauth.json)`);
+    preview.push(`- WhatsApp auth: ${oauthDir} â†’ ${targetWhatsAppAuthDir} (keep oauth.json)`);
   }
   if (hasLegacyTelegramAllowFrom) {
     preview.push(...telegramPairingAllowFromPlans.map(buildFileCopyPreview));
@@ -768,7 +768,7 @@ async function migrateLegacySessions(
     const latest = pickLatestLegacyDirectEntry(legacyStore);
     if (latest?.sessionId) {
       merged[mainKey] = latest;
-      changes.push(`Migrated latest direct-chat session → ${mainKey}`);
+      changes.push(`Migrated latest direct-chat session â†’ ${mainKey}`);
     }
   }
 
@@ -793,7 +793,7 @@ async function migrateLegacySessions(
     await saveSessionStore(detected.sessions.targetStorePath, normalized, {
       skipMaintenance: true,
     });
-    changes.push(`Merged sessions store → ${detected.sessions.targetStorePath}`);
+    changes.push(`Merged sessions store â†’ ${detected.sessions.targetStorePath}`);
     if (canonicalizedTarget.legacyKeys.length > 0) {
       changes.push(`Canonicalized ${canonicalizedTarget.legacyKeys.length} legacy session key(s)`);
     }
@@ -814,7 +814,7 @@ async function migrateLegacySessions(
     }
     try {
       fs.renameSync(from, to);
-      changes.push(`Moved ${entry.name} → agents/${detected.targetAgentId}/sessions`);
+      changes.push(`Moved ${entry.name} â†’ agents/${detected.targetAgentId}/sessions`);
     } catch (err) {
       warnings.push(`Failed moving ${from}: ${String(err)}`);
     }
@@ -866,7 +866,7 @@ export async function migrateLegacyAgentDir(
     }
     try {
       fs.renameSync(from, to);
-      changes.push(`Moved agent file ${entry.name} → agents/${detected.targetAgentId}/agent`);
+      changes.push(`Moved agent file ${entry.name} â†’ agents/${detected.targetAgentId}/agent`);
     } catch (err) {
       warnings.push(`Failed moving ${from}: ${String(err)}`);
     }
@@ -920,7 +920,7 @@ async function migrateLegacyWhatsAppAuth(
     }
     try {
       fs.renameSync(from, to);
-      changes.push(`Moved WhatsApp auth ${entry.name} → whatsapp/default`);
+      changes.push(`Moved WhatsApp auth ${entry.name} â†’ whatsapp/default`);
     } catch (err) {
       warnings.push(`Failed moving ${from}: ${String(err)}`);
     }

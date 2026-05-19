@@ -262,7 +262,7 @@ describe("waitForDescendantSubagentSummary", () => {
           task: "morning briefing",
           cleanup: "keep",
           createdAt: 1000,
-          // no endedAt → active
+          // no endedAt â†’ active
         },
       ])
       .mockReturnValue([]); // subsequent calls: all done

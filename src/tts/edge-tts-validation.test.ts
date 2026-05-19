@@ -24,7 +24,7 @@ const baseEdgeConfig = {
   saveSubtitles: false,
 };
 
-describe("edgeTTS – empty audio validation", () => {
+describe("edgeTTS â€“ empty audio validation", () => {
   let tempDir: string | undefined;
 
   beforeEach(async () => {

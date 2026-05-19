@@ -5,7 +5,7 @@ const BACKOFF_SCHEDULE_MS = [5000, 10000, 30000, 60000];
 
 /**
  * Calculate suggested retry delay based on consecutive no-output poll count.
- * Implements exponential backoff schedule: 5s → 10s → 30s → 60s (capped).
+ * Implements exponential backoff schedule: 5s â†’ 10s â†’ 30s â†’ 60s (capped).
  */
 export function calculateBackoffMs(consecutiveNoOutputPolls: number): number {
   const index = Math.min(consecutiveNoOutputPolls, BACKOFF_SCHEDULE_MS.length - 1);

@@ -123,7 +123,7 @@ describe("heartbeat-wake", () => {
     // Runner B registers its handler (replaces A)
     const disposeB = setHeartbeatWakeHandler(handlerB);
 
-    // Runner A's stale cleanup runs — should NOT clear handlerB
+    // Runner A's stale cleanup runs â€” should NOT clear handlerB
     disposeA();
     expect(hasHeartbeatWakeHandler()).toBe(true);
 
@@ -146,7 +146,7 @@ describe("heartbeat-wake", () => {
     // Schedule for 5 seconds from now
     requestHeartbeatNow({ reason: "slow", coalesceMs: 5000 });
 
-    // Schedule for 100ms from now — should preempt the 5s timer
+    // Schedule for 100ms from now â€” should preempt the 5s timer
     requestHeartbeatNow({ reason: "fast", coalesceMs: 100 });
 
     await vi.advanceTimersByTimeAsync(100);
@@ -163,7 +163,7 @@ describe("heartbeat-wake", () => {
     // Schedule for 100ms from now
     requestHeartbeatNow({ reason: "fast", coalesceMs: 100 });
 
-    // Schedule for 5 seconds from now — should NOT preempt
+    // Schedule for 5 seconds from now â€” should NOT preempt
     requestHeartbeatNow({ reason: "slow", coalesceMs: 5000 });
 
     await vi.advanceTimersByTimeAsync(100);
@@ -197,7 +197,7 @@ describe("heartbeat-wake", () => {
       .mockReturnValue(hangPromise.then(() => ({ status: "ran" as const, durationMs: 1 })));
     setHeartbeatWakeHandler(handlerA);
 
-    // Trigger the handler — it starts running but never finishes
+    // Trigger the handler â€” it starts running but never finishes
     requestHeartbeatNow({ reason: "interval", coalesceMs: 0 });
     await vi.advanceTimersByTimeAsync(1);
     expect(handlerA).toHaveBeenCalledTimes(1);

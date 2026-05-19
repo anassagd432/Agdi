@@ -18,6 +18,6 @@ export function ensureContextEnginesInitialized(): void {
   }
   initialized = true;
 
-  // Always available – safe fallback for the "legacy" slot default.
+  // Always available â€“ safe fallback for the "legacy" slot default.
   registerLegacyContextEngine();
 }

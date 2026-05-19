@@ -1,6 +1,6 @@
 /**
  * Shared ARIA role classification sets used by both the Playwright and Chrome MCP
- * snapshot paths. Keep these in sync — divergence causes the two drivers to produce
+ * snapshot paths. Keep these in sync â€” divergence causes the two drivers to produce
  * different snapshot output for the same page.
  */
 
@@ -39,7 +39,7 @@ export const CONTENT_ROLES = new Set([
   "rowheader",
 ]);
 
-/** Structural/container roles — typically skipped in compact mode. */
+/** Structural/container roles â€” typically skipped in compact mode. */
 export const STRUCTURAL_ROLES = new Set([
   "application",
   "directory",

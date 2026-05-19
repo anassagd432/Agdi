@@ -5,9 +5,9 @@ import {
   type RequestClient,
 } from "@buape/carbon";
 import { ChannelType, Routes } from "discord-api-types/v10";
-import { loadConfig, type OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { recordChannelActivity } from "openclaw/plugin-sdk/infra-runtime";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+import { loadConfig, type OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { recordChannelActivity } from "agdi/plugin-sdk/infra-runtime";
+import { loadWebMedia } from "agdi/plugin-sdk/web-media";
 import { resolveDiscordAccount } from "./accounts.js";
 import { registerDiscordComponentEntries } from "./components-registry.js";
 import {

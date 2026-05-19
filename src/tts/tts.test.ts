@@ -653,7 +653,7 @@ describe("tts", () => {
     });
   });
 
-  describe("resolveTtsConfig – openai.baseUrl", () => {
+  describe("resolveTtsConfig â€“ openai.baseUrl", () => {
     const baseCfg: OpenClawConfig = {
       agents: { defaults: { model: { primary: "openai/gpt-4o-mini" } } },
       messages: { tts: {} },
@@ -710,7 +710,7 @@ describe("tts", () => {
     });
   });
 
-  describe("textToSpeechTelephony – openai instructions", () => {
+  describe("textToSpeechTelephony â€“ openai instructions", () => {
     const withMockedTelephonyFetch = async (
       run: (fetchMock: ReturnType<typeof vi.fn>) => Promise<void>,
     ) => {

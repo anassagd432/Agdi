@@ -60,7 +60,7 @@ describe("device-auth payload vectors", () => {
   });
 
   it.each([
-    { input: "  İOS  ", expected: "İos" },
+    { input: "  Ä°OS  ", expected: "Ä°os" },
     { input: "  MAC  ", expected: "mac" },
     { input: undefined, expected: "" },
   ])("normalizes metadata %j", ({ input, expected }) => {

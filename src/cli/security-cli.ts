@@ -28,7 +28,7 @@ function formatSummary(summary: { critical: number; warn: number; info: number }
   parts.push(rich ? theme.error(`${c} critical`) : `${c} critical`);
   parts.push(rich ? theme.warn(`${w} warn`) : `${w} warn`);
   parts.push(rich ? theme.muted(`${i} info`) : `${i} info`);
-  return parts.join(" · ");
+  return parts.join(" Â· ");
 }
 
 export function registerSecurityCli(program: Command) {
@@ -39,16 +39,16 @@ export function registerSecurityCli(program: Command) {
       "after",
       () =>
         `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw security audit", "Run a local security audit."],
-          ["openclaw security audit --deep", "Include best-effort live Gateway probe checks."],
-          ["openclaw security audit --deep --token <token>", "Use explicit token for deep probe."],
+          ["agdi security audit", "Run a local security audit."],
+          ["agdi security audit --deep", "Include best-effort live Gateway probe checks."],
+          ["agdi security audit --deep --token <token>", "Use explicit token for deep probe."],
           [
-            "openclaw security audit --deep --password <password>",
+            "agdi security audit --deep --password <password>",
             "Use explicit password for deep probe.",
           ],
-          ["openclaw security audit --fix", "Apply safe remediations and file-permission fixes."],
-          ["openclaw security audit --json", "Output machine-readable JSON."],
-        ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/security", "docs.openclaw.ai/cli/security")}\n`,
+          ["agdi security audit --fix", "Apply safe remediations and file-permission fixes."],
+          ["agdi security audit --json", "Output machine-readable JSON."],
+        ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/security", "docs.agdi.ai/cli/security")}\n`,
     );
 
   security

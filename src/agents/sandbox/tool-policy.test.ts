@@ -247,7 +247,7 @@ describe("sandbox/tool-policy", () => {
     expect(message).toContain('Tool "web_fetch" blocked by sandbox tool policy');
     expect(message).toContain("tools.sandbox.tools.deny");
     expect(message).not.toContain(`Session: ${sessionKey}`);
-    expect(message).toContain("Session: agent:… -rf /");
+    expect(message).toContain("Session: agent:â€¦ -rf /");
     expect(message).toContain(
       "openclaw sandbox explain --session 'agent:main:weird session;rm -rf /'",
     );

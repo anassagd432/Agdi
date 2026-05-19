@@ -142,7 +142,7 @@ describe("formatGitInstallLabel", () => {
           fetchOk: true,
         },
       }),
-    ).toBe("main · @ 12345678");
+    ).toBe("main Â· @ 12345678");
 
     expect(
       formatGitInstallLabel({
@@ -161,7 +161,7 @@ describe("formatGitInstallLabel", () => {
           fetchOk: null,
         },
       }),
-    ).toBe("detached · tag v1.2.3 · @ abcdef12");
+    ).toBe("detached Â· tag v1.2.3 Â· @ abcdef12");
 
     expect(
       formatGitInstallLabel({

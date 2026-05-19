@@ -9,7 +9,7 @@ import {
   unlinkSync,
 } from "node:fs";
 import path from "node:path";
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
+import { resolveSendableOutboundReplyParts } from "agdi/plugin-sdk/reply-payload";
 import type { ReplyPayload } from "../auto-reply/types.js";
 import { normalizeChannelId } from "../channels/plugins/index.js";
 import type { ChannelId } from "../channels/plugins/types.js";
@@ -349,7 +349,7 @@ export function resolveTtsPrefsPath(config: ResolvedTtsConfig): string {
   if (config.prefsPath?.trim()) {
     return resolveUserPath(config.prefsPath.trim());
   }
-  const envPath = process.env.OPENCLAW_TTS_PREFS?.trim();
+  const envPath = (process.env.AGDI_TTS_PREFS ?? process.env.OPENCLAW_TTS_PREFS)?.trim();
   if (envPath) {
     return resolveUserPath(envPath);
   }
@@ -401,7 +401,7 @@ export function buildTtsSystemPromptHint(cfg: OpenClawConfig): string | undefine
   return [
     "Voice (TTS) is enabled.",
     autoHint,
-    `Keep spoken text ≤${maxLength} chars to avoid auto-summary (summary ${summarize}).`,
+    `Keep spoken text â‰¤${maxLength} chars to avoid auto-summary (summary ${summarize}).`,
     "Use [[tts:...]] and optional [[tts:text]]...[[/tts:text]] to control voice/expressiveness.",
   ]
     .filter(Boolean)
@@ -827,7 +827,7 @@ export async function maybeApplyTtsToPayload(params: {
   inboundAudio?: boolean;
   ttsAuto?: string;
 }): Promise<ReplyPayload> {
-  // Compaction notices are informational UI signals — never synthesise them as speech.
+  // Compaction notices are informational UI signals â€” never synthesise them as speech.
   if (params.payload.isCompactionNotice) {
     return params.payload;
   }
@@ -922,7 +922,7 @@ export async function maybeApplyTtsToPayload(params: {
     }
   }
 
-  textForAudio = stripMarkdown(textForAudio).trim(); // strip markdown for TTS (### → "hashtag" etc.)
+  textForAudio = stripMarkdown(textForAudio).trim(); // strip markdown for TTS (### â†’ "hashtag" etc.)
   if (textForAudio.length < 10) {
     return nextPayload;
   }

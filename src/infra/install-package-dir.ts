@@ -164,7 +164,7 @@ export async function installPackageDir(params: {
   depsLogMessage: string;
   afterCopy?: (installedDir: string) => void | Promise<void>;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  params.logger?.info?.(`Installing to ${params.targetDir}…`);
+  params.logger?.info?.(`Installing to ${params.targetDir}â€¦`);
   const installBaseDir = path.dirname(params.targetDir);
   await fs.mkdir(installBaseDir, { recursive: true });
   await assertInstallBoundaryPaths({

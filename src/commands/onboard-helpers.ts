@@ -75,7 +75,7 @@ export function normalizeGatewayTokenInput(value: unknown): string {
     return "";
   }
   const trimmed = value.trim();
-  // Reject the literal string "undefined" — a common bug when JS undefined
+  // Reject the literal string "undefined" â€” a common bug when JS undefined
   // gets coerced to a string via template literals or String(undefined).
   if (trimmed === "undefined" || trimmed === "null") {
     return "";
@@ -99,12 +99,12 @@ export function validateGatewayPasswordInput(value: unknown): string | undefined
 
 export function printWizardHeader(runtime: RuntimeEnv) {
   const header = [
-    "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄",
-    "██░▄▄▄░██░▄▄▀██░▄▄▀██▄░▄██",
-    "██░▀▀▀░██░█▀▀██░██░██░▀░██",
-    "██░███░██░▀▀▄██░▀▀░██▄▀▄██",
-    "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
-    "               ⚡ AGDI ⚡               ",
+    "â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„â–„",
+    "â–ˆâ–ˆâ–‘â–„â–„â–„â–‘â–ˆâ–ˆâ–‘â–„â–„â–€â–ˆâ–ˆâ–‘â–„â–„â–€â–ˆâ–ˆâ–„â–‘â–„â–ˆâ–ˆ",
+    "â–ˆâ–ˆâ–‘â–€â–€â–€â–‘â–ˆâ–ˆâ–‘â–ˆâ–€â–€â–ˆâ–ˆâ–‘â–ˆâ–ˆâ–‘â–ˆâ–ˆâ–‘â–€â–‘â–ˆâ–ˆ",
+    "â–ˆâ–ˆâ–‘â–ˆâ–ˆâ–ˆâ–‘â–ˆâ–ˆâ–‘â–€â–€â–„â–ˆâ–ˆâ–‘â–€â–€â–‘â–ˆâ–ˆâ–„â–€â–„â–ˆâ–ˆ",
+    "â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€â–€",
+    "               âš¡ AGDI âš¡               ",
     " ",
   ].join("\n");
   runtime.log(header);
@@ -220,8 +220,8 @@ export function formatControlUiSshHint(params: {
     localUrl,
     authedUrl,
     "Docs:",
-    "https://docs.openclaw.ai/gateway/remote",
-    "https://docs.openclaw.ai/web/control-ui",
+    "https://docs.agdi.ai/gateway/remote",
+    "https://docs.agdi.ai/web/control-ui",
   ]
     .filter(Boolean)
     .join("\n");
@@ -419,7 +419,7 @@ function summarizeError(err: unknown): string {
       .split("\n")
       .map((s) => s.trim())
       .find(Boolean) ?? raw;
-  return line.length > 120 ? `${line.slice(0, 119)}…` : line;
+  return line.length > 120 ? `${line.slice(0, 119)}â€¦` : line;
 }
 
 export const DEFAULT_WORKSPACE = DEFAULT_AGENT_WORKSPACE_DIR;

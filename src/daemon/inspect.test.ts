@@ -66,13 +66,13 @@ describe("detectMarkerLineWithGateway", () => {
     expect(detectMarkerLineWithGateway(CLAWDBOT_GATEWAY_CONTENTS)).toBe("clawdbot");
   });
 
-  it("handles line continuations — marker and gateway split across physical lines", () => {
+  it("handles line continuations â€” marker and gateway split across physical lines", () => {
     const contents = `[Service]\nExecStart=/usr/bin/node /opt/openclaw/dist/entry.js \\\n  gateway --port 18789\n`;
     expect(detectMarkerLineWithGateway(contents)).toBe("openclaw");
   });
 });
 
-describe("findExtraGatewayServices (linux / scanSystemdDir) — real filesystem", () => {
+describe("findExtraGatewayServices (linux / scanSystemdDir) â€” real filesystem", () => {
   // These tests write real .service files to a temp dir and call findExtraGatewayServices
   // with that dir as HOME. No platform mocking or fs mocking needed.
   // Only runs on Linux/macOS where the linux branch of findExtraGatewayServices is active.

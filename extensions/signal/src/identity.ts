@@ -1,5 +1,5 @@
-import { evaluateSenderGroupAccessForPolicy } from "openclaw/plugin-sdk/group-access";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+import { evaluateSenderGroupAccessForPolicy } from "agdi/plugin-sdk/group-access";
+import { normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 
 export type SignalSender =
   | { kind: "phone"; raw: string; e164: string }

@@ -1,4 +1,4 @@
-import { listCombinedAccountIds } from "openclaw/plugin-sdk/account-resolution";
+import { listCombinedAccountIds } from "agdi/plugin-sdk/account-resolution";
 import type { OpenClawConfig } from "../runtime-api.js";
 import { resolveTwitchToken, type TwitchTokenResolution } from "./token.js";
 import type { TwitchAccountConfig } from "./types.js";

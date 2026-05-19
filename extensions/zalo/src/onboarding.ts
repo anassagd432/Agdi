@@ -3,13 +3,13 @@ import type {
   ChannelOnboardingDmPolicy,
   AGDIConfig,
   WizardPrompter,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import {
   addWildcardAllowFrom,
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   promptAccountId,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import { listZaloAccountIds, resolveDefaultZaloAccountId, resolveZaloAccount } from "./accounts.js";
 
 const channel = "zalo" as const;

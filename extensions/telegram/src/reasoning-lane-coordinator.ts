@@ -1,7 +1,7 @@
-import { formatReasoningMessage } from "openclaw/plugin-sdk/agent-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { findCodeRegions, isInsideCode } from "openclaw/plugin-sdk/text-runtime";
-import { stripReasoningTagsFromText } from "openclaw/plugin-sdk/text-runtime";
+import { formatReasoningMessage } from "agdi/plugin-sdk/agent-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+import { findCodeRegions, isInsideCode } from "agdi/plugin-sdk/text-runtime";
+import { stripReasoningTagsFromText } from "agdi/plugin-sdk/text-runtime";
 
 const REASONING_MESSAGE_PREFIX = "Reasoning:\n";
 const REASONING_TAG_PREFIXES = [

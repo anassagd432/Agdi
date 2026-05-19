@@ -16,7 +16,7 @@ export async function handleSubagentsLogAction(
   const { runs, restTokens } = ctx;
   const target = restTokens[0];
   if (!target) {
-    return stopWithText("📜 Usage: /subagents log <id|#> [limit]");
+    return stopWithText("ðŸ“œ Usage: /subagents log <id|#> [limit]");
   }
 
   const includeTools = restTokens.some((token) => token.toLowerCase() === "tools");
@@ -35,7 +35,7 @@ export async function handleSubagentsLogAction(
   const rawMessages = Array.isArray(history?.messages) ? history.messages : [];
   const filtered = includeTools ? rawMessages : stripToolMessages(rawMessages);
   const lines = formatLogLines(filtered as ChatMessage[]);
-  const header = `📜 Subagent log: ${formatRunLabel(targetResolution.entry)}`;
+  const header = `ðŸ“œ Subagent log: ${formatRunLabel(targetResolution.entry)}`;
   if (lines.length === 0) {
     return stopWithText(`${header}\n(no messages)`);
   }

@@ -35,7 +35,7 @@ function sanitizeBootstrapFiles(
     const pathValue = typeof file.path === "string" ? file.path.trim() : "";
     if (!pathValue) {
       warn?.(
-        `skipping bootstrap file "${file.name}" — missing or invalid "path" field (hook may have used "filePath" instead)`,
+        `skipping bootstrap file "${file.name}" â€” missing or invalid "path" field (hook may have used "filePath" instead)`,
       );
       continue;
     }

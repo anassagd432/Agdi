@@ -221,7 +221,7 @@ describe("browser manage output", () => {
     });
 
     const output = getRuntime().log.mock.calls.at(-1)?.[0] as string;
-    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supers…7890");
+    expect(output).toContain("cdpUrl: https://example.com/chrome?token=supersâ€¦7890");
     expect(output).not.toContain("alice");
     expect(output).not.toContain("supersecretpasswordvalue1234");
     expect(output).not.toContain("supersecrettokenvalue1234567890");

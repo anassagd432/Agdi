@@ -13,7 +13,7 @@ import {
   type ChannelSetupWizard,
   type OpenClawConfig,
   type SecretInput,
-} from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/setup";
 import { listZaloAccountIds, resolveDefaultZaloAccountId, resolveZaloAccount } from "./accounts.js";
 import { zaloSetupAdapter } from "./setup-core.js";
 

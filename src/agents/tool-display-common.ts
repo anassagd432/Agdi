@@ -108,7 +108,7 @@ export function coerceDisplayValue(
       return undefined;
     }
     if (firstLine.length > maxStringChars) {
-      return `${firstLine.slice(0, Math.max(0, maxStringChars - 3))}…`;
+      return `${firstLine.slice(0, Math.max(0, maxStringChars - 3))}â€¦`;
     }
     return firstLine;
   }
@@ -135,7 +135,7 @@ export function coerceDisplayValue(
       return undefined;
     }
     const preview = values.slice(0, maxArrayEntries).join(", ");
-    return values.length > maxArrayEntries ? `${preview}…` : preview;
+    return values.length > maxArrayEntries ? `${preview}â€¦` : preview;
   }
   return undefined;
 }
@@ -642,7 +642,7 @@ function stripShellPreamble(command: string): PreambleResult {
     const head = (first ? rest.slice(0, first.index) : rest).trim();
     // cd/pushd/popd is preamble when followed by && / ; / \n, or when we already
     // stripped at least one preamble segment (handles chained cd's like `cd /tmp && cd /app`).
-    // NOT for || — `cd /app || npm install` means npm runs when cd *fails*, so (in /app) is wrong.
+    // NOT for || â€” `cd /app || npm install` means npm runs when cd *fails*, so (in /app) is wrong.
     const isChdir = (first ? !first.isOr : i > 0) && isChdirCommand(head);
     const isPreamble =
       head.startsWith("set ") || head.startsWith("export ") || head.startsWith("unset ") || isChdir;
@@ -957,7 +957,7 @@ type ExecSummary = {
 function summarizeExecCommand(command: string): ExecSummary | undefined {
   const { command: cleaned, chdirPath } = stripShellPreamble(command);
   if (!cleaned) {
-    // All segments were preamble (e.g. `cd /tmp && cd /app`) — preserve chdirPath for context.
+    // All segments were preamble (e.g. `cd /tmp && cd /app`) â€” preserve chdirPath for context.
     return chdirPath ? { text: "", chdirPath } : undefined;
   }
 
@@ -967,7 +967,7 @@ function summarizeExecCommand(command: string): ExecSummary | undefined {
   }
 
   const summaries = stages.map((stage) => summarizePipeline(stage));
-  const text = summaries.length === 1 ? summaries[0] : summaries.join(" → ");
+  const text = summaries.length === 1 ? summaries[0] : summaries.join(" â†’ ");
   const allGeneric = summaries.every((s) => isGenericSummary(s));
 
   return { text, chdirPath, allGeneric };
@@ -1044,7 +1044,7 @@ function compactRawCommand(raw: string, maxLength = 120): string {
   if (oneLine.length <= maxLength) {
     return oneLine;
   }
-  return `${oneLine.slice(0, Math.max(0, maxLength - 1))}…`;
+  return `${oneLine.slice(0, Math.max(0, maxLength - 1))}â€¦`;
 }
 
 export function resolveExecDetail(args: unknown): string | undefined {
@@ -1074,7 +1074,7 @@ export function resolveExecDetail(args: unknown): string | undefined {
   const compact = compactRawCommand(unwrapped);
 
   // When ALL stages are generic (e.g. "run jj"), use the compact raw command instead.
-  // For mixed stages like "run cargo build → run tests", keep the summary since some parts are useful.
+  // For mixed stages like "run cargo build â†’ run tests", keep the summary since some parts are useful.
   if (result?.allGeneric !== false && isGenericSummary(summary)) {
     return cwd ? `${compact} (in ${cwd})` : compact;
   }
@@ -1084,7 +1084,7 @@ export function resolveExecDetail(args: unknown): string | undefined {
   // Keep the raw command inline so chat surfaces do not break "Exec:" onto a
   // separate paragraph/code block.
   if (compact && compact !== displaySummary && compact !== summary) {
-    return `${displaySummary} · \`${compact}\``;
+    return `${displaySummary} Â· \`${compact}\``;
   }
 
   return displaySummary;
@@ -1154,7 +1154,7 @@ export function resolveDetailFromKeys(
   return unique
     .slice(0, opts.maxEntries ?? 8)
     .map((entry) => `${entry.label} ${entry.value}`)
-    .join(" · ");
+    .join(" Â· ");
 }
 
 export function resolveToolVerbAndDetail(params: {
@@ -1221,9 +1221,9 @@ export function formatToolDetailText(
   if (!detail) {
     return undefined;
   }
-  const normalized = detail.includes(" · ")
+  const normalized = detail.includes(" Â· ")
     ? detail
-        .split(" · ")
+        .split(" Â· ")
         .map((part) => part.trim())
         .filter((part) => part.length > 0)
         .join(", ")

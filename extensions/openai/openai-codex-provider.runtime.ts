@@ -1,5 +1,5 @@
 import { getOAuthApiKey as getOAuthApiKeyFromPi } from "@mariozechner/pi-ai/oauth";
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/infra-runtime";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "agdi/plugin-sdk/infra-runtime";
 
 export async function getOAuthApiKey(
   ...args: Parameters<typeof getOAuthApiKeyFromPi>

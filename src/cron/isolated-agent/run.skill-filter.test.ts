@@ -24,7 +24,7 @@ const makeSkillParams = makeIsolatedAgentTurnParams;
 
 // ---------- tests ----------
 
-describe("runCronIsolatedAgentTurn — skill filter", () => {
+describe("runCronIsolatedAgentTurn â€” skill filter", () => {
   setupRunCronIsolatedAgentTurnSuite();
 
   async function runSkillFilterCase(overrides?: Record<string, unknown>) {

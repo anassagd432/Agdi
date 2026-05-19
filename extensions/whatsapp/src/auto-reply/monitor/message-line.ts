@@ -1,9 +1,9 @@
-import { resolveMessagePrefix } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveMessagePrefix } from "agdi/plugin-sdk/agent-runtime";
 import {
   formatInboundEnvelope,
   type EnvelopeFormatOptions,
-} from "openclaw/plugin-sdk/channel-inbound";
-import type { loadConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import type { loadConfig } from "agdi/plugin-sdk/config-runtime";
 import { getPrimaryIdentityId, getReplyContext, getSenderIdentity } from "../../identity.js";
 import type { WebInboundMsg } from "../types.js";
 

@@ -4,7 +4,7 @@ import {
   sendPayloadMediaSequenceAndFinalize,
   sendPayloadMediaSequenceOrFallback,
   sendTextMediaPayload,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import { chunkText } from "../../../auto-reply/chunk.js";
 import type { OpenClawConfig } from "../../../config/config.js";
 import type { OutboundSendDeps } from "../../../infra/outbound/deliver.js";
@@ -33,7 +33,7 @@ export {
   sendPayloadMediaSequenceAndFinalize,
   sendPayloadMediaSequenceOrFallback,
   sendTextMediaPayload,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 
 export function resolveScopedChannelMediaMaxBytes(params: {
   cfg: OpenClawConfig;

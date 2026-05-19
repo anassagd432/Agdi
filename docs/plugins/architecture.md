@@ -117,7 +117,7 @@ Agdi's plugin system has four layers:
 1. **Manifest + discovery**
    Agdi finds candidate plugins from configured paths, workspace roots,
    global extension roots, and bundled extensions. Discovery reads native
-   `agdi.plugin.json` manifests plus supported bundle manifests first.
+   `openclaw.plugin.json` manifests plus supported bundle manifests first.
 2. **Enablement + validation**
    Core decides whether a discovered plugin is enabled, disabled, blocked, or
    selected for an exclusive slot such as memory.
@@ -436,7 +436,7 @@ Use allowlists and explicit install/load paths for non-bundled plugins. Treat
 workspace plugins as development-time code, not production defaults.
 
 For bundled workspace package names, keep the plugin id anchored in the npm
-name: `@agdi/<id>` by default, or an approved typed suffix such as
+name: `@openclaw/<id>` by default, or an approved typed suffix such as
 `-provider`, `-plugin`, `-speech`, `-sandbox`, or `-media-understanding` when
 the package intentionally exposes a narrower plugin role.
 
@@ -1200,7 +1200,7 @@ Example:
 
 ```json
 {
-  "name": "@agdi/nextcloud-talk",
+  "name": "@openclaw/nextcloud-talk",
   "agdi": {
     "extensions": ["./index.ts"],
     "channel": {
@@ -1214,7 +1214,7 @@ Example:
       "aliases": ["nc-talk", "nc"]
     },
     "install": {
-      "npmSpec": "@agdi/nextcloud-talk",
+      "npmSpec": "@openclaw/nextcloud-talk",
       "localPath": "extensions/nextcloud-talk",
       "defaultChoice": "npm"
     }

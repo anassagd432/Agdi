@@ -90,7 +90,7 @@ function createUnavailableSubagentRuntime(): PluginRuntime["subagent"] {
   };
 }
 
-// ── Process-global gateway subagent runtime ─────────────────────────
+// â”€â”€ Process-global gateway subagent runtime â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // The gateway creates a real subagent runtime during startup, but gateway-owned
 // plugin registries may be loaded (and cached) before the gateway path runs.
 // A process-global holder lets explicitly gateway-bindable runtimes resolve the

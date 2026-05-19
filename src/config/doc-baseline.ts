@@ -82,7 +82,7 @@ const uiHintIndexCache = new WeakMap<
 const schemaHasChildrenCache = new WeakMap<JsonSchemaObject, boolean>();
 
 function logConfigDocBaselineDebug(message: string): void {
-  if (process.env.OPENCLAW_CONFIG_DOC_BASELINE_DEBUG === "1") {
+  if ((process.env.AGDI_CONFIG_DOC_BASELINE_DEBUG ?? process.env.OPENCLAW_CONFIG_DOC_BASELINE_DEBUG) === "1") {
     console.error(`[config-doc-baseline] ${message}`);
   }
 }
@@ -376,7 +376,7 @@ async function loadBundledConfigSchemaResponse(): Promise<ConfigSchemaResponse> 
     (plugin) => plugin.origin === "bundled" && plugin.channels.length > 0,
   );
   const channelPlugins =
-    process.env.OPENCLAW_CONFIG_DOC_BASELINE_DEBUG === "1"
+    (process.env.AGDI_CONFIG_DOC_BASELINE_DEBUG ?? process.env.OPENCLAW_CONFIG_DOC_BASELINE_DEBUG) === "1"
       ? await bundledChannelPlugins.reduce<Promise<ChannelSurfaceMetadata[]>>(
           async (promise, plugin) => {
             const loaded = await promise;

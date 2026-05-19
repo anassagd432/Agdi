@@ -252,7 +252,7 @@ function assertNoReasoningTags(params: {
     return;
   }
   if (THINKING_TAG_RE.test(params.text) || FINAL_TAG_RE.test(params.text)) {
-    const snippet = params.text.length > 200 ? `${params.text.slice(0, 200)}…` : params.text;
+    const snippet = params.text.length > 200 ? `${params.text.slice(0, 200)}â€¦` : params.text;
     throw new Error(
       `[${params.label}] reasoning tag leak (${params.model} / ${params.phase}): ${snippet}`,
     );
@@ -397,9 +397,9 @@ function isToolNonceRefusal(error: string): boolean {
     msg.includes("local file") ||
     msg.includes("disclose") ||
     msg.includes("can't help") ||
-    msg.includes("can’t help") ||
+    msg.includes("canâ€™t help") ||
     msg.includes("can't comply") ||
-    msg.includes("can’t comply")
+    msg.includes("canâ€™t comply")
   );
 }
 
@@ -471,7 +471,7 @@ async function runAnthropicRefusalProbe(params: {
 
 function randomImageProbeCode(len = 6): string {
   // Chosen to avoid common OCR confusions in our 5x7 bitmap font.
-  // Notably: 0↔8, B↔8, 6↔9, 3↔B, D↔0.
+  // Notably: 0â†”8, Bâ†”8, 6â†”9, 3â†”B, Dâ†”0.
   // Must stay within the glyph set in `src/gateway/live-image-probe.ts`.
   const alphabet = "24567ACEF";
   const bytes = randomBytes(len);

@@ -4,7 +4,7 @@ import { SILENT_REPLY_TOKEN } from "../../auto-reply/tokens.js";
 import { callGateway } from "../../gateway/call.js";
 
 function resolveCronSubagentTimings() {
-  const fastTestMode = process.env.OPENCLAW_TEST_FAST === "1";
+  const fastTestMode = (process.env.AGDI_TEST_FAST ?? process.env.OPENCLAW_TEST_FAST) === "1";
   return {
     waitMinMs: fastTestMode ? 10 : 30_000,
     finalReplyGraceMs: fastTestMode ? 50 : 5_000,
@@ -139,7 +139,7 @@ export async function waitForDescendantSubagentSummary(params: {
     params.observedActiveDescendants === true || initialActiveRuns.length > 0;
 
   if (!sawActiveDescendants) {
-    // No active descendants and none were observed before the call – nothing to wait for.
+    // No active descendants and none were observed before the call â€“ nothing to wait for.
     return initialReply;
   }
 

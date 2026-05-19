@@ -656,6 +656,7 @@ async function maybeRestartService(params: {
       if (!params.opts.json && restarted) {
         defaultRuntime.log(theme.success("Daemon restarted successfully."));
         defaultRuntime.log("");
+        process.env.AGDI_UPDATE_IN_PROGRESS = "1";
         process.env.OPENCLAW_UPDATE_IN_PROGRESS = "1";
         try {
           const interactiveDoctor =
@@ -666,6 +667,7 @@ async function maybeRestartService(params: {
         } catch (err) {
           defaultRuntime.log(theme.warn(`Doctor failed: ${String(err)}`));
         } finally {
+          delete process.env.AGDI_UPDATE_IN_PROGRESS;
           delete process.env.OPENCLAW_UPDATE_IN_PROGRESS;
         }
       }

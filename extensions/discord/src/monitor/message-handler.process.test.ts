@@ -86,8 +86,8 @@ vi.mock("./reply-delivery.js", () => ({
   deliverDiscordReply: deliveryMocks.deliverDiscordReply,
 }));
 
-vi.mock("openclaw/plugin-sdk/reply-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/reply-runtime")>();
+vi.mock("agdi/plugin-sdk/reply-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/reply-runtime")>();
   return {
     ...actual,
     dispatchInboundMessage,
@@ -115,16 +115,16 @@ vi.mock("openclaw/plugin-sdk/reply-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/conversation-runtime")>();
+vi.mock("agdi/plugin-sdk/conversation-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/conversation-runtime")>();
   return {
     ...actual,
     recordInboundSession,
   };
 });
 
-vi.mock("openclaw/plugin-sdk/config-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/config-runtime")>();
+vi.mock("agdi/plugin-sdk/config-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/config-runtime")>();
   return {
     ...actual,
     readSessionUpdatedAt: configSessionsMocks.readSessionUpdatedAt,

@@ -24,7 +24,7 @@ describe("renderTable", () => {
     });
 
     expect(out).toContain("Dashboard");
-    expect(out).toMatch(/│ Dashboard\s+│/);
+    expect(out).toMatch(/â”‚ Dashboard\s+â”‚/);
   });
 
   it("expands flex columns to fill available width", () => {
@@ -86,7 +86,7 @@ describe("renderTable", () => {
     const lines = out.split("\n").filter((line) => line.includes("a"));
     for (const line of lines) {
       const resetIndex = line.lastIndexOf(reset);
-      const lastSep = line.lastIndexOf("│");
+      const lastSep = line.lastIndexOf("â”‚");
       expect(resetIndex).toBeGreaterThan(-1);
       expect(lastSep).toBeGreaterThan(resetIndex);
     }
@@ -103,8 +103,8 @@ describe("renderTable", () => {
       ],
       rows: [
         {
-          Status: "✓ ready",
-          Skill: "🌤️ weather",
+          Status: "âœ“ ready",
+          Skill: "ðŸŒ¤ï¸ weather",
           Description:
             `\x1b[2mGet current weather and forecasts via wttr.in or Open-Meteo. ` +
             `Use when: user asks about weather, temperature, or forecasts for any location.` +
@@ -120,8 +120,8 @@ describe("renderTable", () => {
       .filter((line) => line.includes("Use when"));
     expect(lines).toHaveLength(1);
     expect(lines[0]).toContain("\u001b[2mUse when");
-    expect(lines[0]).not.toContain("│  Use when");
-    expect(lines[0]).not.toContain("│ \x1b[2m Use when");
+    expect(lines[0]).not.toContain("â”‚  Use when");
+    expect(lines[0]).not.toContain("â”‚ \x1b[2m Use when");
   });
 
   it("respects explicit newlines in cell values", () => {
@@ -153,8 +153,8 @@ describe("renderTable", () => {
       ],
       rows: [
         {
-          Status: "✗ missing",
-          Skill: "📸 peekaboo",
+          Status: "âœ— missing",
+          Skill: "ðŸ“¸ peekaboo",
           Description: "Capture screenshots from macOS windows and keep table wrapping stable.",
           Source: "openclaw-bundled",
         },
@@ -195,7 +195,7 @@ describe("renderTable", () => {
     });
 
     expect(out).toContain("+");
-    expect(out).not.toContain("┌");
+    expect(out).not.toContain("â”Œ");
   });
 
   it("keeps unicode borders on modern Windows terminals", () => {
@@ -212,7 +212,7 @@ describe("renderTable", () => {
       rows: [{ A: "row", B: "value" }],
     });
 
-    expect(out).toContain("┌");
+    expect(out).toContain("â”Œ");
     expect(out).not.toContain("+");
   });
 });

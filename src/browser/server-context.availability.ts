@@ -65,7 +65,7 @@ export function createProfileAvailability({
 
   const isReachable = async (timeoutMs?: number) => {
     if (capabilities.usesChromeMcp) {
-      // listChromeMcpTabs creates the session if needed — no separate ensureChromeMcpAvailable call required
+      // listChromeMcpTabs creates the session if needed â€” no separate ensureChromeMcpAvailable call required
       await listChromeMcpTabs(profile.name, profile.userDataDir);
       return true;
     }

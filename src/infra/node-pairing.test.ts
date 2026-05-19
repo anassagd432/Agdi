@@ -72,7 +72,7 @@ describe("node pairing tokens", () => {
   test("treats multibyte same-length token input as mismatch without throwing", async () => {
     const baseDir = await mkdtemp(join(tmpdir(), "openclaw-node-pairing-"));
     const token = await setupPairedNode(baseDir);
-    const multibyteToken = "é".repeat(token.length);
+    const multibyteToken = "Ã©".repeat(token.length);
     expect(Buffer.from(multibyteToken).length).not.toBe(Buffer.from(token).length);
 
     await expect(verifyNodeToken("node-1", multibyteToken, baseDir)).resolves.toEqual({

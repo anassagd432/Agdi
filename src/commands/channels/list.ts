@@ -91,7 +91,7 @@ async function loadUsageWithProgress(
 ): Promise<Awaited<ReturnType<typeof loadProviderUsageSummary>> | null> {
   try {
     return await withProgress(
-      { label: "Fetching usage snapshot…", indeterminate: true, enabled: true },
+      { label: "Fetching usage snapshotâ€¦", indeterminate: true, enabled: true },
       async () => await loadProviderUsageSummary(),
     );
   } catch (err) {

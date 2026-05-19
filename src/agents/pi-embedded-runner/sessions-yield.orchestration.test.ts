@@ -25,7 +25,7 @@ describe("sessions_yield orchestration", () => {
     mockedGlobalHookRunner.hasHooks.mockImplementation(() => false);
   });
 
-  it("parent session is idle after yield — end_turn, no pendingToolCalls", async () => {
+  it("parent session is idle after yield â€” end_turn, no pendingToolCalls", async () => {
     const sessionId = "yield-parent-session";
 
     // Simulate an attempt where sessions_yield was called
@@ -71,7 +71,7 @@ describe("sessions_yield orchestration", () => {
       runId: "run-yield-vs-client-tool",
     });
 
-    // clientToolCall wins — tool_calls stopReason, pendingToolCalls populated
+    // clientToolCall wins â€” tool_calls stopReason, pendingToolCalls populated
     expect(result.meta.stopReason).toBe("tool_calls");
     expect(result.meta.pendingToolCalls).toHaveLength(1);
     expect(result.meta.pendingToolCalls![0].name).toBe("hosted_tool");
@@ -85,7 +85,7 @@ describe("sessions_yield orchestration", () => {
       runId: "run-no-yield",
     });
 
-    // Neither clientToolCall nor yieldDetected → stopReason is undefined
+    // Neither clientToolCall nor yieldDetected â†’ stopReason is undefined
     expect(result.meta.stopReason).toBeUndefined();
     expect(result.meta.pendingToolCalls).toBeUndefined();
   });

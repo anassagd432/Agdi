@@ -107,7 +107,7 @@ export async function loadInternalHooks(
         fs.closeSync(opened.fd);
         maybeWarnTrustedHookSource(entry.hook.source);
 
-        // Import handler module — only cache-bust mutable (workspace/managed) hooks
+        // Import handler module â€” only cache-bust mutable (workspace/managed) hooks
         const importUrl = buildImportUrl(safeHandlerPath, entry.hook.source);
         const mod = (await import(importUrl)) as Record<string, unknown>;
 

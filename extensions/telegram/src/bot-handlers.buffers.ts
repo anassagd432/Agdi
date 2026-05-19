@@ -3,9 +3,9 @@ import {
   createInboundDebouncer,
   resolveInboundDebounceMs,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { danger, logVerbose, warn } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/channel-inbound";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { danger, logVerbose, warn } from "agdi/plugin-sdk/runtime-env";
 import {
   hasInboundMedia,
   isRecoverableMediaGroupError,

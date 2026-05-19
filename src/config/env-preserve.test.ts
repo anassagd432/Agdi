@@ -110,9 +110,9 @@ describe("restoreEnvVarRefs", () => {
 
   // Edge case: env mutation between read and write (Greptile comment #1)
   // Scenario: config.env sets FOO=bar, which gets applied to process.env during loadConfig.
-  // Later writeConfigFile runs — the env has changed since the original read.
+  // Later writeConfigFile runs â€” the env has changed since the original read.
   it("does not incorrectly restore when env var value changed between read and write", () => {
-    // At read time, MY_VAR was "original-value" and resolved ${MY_VAR} → "original-value"
+    // At read time, MY_VAR was "original-value" and resolved ${MY_VAR} â†’ "original-value"
     // Then config.env or external mutation changed MY_VAR to "mutated-value"
     // Caller is writing back "original-value" (the value they got from the read)
     const mutatedEnv = { MY_VAR: "mutated-value" } as unknown as NodeJS.ProcessEnv;
@@ -121,7 +121,7 @@ describe("restoreEnvVarRefs", () => {
 
     const result = restoreEnvVarRefs(incoming, parsed, mutatedEnv);
     // Should NOT restore ${MY_VAR} because resolving it now gives "mutated-value",
-    // which doesn't match "original-value" — the caller's value should be kept
+    // which doesn't match "original-value" â€” the caller's value should be kept
     expect(result).toEqual({ key: "original-value" });
   });
 
@@ -131,7 +131,7 @@ describe("restoreEnvVarRefs", () => {
     const parsed = { key: "${MY_VAR}" };
 
     const result = restoreEnvVarRefs(incoming, parsed, stableEnv);
-    // Env value matches incoming — safe to restore
+    // Env value matches incoming â€” safe to restore
     expect(result).toEqual({ key: "${MY_VAR}" });
   });
 
@@ -145,7 +145,7 @@ describe("restoreEnvVarRefs", () => {
 
     const result = restoreEnvVarRefs(incoming, parsed, readTimeEnv);
     // Using read-time snapshot: ${MY_VAR} resolves to "old-value", doesn't match "new-value"
-    // → correctly keeps caller's new value
+    // â†’ correctly keeps caller's new value
     expect(result).toEqual({ key: "new-value" });
   });
 
@@ -165,8 +165,8 @@ describe("restoreEnvVarRefs", () => {
   it("does not confuse $${VAR} escape with ${VAR} substitution", () => {
     // Config has both: an escaped ref and a real ref
     const incoming = {
-      literal: "${MY_TOKEN}", // from $${MY_TOKEN} → literal "${MY_TOKEN}"
-      resolved: "tok-12345", // from ${MY_TOKEN} → "tok-12345"
+      literal: "${MY_TOKEN}", // from $${MY_TOKEN} â†’ literal "${MY_TOKEN}"
+      resolved: "tok-12345", // from ${MY_TOKEN} â†’ "tok-12345"
     };
     const parsed = {
       literal: "$${MY_TOKEN}", // escape sequence

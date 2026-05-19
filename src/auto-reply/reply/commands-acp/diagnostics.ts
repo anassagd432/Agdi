@@ -24,7 +24,7 @@ export async function handleAcpDoctorAction(
   restTokens: string[],
 ): Promise<CommandHandlerResult> {
   if (restTokens.length > 0) {
-    return stopWithText(`⚠️ ${ACP_DOCTOR_USAGE}`);
+    return stopWithText(`âš ï¸ ${ACP_DOCTOR_USAGE}`);
   }
 
   const backendId = resolveConfiguredAcpBackendId(params.cfg);
@@ -113,7 +113,7 @@ export function handleAcpInstallAction(
   restTokens: string[],
 ): CommandHandlerResult {
   if (restTokens.length > 0) {
-    return stopWithText(`⚠️ ${ACP_INSTALL_USAGE}`);
+    return stopWithText(`âš ï¸ ${ACP_INSTALL_USAGE}`);
   }
   const backendId = resolveConfiguredAcpBackendId(params.cfg);
   const installHint = resolveAcpInstallCommandHint(params.cfg);
@@ -154,7 +154,7 @@ export function handleAcpSessionsAction(
 
   const currentSessionKey = resolveBoundAcpThreadSessionKey(params) || params.sessionKey;
   if (!currentSessionKey) {
-    return stopWithText("⚠️ Missing session key.");
+    return stopWithText("âš ï¸ Missing session key.");
   }
 
   const { storePath } = resolveSessionStorePathForAcp({

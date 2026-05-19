@@ -5,8 +5,8 @@ import {
   type MessagingTarget,
   type MessagingTargetKind,
   type MessagingTargetParseOptions,
-} from "openclaw/plugin-sdk/channel-targets";
-import type { DirectoryConfigParams } from "openclaw/plugin-sdk/directory-runtime";
+} from "agdi/plugin-sdk/channel-targets";
+import type { DirectoryConfigParams } from "agdi/plugin-sdk/directory-runtime";
 import { rememberDiscordDirectoryUser } from "./directory-cache.js";
 import { listDiscordDirectoryPeersLive } from "./directory-live.js";
 

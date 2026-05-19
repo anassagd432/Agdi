@@ -1,4 +1,4 @@
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 
 export function resolveSignalRpcContext(

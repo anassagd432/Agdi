@@ -1,7 +1,7 @@
-import { createActionGate } from "openclaw/plugin-sdk/agent-runtime";
-import type { ChannelMessageActionName } from "openclaw/plugin-sdk/channel-contract";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { ChannelToolSend } from "openclaw/plugin-sdk/tool-send";
+import { createActionGate } from "agdi/plugin-sdk/agent-runtime";
+import type { ChannelMessageActionName } from "agdi/plugin-sdk/channel-contract";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { ChannelToolSend } from "agdi/plugin-sdk/tool-send";
 import { listEnabledSlackAccounts } from "./accounts.js";
 
 export function listSlackMessageActions(cfg: OpenClawConfig): ChannelMessageActionName[] {

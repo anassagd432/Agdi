@@ -130,7 +130,7 @@ function createAudioConfigWithoutEchoFlag() {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("applyMediaUnderstanding – echo transcript", () => {
+describe("applyMediaUnderstanding â€“ echo transcript", () => {
   beforeAll(async () => {
     vi.resetModules();
     vi.doMock("../agents/model-auth.js", () => ({
@@ -261,7 +261,7 @@ describe("applyMediaUnderstanding – echo transcript", () => {
     expect(callArgs.to).toBe("+10000000001");
     expect(callArgs.accountId).toBe("acc1");
     expect(callArgs.payloads).toHaveLength(1);
-    expect(callArgs.payloads[0].text).toBe('📝 "hello world"');
+    expect(callArgs.payloads[0].text).toBe('ðŸ“ "hello world"');
   });
 
   it("uses custom echoFormat when provided", async () => {
@@ -269,18 +269,18 @@ describe("applyMediaUnderstanding – echo transcript", () => {
     const ctx = createAudioCtxWithProvider(mediaPath);
     const { cfg, providers } = createAudioConfigWithEcho({
       echoTranscript: true,
-      echoFormat: "🎙️ Heard: {transcript}",
+      echoFormat: "ðŸŽ™ï¸ Heard: {transcript}",
       transcribedText: "custom message",
     });
 
     await applyMediaUnderstanding({ ctx, cfg, providers });
 
     const callArgs = expectSingleEchoDeliveryCall();
-    expect(callArgs.payloads[0].text).toBe("🎙️ Heard: custom message");
+    expect(callArgs.payloads[0].text).toBe("ðŸŽ™ï¸ Heard: custom message");
   });
 
   it("does NOT echo when there are no audio attachments", async () => {
-    // Image-only context — no audio attachment
+    // Image-only context â€” no audio attachment
     const dir = await fs.mkdtemp(path.join(suiteTempMediaRootDir, "img-"));
     const imgPath = path.join(dir, "photo.jpg");
     await fs.writeFile(imgPath, Buffer.from([0xff, 0xd8, 0xff, 0xe0]));
@@ -301,7 +301,7 @@ describe("applyMediaUnderstanding – echo transcript", () => {
 
     await applyMediaUnderstanding({ ctx, cfg, providers });
 
-    // No audio outputs → Transcript not set → no echo
+    // No audio outputs â†’ Transcript not set â†’ no echo
     expect(ctx.Transcript).toBeUndefined();
     expect(mockDeliverOutboundPayloads).not.toHaveBeenCalled();
   });

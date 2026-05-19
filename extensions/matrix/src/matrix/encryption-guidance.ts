@@ -1,4 +1,4 @@
-import { normalizeOptionalAccountId } from "openclaw/plugin-sdk/account-id";
+import { normalizeOptionalAccountId } from "agdi/plugin-sdk/account-id";
 import type { CoreConfig } from "../types.js";
 import { resolveDefaultMatrixAccountId } from "./accounts.js";
 import { resolveMatrixConfigFieldPath } from "./config-update.js";

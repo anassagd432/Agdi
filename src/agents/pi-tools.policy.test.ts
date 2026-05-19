@@ -206,13 +206,13 @@ describe("resolveSubagentToolPolicy depth awareness", () => {
 
   it("defaults to leaf behavior when no depth is provided", () => {
     const policy = resolveSubagentToolPolicy(baseCfg);
-    // Default depth=1, maxSpawnDepth=2 → orchestrator
+    // Default depth=1, maxSpawnDepth=2 â†’ orchestrator
     expect(isToolAllowedByPolicyName("sessions_spawn", policy)).toBe(true);
   });
 
   it("defaults to leaf behavior when depth is undefined and maxSpawnDepth is 1", () => {
     const policy = resolveSubagentToolPolicy(leafCfg);
-    // Default depth=1, maxSpawnDepth=1 → leaf
+    // Default depth=1, maxSpawnDepth=1 â†’ leaf
     expect(isToolAllowedByPolicyName("sessions_spawn", policy)).toBe(false);
   });
 });

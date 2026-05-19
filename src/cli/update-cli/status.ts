@@ -27,7 +27,7 @@ function formatGitStatusLine(params: {
     tag ? `tag ${tag}` : null,
     shortSha ? `@ ${shortSha}` : null,
   ].filter(Boolean);
-  return parts.join(" · ");
+  return parts.join(" Â· ");
 }
 
 export async function updateStatusCommand(opts: UpdateStatusOptions): Promise<void> {
@@ -97,7 +97,7 @@ export async function updateStatusCommand(opts: UpdateStatusOptions): Promise<vo
     ...(gitLabel ? [{ Item: "Git", Value: gitLabel }] : []),
     {
       Item: "Update",
-      Value: updateAvailability.available ? theme.warn(`available · ${updateLine}`) : updateLine,
+      Value: updateAvailability.available ? theme.warn(`available Â· ${updateLine}`) : updateLine,
     },
   ];
 

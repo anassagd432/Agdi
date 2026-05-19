@@ -70,8 +70,8 @@ to apply context-specific rules.
 
 ## UI env vars
 
-- `OPENCLAW_THEME=light`: force the light TUI palette when your terminal has a light background.
-- `OPENCLAW_THEME=dark`: force the dark TUI palette.
+- `AGDI_THEME=light` (or `OPENCLAW_THEME` as fallback): force the light TUI palette when your terminal has a light background.
+- `AGDI_THEME=dark` (or `OPENCLAW_THEME` as fallback): force the dark TUI palette.
 - `COLORFGBG`: if your terminal exports it, Agdi uses the background color hint to auto-pick the TUI palette.
 
 ## Env var substitution in config

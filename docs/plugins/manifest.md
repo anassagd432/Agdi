@@ -6,7 +6,7 @@ read_when:
 title: "Plugin Manifest"
 ---
 
-# Plugin manifest (agdi.plugin.json)
+# Plugin manifest (openclaw.plugin.json)
 
 This page is for the **native Agdi plugin manifest** only.
 
@@ -20,16 +20,22 @@ Compatible bundle formats use different manifest files:
 - Cursor bundle: `.cursor-plugin/plugin.json`
 
 Agdi auto-detects those bundle layouts too, but they are not validated
-against the `agdi.plugin.json` schema described here.
+against the `openclaw.plugin.json` schema described here.
 
 For compatible bundles, Agdi currently reads bundle metadata plus declared
 skill roots, Claude command roots, Claude bundle `settings.json` defaults, and
 supported hook packs when the layout matches Agdi runtime expectations.
 
-Every native Agdi plugin **must** ship a `agdi.plugin.json` file in the
+Every native Agdi plugin **must** ship an `openclaw.plugin.json` file in the
 **plugin root**. Agdi uses this manifest to validate configuration
 **without executing plugin code**. Missing or invalid manifests are treated as
 plugin errors and block config validation.
+
+<Note>
+  The manifest filename remains `openclaw.plugin.json` for compatibility during
+  the Agdi transition. New plugin code should still use `agdi/plugin-sdk/*`
+  imports.
+</Note>
 
 See the full plugin system guide: [Plugins](/tools/plugin).
 For the native capability model and current external-compatibility guidance:
@@ -37,7 +43,7 @@ For the native capability model and current external-compatibility guidance:
 
 ## What this file does
 
-`agdi.plugin.json` is the metadata Agdi reads before it loads your
+`openclaw.plugin.json` is the metadata Agdi reads before it loads your
 plugin code.
 
 Use it for:
@@ -188,12 +194,12 @@ The two files serve different jobs:
 
 | File                   | Use it for                                                                                                         |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `agdi.plugin.json` | Discovery, config validation, auth-choice metadata, and UI hints that must exist before plugin code runs           |
+| `openclaw.plugin.json` | Discovery, config validation, auth-choice metadata, and UI hints that must exist before plugin code runs           |
 | `package.json`         | npm metadata, dependency installation, and the `agdi` block used for entrypoints and setup or catalog metadata |
 
 If you are unsure where a piece of metadata belongs, use this rule:
 
-- if Agdi must know it before loading plugin code, put it in `agdi.plugin.json`
+- if Agdi must know it before loading plugin code, put it in `openclaw.plugin.json`
 - if it is about packaging, entry files, or npm install behavior, put it in `package.json`
 
 ## JSON Schema requirements

@@ -13,7 +13,7 @@ describe("legacy migrate audio transcription", () => {
       },
     });
 
-    expect(res.changes).toContain("Moved routing.transcribeAudio → tools.media.audio.models.");
+    expect(res.changes).toContain("Moved routing.transcribeAudio â†’ tools.media.audio.models.");
     expect(res.config?.tools?.media?.audio).toEqual(WHISPER_BASE_AUDIO_MODEL);
     expect((res.config as { routing?: unknown } | null)?.routing).toBeUndefined();
   });
@@ -67,10 +67,10 @@ describe("legacy migrate mention routing", () => {
     });
 
     expect(res.changes).toContain(
-      'Moved routing.groupChat.requireMention → channels.telegram.groups."*".requireMention.',
+      'Moved routing.groupChat.requireMention â†’ channels.telegram.groups."*".requireMention.',
     );
     expect(res.changes).toContain(
-      'Moved routing.groupChat.requireMention → channels.imessage.groups."*".requireMention.',
+      'Moved routing.groupChat.requireMention â†’ channels.imessage.groups."*".requireMention.',
     );
     expect(res.config?.channels?.telegram?.groups?.["*"]?.requireMention).toBe(true);
     expect(res.config?.channels?.imessage?.groups?.["*"]?.requireMention).toBe(true);
@@ -87,7 +87,7 @@ describe("legacy migrate mention routing", () => {
     });
 
     expect(res.changes).toContain(
-      'Moved telegram.requireMention → channels.telegram.groups."*".requireMention.',
+      'Moved telegram.requireMention â†’ channels.telegram.groups."*".requireMention.',
     );
     expect(res.config?.channels?.telegram?.groups?.["*"]?.requireMention).toBe(false);
     expect(
@@ -105,7 +105,7 @@ describe("legacy migrate heartbeat config", () => {
       },
     });
 
-    expect(res.changes).toContain("Moved heartbeat → agents.defaults.heartbeat.");
+    expect(res.changes).toContain("Moved heartbeat â†’ agents.defaults.heartbeat.");
     expect(res.config?.agents?.defaults?.heartbeat).toEqual({
       model: "anthropic/claude-3-5-haiku-20241022",
       every: "30m",
@@ -122,7 +122,7 @@ describe("legacy migrate heartbeat config", () => {
       },
     });
 
-    expect(res.changes).toContain("Moved heartbeat visibility → channels.defaults.heartbeat.");
+    expect(res.changes).toContain("Moved heartbeat visibility â†’ channels.defaults.heartbeat.");
     expect(res.config?.channels?.defaults?.heartbeat).toEqual({
       showOk: true,
       showAlerts: false,
@@ -148,7 +148,7 @@ describe("legacy migrate heartbeat config", () => {
     });
 
     expect(res.changes).toContain(
-      "Merged heartbeat → agents.defaults.heartbeat (filled missing fields from legacy; kept explicit agents.defaults values).",
+      "Merged heartbeat â†’ agents.defaults.heartbeat (filled missing fields from legacy; kept explicit agents.defaults values).",
     );
     expect(res.config?.agents?.defaults?.heartbeat).toEqual({
       every: "1h",
@@ -175,7 +175,7 @@ describe("legacy migrate heartbeat config", () => {
     });
 
     expect(res.changes).toContain(
-      "Merged heartbeat visibility → channels.defaults.heartbeat (filled missing fields from legacy; kept explicit channels.defaults values).",
+      "Merged heartbeat visibility â†’ channels.defaults.heartbeat (filled missing fields from legacy; kept explicit channels.defaults values).",
     );
     expect(res.config?.channels?.defaults?.heartbeat).toEqual({
       showOk: false,
@@ -278,7 +278,7 @@ describe("legacy migrate controlUi.allowedOrigins seed (issue #29385)", () => {
     expect(res.config?.gateway?.controlUi?.allowedOrigins).toContain("http://localhost:18789");
   });
 
-  it("does not overwrite existing allowedOrigins — returns null (no migration needed)", () => {
+  it("does not overwrite existing allowedOrigins â€” returns null (no migration needed)", () => {
     // When allowedOrigins already exists, the migration is a no-op.
     // applyLegacyMigrations returns next=null when changes.length===0, so config is null.
     const res = migrateLegacyConfig({
@@ -292,7 +292,7 @@ describe("legacy migrate controlUi.allowedOrigins seed (issue #29385)", () => {
     expect(res.changes).toHaveLength(0);
   });
 
-  it("does not migrate when dangerouslyAllowHostHeaderOriginFallback is set — returns null", () => {
+  it("does not migrate when dangerouslyAllowHostHeaderOriginFallback is set â€” returns null", () => {
     const res = migrateLegacyConfig({
       gateway: {
         bind: "lan",
@@ -319,7 +319,7 @@ describe("legacy migrate controlUi.allowedOrigins seed (issue #29385)", () => {
     expect(res.changes.some((c) => c.includes("gateway.controlUi.allowedOrigins"))).toBe(true);
   });
 
-  it("does not migrate loopback bind — returns null", () => {
+  it("does not migrate loopback bind â€” returns null", () => {
     const res = migrateLegacyConfig({
       gateway: {
         bind: "loopback",

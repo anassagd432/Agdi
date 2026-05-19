@@ -193,7 +193,7 @@ export async function initSessionState(params: {
   const parentForkMaxTokens = resolveParentForkMaxTokens(cfg);
   const sessionScope = sessionCfg?.scope ?? "per-sender";
   const storePath = resolveStorePath(sessionCfg?.store, { agentId });
-  const ingressTimingEnabled = process.env.OPENCLAW_DEBUG_INGRESS_TIMING === "1";
+  const ingressTimingEnabled = (process.env.AGDI_DEBUG_INGRESS_TIMING ?? process.env.OPENCLAW_DEBUG_INGRESS_TIMING) === "1";
 
   // CRITICAL: Skip cache to ensure fresh data when resolving session identity.
   // Stale cache (especially with multiple gateway processes or on Windows where
@@ -488,17 +488,17 @@ export async function initSessionState(params: {
   ) {
     const parentTokens = sessionStore[parentSessionKey].totalTokens ?? 0;
     if (parentForkMaxTokens > 0 && parentTokens > parentForkMaxTokens) {
-      // Parent context is too large — forking would create a thread session
+      // Parent context is too large â€” forking would create a thread session
       // that immediately overflows the model's context window. Start fresh
       // instead and mark as forked to prevent re-attempts. See #26905.
       log.warn(
-        `skipping parent fork (parent too large): parentKey=${parentSessionKey} → sessionKey=${sessionKey} ` +
+        `skipping parent fork (parent too large): parentKey=${parentSessionKey} â†’ sessionKey=${sessionKey} ` +
           `parentTokens=${parentTokens} maxTokens=${parentForkMaxTokens}`,
       );
       sessionEntry.forkedFromParent = true;
     } else {
       log.warn(
-        `forking from parent session: parentKey=${parentSessionKey} → sessionKey=${sessionKey} ` +
+        `forking from parent session: parentKey=${parentSessionKey} â†’ sessionKey=${sessionKey} ` +
           `parentTokens=${parentTokens}`,
       );
       const forked = await forkSessionFromParent({

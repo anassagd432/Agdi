@@ -162,7 +162,7 @@ describe("isProfileInCooldown", () => {
     expect(
       isProfileInCooldown(store, "github-copilot:github", undefined, "claude-sonnet-4.6"),
     ).toBe(true);
-    // No model specified — blocked (conservative)
+    // No model specified â€” blocked (conservative)
     expect(isProfileInCooldown(store, "github-copilot:github")).toBe(true);
   });
 
@@ -411,7 +411,7 @@ describe("clearExpiredCooldowns", () => {
     const stats = store.usageStats?.["anthropic:default"];
     // cooldownUntil cleared
     expect(stats?.cooldownUntil).toBeUndefined();
-    // disabledUntil still active — not touched
+    // disabledUntil still active â€” not touched
     expect(stats?.disabledUntil).toBe(future);
     expect(stats?.disabledReason).toBe("billing");
     // errorCount NOT reset because profile still has an active unusable window
@@ -471,11 +471,11 @@ describe("clearExpiredCooldowns", () => {
 
     expect(clearExpiredCooldowns(store)).toBe(true);
 
-    // Anthropic: expired → cleared
+    // Anthropic: expired â†’ cleared
     expect(store.usageStats?.["anthropic:default"]?.cooldownUntil).toBeUndefined();
     expect(store.usageStats?.["anthropic:default"]?.errorCount).toBe(0);
 
-    // OpenAI: still active → untouched
+    // OpenAI: still active â†’ untouched
     expect(store.usageStats?.["openai:default"]?.cooldownUntil).toBeGreaterThan(Date.now());
     expect(store.usageStats?.["openai:default"]?.errorCount).toBe(2);
   });
@@ -503,7 +503,7 @@ describe("clearExpiredCooldowns", () => {
       },
     });
 
-    // ts >= cooldownUntil → should clear (cooldown "until" means the instant
+    // ts >= cooldownUntil â†’ should clear (cooldown "until" means the instant
     // at cooldownUntil the profile becomes available again).
     expect(clearExpiredCooldowns(store, fixedNow)).toBe(true);
     expect(store.usageStats?.["anthropic:default"]?.cooldownUntil).toBeUndefined();
@@ -591,7 +591,7 @@ describe("clearAuthProfileCooldown", () => {
   });
 });
 
-describe("markAuthProfileFailure — active windows do not extend on retry", () => {
+describe("markAuthProfileFailure â€” active windows do not extend on retry", () => {
   // Regression for https://github.com/openclaw/openclaw/issues/23516
   // When all providers are at saturation backoff (60 min) and retries fire every 30 min,
   // each retry was resetting cooldownUntil to now+60m, preventing recovery.
@@ -672,7 +672,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
 
   // When a cooldown/disabled window expires, the error count resets to prevent
   // stale counters from escalating the next cooldown (the root cause of
-  // infinite cooldown loops — see #40989). The next failure should compute
+  // infinite cooldown loops â€” see #40989). The next failure should compute
   // backoff from errorCount=1, not from the accumulated stale count.
   const expiredWindowCases = [
     {
@@ -683,7 +683,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
         errorCount: 3,
         lastFailureAt: now - 60_000,
       }),
-      // errorCount resets → calculateAuthProfileCooldownMs(1) = 30_000 (stepped: 30s → 1m → 5m)
+      // errorCount resets â†’ calculateAuthProfileCooldownMs(1) = 30_000 (stepped: 30s â†’ 1m â†’ 5m)
       expectedUntil: (now: number) => now + 30_000,
       readUntil: (stats: WindowStats | undefined) => stats?.cooldownUntil,
     },
@@ -697,7 +697,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
         failureCounts: { billing: 2 },
         lastFailureAt: now - 60_000,
       }),
-      // errorCount resets, billing count resets to 1 →
+      // errorCount resets, billing count resets to 1 â†’
       // calculateAuthProfileBillingDisableMsWithConfig(1, 5h, 24h) = 5h
       expectedUntil: (now: number) => now + 5 * 60 * 60 * 1000,
       readUntil: (stats: WindowStats | undefined) => stats?.disabledUntil,
@@ -712,7 +712,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
         failureCounts: { auth_permanent: 2 },
         lastFailureAt: now - 60_000,
       }),
-      // errorCount resets, auth_permanent count resets to 1 →
+      // errorCount resets, auth_permanent count resets to 1 â†’
       // calculateAuthProfileBillingDisableMsWithConfig(1, 5h, 24h) = 5h
       expectedUntil: (now: number) => now + 5 * 60 * 60 * 1000,
       readUntil: (stats: WindowStats | undefined) => stats?.disabledUntil,
@@ -738,7 +738,7 @@ describe("markAuthProfileFailure — active windows do not extend on retry", () 
   }
 });
 
-describe("markAuthProfileFailure — per-model cooldown metadata", () => {
+describe("markAuthProfileFailure â€” per-model cooldown metadata", () => {
   function makeStoreWithCopilot(usageStats: AuthProfileStore["usageStats"]): AuthProfileStore {
     const store = makeStore(usageStats);
     store.profiles["github-copilot:github"] = {
@@ -849,7 +849,7 @@ describe("markAuthProfileFailure — per-model cooldown metadata", () => {
     const stats = store.usageStats?.["github-copilot:github"];
     // Reason should update to the new failure type, not stay as rate_limit
     expect(stats?.cooldownReason).toBe("auth");
-    // Model scope should be cleared — auth failures are profile-wide
+    // Model scope should be cleared â€” auth failures are profile-wide
     expect(stats?.cooldownModel).toBeUndefined();
   });
 

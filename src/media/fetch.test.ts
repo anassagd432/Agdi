@@ -64,7 +64,7 @@ async function expectRedactedTelegramFetchError(params: {
 
 describe("fetchRemoteMedia", () => {
   const telegramToken = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcd";
-  const redactedTelegramToken = `${telegramToken.slice(0, 6)}…${telegramToken.slice(-4)}`;
+  const redactedTelegramToken = `${telegramToken.slice(0, 6)}â€¦${telegramToken.slice(-4)}`;
   const telegramFileUrl = `https://api.telegram.org/file/bot${telegramToken}/photos/1.jpg`;
 
   beforeAll(async () => {

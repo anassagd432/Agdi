@@ -12,7 +12,7 @@ export function normalizeIMessageMessagingTarget(raw: string): string | undefine
     return undefined;
   }
 
-  // Preserve service prefix if present (e.g., "sms:+1555" → "sms:+15551234567")
+  // Preserve service prefix if present (e.g., "sms:+1555" â†’ "sms:+15551234567")
   const lower = trimmed.toLowerCase();
   for (const prefix of SERVICE_PREFIXES) {
     if (lower.startsWith(prefix)) {

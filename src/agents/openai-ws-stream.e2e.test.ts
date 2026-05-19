@@ -11,7 +11,7 @@
  * Run manually with a valid OPENAI_API_KEY:
  *   OPENAI_API_KEY=sk-... npx vitest run src/agents/openai-ws-stream.e2e.test.ts
  *
- * Skipped in CI — no API key available and we avoid billable external calls.
+ * Skipped in CI â€” no API key available and we avoid billable external calls.
  */
 
 import type {
@@ -160,7 +160,7 @@ describe("OpenAI WebSocket e2e", () => {
       });
       const events = await collectEvents(stream);
 
-      // Stream must complete (done or error with fallback) — must NOT hang.
+      // Stream must complete (done or error with fallback) â€” must NOT hang.
       const hasTerminal = events.some((e) => e.type === "done" || e.type === "error");
       expect(hasTerminal).toBe(true);
     },

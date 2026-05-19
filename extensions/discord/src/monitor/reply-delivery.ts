@@ -1,22 +1,22 @@
 import type { RequestClient } from "@buape/carbon";
-import { resolveAgentAvatar } from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { MarkdownTableMode, ReplyToMode } from "openclaw/plugin-sdk/config-runtime";
+import { resolveAgentAvatar } from "agdi/plugin-sdk/agent-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { MarkdownTableMode, ReplyToMode } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveRetryConfig,
   retryAsync,
   type RetryConfig,
   type RetryRunner,
-} from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
 import {
   resolveSendableOutboundReplyParts,
   resolveTextChunksWithFallback,
   sendMediaWithLeadingCaption,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ChunkMode } from "openclaw/plugin-sdk/reply-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/reply-payload";
+import type { ChunkMode } from "agdi/plugin-sdk/reply-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { convertMarkdownTables } from "agdi/plugin-sdk/text-runtime";
 import { resolveDiscordAccount } from "../accounts.js";
 import { chunkDiscordTextWithMode } from "../chunk.js";
 import { createDiscordRetryRunner } from "../retry.js";

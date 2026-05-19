@@ -1,8 +1,8 @@
 import type {
   GeneratedImageAsset,
   ImageGenerationProvider,
-} from "openclaw/plugin-sdk/image-generation";
-import { resolveApiKeyForProvider } from "openclaw/plugin-sdk/provider-auth";
+} from "agdi/plugin-sdk/image-generation";
+import { resolveApiKeyForProvider } from "agdi/plugin-sdk/provider-auth";
 
 const DEFAULT_FAL_BASE_URL = "https://fal.run";
 const DEFAULT_FAL_IMAGE_MODEL = "fal-ai/flux/dev";

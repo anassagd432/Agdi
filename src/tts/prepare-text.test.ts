@@ -9,7 +9,7 @@ import { stripMarkdown } from "../shared/text/strip-markdown.js";
  * (OpenAI, ElevenLabs, Edge) so that formatting symbols are not read aloud
  * (e.g. "hashtag hashtag hashtag" for ### headers).
  */
-describe("TTS text preparation – stripMarkdown", () => {
+describe("TTS text preparation â€“ stripMarkdown", () => {
   it("strips markdown headers before TTS", () => {
     expect(stripMarkdown("### System Design Basics")).toBe("System Design Basics");
     expect(stripMarkdown("## Heading\nSome text")).toBe("Heading\nSome text");

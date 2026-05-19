@@ -210,7 +210,7 @@ export async function maybeRepairSandboxImages(
       "",
       "Options:",
       "- Install Docker and restart the gateway",
-      "- Disable sandbox mode: openclaw config set agents.defaults.sandbox.mode off",
+      "- Disable sandbox mode: agdi config set agents.defaults.sandbox.mode off",
     ];
     note(lines.join("\n"), "Sandbox");
     return cfg;
@@ -232,7 +232,7 @@ export async function maybeRepairSandboxImages(
             : undefined,
       updateConfig: (image) => {
         next = updateSandboxDockerImage(next, image);
-        changes.push(`Updated agents.defaults.sandbox.docker.image → ${image}`);
+        changes.push(`Updated agents.defaults.sandbox.docker.image â†’ ${image}`);
       },
     },
     runtime,
@@ -247,7 +247,7 @@ export async function maybeRepairSandboxImages(
         buildScript: "scripts/sandbox-browser-setup.sh",
         updateConfig: (image) => {
           next = updateSandboxBrowserImage(next, image);
-          changes.push(`Updated agents.defaults.sandbox.browser.image → ${image}`);
+          changes.push(`Updated agents.defaults.sandbox.browser.image â†’ ${image}`);
         },
       },
       runtime,

@@ -168,5 +168,5 @@ export const handleAbortTrigger: CommandHandler = async (params, allowTextComman
     sessionStore: params.sessionStore,
   });
   await applyAbortTarget(buildAbortTargetApplyParams(params, abortTarget));
-  return { shouldContinue: false, reply: { text: "⚙️ Agent was aborted." } };
+  return { shouldContinue: false, reply: { text: "âš™ï¸ Agent was aborted." } };
 };

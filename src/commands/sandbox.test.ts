@@ -108,7 +108,7 @@ describe("sandboxListCommand", () => {
 
       await sandboxListCommand({ browser: false, json: false }, runtime as never);
 
-      expectLogContains(runtime, "📦 Sandbox Runtimes");
+      expectLogContains(runtime, "ðŸ“¦ Sandbox Runtimes");
       expectLogContains(runtime, container1.containerName);
       expectLogContains(runtime, container2.containerName);
       expectLogContains(runtime, "Total");
@@ -120,7 +120,7 @@ describe("sandboxListCommand", () => {
 
       await sandboxListCommand({ browser: true, json: false }, runtime as never);
 
-      expectLogContains(runtime, "🌐 Sandbox Browser Containers");
+      expectLogContains(runtime, "ðŸŒ Sandbox Browser Containers");
       expectLogContains(runtime, browser.containerName);
       expectLogContains(runtime, String(browser.cdpPort));
     });
@@ -131,7 +131,7 @@ describe("sandboxListCommand", () => {
 
       await sandboxListCommand({ browser: false, json: false }, runtime as never);
 
-      expectLogContains(runtime, "⚠️");
+      expectLogContains(runtime, "âš ï¸");
       expectLogContains(runtime, "config mismatch");
       expectLogContains(runtime, "sandbox recreate --all");
     });
@@ -324,7 +324,7 @@ describe("sandboxRecreateCommand", () => {
 
       await sandboxRecreateCommand({ all: true, browser: false, force: true }, runtime as never);
 
-      expectLogContains(runtime, "✓ Removed");
+      expectLogContains(runtime, "âœ“ Removed");
       expectLogContains(runtime, "1 removed, 0 failed");
       expectLogContains(runtime, "automatically recreated");
     });

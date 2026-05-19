@@ -176,7 +176,7 @@ type PromptBuildHookRunner = {
 
 const SESSIONS_YIELD_INTERRUPT_CUSTOM_TYPE = "openclaw.sessions_yield_interrupt";
 const SESSIONS_YIELD_CONTEXT_CUSTOM_TYPE = "openclaw.sessions_yield";
-const SESSIONS_YIELD_ABORT_SETTLE_TIMEOUT_MS = process.env.OPENCLAW_TEST_FAST === "1" ? 250 : 2_000;
+const SESSIONS_YIELD_ABORT_SETTLE_TIMEOUT_MS = (process.env.AGDI_TEST_FAST ?? process.env.OPENCLAW_TEST_FAST) === "1" ? 250 : 2_000;
 
 // Persist a hidden context reminder so the next turn knows why the runner stopped.
 export function buildSessionsYieldContextMessage(message: string): string {
@@ -2353,7 +2353,7 @@ export async function runEmbeddedAttempt(
 
       // Mistral (and other strict providers) reject tool call IDs that don't match their
       // format requirements (e.g. [a-zA-Z0-9]{9}). sanitizeSessionHistory only processes
-      // historical messages at attempt start, but the agent loop's internal tool call →
+      // historical messages at attempt start, but the agent loop's internal tool call â†’
       // tool result cycles bypass that path. Wrap streamFn so every outbound request
       // sees sanitized tool call IDs.
       if (transcriptPolicy.sanitizeToolCallIds && transcriptPolicy.toolCallIdMode) {
@@ -2908,7 +2908,7 @@ export async function runEmbeddedAttempt(
             await abortable(activeSession.prompt(effectivePrompt));
           }
         } catch (err) {
-          // Yield-triggered abort is intentional — treat as clean stop, not error.
+          // Yield-triggered abort is intentional â€” treat as clean stop, not error.
           // Check the abort reason to distinguish from external aborts (timeout, user cancel)
           // that may race after yieldDetected is set.
           yieldAborted =
@@ -2954,12 +2954,12 @@ export async function runEmbeddedAttempt(
           // Flush buffered block replies before waiting for compaction so the
           // user receives the assistant response immediately.  Without this,
           // coalesced/buffered blocks stay in the pipeline until compaction
-          // finishes — which can take minutes on large contexts (#35074).
+          // finishes â€” which can take minutes on large contexts (#35074).
           if (params.onBlockReplyFlush) {
             await params.onBlockReplyFlush();
           }
 
-          // Skip compaction wait when yield aborted the run — the signal is
+          // Skip compaction wait when yield aborted the run â€” the signal is
           // already tripped and abortable() would immediately reject.
           const compactionRetryWait = yieldAborted
             ? { timedOut: false }
@@ -3001,11 +3001,11 @@ export async function runEmbeddedAttempt(
         const compactionOccurredThisAttempt = getCompactionCount() > 0;
         // Append cache-TTL timestamp AFTER prompt + compaction retry completes.
         // Previously this was before the prompt, which caused a custom entry to be
-        // inserted between compaction and the next prompt — breaking the
+        // inserted between compaction and the next prompt â€” breaking the
         // prepareCompaction() guard that checks the last entry type, leading to
         // double-compaction. See: https://github.com/openclaw/openclaw/issues/9282
-        // Skip when timed out during compaction — session state may be inconsistent.
-        // Also skip when compaction ran this attempt — appending a custom entry
+        // Skip when timed out during compaction â€” session state may be inconsistent.
+        // Also skip when compaction ran this attempt â€” appending a custom entry
         // after compaction would break the guard again. See: #28491
         appendAttemptCacheTtlIfNeeded({
           sessionManager,

@@ -95,14 +95,14 @@ describe("truncateSessionAfterCompaction", () => {
     expect(result.reason).toBe("no compaction entry found");
   });
 
-  it("is idempotent — second truncation is a no-op", async () => {
+  it("is idempotent â€” second truncation is a no-op", async () => {
     const dir = await createTmpDir();
     const sessionFile = createSessionWithCompaction(dir);
 
     const first = await truncateSessionAfterCompaction({ sessionFile });
     expect(first.truncated).toBe(true);
 
-    // Run again — no message entries left to remove
+    // Run again â€” no message entries left to remove
     const second = await truncateSessionAfterCompaction({ sessionFile });
     expect(second.truncated).toBe(false);
   });
@@ -285,7 +285,7 @@ describe("truncateSessionAfterCompaction", () => {
     sm.appendMessage(makeAssistant("resp2", 4));
 
     const branch = sm.getBranch();
-    // Set firstKeptEntryId to the second message — so msg1 is summarized
+    // Set firstKeptEntryId to the second message â€” so msg1 is summarized
     // but msg2, resp2, and everything after are the unsummarized tail.
     const firstKeptId = branch[1].id; // "resp1"
     sm.appendCompaction("Summary of msg1.", firstKeptId, 2000);

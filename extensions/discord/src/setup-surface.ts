@@ -2,8 +2,8 @@ import {
   type OpenClawConfig,
   type WizardPrompter,
   type ChannelSetupWizard,
-} from "openclaw/plugin-sdk/setup-runtime";
-import { formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+} from "agdi/plugin-sdk/setup-runtime";
+import { formatDocsLink } from "agdi/plugin-sdk/setup-tools";
 import { resolveDiscordChannelAllowlist } from "./resolve-channels.js";
 import { resolveDiscordUserAllowlist } from "./resolve-users.js";
 import {

@@ -18,7 +18,7 @@ Matrix is a plugin and is not bundled with core Agdi.
 Install from npm:
 
 ```bash
-agdi plugins install @agdi/matrix
+agdi plugins install @openclaw/matrix
 ```
 
 Install from a local checkout:

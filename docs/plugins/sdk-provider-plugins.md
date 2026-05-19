@@ -37,7 +37,7 @@ API key auth, and dynamic model resolution.
     }
     ```
 
-    ```json agdi.plugin.json
+    ```json openclaw.plugin.json
     {
       "id": "acme-ai",
       "name": "Acme AI",
@@ -388,7 +388,7 @@ API key auth, and dynamic model resolution.
 ```
 extensions/acme-ai/
 ├── package.json              # agdi.providers metadata
-├── agdi.plugin.json      # Manifest with providerAuthEnvVars
+├── openclaw.plugin.json      # Manifest with providerAuthEnvVars
 ├── index.ts                  # definePluginEntry + registerProvider
 └── src/
     ├── provider.test.ts      # Tests

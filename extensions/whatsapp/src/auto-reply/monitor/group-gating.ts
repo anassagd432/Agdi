@@ -1,9 +1,9 @@
-import { resolveMentionGating } from "openclaw/plugin-sdk/channel-inbound";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth";
-import type { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { recordPendingHistoryEntryIfEnabled } from "openclaw/plugin-sdk/reply-history";
-import { parseActivationCommand } from "openclaw/plugin-sdk/reply-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+import { resolveMentionGating } from "agdi/plugin-sdk/channel-inbound";
+import { hasControlCommand } from "agdi/plugin-sdk/command-auth";
+import type { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { recordPendingHistoryEntryIfEnabled } from "agdi/plugin-sdk/reply-history";
+import { parseActivationCommand } from "agdi/plugin-sdk/reply-runtime";
+import { normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 import {
   getPrimaryIdentityId,
   getReplyContext,

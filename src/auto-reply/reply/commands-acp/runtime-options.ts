@@ -36,7 +36,7 @@ async function resolveTargetSessionKeyOrStop(params: {
     token: params.token,
   });
   if (!target.ok) {
-    return stopWithText(`⚠️ ${target.error}`);
+    return stopWithText(`âš ï¸ ${target.error}`);
   }
   return target.sessionKey;
 }
@@ -48,7 +48,7 @@ async function resolveOptionalSingleTargetOrStop(params: {
 }): Promise<string | CommandHandlerResult> {
   const parsed = parseOptionalSingleTarget(params.restTokens, params.usage);
   if (!parsed.ok) {
-    return stopWithText(`⚠️ ${parsed.error}`);
+    return stopWithText(`âš ï¸ ${parsed.error}`);
   }
   return await resolveTargetSessionKeyOrStop({
     commandParams: params.commandParams,
@@ -68,7 +68,7 @@ async function resolveSingleTargetValueOrStop(params: {
 }): Promise<SingleTargetValue | CommandHandlerResult> {
   const parsed = parseSingleValueCommandInput(params.restTokens, params.usage);
   if (!parsed.ok) {
-    return stopWithText(`⚠️ ${parsed.error}`);
+    return stopWithText(`âš ï¸ ${parsed.error}`);
   }
   const targetSessionKey = await resolveTargetSessionKeyOrStop({
     commandParams: params.commandParams,
@@ -175,7 +175,7 @@ export async function handleAcpSetModeAction(
         fallbackMessage: "Could not update ACP runtime mode.",
         onSuccess: ({ runtimeMode, options }) =>
           stopWithText(
-            `✅ Updated ACP runtime mode for ${targetSessionKey}: ${runtimeMode}. Effective options: ${formatRuntimeOptionsText(options)}`,
+            `âœ… Updated ACP runtime mode for ${targetSessionKey}: ${runtimeMode}. Effective options: ${formatRuntimeOptionsText(options)}`,
           ),
       }),
   });
@@ -187,14 +187,14 @@ export async function handleAcpSetAction(
 ): Promise<CommandHandlerResult> {
   const parsed = parseSetCommandInput(restTokens);
   if (!parsed.ok) {
-    return stopWithText(`⚠️ ${parsed.error}`);
+    return stopWithText(`âš ï¸ ${parsed.error}`);
   }
   const target = await resolveAcpTargetSessionKey({
     commandParams: params,
     token: parsed.value.sessionToken,
   });
   if (!target.ok) {
-    return stopWithText(`⚠️ ${target.error}`);
+    return stopWithText(`âš ï¸ ${target.error}`);
   }
   const key = parsed.value.key.trim();
   const value = parsed.value.value.trim();
@@ -210,7 +210,7 @@ export async function handleAcpSetAction(
           patch: { cwd },
         });
         return {
-          text: `✅ Updated ACP cwd for ${target.sessionKey}: ${cwd}. Effective options: ${formatRuntimeOptionsText(options)}`,
+          text: `âœ… Updated ACP cwd for ${target.sessionKey}: ${cwd}. Effective options: ${formatRuntimeOptionsText(options)}`,
         };
       }
       const validated = validateRuntimeConfigOptionInput(key, value);
@@ -221,7 +221,7 @@ export async function handleAcpSetAction(
         value: validated.value,
       });
       return {
-        text: `✅ Updated ACP config option for ${target.sessionKey}: ${validated.key}=${validated.value}. Effective options: ${formatRuntimeOptionsText(options)}`,
+        text: `âœ… Updated ACP config option for ${target.sessionKey}: ${validated.key}=${validated.value}. Effective options: ${formatRuntimeOptionsText(options)}`,
       };
     },
     fallbackCode: "ACP_TURN_FAILED",
@@ -256,7 +256,7 @@ export async function handleAcpCwdAction(
         fallbackMessage: "Could not update ACP cwd.",
         onSuccess: ({ cwd, options }) =>
           stopWithText(
-            `✅ Updated ACP cwd for ${targetSessionKey}: ${cwd}. Effective options: ${formatRuntimeOptionsText(options)}`,
+            `âœ… Updated ACP cwd for ${targetSessionKey}: ${cwd}. Effective options: ${formatRuntimeOptionsText(options)}`,
           ),
       }),
   });
@@ -289,7 +289,7 @@ export async function handleAcpPermissionsAction(
         fallbackMessage: "Could not update ACP permissions profile.",
         onSuccess: ({ permissionProfile, options }) =>
           stopWithText(
-            `✅ Updated ACP permissions profile for ${targetSessionKey}: ${permissionProfile}. Effective options: ${formatRuntimeOptionsText(options)}`,
+            `âœ… Updated ACP permissions profile for ${targetSessionKey}: ${permissionProfile}. Effective options: ${formatRuntimeOptionsText(options)}`,
           ),
       }),
   });
@@ -322,7 +322,7 @@ export async function handleAcpTimeoutAction(
         fallbackMessage: "Could not update ACP timeout.",
         onSuccess: ({ timeoutSeconds, options }) =>
           stopWithText(
-            `✅ Updated ACP timeout for ${targetSessionKey}: ${timeoutSeconds}s. Effective options: ${formatRuntimeOptionsText(options)}`,
+            `âœ… Updated ACP timeout for ${targetSessionKey}: ${timeoutSeconds}s. Effective options: ${formatRuntimeOptionsText(options)}`,
           ),
       }),
   });
@@ -355,7 +355,7 @@ export async function handleAcpModelAction(
         fallbackMessage: "Could not update ACP model.",
         onSuccess: ({ model, options }) =>
           stopWithText(
-            `✅ Updated ACP model for ${targetSessionKey}: ${model}. Effective options: ${formatRuntimeOptionsText(options)}`,
+            `âœ… Updated ACP model for ${targetSessionKey}: ${model}. Effective options: ${formatRuntimeOptionsText(options)}`,
           ),
       }),
   });
@@ -382,6 +382,6 @@ export async function handleAcpResetOptionsAction(
       }),
     fallbackCode: "ACP_TURN_FAILED",
     fallbackMessage: "Could not reset ACP runtime options.",
-    onSuccess: () => stopWithText(`✅ Reset ACP runtime options for ${targetSessionKey}.`),
+    onSuccess: () => stopWithText(`âœ… Reset ACP runtime options for ${targetSessionKey}.`),
   });
 }

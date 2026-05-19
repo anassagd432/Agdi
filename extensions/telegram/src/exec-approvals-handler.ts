@@ -1,18 +1,18 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { GatewayClient } from "openclaw/plugin-sdk/gateway-runtime";
-import { createOperatorApprovalsGatewayClient } from "openclaw/plugin-sdk/gateway-runtime";
-import type { EventFrame } from "openclaw/plugin-sdk/gateway-runtime";
-import { resolveExecApprovalCommandDisplay } from "openclaw/plugin-sdk/infra-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { GatewayClient } from "agdi/plugin-sdk/gateway-runtime";
+import { createOperatorApprovalsGatewayClient } from "agdi/plugin-sdk/gateway-runtime";
+import type { EventFrame } from "agdi/plugin-sdk/gateway-runtime";
+import { resolveExecApprovalCommandDisplay } from "agdi/plugin-sdk/infra-runtime";
 import {
   buildExecApprovalPendingReplyPayload,
   type ExecApprovalPendingReplyParams,
-} from "openclaw/plugin-sdk/infra-runtime";
-import { resolveExecApprovalSessionTarget } from "openclaw/plugin-sdk/infra-runtime";
-import type { ExecApprovalRequest, ExecApprovalResolved } from "openclaw/plugin-sdk/infra-runtime";
-import { normalizeAccountId, parseAgentSessionKey } from "openclaw/plugin-sdk/routing";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { compileSafeRegex, testRegexWithBoundedInput } from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
+import { resolveExecApprovalSessionTarget } from "agdi/plugin-sdk/infra-runtime";
+import type { ExecApprovalRequest, ExecApprovalResolved } from "agdi/plugin-sdk/infra-runtime";
+import { normalizeAccountId, parseAgentSessionKey } from "agdi/plugin-sdk/routing";
+import { createSubsystemLogger } from "agdi/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { compileSafeRegex, testRegexWithBoundedInput } from "agdi/plugin-sdk/security-runtime";
 import { buildTelegramExecApprovalButtons } from "./approval-buttons.js";
 import {
   getTelegramExecApprovalApprovers,

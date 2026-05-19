@@ -202,14 +202,14 @@ export async function recoverOrphanedSubagentSessions(params: {
 
         // Resume the session with the original task context.
         // We intentionally do NOT clear abortedLastRun before attempting
-        // the resume — if callGateway fails (e.g. gateway still booting),
+        // the resume â€” if callGateway fails (e.g. gateway still booting),
         // the flag stays true so the next restart can retry.
         const resumed = await resumeOrphanedSession({
           sessionKey: childSessionKey,
           task: runRecord.task,
           lastHumanMessage: extractMessageText(lastHumanMessage),
           configChangeHint: configChangeDetected
-            ? "\n\n[config changes from your previous run were already applied — do not re-modify openclaw.json or restart the gateway]"
+            ? "\n\n[config changes from your previous run were already applied â€” do not re-modify openclaw.json or restart the gateway]"
             : undefined,
           originalRunId: runId,
           originalRun: runRecord,

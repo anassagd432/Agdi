@@ -1,4 +1,4 @@
-import type { LookupFn, SsrFPolicy } from "agdi/plugin-sdk";
+import type { LookupFn, SsrFPolicy } from "agdi/plugin-sdk/ssrf-runtime";
 import { ensureUrbitChannelOpen, pokeUrbitChannel, scryUrbitPath } from "./channel-ops.js";
 import { getUrbitContext, normalizeUrbitCookie } from "./context.js";
 import { urbitFetch } from "./fetch.js";

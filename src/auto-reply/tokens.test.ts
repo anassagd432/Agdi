@@ -42,11 +42,11 @@ describe("stripSilentToken", () => {
   });
 
   it("does not strip token from start of text", () => {
-    expect(stripSilentToken("NO_REPLY 👍")).toBe("NO_REPLY 👍");
+    expect(stripSilentToken("NO_REPLY ðŸ‘")).toBe("NO_REPLY ðŸ‘");
   });
 
   it("strips token with emoji (#30916)", () => {
-    expect(stripSilentToken("😄 NO_REPLY")).toBe("😄");
+    expect(stripSilentToken("ðŸ˜„ NO_REPLY")).toBe("ðŸ˜„");
   });
 
   it("does not strip embedded token suffix without whitespace delimiter", () => {

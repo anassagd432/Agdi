@@ -1,4 +1,4 @@
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-models";
+import type { ModelProviderConfig } from "agdi/plugin-sdk/provider-models";
 
 export const OPENAI_CODEX_BASE_URL = "https://chatgpt.com/backend-api";
 

@@ -393,8 +393,8 @@ describe("resolveNodeCommandAllowlist", () => {
     const allow = resolveNodeCommandAllowlist(
       {},
       {
-        platform: "iPhοne",
-        deviceFamily: "iPhοne",
+        platform: "iPhÎ¿ne",
+        deviceFamily: "iPhÎ¿ne",
       },
     );
 
@@ -407,7 +407,7 @@ describe("resolveNodeCommandAllowlist", () => {
     const allow = resolveNodeCommandAllowlist(
       {},
       {
-        platform: "İOS",
+        platform: "Ä°OS",
         deviceFamily: "iPhone",
       },
     );

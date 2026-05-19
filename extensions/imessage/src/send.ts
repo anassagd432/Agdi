@@ -1,9 +1,9 @@
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/config-runtime";
-import { kindFromMime } from "openclaw/plugin-sdk/media-runtime";
-import { resolveOutboundAttachmentFromUrl } from "openclaw/plugin-sdk/media-runtime";
-import { convertMarkdownTables } from "openclaw/plugin-sdk/text-runtime";
-import { stripInlineDirectiveTagsForDelivery } from "openclaw/plugin-sdk/text-runtime";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { resolveMarkdownTableMode } from "agdi/plugin-sdk/config-runtime";
+import { kindFromMime } from "agdi/plugin-sdk/media-runtime";
+import { resolveOutboundAttachmentFromUrl } from "agdi/plugin-sdk/media-runtime";
+import { convertMarkdownTables } from "agdi/plugin-sdk/text-runtime";
+import { stripInlineDirectiveTagsForDelivery } from "agdi/plugin-sdk/text-runtime";
 import { resolveIMessageAccount, type ResolvedIMessageAccount } from "./accounts.js";
 import { createIMessageRpcClient, type IMessageRpcClient } from "./client.js";
 import { formatIMessageChatTarget, type IMessageService, parseIMessageTarget } from "./targets.js";

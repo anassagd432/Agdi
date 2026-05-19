@@ -227,7 +227,7 @@ describe("chrome MCP page parsing", () => {
     };
     setChromeMcpSessionFactoryForTest(factory);
 
-    // First call: tool error (isError: true) — should NOT destroy session
+    // First call: tool error (isError: true) â€” should NOT destroy session
     await expect(
       evaluateChromeMcpScript({ profileName: "chrome-live", targetId: "1", fn: "() => null" }),
     ).rejects.toThrow(/element not found/);
@@ -254,7 +254,7 @@ describe("chrome MCP page parsing", () => {
     };
     setChromeMcpSessionFactoryForTest(factory);
 
-    // First call: transport error — should destroy session
+    // First call: transport error â€” should destroy session
     await expect(listChromeMcpTabs("chrome-live")).rejects.toThrow(/connection reset/);
 
     // Second call: should create a new session (factory called twice)

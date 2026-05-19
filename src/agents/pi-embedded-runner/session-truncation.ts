@@ -24,7 +24,7 @@ import { log } from "./logger.js";
  *    including) the compaction entry, plus all entries after it
  *
  * Only `message` entries in the current branch that precede the compaction's
- * `firstKeptEntryId` are removed — they are the entries the compaction
+ * `firstKeptEntryId` are removed â€” they are the entries the compaction
  * actually summarized. Entries from `firstKeptEntryId` onward are preserved
  * because `buildSessionContext()` expects them when reconstructing the
  * session. Entries whose parent was removed are re-parented to the nearest
@@ -75,7 +75,7 @@ export async function truncateSessionAfterCompaction(params: {
   }
 
   // The compaction's firstKeptEntryId marks the start of the "unsummarized
-  // tail" — entries from firstKeptEntryId through the compaction that
+  // tail" â€” entries from firstKeptEntryId through the compaction that
   // buildSessionContext() expects to find when reconstructing the session.
   // Only entries *before* firstKeptEntryId were actually summarized.
   const compactionEntry = branch[latestCompactionIdx] as CompactionEntry;
@@ -132,7 +132,7 @@ export async function truncateSessionAfterCompaction(params: {
     return { truncated: false, entriesRemoved: 0, reason: "no entries to remove" };
   }
 
-  // Build an id→entry map for walking parent chains during re-parenting.
+  // Build an idâ†’entry map for walking parent chains during re-parenting.
   const entryById = new Map<string, SessionEntry>();
   for (const entry of allEntries) {
     entryById.set(entry.id, entry);

@@ -1709,7 +1709,7 @@ description: test skill
       expectedFinding: {
         checkId: "browser.remote_cdp_private_host",
         severity: "warn",
-        detail: expect.stringContaining("token=supers…7890"),
+        detail: expect.stringContaining("token=supersâ€¦7890"),
       },
     },
   ])("$name", async (testCase) => {

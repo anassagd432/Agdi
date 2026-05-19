@@ -377,11 +377,11 @@ describe("browser chrome helpers", () => {
   });
 
   it("probes WebSocket URLs via handshake instead of HTTP", async () => {
-    // For ws:// URLs, isChromeReachable should NOT call fetch at all —
+    // For ws:// URLs, isChromeReachable should NOT call fetch at all â€”
     // it should attempt a WebSocket handshake instead.
     const fetchSpy = vi.fn().mockRejectedValue(new Error("should not be called"));
     vi.stubGlobal("fetch", fetchSpy);
-    // No WS server listening → handshake fails → not reachable
+    // No WS server listening â†’ handshake fails â†’ not reachable
     await expect(isChromeReachable("ws://127.0.0.1:19999", 50)).resolves.toBe(false);
     expect(fetchSpy).not.toHaveBeenCalled();
   });

@@ -1,4 +1,4 @@
-export const SYSTEM_MARK = "⚙️";
+export const SYSTEM_MARK = "âš™ï¸";
 
 function normalizeSystemText(value: string): string {
   return value.trim();

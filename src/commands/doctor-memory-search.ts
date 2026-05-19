@@ -12,7 +12,7 @@ import { resolveUserPath } from "../utils.js";
 
 /**
  * Check whether memory search has a usable embedding provider.
- * Runs as part of `openclaw doctor` — config-only, no network calls.
+ * Runs as part of `openclaw doctor` â€” config-only, no network calls.
  */
 export async function noteMemorySearchHealth(
   cfg: OpenClawConfig,
@@ -34,7 +34,7 @@ export async function noteMemorySearchHealth(
     return;
   }
 
-  // QMD backend handles embeddings internally (e.g. embeddinggemma) — no
+  // QMD backend handles embeddings internally (e.g. embeddinggemma) â€” no
   // separate embedding provider is needed. Skip the provider check entirely.
   const backendConfig = resolveMemoryBackendConfig({ cfg, agentId });
   if (backendConfig.backend === "qmd") {
@@ -46,7 +46,7 @@ export async function noteMemorySearchHealth(
     if (resolved.provider === "local") {
       if (hasLocalEmbeddings(resolved.local, true)) {
         // Model path looks valid (explicit file, hf: URL, or default model).
-        // If a gateway probe is available and reports not-ready, warn anyway —
+        // If a gateway probe is available and reports not-ready, warn anyway â€”
         // the model download or node-llama-cpp setup may have failed at runtime.
         if (opts?.gatewayMemoryProbe?.checked && !opts.gatewayMemoryProbe.ready) {
           const detail = opts.gatewayMemoryProbe.error?.trim();
@@ -56,7 +56,7 @@ export async function noteMemorySearchHealth(
               "but the gateway reports local embeddings are not ready.",
               detail ? `Gateway probe: ${detail}` : null,
               "",
-              `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+              `Verify: ${formatCliCommand("agdi memory status --deep")}`,
             ]
               .filter(Boolean)
               .join("\n"),
@@ -71,15 +71,15 @@ export async function noteMemorySearchHealth(
           "",
           "Fix (pick one):",
           `- Install node-llama-cpp and set a local model path in config`,
-          `- Switch to a remote provider: ${formatCliCommand("openclaw config set agents.defaults.memorySearch.provider openai")}`,
+          `- Switch to a remote provider: ${formatCliCommand("agdi config set agents.defaults.memorySearch.provider openai")}`,
           "",
-          `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+          `Verify: ${formatCliCommand("agdi memory status --deep")}`,
         ].join("\n"),
         "Memory search",
       );
       return;
     }
-    // Remote provider — check for API key
+    // Remote provider â€” check for API key
     if (hasRemoteApiKey || (await hasApiKeyForProvider(resolved.provider, cfg, agentDir))) {
       return;
     }
@@ -88,7 +88,7 @@ export async function noteMemorySearchHealth(
         [
           `Memory search provider is set to "${resolved.provider}" but the API key was not found in the CLI environment.`,
           "The running gateway reports memory embeddings are ready for the default agent.",
-          `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+          `Verify: ${formatCliCommand("agdi memory status --deep")}`,
         ].join("\n"),
         "Memory search",
       );
@@ -105,9 +105,9 @@ export async function noteMemorySearchHealth(
         "Fix (pick one):",
         `- Set ${envVar} in your environment`,
         `- Configure credentials: ${formatCliCommand("openclaw configure --section model")}`,
-        `- To disable: ${formatCliCommand("openclaw config set agents.defaults.memorySearch.enabled false")}`,
+        `- To disable: ${formatCliCommand("agdi config set agents.defaults.memorySearch.enabled false")}`,
         "",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("agdi memory status --deep")}`,
       ].join("\n"),
       "Memory search",
     );
@@ -129,7 +129,7 @@ export async function noteMemorySearchHealth(
       [
         'Memory search provider is set to "auto" but the API key was not found in the CLI environment.',
         "The running gateway reports memory embeddings are ready for the default agent.",
-        `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+        `Verify: ${formatCliCommand("agdi memory status --deep")}`,
       ].join("\n"),
       "Memory search",
     );
@@ -147,9 +147,9 @@ export async function noteMemorySearchHealth(
       "- Set OPENAI_API_KEY, GEMINI_API_KEY, VOYAGE_API_KEY, or MISTRAL_API_KEY in your environment",
       `- Configure credentials: ${formatCliCommand("openclaw configure --section model")}`,
       `- For local embeddings: configure agents.defaults.memorySearch.provider and local model path`,
-      `- To disable: ${formatCliCommand("openclaw config set agents.defaults.memorySearch.enabled false")}`,
+      `- To disable: ${formatCliCommand("agdi config set agents.defaults.memorySearch.enabled false")}`,
       "",
-      `Verify: ${formatCliCommand("openclaw memory status --deep")}`,
+      `Verify: ${formatCliCommand("agdi memory status --deep")}`,
     ].join("\n"),
     "Memory search",
   );
@@ -163,7 +163,7 @@ export async function noteMemorySearchHealth(
  * DEFAULT_LOCAL_MODEL (an auto-downloaded HuggingFace model).
  *
  * When false (provider: "auto"), we only consider local available if the user
- * explicitly configured a local file path — matching `canAutoSelectLocal()`
+ * explicitly configured a local file path â€” matching `canAutoSelectLocal()`
  * in the runtime, which skips local for empty/hf: model paths.
  */
 function hasLocalEmbeddings(local: { modelPath?: string }, useDefaultFallback = false): boolean {
@@ -174,7 +174,7 @@ function hasLocalEmbeddings(local: { modelPath?: string }, useDefaultFallback = 
   }
   // Remote/downloadable models (hf: or http:) aren't pre-resolved on disk,
   // so we can't confirm availability without a network call. Treat as
-  // potentially available — the user configured it intentionally.
+  // potentially available â€” the user configured it intentionally.
   if (/^(hf:|https?:)/i.test(modelPath)) {
     return true;
   }

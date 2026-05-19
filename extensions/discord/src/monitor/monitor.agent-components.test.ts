@@ -1,7 +1,7 @@
 import type { ButtonInteraction, ComponentData, StringSelectMenuInteraction } from "@buape/carbon";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { DiscordAccountConfig } from "openclaw/plugin-sdk/config-runtime";
-import { buildAgentSessionKey } from "openclaw/plugin-sdk/routing";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { DiscordAccountConfig } from "agdi/plugin-sdk/config-runtime";
+import { buildAgentSessionKey } from "agdi/plugin-sdk/routing";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { peekSystemEvents, resetSystemEventsForTest } from "../../../../src/infra/system-events.ts";
 import {

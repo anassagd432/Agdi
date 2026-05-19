@@ -158,7 +158,7 @@ export function wrapNoteMessage(
 }
 
 export function note(message: string, title?: string) {
-  if (isSuppressedByEnv(process.env.OPENCLAW_SUPPRESS_NOTES)) {
+  if (isSuppressedByEnv(process.env.AGDI_SUPPRESS_NOTES ?? process.env.OPENCLAW_SUPPRESS_NOTES)) {
     return;
   }
   clackNote(wrapNoteMessage(message), stylePromptTitle(title));

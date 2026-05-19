@@ -59,7 +59,7 @@ dispatch.
     }
     ```
 
-    ```json agdi.plugin.json
+    ```json openclaw.plugin.json
     {
       "id": "acme-chat",
       "kind": "channel",
@@ -333,7 +333,7 @@ dispatch.
 ```
 extensions/acme-chat/
 ├── package.json              # agdi.channel metadata
-├── agdi.plugin.json      # Manifest with config schema
+├── openclaw.plugin.json      # Manifest with config schema
 ├── index.ts                  # defineChannelPluginEntry
 ├── setup-entry.ts            # defineSetupPluginEntry
 ├── api.ts                    # Public exports (optional)

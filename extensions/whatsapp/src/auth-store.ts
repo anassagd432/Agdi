@@ -1,14 +1,14 @@
 import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatCliCommand } from "openclaw/plugin-sdk/cli-runtime";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
-import { info, success } from "openclaw/plugin-sdk/runtime-env";
-import { getChildLogger } from "openclaw/plugin-sdk/runtime-env";
-import { defaultRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { resolveOAuthDir } from "openclaw/plugin-sdk/state-paths";
-import type { WebChannel } from "openclaw/plugin-sdk/text-runtime";
-import { resolveUserPath } from "openclaw/plugin-sdk/text-runtime";
+import { formatCliCommand } from "agdi/plugin-sdk/cli-runtime";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/routing";
+import { info, success } from "agdi/plugin-sdk/runtime-env";
+import { getChildLogger } from "agdi/plugin-sdk/runtime-env";
+import { defaultRuntime, type RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { resolveOAuthDir } from "agdi/plugin-sdk/state-paths";
+import type { WebChannel } from "agdi/plugin-sdk/text-runtime";
+import { resolveUserPath } from "agdi/plugin-sdk/text-runtime";
 import { resolveComparableIdentity, type WhatsAppSelfIdentity } from "./identity.js";
 
 export function resolveDefaultWebAuthDir(): string {

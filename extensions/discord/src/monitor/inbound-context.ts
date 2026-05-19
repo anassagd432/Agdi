@@ -1,7 +1,7 @@
 import {
   buildUntrustedChannelMetadata,
   wrapExternalContent,
-} from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/security-runtime";
 import {
   resolveDiscordOwnerAllowFrom,
   type DiscordChannelConfigResolved,

@@ -52,7 +52,7 @@ export default definePluginEntry({
 | `configSchema` | `AgdiPluginConfigSchema \| () => AgdiPluginConfigSchema` | No       | Empty object schema |
 | `register`     | `(api: AgdiPluginApi) => void`                               | Yes      | —                   |
 
-- `id` must match your `agdi.plugin.json` manifest.
+- `id` must match your `openclaw.plugin.json` manifest.
 - `kind` is for exclusive slots: `"memory"` or `"context-engine"`.
 - `configSchema` can be a function for lazy evaluation.
 

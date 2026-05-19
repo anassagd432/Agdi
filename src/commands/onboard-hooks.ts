@@ -15,7 +15,7 @@ export async function setupInternalHooks(
       "Hooks let you automate actions when agent commands are issued.",
       "Example: Save session context to memory when you issue /new or /reset.",
       "",
-      "Learn more: https://docs.openclaw.ai/automation/hooks",
+      "Learn more: https://docs.agdi.ai/automation/hooks",
     ].join("\n"),
     "Hooks",
   );
@@ -41,7 +41,7 @@ export async function setupInternalHooks(
       { value: "__skip__", label: "Skip for now" },
       ...eligibleHooks.map((hook) => ({
         value: hook.name,
-        label: `${hook.emoji ?? "🔗"} ${hook.name}`,
+        label: `${hook.emoji ?? "ðŸ”—"} ${hook.name}`,
         hint: hook.description,
       })),
     ],

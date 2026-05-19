@@ -152,7 +152,7 @@ function validateClawHubPluginPackage(params: {
   }
   if (pkg.family === "skill") {
     return buildClawHubInstallFailure(
-      `"${pkg.name}" is a skill. Use "openclaw skills install ${pkg.name}" instead.`,
+      `"${pkg.name}" is a skill. Use "agdi skills install ${pkg.name}" instead.`,
       CLAWHUB_INSTALL_ERROR_CODE.SKILL_PACKAGE,
     );
   }
@@ -176,7 +176,7 @@ function validateClawHubPluginPackage(params: {
     !satisfiesPluginApiRange(runtimeVersion, compatibility.pluginApiRange)
   ) {
     return buildClawHubInstallFailure(
-      `Plugin "${pkg.name}" requires plugin API ${compatibility.pluginApiRange}, but this OpenClaw runtime exposes ${runtimeVersion}.`,
+      `Plugin "${pkg.name}" requires plugin API ${compatibility.pluginApiRange}, but this Agdi runtime exposes ${runtimeVersion}.`,
       CLAWHUB_INSTALL_ERROR_CODE.INCOMPATIBLE_PLUGIN_API,
     );
   }
@@ -186,7 +186,7 @@ function validateClawHubPluginPackage(params: {
     !satisfiesGatewayMinimum(runtimeVersion, compatibility.minGatewayVersion)
   ) {
     return buildClawHubInstallFailure(
-      `Plugin "${pkg.name}" requires OpenClaw >=${compatibility.minGatewayVersion}, but this host is ${runtimeVersion}.`,
+      `Plugin "${pkg.name}" requires Agdi >=${compatibility.minGatewayVersion}, but this host is ${runtimeVersion}.`,
       CLAWHUB_INSTALL_ERROR_CODE.INCOMPATIBLE_GATEWAY,
     );
   }
@@ -251,7 +251,7 @@ export async function installPluginFromClawHub(params: {
     );
   }
 
-  params.logger?.info?.(`Resolving ${formatClawHubSpecifier(parsed)}…`);
+  params.logger?.info?.(`Resolving ${formatClawHubSpecifier(parsed)}â€¦`);
   let detail: ClawHubPackageDetail;
   try {
     detail = await fetchClawHubPackageDetail({
@@ -303,7 +303,7 @@ export async function installPluginFromClawHub(params: {
   }
   try {
     params.logger?.info?.(
-      `Downloading ${detail.package?.family === "bundle-plugin" ? "bundle" : "plugin"} ${parsed.name}@${versionState.version} from ClawHub…`,
+      `Downloading ${detail.package?.family === "bundle-plugin" ? "bundle" : "plugin"} ${parsed.name}@${versionState.version} from ClawHubâ€¦`,
     );
     const installResult = await installPluginFromArchive({
       archivePath: archive.archivePath,
@@ -332,6 +332,7 @@ export async function installPluginFromClawHub(params: {
         source: "clawhub",
         clawhubUrl:
           params.baseUrl?.trim() ||
+          process.env.AGDI_CLAWHUB_URL?.trim() ||
           process.env.OPENCLAW_CLAWHUB_URL?.trim() ||
           "https://clawhub.ai",
         clawhubPackage: parsed.name,

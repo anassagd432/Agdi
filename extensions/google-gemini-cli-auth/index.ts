@@ -1,9 +1,8 @@
+import { emptyPluginConfigSchema, type AGDIPluginApi } from "agdi/plugin-sdk/plugin-entry";
 import {
   buildOauthProviderAuthResult,
-  emptyPluginConfigSchema,
-  type AGDIPluginApi,
   type ProviderAuthContext,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/provider-auth";
 import { loginGeminiCliOAuth } from "./oauth.js";
 
 const PROVIDER_ID = "google-gemini-cli";

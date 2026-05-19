@@ -1,5 +1,5 @@
-import type { SpeechProviderPlugin } from "openclaw/plugin-sdk/core";
-import { OPENAI_TTS_MODELS, OPENAI_TTS_VOICES, openaiTTS } from "openclaw/plugin-sdk/speech";
+import type { SpeechProviderPlugin } from "agdi/plugin-sdk/core";
+import { OPENAI_TTS_MODELS, OPENAI_TTS_VOICES, openaiTTS } from "agdi/plugin-sdk/speech";
 
 export function buildOpenAISpeechProvider(): SpeechProviderPlugin {
   return {

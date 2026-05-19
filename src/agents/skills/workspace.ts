@@ -40,9 +40,9 @@ const skillCommandDebugOnce = new Set<string>();
  * and the read tool resolves `~` to the home directory.
  *
  * Example: `/Users/alice/.bun/.../skills/github/SKILL.md`
- *       → `~/.bun/.../skills/github/SKILL.md`
+ *       â†’ `~/.bun/.../skills/github/SKILL.md`
  *
- * Saves ~5–6 tokens per skill path × N skills ≈ 400–600 tokens total.
+ * Saves ~5â€“6 tokens per skill path Ã— N skills â‰ˆ 400â€“600 tokens total.
  */
 function compactSkillPaths(skills: Skill[]): Skill[] {
   const home = os.homedir();
@@ -91,7 +91,7 @@ function filterSkillEntries(
 
 const SKILL_COMMAND_MAX_LENGTH = 32;
 const SKILL_COMMAND_FALLBACK = "skill";
-// Discord command descriptions must be ≤100 characters
+// Discord command descriptions must be â‰¤100 characters
 const SKILL_COMMAND_DESCRIPTION_MAX_LENGTH = 100;
 
 const DEFAULT_MAX_CANDIDATES_PER_ROOT = 300;
@@ -590,9 +590,9 @@ function applySkillsPromptLimits(params: { skills: Skill[]; config?: OpenClawCon
     // to preserve awareness of all skills before dropping any.
     if (fitsCompact(skillsForPrompt)) {
       compact = true;
-      // No skills dropped — only format downgraded. Preserve existing truncated state.
+      // No skills dropped â€” only format downgraded. Preserve existing truncated state.
     } else {
-      // Compact still too large — binary search the largest prefix that fits.
+      // Compact still too large â€” binary search the largest prefix that fits.
       compact = true;
       let lo = 0;
       let hi = skillsForPrompt.length;
@@ -678,9 +678,9 @@ function resolveWorkspaceSkillPromptState(
     config: opts?.config,
   });
   const truncationNote = truncated
-    ? `⚠️ Skills truncated: included ${skillsForPrompt.length} of ${resolvedSkills.length}${compact ? " (compact format, descriptions omitted)" : ""}. Run \`openclaw skills check\` to audit.`
+    ? `âš ï¸ Skills truncated: included ${skillsForPrompt.length} of ${resolvedSkills.length}${compact ? " (compact format, descriptions omitted)" : ""}. Run \`openclaw skills check\` to audit.`
     : compact
-      ? `⚠️ Skills catalog using compact format (descriptions omitted). Run \`openclaw skills check\` to audit.`
+      ? `âš ï¸ Skills catalog using compact format (descriptions omitted). Run \`openclaw skills check\` to audit.`
       : "";
   const prompt = [
     remoteNote,
@@ -875,7 +875,7 @@ export function buildWorkspaceSkillCommandSpecs(
     const rawDescription = entry.skill.description?.trim() || rawName;
     const description =
       rawDescription.length > SKILL_COMMAND_DESCRIPTION_MAX_LENGTH
-        ? rawDescription.slice(0, SKILL_COMMAND_DESCRIPTION_MAX_LENGTH - 1) + "…"
+        ? rawDescription.slice(0, SKILL_COMMAND_DESCRIPTION_MAX_LENGTH - 1) + "â€¦"
         : rawDescription;
     const dispatch = (() => {
       const kindRaw = (
@@ -957,7 +957,7 @@ export function buildWorkspaceSkillCommandSpecs(
     used.add(unique.toLowerCase());
     const description =
       entry.description.length > SKILL_COMMAND_DESCRIPTION_MAX_LENGTH
-        ? entry.description.slice(0, SKILL_COMMAND_DESCRIPTION_MAX_LENGTH - 1) + "…"
+        ? entry.description.slice(0, SKILL_COMMAND_DESCRIPTION_MAX_LENGTH - 1) + "â€¦"
         : entry.description;
     specs.push({
       name: unique,

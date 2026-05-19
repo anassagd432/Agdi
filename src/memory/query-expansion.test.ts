@@ -15,18 +15,18 @@ describe("extractKeywords", () => {
   });
 
   it("extracts keywords from Chinese conversational query", () => {
-    const keywords = extractKeywords("之前讨论的那个方案");
-    expect(keywords).toContain("讨论");
-    expect(keywords).toContain("方案");
+    const keywords = extractKeywords("ä¹‹å‰è®¨è®ºçš„é‚£ä¸ªæ–¹æ¡ˆ");
+    expect(keywords).toContain("è®¨è®º");
+    expect(keywords).toContain("æ–¹æ¡ˆ");
     // Should not include stop words
-    expect(keywords).not.toContain("之前");
-    expect(keywords).not.toContain("的");
-    expect(keywords).not.toContain("那个");
+    expect(keywords).not.toContain("ä¹‹å‰");
+    expect(keywords).not.toContain("çš„");
+    expect(keywords).not.toContain("é‚£ä¸ª");
   });
 
   it("extracts keywords from mixed language query", () => {
-    const keywords = extractKeywords("昨天讨论的 API design");
-    expect(keywords).toContain("讨论");
+    const keywords = extractKeywords("æ˜¨å¤©è®¨è®ºçš„ API design");
+    expect(keywords).toContain("è®¨è®º");
     expect(keywords).toContain("api");
     expect(keywords).toContain("design");
   });
@@ -39,82 +39,82 @@ describe("extractKeywords", () => {
   });
 
   it("extracts keywords from Korean conversational query", () => {
-    const keywords = extractKeywords("어제 논의한 배포 전략");
-    expect(keywords).toContain("논의한");
-    expect(keywords).toContain("배포");
-    expect(keywords).toContain("전략");
+    const keywords = extractKeywords("ì–´ì œ ë…¼ì˜í•œ ë°°í¬ ì „ëžµ");
+    expect(keywords).toContain("ë…¼ì˜í•œ");
+    expect(keywords).toContain("ë°°í¬");
+    expect(keywords).toContain("ì „ëžµ");
     // Should not include stop words
-    expect(keywords).not.toContain("어제");
+    expect(keywords).not.toContain("ì–´ì œ");
   });
 
   it("strips Korean particles to extract stems", () => {
-    const keywords = extractKeywords("서버에서 발생한 에러를 확인");
-    expect(keywords).toContain("서버");
-    expect(keywords).toContain("에러");
-    expect(keywords).toContain("확인");
+    const keywords = extractKeywords("ì„œë²„ì—ì„œ ë°œìƒí•œ ì—ëŸ¬ë¥¼ í™•ì¸");
+    expect(keywords).toContain("ì„œë²„");
+    expect(keywords).toContain("ì—ëŸ¬");
+    expect(keywords).toContain("í™•ì¸");
   });
 
   it("filters Korean stop words including inflected forms", () => {
-    const keywords = extractKeywords("나는 그리고 그래서");
-    expect(keywords).not.toContain("나");
-    expect(keywords).not.toContain("나는");
-    expect(keywords).not.toContain("그리고");
-    expect(keywords).not.toContain("그래서");
+    const keywords = extractKeywords("ë‚˜ëŠ” ê·¸ë¦¬ê³  ê·¸ëž˜ì„œ");
+    expect(keywords).not.toContain("ë‚˜");
+    expect(keywords).not.toContain("ë‚˜ëŠ”");
+    expect(keywords).not.toContain("ê·¸ë¦¬ê³ ");
+    expect(keywords).not.toContain("ê·¸ëž˜ì„œ");
   });
 
   it("filters inflected Korean stop words not explicitly listed", () => {
-    const keywords = extractKeywords("그녀는 우리는");
-    expect(keywords).not.toContain("그녀는");
-    expect(keywords).not.toContain("우리는");
-    expect(keywords).not.toContain("그녀");
-    expect(keywords).not.toContain("우리");
+    const keywords = extractKeywords("ê·¸ë…€ëŠ” ìš°ë¦¬ëŠ”");
+    expect(keywords).not.toContain("ê·¸ë…€ëŠ”");
+    expect(keywords).not.toContain("ìš°ë¦¬ëŠ”");
+    expect(keywords).not.toContain("ê·¸ë…€");
+    expect(keywords).not.toContain("ìš°ë¦¬");
   });
 
   it("does not produce bogus single-char stems from particle stripping", () => {
-    const keywords = extractKeywords("논의");
-    expect(keywords).toContain("논의");
-    expect(keywords).not.toContain("논");
+    const keywords = extractKeywords("ë…¼ì˜");
+    expect(keywords).toContain("ë…¼ì˜");
+    expect(keywords).not.toContain("ë…¼");
   });
 
   it("strips longest Korean trailing particles first", () => {
-    const keywords = extractKeywords("기능으로 설명");
-    expect(keywords).toContain("기능");
-    expect(keywords).not.toContain("기능으");
+    const keywords = extractKeywords("ê¸°ëŠ¥ìœ¼ë¡œ ì„¤ëª…");
+    expect(keywords).toContain("ê¸°ëŠ¥");
+    expect(keywords).not.toContain("ê¸°ëŠ¥ìœ¼");
   });
 
   it("keeps stripped ASCII stems for mixed Korean tokens", () => {
-    const keywords = extractKeywords("API를 배포했다");
+    const keywords = extractKeywords("APIë¥¼ ë°°í¬í–ˆë‹¤");
     expect(keywords).toContain("api");
-    expect(keywords).toContain("배포했다");
+    expect(keywords).toContain("ë°°í¬í–ˆë‹¤");
   });
 
   it("handles mixed Korean and English query", () => {
-    const keywords = extractKeywords("API 배포에 대한 논의");
+    const keywords = extractKeywords("API ë°°í¬ì— ëŒ€í•œ ë…¼ì˜");
     expect(keywords).toContain("api");
-    expect(keywords).toContain("배포");
-    expect(keywords).toContain("논의");
+    expect(keywords).toContain("ë°°í¬");
+    expect(keywords).toContain("ë…¼ì˜");
   });
 
   it("extracts keywords from Japanese conversational query", () => {
-    const keywords = extractKeywords("昨日話したデプロイ戦略");
-    expect(keywords).toContain("デプロイ");
-    expect(keywords).toContain("戦略");
-    expect(keywords).not.toContain("昨日");
+    const keywords = extractKeywords("æ˜¨æ—¥è©±ã—ãŸãƒ‡ãƒ—ãƒ­ã‚¤æˆ¦ç•¥");
+    expect(keywords).toContain("ãƒ‡ãƒ—ãƒ­ã‚¤");
+    expect(keywords).toContain("æˆ¦ç•¥");
+    expect(keywords).not.toContain("æ˜¨æ—¥");
   });
 
   it("handles mixed Japanese and English query", () => {
-    const keywords = extractKeywords("昨日話したAPIのバグ");
+    const keywords = extractKeywords("æ˜¨æ—¥è©±ã—ãŸAPIã®ãƒã‚°");
     expect(keywords).toContain("api");
-    expect(keywords).toContain("バグ");
-    expect(keywords).not.toContain("した");
+    expect(keywords).toContain("ãƒã‚°");
+    expect(keywords).not.toContain("ã—ãŸ");
   });
 
   it("filters Japanese stop words", () => {
-    const keywords = extractKeywords("これ それ そして どう");
-    expect(keywords).not.toContain("これ");
-    expect(keywords).not.toContain("それ");
-    expect(keywords).not.toContain("そして");
-    expect(keywords).not.toContain("どう");
+    const keywords = extractKeywords("ã“ã‚Œ ãã‚Œ ãã—ã¦ ã©ã†");
+    expect(keywords).not.toContain("ã“ã‚Œ");
+    expect(keywords).not.toContain("ãã‚Œ");
+    expect(keywords).not.toContain("ãã—ã¦");
+    expect(keywords).not.toContain("ã©ã†");
   });
 
   it("extracts keywords from Spanish conversational query", () => {
@@ -126,37 +126,37 @@ describe("extractKeywords", () => {
   });
 
   it("extracts keywords from Portuguese conversational query", () => {
-    const keywords = extractKeywords("ontem falamos sobre a estratégia de implantação");
-    expect(keywords).toContain("estratégia");
-    expect(keywords).toContain("implantação");
+    const keywords = extractKeywords("ontem falamos sobre a estratÃ©gia de implantaÃ§Ã£o");
+    expect(keywords).toContain("estratÃ©gia");
+    expect(keywords).toContain("implantaÃ§Ã£o");
     expect(keywords).not.toContain("ontem");
     expect(keywords).not.toContain("sobre");
   });
 
   it("filters Spanish and Portuguese question stop words", () => {
-    const keywords = extractKeywords("cómo cuando donde porquê quando onde");
-    expect(keywords).not.toContain("cómo");
+    const keywords = extractKeywords("cÃ³mo cuando donde porquÃª quando onde");
+    expect(keywords).not.toContain("cÃ³mo");
     expect(keywords).not.toContain("cuando");
     expect(keywords).not.toContain("donde");
-    expect(keywords).not.toContain("porquê");
+    expect(keywords).not.toContain("porquÃª");
     expect(keywords).not.toContain("quando");
     expect(keywords).not.toContain("onde");
   });
 
   it("extracts keywords from Arabic conversational query", () => {
-    const keywords = extractKeywords("بالأمس ناقشنا استراتيجية النشر");
-    expect(keywords).toContain("ناقشنا");
-    expect(keywords).toContain("استراتيجية");
-    expect(keywords).toContain("النشر");
-    expect(keywords).not.toContain("بالأمس");
+    const keywords = extractKeywords("Ø¨Ø§Ù„Ø£Ù…Ø³ Ù†Ø§Ù‚Ø´Ù†Ø§ Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ© Ø§Ù„Ù†Ø´Ø±");
+    expect(keywords).toContain("Ù†Ø§Ù‚Ø´Ù†Ø§");
+    expect(keywords).toContain("Ø§Ø³ØªØ±Ø§ØªÙŠØ¬ÙŠØ©");
+    expect(keywords).toContain("Ø§Ù„Ù†Ø´Ø±");
+    expect(keywords).not.toContain("Ø¨Ø§Ù„Ø£Ù…Ø³");
   });
 
   it("filters Arabic question stop words", () => {
-    const keywords = extractKeywords("كيف متى أين ماذا");
-    expect(keywords).not.toContain("كيف");
-    expect(keywords).not.toContain("متى");
-    expect(keywords).not.toContain("أين");
-    expect(keywords).not.toContain("ماذا");
+    const keywords = extractKeywords("ÙƒÙŠÙ Ù…ØªÙ‰ Ø£ÙŠÙ† Ù…Ø§Ø°Ø§");
+    expect(keywords).not.toContain("ÙƒÙŠÙ");
+    expect(keywords).not.toContain("Ù…ØªÙ‰");
+    expect(keywords).not.toContain("Ø£ÙŠÙ†");
+    expect(keywords).not.toContain("Ù…Ø§Ø°Ø§");
   });
 
   it("handles empty query", () => {

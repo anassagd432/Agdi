@@ -16,7 +16,7 @@ describe("normalizeCompatibilityConfigValues", () => {
   const expectNoWhatsAppConfigForLegacyAuth = (setup?: () => void) => {
     setup?.();
     const res = normalizeCompatibilityConfigValues({
-      messages: { ackReaction: "👀", ackReactionScope: "group-mentions" },
+      messages: { ackReaction: "ðŸ‘€", ackReactionScope: "group-mentions" },
     });
     expect(res.config.channels?.whatsapp).toBeUndefined();
     expect(res.changes).toEqual([]);
@@ -42,7 +42,7 @@ describe("normalizeCompatibilityConfigValues", () => {
 
   it("does not add whatsapp config when missing and no auth exists", () => {
     const res = normalizeCompatibilityConfigValues({
-      messages: { ackReaction: "👀" },
+      messages: { ackReaction: "ðŸ‘€" },
     });
 
     expect(res.config.channels?.whatsapp).toBeUndefined();
@@ -51,17 +51,17 @@ describe("normalizeCompatibilityConfigValues", () => {
 
   it("copies legacy ack reaction when whatsapp config exists", () => {
     const res = normalizeCompatibilityConfigValues({
-      messages: { ackReaction: "👀", ackReactionScope: "group-mentions" },
+      messages: { ackReaction: "ðŸ‘€", ackReactionScope: "group-mentions" },
       channels: { whatsapp: {} },
     });
 
     expect(res.config.channels?.whatsapp?.ackReaction).toEqual({
-      emoji: "👀",
+      emoji: "ðŸ‘€",
       direct: false,
       group: "mentions",
     });
     expect(res.changes).toEqual([
-      "Copied messages.ackReaction → channels.whatsapp.ackReaction (scope: group-mentions).",
+      "Copied messages.ackReaction â†’ channels.whatsapp.ackReaction (scope: group-mentions).",
     ]);
   });
 
@@ -92,12 +92,12 @@ describe("normalizeCompatibilityConfigValues", () => {
       writeCreds(customDir);
 
       const res = normalizeCompatibilityConfigValues({
-        messages: { ackReaction: "👀", ackReactionScope: "group-mentions" },
+        messages: { ackReaction: "ðŸ‘€", ackReactionScope: "group-mentions" },
         channels: { whatsapp: { accounts: { work: { authDir: customDir } } } },
       });
 
       expect(res.config.channels?.whatsapp?.ackReaction).toEqual({
-        emoji: "👀",
+        emoji: "ðŸ‘€",
         direct: false,
         group: "mentions",
       });
@@ -119,8 +119,8 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.slack?.allowFrom).toEqual(["*"]);
     expect(res.config.channels?.slack?.dm).toEqual({ enabled: true });
     expect(res.changes).toEqual([
-      "Moved channels.slack.dm.policy → channels.slack.dmPolicy.",
-      "Moved channels.slack.dm.allowFrom → channels.slack.allowFrom.",
+      "Moved channels.slack.dm.policy â†’ channels.slack.dmPolicy.",
+      "Moved channels.slack.dm.allowFrom â†’ channels.slack.allowFrom.",
     ]);
   });
 
@@ -141,8 +141,8 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.discord?.accounts?.work?.allowFrom).toEqual(["123"]);
     expect(res.config.channels?.discord?.accounts?.work?.dm).toEqual({ groupEnabled: true });
     expect(res.changes).toEqual([
-      "Moved channels.discord.accounts.work.dm.policy → channels.discord.accounts.work.dmPolicy.",
-      "Moved channels.discord.accounts.work.dm.allowFrom → channels.discord.accounts.work.allowFrom.",
+      "Moved channels.discord.accounts.work.dm.policy â†’ channels.discord.accounts.work.dmPolicy.",
+      "Moved channels.discord.accounts.work.dm.allowFrom â†’ channels.discord.accounts.work.allowFrom.",
     ]);
   });
 
@@ -165,10 +165,10 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.discord?.accounts?.work?.streaming).toBe("off");
     expect(res.config.channels?.discord?.accounts?.work?.streamMode).toBeUndefined();
     expect(res.changes).toContain(
-      "Normalized channels.discord.streaming boolean → enum (partial).",
+      "Normalized channels.discord.streaming boolean â†’ enum (partial).",
     );
     expect(res.changes).toContain(
-      "Normalized channels.discord.accounts.work.streaming boolean → enum (off).",
+      "Normalized channels.discord.accounts.work.streaming boolean â†’ enum (off).",
     );
   });
 
@@ -185,8 +185,8 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.discord?.streaming).toBe("block");
     expect(res.config.channels?.discord?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved channels.discord.streamMode → channels.discord.streaming (block).",
-      "Normalized channels.discord.streaming boolean → enum (block).",
+      "Moved channels.discord.streamMode â†’ channels.discord.streaming (block).",
+      "Normalized channels.discord.streaming boolean â†’ enum (block).",
     ]);
   });
 
@@ -202,7 +202,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.telegram?.streaming).toBe("block");
     expect(res.config.channels?.telegram?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved channels.telegram.streamMode → channels.telegram.streaming (block).",
+      "Moved channels.telegram.streamMode â†’ channels.telegram.streaming (block).",
     ]);
   });
 
@@ -220,8 +220,8 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.channels?.slack?.nativeStreaming).toBe(false);
     expect(res.config.channels?.slack?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved channels.slack.streamMode → channels.slack.streaming (progress).",
-      "Moved channels.slack.streaming (boolean) → channels.slack.nativeStreaming (false).",
+      "Moved channels.slack.streamMode â†’ channels.slack.streaming (progress).",
+      "Moved channels.slack.streaming (boolean) â†’ channels.slack.nativeStreaming (false).",
     ]);
   });
 
@@ -277,7 +277,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.browser?.ssrfPolicy?.dangerouslyAllowPrivateNetwork).toBe(true);
     expect(res.config.browser?.ssrfPolicy?.allowedHostnames).toEqual(["localhost"]);
     expect(res.changes).toContain(
-      "Moved browser.ssrfPolicy.allowPrivateNetwork → browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (true).",
+      "Moved browser.ssrfPolicy.allowPrivateNetwork â†’ browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (true).",
     );
   });
 
@@ -294,7 +294,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.browser?.ssrfPolicy?.allowPrivateNetwork).toBeUndefined();
     expect(res.config.browser?.ssrfPolicy?.dangerouslyAllowPrivateNetwork).toBe(true);
     expect(res.changes).toContain(
-      "Moved browser.ssrfPolicy.allowPrivateNetwork → browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (true).",
+      "Moved browser.ssrfPolicy.allowPrivateNetwork â†’ browser.ssrfPolicy.dangerouslyAllowPrivateNetwork (true).",
     );
   });
 
@@ -324,8 +324,8 @@ describe("normalizeCompatibilityConfigValues", () => {
     expect(res.config.models?.providers?.google?.models).toEqual([]);
     expect(res.config.skills?.entries).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved skills.entries.nano-banana-pro → agents.defaults.imageGenerationModel.primary (google/gemini-3-pro-image-preview).",
-      "Moved skills.entries.nano-banana-pro.apiKey → models.providers.google.apiKey.",
+      "Moved skills.entries.nano-banana-pro â†’ agents.defaults.imageGenerationModel.primary (google/gemini-3-pro-image-preview).",
+      "Moved skills.entries.nano-banana-pro.apiKey â†’ models.providers.google.apiKey.",
       "Removed legacy skills.entries.nano-banana-pro.",
     ]);
   });
@@ -350,7 +350,7 @@ describe("normalizeCompatibilityConfigValues", () => {
     );
     expect(res.config.models?.providers?.google?.models).toEqual([]);
     expect(res.changes).toContain(
-      "Moved skills.entries.nano-banana-pro.env.GEMINI_API_KEY → models.providers.google.apiKey.",
+      "Moved skills.entries.nano-banana-pro.env.GEMINI_API_KEY â†’ models.providers.google.apiKey.",
     );
   });
 
@@ -455,9 +455,9 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
     });
     expect(res.changes).toEqual([
-      "Moved tools.web.search.apiKey → plugins.entries.brave.config.webSearch.apiKey.",
-      "Moved tools.web.search.firecrawl → plugins.entries.firecrawl.config.webSearch.",
-      "Moved tools.web.search.gemini → plugins.entries.google.config.webSearch.",
+      "Moved tools.web.search.apiKey â†’ plugins.entries.brave.config.webSearch.apiKey.",
+      "Moved tools.web.search.firecrawl â†’ plugins.entries.firecrawl.config.webSearch.",
+      "Moved tools.web.search.gemini â†’ plugins.entries.google.config.webSearch.",
     ]);
   });
 
@@ -503,7 +503,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
     });
     expect(res.changes).toEqual([
-      "Merged tools.web.search.gemini → plugins.entries.google.config.webSearch (filled missing fields from legacy; kept explicit plugin config values).",
+      "Merged tools.web.search.gemini â†’ plugins.entries.google.config.webSearch (filled missing fields from legacy; kept explicit plugin config values).",
     ]);
   });
 
@@ -546,7 +546,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       silenceTimeoutMs: 1500,
     });
     expect(res.changes).toEqual([
-      "Moved legacy talk flat fields → talk.provider/talk.providers.elevenlabs.",
+      "Moved legacy talk flat fields â†’ talk.provider/talk.providers.elevenlabs.",
     ]);
   });
 
@@ -597,7 +597,7 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
     });
     expect(res.changes).toEqual([
-      "Moved tools.message.allowCrossContextSend → tools.message.crossContext.allowWithinProvider/allowAcrossProviders (true).",
+      "Moved tools.message.allowCrossContextSend â†’ tools.message.crossContext.allowWithinProvider/allowAcrossProviders (true).",
     ]);
   });
 
@@ -672,9 +672,9 @@ describe("normalizeCompatibilityConfigValues", () => {
       },
     ]);
     expect(res.changes).toEqual([
-      "Merged tools.media.audio.deepgram → tools.media.audio.providerOptions.deepgram (filled missing canonical fields from legacy).",
-      "Moved tools.media.audio.models[0].deepgram → tools.media.audio.models[0].providerOptions.deepgram.",
-      "Merged tools.media.models[0].deepgram → tools.media.models[0].providerOptions.deepgram (filled missing canonical fields from legacy).",
+      "Merged tools.media.audio.deepgram â†’ tools.media.audio.providerOptions.deepgram (filled missing canonical fields from legacy).",
+      "Moved tools.media.audio.models[0].deepgram â†’ tools.media.audio.models[0].providerOptions.deepgram.",
+      "Merged tools.media.models[0].deepgram â†’ tools.media.models[0].providerOptions.deepgram (filled missing canonical fields from legacy).",
     ]);
   });
 
@@ -721,8 +721,8 @@ describe("normalizeCompatibilityConfigValues", () => {
       }),
     ]);
     expect(res.changes).toEqual([
-      "Normalized models.providers.mistral.models[0].maxTokens (262144 → 16384) to avoid Mistral context-window rejects.",
-      "Normalized models.providers.mistral.models[1].maxTokens (128000 → 40000) to avoid Mistral context-window rejects.",
+      "Normalized models.providers.mistral.models[0].maxTokens (262144 â†’ 16384) to avoid Mistral context-window rejects.",
+      "Normalized models.providers.mistral.models[1].maxTokens (128000 â†’ 40000) to avoid Mistral context-window rejects.",
     ]);
   });
 });

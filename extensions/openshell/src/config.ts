@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { OpenClawPluginConfigSchema } from "openclaw/plugin-sdk/core";
+import type { OpenClawPluginConfigSchema } from "agdi/plugin-sdk/core";
 
 export type OpenShellPluginConfig = {
   mode?: string;

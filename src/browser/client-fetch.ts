@@ -99,7 +99,7 @@ function withLoopbackBrowserAuth(
 }
 
 const BROWSER_TOOL_MODEL_HINT =
-  "Do NOT retry the browser tool — it will keep failing. " +
+  "Do NOT retry the browser tool â€” it will keep failing. " +
   "Use an alternative approach or inform the user that the browser is currently unavailable.";
 
 const BROWSER_SERVICE_RATE_LIMIT_MESSAGE =

@@ -74,7 +74,7 @@ describe("sanitizeForPlainText", () => {
 
   it("converts <li> to bullet points", () => {
     expect(sanitizeForPlainText("<li>item one</li><li>item two</li>")).toBe(
-      "• item one\n• item two\n",
+      "â€¢ item one\nâ€¢ item two\n",
     );
   });
 

@@ -2,7 +2,7 @@ export type ReactionLevel = "off" | "ack" | "minimal" | "extensive";
 
 export type ResolvedReactionLevel = {
   level: ReactionLevel;
-  /** Whether ACK reactions (e.g., 👀 when processing) are enabled. */
+  /** Whether ACK reactions (e.g., ðŸ‘€ when processing) are enabled. */
   ackEnabled: boolean;
   /** Whether agent-controlled reactions are enabled. */
   agentReactionsEnabled: boolean;

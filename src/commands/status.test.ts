@@ -376,7 +376,7 @@ vi.mock("../infra/update-check.js", () => ({
     },
     registry: { latestVersion: "0.0.0" },
   }),
-  formatGitInstallLabel: vi.fn(() => "main · @ deadbeef"),
+  formatGitInstallLabel: vi.fn(() => "main Â· @ deadbeef"),
   compareSemverStrings: vi.fn(() => 0),
 }));
 vi.mock("../config/config.js", async (importOriginal) => {

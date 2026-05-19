@@ -16,7 +16,7 @@ export function handleSubagentsInfoAction(ctx: SubagentsCommandContext): Command
   const { params, runs, restTokens } = ctx;
   const target = restTokens[0];
   if (!target) {
-    return stopWithText("ℹ️ Usage: /subagents info <id|#>");
+    return stopWithText("â„¹ï¸ Usage: /subagents info <id|#>");
   }
 
   const targetResolution = resolveSubagentEntryForToken(runs, target);
@@ -38,7 +38,7 @@ export function handleSubagentsInfoAction(ctx: SubagentsCommandContext): Command
     : "n/a";
 
   const lines = [
-    "ℹ️ Subagent info",
+    "â„¹ï¸ Subagent info",
     `Status: ${resolveDisplayStatus(run, { pendingDescendants: countPendingDescendantRuns(run.childSessionKey) })}`,
     `Label: ${formatRunLabel(run)}`,
     `Task: ${run.task}`,

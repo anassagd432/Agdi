@@ -140,7 +140,7 @@ describe("installPluginFromClawHub", () => {
       ok: false,
       code: CLAWHUB_INSTALL_ERROR_CODE.INCOMPATIBLE_PLUGIN_API,
       error:
-        'Plugin "demo" requires plugin API >=2026.3.22, but this OpenClaw runtime exposes 2026.3.21.',
+        'Plugin "demo" requires plugin API >=2026.3.22, but this Agdi runtime exposes 2026.3.21.',
     });
   });
 
@@ -160,7 +160,7 @@ describe("installPluginFromClawHub", () => {
     await expect(installPluginFromClawHub({ spec: "clawhub:calendar" })).resolves.toMatchObject({
       ok: false,
       code: CLAWHUB_INSTALL_ERROR_CODE.SKILL_PACKAGE,
-      error: '"calendar" is a skill. Use "openclaw skills install calendar" instead.',
+      error: '"calendar" is a skill. Use "agdi skills install calendar" instead.',
     });
   });
 

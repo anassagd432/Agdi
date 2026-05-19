@@ -214,7 +214,7 @@ export const settingsListTheme: SettingsListTheme = {
     selected ? chalk.bold(fg(palette.accent)(text)) : fg(palette.text)(text),
   value: (text, selected) => (selected ? fg(palette.accentSoft)(text) : fg(palette.dim)(text)),
   description: (text) => fg(palette.systemText)(text),
-  cursor: fg(palette.accent)("→ "),
+  cursor: fg(palette.accent)("â†’ "),
   hint: (text) => fg(palette.dim)(text),
 };
 

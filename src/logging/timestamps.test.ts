@@ -31,7 +31,7 @@ describe("formatLocalIsoWithOffset", () => {
 
   it("outputs a valid ISO 8601 string with offset", () => {
     const result = formatLocalIsoWithOffset(testDate, "Asia/Shanghai");
-    // ISO 8601 with offset: YYYY-MM-DDTHH:MM:SS.mmm±HH:MM
+    // ISO 8601 with offset: YYYY-MM-DDTHH:MM:SS.mmmÂ±HH:MM
     const iso8601WithOffset = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[+-]\d{2}:\d{2}$/;
     expect(result).toMatch(iso8601WithOffset);
   });

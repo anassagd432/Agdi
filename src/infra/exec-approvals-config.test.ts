@@ -200,7 +200,7 @@ describe("normalizeExecApprovals handles string allowlist entries (#9790)", () =
     const normalized = normalizeExecApprovals(file);
     const entries = normalized.agents?.main?.allowlist ?? [];
 
-    // Spread-string corruption would create numeric keys — ensure none exist.
+    // Spread-string corruption would create numeric keys â€” ensure none exist.
     expectNoSpreadStringArtifacts(entries);
 
     expect(entries.map((e) => e.pattern)).toEqual([

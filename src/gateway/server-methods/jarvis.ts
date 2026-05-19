@@ -1,5 +1,5 @@
 /**
- * Jarvis gateway handlers — start/stop/status/config for the Jarvis service.
+ * Jarvis gateway handlers â€” start/stop/status/config for the Jarvis service.
  */
 
 import type { GatewayRequestHandlers } from "./types.js";
@@ -76,7 +76,7 @@ export const jarvisHandlers: GatewayRequestHandlers = {
         return;
       }
 
-      // GET: no params → return current config
+      // GET: no params â†’ return current config
       if (!params || Object.keys(params).length === 0) {
         respond(true, jarvis.getConfig());
         return;

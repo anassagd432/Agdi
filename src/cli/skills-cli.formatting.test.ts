@@ -41,7 +41,7 @@ describe("skills-cli (e2e)", () => {
           baseDir,
         } as SkillEntry["skill"],
         frontmatter: {},
-        metadata: { emoji: "📸" },
+        metadata: { emoji: "ðŸ“¸" },
       },
     ];
   }

@@ -11,7 +11,7 @@ read_when:
 # Plugin Setup and Config
 
 Reference for plugin packaging (`package.json` metadata), manifests
-(`agdi.plugin.json`), setup entries, and config schemas.
+(`openclaw.plugin.json`), setup entries, and config schemas.
 
 <Tip>
   **Looking for a walkthrough?** The how-to guides cover packaging in context:
@@ -97,7 +97,7 @@ gateway starts listening.
 
 ## Plugin manifest
 
-Every native plugin must ship an `agdi.plugin.json` in the package root.
+Every native plugin must ship an `openclaw.plugin.json` in the package root.
 Agdi uses this to validate config without executing plugin code.
 
 ```json

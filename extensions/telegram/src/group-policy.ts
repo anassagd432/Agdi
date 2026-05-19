@@ -1,9 +1,9 @@
-import type { ChannelGroupContext } from "openclaw/plugin-sdk/channel-contract";
+import type { ChannelGroupContext } from "agdi/plugin-sdk/channel-contract";
 import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
+} from "agdi/plugin-sdk/channel-policy";
 
 function parseTelegramGroupId(value?: string | null) {
   const raw = value?.trim() ?? "";

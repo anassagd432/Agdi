@@ -175,18 +175,18 @@ function mapEligibilityReasonToProbeReasonCode(
 function formatMissingCredentialProbeError(reasonCode: AuthProbeReasonCode): string {
   const legacyLine = "Auth profile credentials are missing or expired.";
   if (reasonCode === "expired") {
-    return `${legacyLine}\n↳ Auth reason [expired]: token credentials are expired.`;
+    return `${legacyLine}\nâ†³ Auth reason [expired]: token credentials are expired.`;
   }
   if (reasonCode === "invalid_expires") {
-    return `${legacyLine}\n↳ Auth reason [invalid_expires]: token expires must be a positive Unix ms timestamp.`;
+    return `${legacyLine}\nâ†³ Auth reason [invalid_expires]: token expires must be a positive Unix ms timestamp.`;
   }
   if (reasonCode === "missing_credential") {
-    return `${legacyLine}\n↳ Auth reason [missing_credential]: no inline credential or SecretRef is configured.`;
+    return `${legacyLine}\nâ†³ Auth reason [missing_credential]: no inline credential or SecretRef is configured.`;
   }
   if (reasonCode === "unresolved_ref") {
-    return `${legacyLine}\n↳ Auth reason [unresolved_ref]: configured SecretRef could not be resolved.`;
+    return `${legacyLine}\nâ†³ Auth reason [unresolved_ref]: configured SecretRef could not be resolved.`;
   }
-  return `${legacyLine}\n↳ Auth reason [ineligible_profile]: profile is incompatible with provider config.`;
+  return `${legacyLine}\nâ†³ Auth reason [ineligible_profile]: profile is incompatible with provider config.`;
 }
 
 function resolveProbeSecretRef(profile: AuthProfileCredential, cfg: OpenClawConfig) {
@@ -208,7 +208,7 @@ function resolveProbeSecretRef(profile: AuthProfileCredential, cfg: OpenClawConf
 
 function formatUnresolvedRefProbeError(refLabel: string): string {
   const legacyLine = "Auth profile credentials are missing or expired.";
-  return `${legacyLine}\n↳ Auth reason [unresolved_ref]: could not resolve SecretRef "${refLabel}".`;
+  return `${legacyLine}\nâ†³ Auth reason [unresolved_ref]: could not resolve SecretRef "${refLabel}".`;
 }
 
 async function maybeResolveUnresolvedRefIssue(params: {

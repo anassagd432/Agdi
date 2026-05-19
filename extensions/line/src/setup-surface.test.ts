@@ -113,7 +113,7 @@ function collectRuntimeApiOverlapExports(params: {
     if (!moduleSpecifier) {
       continue;
     }
-    if (moduleSpecifier === "openclaw/plugin-sdk/line-runtime") {
+    if (moduleSpecifier === "agdi/plugin-sdk/line-runtime") {
       pluginSdkLineRuntimeSeen = true;
       continue;
     }
@@ -192,7 +192,7 @@ function collectRuntimeApiPreExports(runtimeApiPath: string): string[] {
     if (!moduleSpecifier) {
       continue;
     }
-    if (moduleSpecifier === "openclaw/plugin-sdk/line-runtime") {
+    if (moduleSpecifier === "agdi/plugin-sdk/line-runtime") {
       break;
     }
     const normalized = normalizeModuleSpecifier(moduleSpecifier);
@@ -294,7 +294,7 @@ describe("line runtime api", () => {
           "probeLineBot",
           "pushMessageLine",
         ],
-        realPluginSdkSpecifiers: ["openclaw/plugin-sdk/line-runtime"],
+        realPluginSdkSpecifiers: ["agdi/plugin-sdk/line-runtime"],
       }),
     ).toEqual({
       buildTemplateMessageFromPayload: "function",

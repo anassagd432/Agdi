@@ -12,7 +12,7 @@ import https from "node:https";
 import { isLoopbackHost } from "../gateway/net.js";
 import { hasProxyEnvConfigured } from "../infra/net/proxy-env.js";
 
-/** HTTP agent that never uses a proxy — for localhost CDP connections. */
+/** HTTP agent that never uses a proxy â€” for localhost CDP connections. */
 const directHttpAgent = new http.Agent();
 const directHttpsAgent = new https.Agent();
 
@@ -30,7 +30,7 @@ export function getDirectAgentForCdp(url: string): http.Agent | https.Agent | un
         : directHttpAgent;
     }
   } catch {
-    // not a valid URL — let caller handle it
+    // not a valid URL â€” let caller handle it
   }
   return undefined;
 }

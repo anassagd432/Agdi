@@ -27,7 +27,7 @@ function makeStore(entries: Array<[string, SessionEntry]>): Record<string, Sessi
 }
 
 // ---------------------------------------------------------------------------
-// Unit tests — each function called with explicit override parameters.
+// Unit tests â€” each function called with explicit override parameters.
 // No config loading needed; overrides bypass resolveMaintenanceConfig().
 // ---------------------------------------------------------------------------
 

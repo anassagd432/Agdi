@@ -74,7 +74,7 @@ export function buildDockerExecArgs(params: {
     args.push("-w", params.workdir);
   }
   for (const [key, value] of Object.entries(params.env)) {
-    // Skip PATH — passing a host PATH (e.g. Windows paths) via -e poisons
+    // Skip PATH â€” passing a host PATH (e.g. Windows paths) via -e poisons
     // Docker's executable lookup, causing "sh: not found" on Windows hosts.
     // PATH is handled separately via OPENCLAW_PREPEND_PATH below.
     if (key === "PATH") {

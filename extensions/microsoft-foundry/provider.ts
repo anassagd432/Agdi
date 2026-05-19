@@ -1,5 +1,5 @@
-import type { ProviderNormalizeResolvedModelContext } from "openclaw/plugin-sdk/core";
-import type { ModelProviderConfig, ProviderPlugin } from "openclaw/plugin-sdk/provider-models";
+import type { ProviderNormalizeResolvedModelContext } from "agdi/plugin-sdk/core";
+import type { ModelProviderConfig, ProviderPlugin } from "agdi/plugin-sdk/provider-models";
 import { apiKeyAuthMethod, entraIdAuthMethod } from "./auth.js";
 import { prepareFoundryRuntimeAuth } from "./runtime.js";
 import {

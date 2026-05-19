@@ -110,12 +110,12 @@ function formatPluginLabel(plugin: PluginRecord): string {
 
 function formatPluginsList(report: PluginStatusReport): string {
   if (report.plugins.length === 0) {
-    return `🔌 No plugins found for workspace ${report.workspaceDir ?? "(unknown workspace)"}.`;
+    return `ðŸ”Œ No plugins found for workspace ${report.workspaceDir ?? "(unknown workspace)"}.`;
   }
 
   const loaded = report.plugins.filter((plugin) => plugin.status === "loaded").length;
   const lines = [
-    `🔌 Plugins (${loaded}/${report.plugins.length} loaded)`,
+    `ðŸ”Œ Plugins (${loaded}/${report.plugins.length} loaded)`,
     ...report.plugins.map((plugin) => {
       const format = plugin.bundleFormat
         ? `${plugin.format ?? "openclaw"}/${plugin.bundleFormat}`
@@ -327,7 +327,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
   if (pluginsCommand.action === "error") {
     return {
       shouldContinue: false,
-      reply: { text: `⚠️ ${pluginsCommand.message}` },
+      reply: { text: `âš ï¸ ${pluginsCommand.message}` },
     };
   }
 
@@ -335,7 +335,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
   if (!loaded.ok) {
     return {
       shouldContinue: false,
-      reply: { text: `⚠️ ${loaded.error}` },
+      reply: { text: `âš ï¸ ${loaded.error}` },
     };
   }
 
@@ -357,7 +357,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
       return {
         shouldContinue: false,
         reply: {
-          text: renderJsonBlock("🔌 Plugins", buildAllPluginInspectJson(loaded)),
+          text: renderJsonBlock("ðŸ”Œ Plugins", buildAllPluginInspectJson(loaded)),
         },
       };
     }
@@ -369,13 +369,13 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
     if (!payload) {
       return {
         shouldContinue: false,
-        reply: { text: `🔌 No plugin named "${pluginsCommand.name}" found.` },
+        reply: { text: `ðŸ”Œ No plugin named "${pluginsCommand.name}" found.` },
       };
     }
     return {
       shouldContinue: false,
       reply: {
-        text: renderJsonBlock(`🔌 Plugin "${payload.inspect.plugin.id}"`, {
+        text: renderJsonBlock(`ðŸ”Œ Plugin "${payload.inspect.plugin.id}"`, {
           ...payload.inspect,
           compatibilityWarnings: payload.compatibilityWarnings,
           install: payload.install,
@@ -387,7 +387,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
   const missingAdminScope = requireGatewayClientScopeForInternalChannel(params, {
     label: "/plugins write",
     allowedScopes: ["operator.admin"],
-    missingText: "❌ /plugins install|enable|disable requires operator.admin for gateway clients.",
+    missingText: "âŒ /plugins install|enable|disable requires operator.admin for gateway clients.",
   });
   if (missingAdminScope) {
     return missingAdminScope;
@@ -401,13 +401,13 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
     if (!installed.ok) {
       return {
         shouldContinue: false,
-        reply: { text: `⚠️ ${installed.error}` },
+        reply: { text: `âš ï¸ ${installed.error}` },
       };
     }
     return {
       shouldContinue: false,
       reply: {
-        text: `🔌 Installed plugin "${installed.pluginId}". Restart the gateway to load plugins.`,
+        text: `ðŸ”Œ Installed plugin "${installed.pluginId}". Restart the gateway to load plugins.`,
       },
     };
   }
@@ -416,7 +416,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
   if (!plugin) {
     return {
       shouldContinue: false,
-      reply: { text: `🔌 No plugin named "${pluginsCommand.name}" found.` },
+      reply: { text: `ðŸ”Œ No plugin named "${pluginsCommand.name}" found.` },
     };
   }
 
@@ -431,7 +431,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
     return {
       shouldContinue: false,
       reply: {
-        text: `⚠️ Config invalid after /plugins ${pluginsCommand.action} (${issue.path}: ${issue.message}).`,
+        text: `âš ï¸ Config invalid after /plugins ${pluginsCommand.action} (${issue.path}: ${issue.message}).`,
       },
     };
   }
@@ -440,7 +440,7 @@ export const handlePluginsCommand: CommandHandler = async (params, allowTextComm
   return {
     shouldContinue: false,
     reply: {
-      text: `🔌 Plugin "${plugin.id}" ${pluginsCommand.action}d in ${loaded.path}. Restart the gateway to apply.`,
+      text: `ðŸ”Œ Plugin "${plugin.id}" ${pluginsCommand.action}d in ${loaded.path}. Restart the gateway to apply.`,
     },
   };
 };

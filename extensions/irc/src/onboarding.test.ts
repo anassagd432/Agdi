@@ -1,4 +1,5 @@
-import type { RuntimeEnv, WizardPrompter } from "agdi/plugin-sdk";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import type { WizardPrompter } from "agdi/plugin-sdk/setup";
 import { describe, expect, it, vi } from "vitest";
 import type { CoreConfig } from "./types.js";
 import { ircOnboardingAdapter } from "./onboarding.js";

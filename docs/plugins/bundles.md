@@ -132,7 +132,7 @@ These are recognized and shown in diagnostics, but Agdi does not run them:
 
 Agdi checks for native plugin format first:
 
-1. `agdi.plugin.json` or valid `package.json` with `agdi.extensions` — treated as **native plugin**
+1. `openclaw.plugin.json` or valid `package.json` with `agdi.extensions` — treated as **native plugin**
 2. Bundle markers (`.codex-plugin/`, `.claude-plugin/`, or default Claude/Cursor layout) — treated as **bundle**
 
 If a directory contains both, Agdi uses the native path. This prevents

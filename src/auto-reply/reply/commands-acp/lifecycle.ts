@@ -255,7 +255,7 @@ export async function handleAcpSpawnAction(
 
   const parsed = parseSpawnInput(params, restTokens);
   if (!parsed.ok) {
-    return stopWithText(`⚠️ ${parsed.error}`);
+    return stopWithText(`âš ï¸ ${parsed.error}`);
   }
 
   const spawn = parsed.value;
@@ -264,7 +264,7 @@ export async function handleAcpSpawnAction(
     requesterSessionKey: params.sessionKey,
   });
   if (runtimePolicyError) {
-    return stopWithText(`⚠️ ${runtimePolicyError}`);
+    return stopWithText(`âš ï¸ ${runtimePolicyError}`);
   }
   const agentPolicyError = resolveAcpAgentPolicyError(params.cfg, spawn.agentId);
   if (agentPolicyError) {
@@ -324,7 +324,7 @@ export async function handleAcpSpawnAction(
         shouldDeleteSession: true,
         initializedRuntime,
       });
-      return stopWithText(`⚠️ ${bound.error}`);
+      return stopWithText(`âš ï¸ ${bound.error}`);
     }
     binding = bound.binding;
   }
@@ -346,11 +346,11 @@ export async function handleAcpSpawnAction(
       initializedRuntime,
     });
     const message = err instanceof Error ? err.message : String(err);
-    return stopWithText(`⚠️ ACP spawn failed: ${message}`);
+    return stopWithText(`âš ï¸ ACP spawn failed: ${message}`);
   }
 
   const parts = [
-    `✅ Spawned ACP session ${sessionKey} (${spawn.mode}, backend ${initializedBackend}).`,
+    `âœ… Spawned ACP session ${sessionKey} (${spawn.mode}, backend ${initializedBackend}).`,
   ];
   if (binding) {
     const currentConversationId = resolveAcpCommandConversationId(params)?.trim() || "";
@@ -367,7 +367,7 @@ export async function handleAcpSpawnAction(
 
   const dispatchNote = resolveAcpDispatchPolicyMessage(params.cfg);
   if (dispatchNote) {
-    parts.push(`ℹ️ ${dispatchNote}`);
+    parts.push(`â„¹ï¸ ${dispatchNote}`);
   }
 
   const shouldPinBindingNotice =
@@ -418,7 +418,7 @@ async function resolveAcpTokenTargetSessionKeyOrStop(params: {
     token,
   });
   if (!target.ok) {
-    return stopWithText(`⚠️ ${target.error}`);
+    return stopWithText(`âš ï¸ ${target.error}`);
   }
   return target.sessionKey;
 }
@@ -470,7 +470,7 @@ export async function handleAcpCancelAction(
           }),
         fallbackCode: "ACP_TURN_FAILED",
         fallbackMessage: "ACP cancel failed before completion.",
-        onSuccess: () => stopWithText(`✅ Cancel requested for ACP session ${sessionKey}.`),
+        onSuccess: () => stopWithText(`âœ… Cancel requested for ACP session ${sessionKey}.`),
       }),
   });
 }
@@ -500,7 +500,7 @@ async function runAcpSteer(params: {
       if (event.text) {
         output += event.text;
         if (output.length > ACP_STEER_OUTPUT_LIMIT) {
-          output = `${output.slice(0, ACP_STEER_OUTPUT_LIMIT)}…`;
+          output = `${output.slice(0, ACP_STEER_OUTPUT_LIMIT)}â€¦`;
         }
       }
     },
@@ -525,7 +525,7 @@ export async function handleAcpSteerAction(
 
   const parsed = parseSteerInput(restTokens);
   if (!parsed.ok) {
-    return stopWithText(`⚠️ ${parsed.error}`);
+    return stopWithText(`âš ï¸ ${parsed.error}`);
   }
   const acpManager = getAcpSessionManager();
 
@@ -534,7 +534,7 @@ export async function handleAcpSteerAction(
     token: parsed.value.sessionToken,
   });
   if (!target.ok) {
-    return stopWithText(`⚠️ ${target.error}`);
+    return stopWithText(`âš ï¸ ${target.error}`);
   }
 
   const guardFailure = resolveAcpSessionForCommandOrStop({
@@ -558,9 +558,9 @@ export async function handleAcpSteerAction(
     fallbackMessage: "ACP steer failed before completion.",
     onSuccess: (steerOutput) => {
       if (!steerOutput) {
-        return stopWithText(`✅ ACP steer sent to ${target.sessionKey}.`);
+        return stopWithText(`âœ… ACP steer sent to ${target.sessionKey}.`);
       }
-      return stopWithText(`✅ ACP steer sent to ${target.sessionKey}.\n${steerOutput}`);
+      return stopWithText(`âœ… ACP steer sent to ${target.sessionKey}.\n${steerOutput}`);
     },
   });
 }
@@ -599,7 +599,7 @@ export async function handleAcpCloseAction(
       });
 
       return stopWithText(
-        `✅ Closed ACP session ${sessionKey}${runtimeNotice}. Removed ${removedBindings.length} binding${removedBindings.length === 1 ? "" : "s"}.`,
+        `âœ… Closed ACP session ${sessionKey}${runtimeNotice}. Removed ${removedBindings.length} binding${removedBindings.length === 1 ? "" : "s"}.`,
       );
     },
   });

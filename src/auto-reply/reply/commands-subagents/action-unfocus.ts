@@ -21,7 +21,7 @@ export async function handleSubagentsUnfocusAction(
   const { params } = ctx;
   const channel = resolveCommandSurfaceChannel(params);
   if (channel !== "discord" && channel !== "matrix" && channel !== "telegram") {
-    return stopWithText("⚠️ /unfocus is only available on Discord, Matrix, and Telegram.");
+    return stopWithText("âš ï¸ /unfocus is only available on Discord, Matrix, and Telegram.");
   }
 
   const accountId = resolveChannelAccountId(params);
@@ -67,13 +67,13 @@ export async function handleSubagentsUnfocusAction(
 
   if (!conversationId) {
     if (channel === "discord") {
-      return stopWithText("⚠️ /unfocus must be run inside a Discord thread.");
+      return stopWithText("âš ï¸ /unfocus must be run inside a Discord thread.");
     }
     if (channel === "matrix") {
-      return stopWithText("⚠️ /unfocus must be run inside a Matrix thread.");
+      return stopWithText("âš ï¸ /unfocus must be run inside a Matrix thread.");
     }
     return stopWithText(
-      "⚠️ /unfocus on Telegram requires a topic context in groups, or a direct-message conversation.",
+      "âš ï¸ /unfocus on Telegram requires a topic context in groups, or a direct-message conversation.",
     );
   }
 
@@ -88,10 +88,10 @@ export async function handleSubagentsUnfocusAction(
   if (!binding) {
     return stopWithText(
       channel === "discord"
-        ? "ℹ️ This thread is not currently focused."
+        ? "â„¹ï¸ This thread is not currently focused."
         : channel === "matrix"
-          ? "ℹ️ This thread is not currently focused."
-          : "ℹ️ This conversation is not currently focused.",
+          ? "â„¹ï¸ This thread is not currently focused."
+          : "â„¹ï¸ This conversation is not currently focused.",
     );
   }
 
@@ -101,10 +101,10 @@ export async function handleSubagentsUnfocusAction(
   if (boundBy && boundBy !== "system" && senderId && senderId !== boundBy) {
     return stopWithText(
       channel === "discord"
-        ? `⚠️ Only ${boundBy} can unfocus this thread.`
+        ? `âš ï¸ Only ${boundBy} can unfocus this thread.`
         : channel === "matrix"
-          ? `⚠️ Only ${boundBy} can unfocus this thread.`
-          : `⚠️ Only ${boundBy} can unfocus this conversation.`,
+          ? `âš ï¸ Only ${boundBy} can unfocus this thread.`
+          : `âš ï¸ Only ${boundBy} can unfocus this conversation.`,
     );
   }
 
@@ -114,7 +114,7 @@ export async function handleSubagentsUnfocusAction(
   });
   return stopWithText(
     channel === "discord" || channel === "matrix"
-      ? "✅ Thread unfocused."
-      : "✅ Conversation unfocused.",
+      ? "âœ… Thread unfocused."
+      : "âœ… Conversation unfocused.",
   );
 }

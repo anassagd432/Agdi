@@ -9,14 +9,14 @@ import {
   resolveListedDefaultAccountId,
   resolveAccountWithDefaultFallback,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { isTruthyEnvValue } from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/account-resolution";
+import { isTruthyEnvValue } from "agdi/plugin-sdk/infra-runtime";
 import {
   listBoundAccountIds,
   resolveDefaultAgentBoundAccountId,
-} from "openclaw/plugin-sdk/routing";
-import { formatSetExplicitDefaultInstruction } from "openclaw/plugin-sdk/routing";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/routing";
+import { formatSetExplicitDefaultInstruction } from "agdi/plugin-sdk/routing";
+import { createSubsystemLogger } from "agdi/plugin-sdk/runtime-env";
 import type { TelegramAccountConfig, TelegramActionConfig } from "../runtime-api.js";
 import { resolveTelegramToken } from "./token.js";
 

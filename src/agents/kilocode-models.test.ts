@@ -84,7 +84,7 @@ async function withFetchPathTest(
 
 describe("discoverKilocodeModels", () => {
   it("returns static catalog in test environment", async () => {
-    // Default vitest env — should return static catalog without fetching
+    // Default vitest env â€” should return static catalog without fetching
     const models = await discoverKilocodeModels();
     expect(models.length).toBeGreaterThan(0);
     expect(models.some((m) => m.id === "kilo/auto")).toBe(true);

@@ -157,9 +157,9 @@ function truncateTitle(text: string, maxLen: number): string {
   const cut = text.slice(0, maxLen - 1);
   const lastSpace = cut.lastIndexOf(" ");
   if (lastSpace > maxLen * 0.6) {
-    return cut.slice(0, lastSpace) + "…";
+    return cut.slice(0, lastSpace) + "â€¦";
   }
-  return cut + "…";
+  return cut + "â€¦";
 }
 
 export function deriveSessionTitle(
@@ -708,7 +708,7 @@ export function canonicalizeSpawnedByForAgent(
   } else {
     result = `agent:${normalizeAgentId(agentId)}:${lower}`;
   }
-  // Resolve main-alias references (e.g. agent:ops:main → configured main key).
+  // Resolve main-alias references (e.g. agent:ops:main â†’ configured main key).
   const parsed = parseAgentSessionKey(result);
   const resolvedAgent = parsed?.agentId ? normalizeAgentId(parsed.agentId) : agentId;
   return canonicalizeMainSessionAlias({ cfg, agentId: resolvedAgent, sessionKey: result });
@@ -983,7 +983,7 @@ export function resolveSessionModelRef(
   const runtimeProvider = entry?.modelProvider?.trim();
   if (runtimeModel) {
     if (runtimeProvider) {
-      // Provider is explicitly recorded — use it directly. Re-parsing the
+      // Provider is explicitly recorded â€” use it directly. Re-parsing the
       // model string through parseModelRef would incorrectly split OpenRouter
       // vendor-prefixed model names (e.g. model="anthropic/claude-haiku-4.5"
       // with provider="openrouter") into { provider: "anthropic" }, discarding

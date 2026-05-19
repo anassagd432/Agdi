@@ -234,7 +234,7 @@ Never modify memory/YYYY-MM-DD.md destructively.
     expect(result).toContain("memory/2026-03-03.md");
     expect(result).not.toContain("memory/YYYY-MM-DD.md");
     expect(result).toContain(
-      "Current time: Tuesday, March 3rd, 2026 — 9:00 AM (America/New_York) / 2026-03-03 14:00 UTC",
+      "Current time: Tuesday, March 3rd, 2026 â€” 9:00 AM (America/New_York) / 2026-03-03 14:00 UTC",
     );
   });
 
@@ -360,7 +360,7 @@ Read WORKFLOW.md on startup.
     it("falls back to legacy sections when defaults are explicitly configured", async () => {
       // Older AGENTS.md templates use "Every Session" / "Safety" instead of
       // "Session Startup" / "Red Lines". Explicitly setting the defaults should
-      // still trigger the legacy fallback — same behavior as leaving the field unset.
+      // still trigger the legacy fallback â€” same behavior as leaving the field unset.
       await expectLegacySectionFallback(["Session Startup", "Red Lines"]);
     });
 

@@ -57,7 +57,7 @@ and provider plugins have dedicated guides linked above.
     }
     ```
 
-    ```json agdi.plugin.json
+    ```json openclaw.plugin.json
     {
       "id": "my-plugin",
       "name": "My Plugin",
@@ -217,7 +217,7 @@ internal imports — never import your own plugin through its SDK path.
 ## Pre-submission checklist
 
 <Check>**package.json** has correct `agdi` metadata</Check>
-<Check>**agdi.plugin.json** manifest is present and valid</Check>
+<Check>**openclaw.plugin.json** manifest is present and valid</Check>
 <Check>Entry point uses `defineChannelPluginEntry` or `definePluginEntry`</Check>
 <Check>All imports use focused `plugin-sdk/<subpath>` paths</Check>
 <Check>Internal imports use local modules, not SDK self-imports</Check>

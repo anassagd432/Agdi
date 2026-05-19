@@ -4,7 +4,7 @@ import { isReasoningModelHeuristic } from "./ollama-models.js";
 
 const log = createSubsystemLogger("huggingface-models");
 
-/** Hugging Face Inference Providers (router) — OpenAI-compatible chat completions. */
+/** Hugging Face Inference Providers (router) â€” OpenAI-compatible chat completions. */
 export const HUGGINGFACE_BASE_URL = "https://router.huggingface.co/v1";
 
 /** Router policy suffixes: router picks backend by cost or speed; no specific provider selection. */
@@ -162,7 +162,7 @@ export async function discoverHuggingfaceModels(apiKey: string): Promise<ModelDe
   }
 
   try {
-    // GET https://router.huggingface.co/v1/models — response: { object, data: [{ id, owned_by, architecture: { input_modalities }, providers: [{ provider, context_length?, pricing? }] }] }. POST /v1/chat/completions requires Authorization.
+    // GET https://router.huggingface.co/v1/models â€” response: { object, data: [{ id, owned_by, architecture: { input_modalities }, providers: [{ provider, context_length?, pricing? }] }] }. POST /v1/chat/completions requires Authorization.
     const response = await fetch(`${HUGGINGFACE_BASE_URL}/models`, {
       signal: AbortSignal.timeout(10_000),
       headers: {

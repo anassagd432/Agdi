@@ -1,9 +1,9 @@
-export type { AcpRuntimeErrorCode } from "openclaw/plugin-sdk/acp-runtime";
+export type { AcpRuntimeErrorCode } from "agdi/plugin-sdk/acp-runtime";
 export {
   AcpRuntimeError,
   registerAcpRuntimeBackend,
   unregisterAcpRuntimeBackend,
-} from "openclaw/plugin-sdk/acp-runtime";
+} from "agdi/plugin-sdk/acp-runtime";
 export type {
   AcpRuntime,
   AcpRuntimeCapabilities,
@@ -14,25 +14,25 @@ export type {
   AcpRuntimeStatus,
   AcpRuntimeTurnInput,
   AcpSessionUpdateTag,
-} from "openclaw/plugin-sdk/acp-runtime";
+} from "agdi/plugin-sdk/acp-runtime";
 export type {
   OpenClawPluginApi,
   OpenClawPluginConfigSchema,
   OpenClawPluginService,
   OpenClawPluginServiceContext,
   PluginLogger,
-} from "openclaw/plugin-sdk/core";
+} from "agdi/plugin-sdk/core";
 export type {
   WindowsSpawnProgram,
   WindowsSpawnProgramCandidate,
   WindowsSpawnResolution,
-} from "openclaw/plugin-sdk/windows-spawn";
+} from "agdi/plugin-sdk/windows-spawn";
 export {
   applyWindowsSpawnProgramPolicy,
   materializeWindowsSpawnProgram,
   resolveWindowsSpawnProgramCandidate,
-} from "openclaw/plugin-sdk/windows-spawn";
+} from "agdi/plugin-sdk/windows-spawn";
 export {
   listKnownProviderAuthEnvVarNames,
   omitEnvKeysCaseInsensitive,
-} from "openclaw/plugin-sdk/provider-env-vars";
+} from "agdi/plugin-sdk/provider-env-vars";

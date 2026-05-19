@@ -197,6 +197,7 @@ export class ClawHubRequestError extends Error {
 
 function normalizeBaseUrl(baseUrl?: string): string {
   const envValue =
+    process.env.AGDI_CLAWHUB_URL?.trim() ||
     process.env.OPENCLAW_CLAWHUB_URL?.trim() ||
     process.env.CLAWHUB_URL?.trim() ||
     DEFAULT_CLAWHUB_URL;
@@ -227,6 +228,7 @@ function extractTokenFromClawHubConfig(value: unknown): string | undefined {
 
 function resolveClawHubConfigPaths(): string[] {
   const explicit =
+    process.env.AGDI_CLAWHUB_CONFIG_PATH?.trim() ||
     process.env.OPENCLAW_CLAWHUB_CONFIG_PATH?.trim() ||
     process.env.CLAWHUB_CONFIG_PATH?.trim() ||
     process.env.CLAWDHUB_CONFIG_PATH?.trim(); // legacy misspelling from older clawhub CLI builds; keep for back-compat
@@ -251,6 +253,7 @@ function resolveClawHubConfigPaths(): string[] {
 
 export async function resolveClawHubAuthToken(): Promise<string | undefined> {
   const envToken =
+    process.env.AGDI_CLAWHUB_TOKEN?.trim() ||
     process.env.OPENCLAW_CLAWHUB_TOKEN?.trim() ||
     process.env.CLAWHUB_TOKEN?.trim() ||
     process.env.CLAWHUB_AUTH_TOKEN?.trim();

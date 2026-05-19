@@ -9,8 +9,8 @@ const dispatchPluginInteractiveHandlerMock = vi.fn(async () => ({
 const resolvePluginConversationBindingApprovalMock = vi.fn();
 const buildPluginBindingResolvedTextMock = vi.fn(() => "Binding updated.");
 
-vi.mock("openclaw/plugin-sdk/infra-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/infra-runtime")>();
+vi.mock("agdi/plugin-sdk/infra-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/infra-runtime")>();
   return {
     ...actual,
     enqueueSystemEvent: (...args: unknown[]) =>
@@ -18,8 +18,8 @@ vi.mock("openclaw/plugin-sdk/infra-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/plugin-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/plugin-runtime")>();
+vi.mock("agdi/plugin-sdk/plugin-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/plugin-runtime")>();
   return {
     ...actual,
     dispatchPluginInteractiveHandler: (...args: unknown[]) =>
@@ -27,9 +27,9 @@ vi.mock("openclaw/plugin-sdk/plugin-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/conversation-runtime")>(
-    "openclaw/plugin-sdk/conversation-runtime",
+vi.mock("agdi/plugin-sdk/conversation-runtime", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/conversation-runtime")>(
+    "agdi/plugin-sdk/conversation-runtime",
   );
   return {
     ...actual,

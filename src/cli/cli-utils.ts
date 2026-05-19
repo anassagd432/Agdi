@@ -1,5 +1,6 @@
 import type { Command } from "commander";
 import { formatErrorMessage } from "../infra/errors.js";
+import { formatError } from "./ui.js";
 
 export { formatErrorMessage };
 
@@ -43,7 +44,7 @@ export async function runCommandWithRuntime(
       onError(err);
       return;
     }
-    runtime.error(String(err));
+    runtime.error(formatError(err));
     runtime.exit(1);
   }
 }

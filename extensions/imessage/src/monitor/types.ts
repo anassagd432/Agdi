@@ -1,5 +1,5 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 
 export type IMessageAttachment = {
   original_path?: string | null;

@@ -3,16 +3,16 @@ export type {
   OpenClawConfig,
   OpenClawPluginApi,
   PluginRuntime,
-} from "openclaw/plugin-sdk/core";
-export { clearAccountEntryFields } from "openclaw/plugin-sdk/core";
-export { buildChannelConfigSchema } from "openclaw/plugin-sdk/channel-config-schema";
-export type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-export type { ChannelAccountSnapshot, ChannelGatewayContext } from "openclaw/plugin-sdk/testing";
-export type { ChannelStatusIssue } from "openclaw/plugin-sdk/channel-contract";
+} from "agdi/plugin-sdk/core";
+export { clearAccountEntryFields } from "agdi/plugin-sdk/core";
+export { buildChannelConfigSchema } from "agdi/plugin-sdk/channel-config-schema";
+export type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+export type { ChannelAccountSnapshot, ChannelGatewayContext } from "agdi/plugin-sdk/testing";
+export type { ChannelStatusIssue } from "agdi/plugin-sdk/channel-contract";
 export {
   buildComputedAccountStatusSnapshot,
   buildTokenChannelStatusSummary,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "agdi/plugin-sdk/status-helpers";
 export type {
   CardAction,
   LineChannelData,

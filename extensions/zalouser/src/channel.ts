@@ -1,17 +1,17 @@
-import { createScopedDmSecurityResolver } from "openclaw/plugin-sdk/channel-config-helpers";
-import { createAccountStatusSink } from "openclaw/plugin-sdk/channel-lifecycle";
-import { createPairingPrefixStripper } from "openclaw/plugin-sdk/channel-pairing";
+import { createScopedDmSecurityResolver } from "agdi/plugin-sdk/channel-config-helpers";
+import { createAccountStatusSink } from "agdi/plugin-sdk/channel-lifecycle";
+import { createPairingPrefixStripper } from "agdi/plugin-sdk/channel-pairing";
 import {
   createEmptyChannelResult,
   createRawChannelSendResultAdapter,
-} from "openclaw/plugin-sdk/channel-send-result";
-import { createStaticReplyToModeResolver } from "openclaw/plugin-sdk/conversation-runtime";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/core";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
+} from "agdi/plugin-sdk/channel-send-result";
+import { createStaticReplyToModeResolver } from "agdi/plugin-sdk/conversation-runtime";
+import { createChatChannelPlugin } from "agdi/plugin-sdk/core";
+import { buildPassiveProbedChannelStatusSummary } from "agdi/plugin-sdk/extension-shared";
 import {
   createAsyncComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "agdi/plugin-sdk/status-helpers";
 import type {
   ChannelAccountSnapshot,
   ChannelDirectoryEntry,

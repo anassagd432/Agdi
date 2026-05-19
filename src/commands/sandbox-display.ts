@@ -31,7 +31,7 @@ export function displayContainers(containers: SandboxContainerInfo[], runtime: R
     containers,
     {
       emptyMessage: "No sandbox runtimes found.",
-      title: "📦 Sandbox Runtimes:",
+      title: "ðŸ“¦ Sandbox Runtimes:",
       renderItem: (container, rt) => {
         rt.log(`  ${container.runtimeLabel ?? container.containerName}`);
         rt.log(`    Status:  ${formatStatus(container.running)}`);
@@ -58,7 +58,7 @@ export function displayBrowsers(browsers: SandboxBrowserInfo[], runtime: Runtime
     browsers,
     {
       emptyMessage: "No sandbox browser containers found.",
-      title: "🌐 Sandbox Browser Containers:",
+      title: "ðŸŒ Sandbox Browser Containers:",
       renderItem: (browser, rt) => {
         rt.log(`  ${browser.containerName}`);
         rt.log(`    Status:  ${formatStatus(browser.running)}`);
@@ -95,7 +95,7 @@ export function displaySummary(
   runtime.log(`Total: ${totalCount} (${runningCount} running)`);
 
   if (mismatchCount > 0) {
-    runtime.log(`\n⚠️  ${mismatchCount} runtime(s) with config mismatch detected.`);
+    runtime.log(`\nâš ï¸  ${mismatchCount} runtime(s) with config mismatch detected.`);
     runtime.log(
       `   Run '${formatCliCommand("openclaw sandbox recreate --all")}' to update all runtimes.`,
     );
@@ -110,7 +110,7 @@ export function displayRecreatePreview(
   runtime.log("\nSandbox runtimes to be recreated:\n");
 
   if (containers.length > 0) {
-    runtime.log("📦 Sandbox Runtimes:");
+    runtime.log("ðŸ“¦ Sandbox Runtimes:");
     for (const container of containers) {
       runtime.log(
         `  - ${container.runtimeLabel ?? container.containerName} [${container.backendId ?? "docker"}] (${formatSimpleStatus(container.running)})`,
@@ -119,7 +119,7 @@ export function displayRecreatePreview(
   }
 
   if (browsers.length > 0) {
-    runtime.log("\n🌐 Browser Containers:");
+    runtime.log("\nðŸŒ Browser Containers:");
     for (const browser of browsers) {
       runtime.log(`  - ${browser.containerName} (${formatSimpleStatus(browser.running)})`);
     }

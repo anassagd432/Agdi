@@ -4,22 +4,22 @@
  * Implements the ChannelPlugin interface following the LINE pattern.
  */
 
-import type { OpenClawConfig } from "openclaw/plugin-sdk/account-resolution";
+import type { OpenClawConfig } from "agdi/plugin-sdk/account-resolution";
 import {
   createHybridChannelConfigAdapter,
   createScopedDmSecurityResolver,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { waitUntilAbort } from "openclaw/plugin-sdk/channel-lifecycle";
+} from "agdi/plugin-sdk/channel-config-helpers";
+import { waitUntilAbort } from "agdi/plugin-sdk/channel-lifecycle";
 import {
   composeWarningCollectors,
   createConditionalWarningCollector,
   projectAccountConfigWarningCollector,
   projectAccountWarningCollector,
-} from "openclaw/plugin-sdk/channel-policy";
-import { attachChannelToResult } from "openclaw/plugin-sdk/channel-send-result";
-import { createChatChannelPlugin, type ChannelPlugin } from "openclaw/plugin-sdk/core";
-import { createEmptyChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/channel-policy";
+import { attachChannelToResult } from "agdi/plugin-sdk/channel-send-result";
+import { createChatChannelPlugin, type ChannelPlugin } from "agdi/plugin-sdk/core";
+import { createEmptyChannelDirectoryAdapter } from "agdi/plugin-sdk/directory-runtime";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/setup";
 import { listAccountIds, resolveAccount } from "./accounts.js";
 import { sendMessage, sendFileUrl } from "./client.js";
 import { SynologyChatChannelConfigSchema } from "./config-schema.js";

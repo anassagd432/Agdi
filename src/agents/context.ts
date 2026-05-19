@@ -357,7 +357,7 @@ function resolveConfiguredProviderContextWindow(
     return exactResult;
   }
 
-  // 2. Normalized fallback: covers alias keys such as "qwen" → "qwen-portal".
+  // 2. Normalized fallback: covers alias keys such as "qwen" â†’ "qwen-portal".
   const normalizedProvider = normalizeProviderId(provider);
   return findContextWindow((id) => normalizeProviderId(id) === normalizedProvider);
 }
@@ -396,7 +396,7 @@ export function resolveContextTokensForModel(params: {
     }
     // Only do the config direct scan when the caller explicitly passed a
     // provider. When provider is inferred from a slash in the model string
-    // (e.g. "google/gemini-2.5-pro" → ref.provider = "google"), the model ID
+    // (e.g. "google/gemini-2.5-pro" â†’ ref.provider = "google"), the model ID
     // may belong to a DIFFERENT provider (e.g. an OpenRouter session). Scanning
     // cfg.models.providers.google in that case would return Google's configured
     // window and misreport context limits for the OpenRouter session.
@@ -416,7 +416,7 @@ export function resolveContextTokensForModel(params: {
   // When provider is explicitly given and the model ID is bare (no slash),
   // try the provider-qualified cache key BEFORE the bare key.  Discovery
   // entries are stored under qualified IDs (e.g. "google-gemini-cli/
-  // gemini-3.1-pro-preview → 1M"), while the bare key may hold a cross-
+  // gemini-3.1-pro-preview â†’ 1M"), while the bare key may hold a cross-
   // provider minimum (128k).  Returning the qualified entry gives the correct
   // provider-specific window for /status and session context-token persistence.
   //
@@ -424,7 +424,7 @@ export function resolveContextTokensForModel(params: {
   // the model string). For model-only callers (e.g. status.ts log-usage
   // fallback with model="google/gemini-2.5-pro"), the inferred provider would
   // construct "google/gemini-2.5-pro" as the qualified key which accidentally
-  // matches OpenRouter's raw discovery entry — the bare lookup is correct there.
+  // matches OpenRouter's raw discovery entry â€” the bare lookup is correct there.
   if (params.provider && ref && !ref.model.includes("/")) {
     const qualifiedResult = lookupContextTokens(
       `${normalizeProviderId(ref.provider)}/${ref.model}`,

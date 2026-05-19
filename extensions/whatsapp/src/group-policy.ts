@@ -2,7 +2,7 @@ import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
+} from "agdi/plugin-sdk/channel-policy";
 import type { OpenClawConfig } from "./runtime-api.js";
 
 type WhatsAppGroupContext = {

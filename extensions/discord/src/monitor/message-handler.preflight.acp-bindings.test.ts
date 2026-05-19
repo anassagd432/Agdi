@@ -4,7 +4,7 @@ import { createConfiguredBindingConversationRuntimeModuleMock } from "../../../.
 const ensureConfiguredBindingRouteReadyMock = vi.hoisted(() => vi.fn());
 const resolveConfiguredBindingRouteMock = vi.hoisted(() => vi.fn());
 
-vi.mock("openclaw/plugin-sdk/conversation-runtime", async (importOriginal) => {
+vi.mock("agdi/plugin-sdk/conversation-runtime", async (importOriginal) => {
   return await createConfiguredBindingConversationRuntimeModuleMock(
     {
       ensureConfiguredBindingRouteReadyMock,

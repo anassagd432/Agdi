@@ -4,17 +4,17 @@ import {
   formatLocationText,
   resolveInboundSessionEnvelopeContext,
   toLocationContext,
-} from "openclaw/plugin-sdk/channel-inbound";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   recordInboundSession,
   resolvePinnedMainDmOwnerFromAllowlist,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { recordChannelActivity } from "openclaw/plugin-sdk/infra-runtime";
-import type { HistoryEntry } from "openclaw/plugin-sdk/reply-history";
-import { finalizeInboundContext } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/conversation-runtime";
+import { recordChannelActivity } from "agdi/plugin-sdk/infra-runtime";
+import type { HistoryEntry } from "agdi/plugin-sdk/reply-history";
+import { finalizeInboundContext } from "agdi/plugin-sdk/reply-runtime";
+import { resolveAgentRoute } from "agdi/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
 import { normalizeAllowFrom } from "./bot-access.js";
 import { resolveLineGroupConfigEntry, resolveLineGroupHistoryKey } from "./group-keys.js";
 import type { LineGroupConfig, ResolvedLineAccount } from "./types.js";

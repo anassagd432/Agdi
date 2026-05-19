@@ -373,13 +373,13 @@ describe("gateway node command allowlist", () => {
     const cases = [
       {
         label: "dotted-i-platform",
-        platform: "İOS",
+        platform: "Ä°OS",
         deviceFamily: "iPhone",
       },
       {
         label: "greek-omicron-family",
         platform: "ios",
-        deviceFamily: "iPhοne",
+        deviceFamily: "iPhÎ¿ne",
       },
     ] as const;
 

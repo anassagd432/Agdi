@@ -119,7 +119,7 @@ export function selectDefaultNodeFromList(
   }
 
   const ordered = [...candidates].toSorted(compareDefaultNodeOrder);
-  // Multiple candidates — pick the first connected canvas-capable node.
+  // Multiple candidates â€” pick the first connected canvas-capable node.
   // For A2UI and other canvas operations, any node works since multi-node
   // setups broadcast surfaces across devices.
   return ordered[0] ?? null;

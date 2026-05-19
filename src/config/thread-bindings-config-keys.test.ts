@@ -89,7 +89,7 @@ describe("thread binding config keys", () => {
       | undefined;
     expect(normalized?.ttlHours).toBeUndefined();
     expect(result.changes).toContain(
-      "Moved session.threadBindings.ttlHours → session.threadBindings.idleHours.",
+      "Moved session.threadBindings.ttlHours â†’ session.threadBindings.idleHours.",
     );
   });
 
@@ -134,10 +134,10 @@ describe("thread binding config keys", () => {
     ).toBeUndefined();
 
     expect(result.changes).toContain(
-      "Moved channels.discord.threadBindings.ttlHours → channels.discord.threadBindings.idleHours.",
+      "Moved channels.discord.threadBindings.ttlHours â†’ channels.discord.threadBindings.idleHours.",
     );
     expect(result.changes).toContain(
-      "Moved channels.discord.accounts.alpha.threadBindings.ttlHours → channels.discord.accounts.alpha.threadBindings.idleHours.",
+      "Moved channels.discord.accounts.alpha.threadBindings.ttlHours â†’ channels.discord.accounts.alpha.threadBindings.idleHours.",
     );
     expect(result.changes).toContain(
       "Removed channels.discord.accounts.beta.threadBindings.ttlHours (channels.discord.accounts.beta.threadBindings.idleHours already set).",

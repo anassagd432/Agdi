@@ -529,7 +529,7 @@ export async function runTui(opts: TuiOptions) {
       return;
     }
 
-    statusLoader.setMessage(`${activityStatus} • ${elapsed} | ${connectionStatus}`);
+    statusLoader.setMessage(`${activityStatus} â€¢ ${elapsed} | ${connectionStatus}`);
   };
 
   const startStatusTimer = () => {

@@ -68,7 +68,7 @@ describe("buildStatusReply subagent summary", () => {
       defaultGroupActivation: params.defaultGroupActivation,
     });
 
-    expect(reply?.text).toContain("🤖 Subagents: 1 active");
+    expect(reply?.text).toContain("ðŸ¤– Subagents: 1 active");
   });
 
   it("dedupes stale rows in the verbose subagent status summary", async () => {
@@ -123,8 +123,8 @@ describe("buildStatusReply subagent summary", () => {
       defaultGroupActivation: params.defaultGroupActivation,
     });
 
-    expect(reply?.text).toContain("🤖 Subagents: 1 active");
-    expect(reply?.text).not.toContain("· 1 done");
+    expect(reply?.text).toContain("ðŸ¤– Subagents: 1 active");
+    expect(reply?.text).not.toContain("Â· 1 done");
   });
 
   it("does not count a child session that moved to a newer parent in the old parent's status", async () => {
@@ -201,7 +201,7 @@ describe("buildStatusReply subagent summary", () => {
       defaultGroupActivation: params.defaultGroupActivation,
     });
 
-    expect(reply?.text).not.toContain("🤖 Subagents: 1 active");
+    expect(reply?.text).not.toContain("ðŸ¤– Subagents: 1 active");
     expect(reply?.text).not.toContain("stale old parent child");
   });
 });

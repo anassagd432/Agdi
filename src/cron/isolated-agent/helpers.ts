@@ -1,4 +1,4 @@
-import { hasOutboundReplyContent } from "openclaw/plugin-sdk/reply-payload";
+import { hasOutboundReplyContent } from "agdi/plugin-sdk/reply-payload";
 import { DEFAULT_HEARTBEAT_ACK_MAX_CHARS } from "../../auto-reply/heartbeat.js";
 import type { ReplyPayload } from "../../auto-reply/types.js";
 import { truncateUtf16Safe } from "../../utils.js";
@@ -26,7 +26,7 @@ export function pickSummaryFromOutput(text: string | undefined) {
     return undefined;
   }
   const limit = 2000;
-  return clean.length > limit ? `${truncateUtf16Safe(clean, limit)}…` : clean;
+  return clean.length > limit ? `${truncateUtf16Safe(clean, limit)}â€¦` : clean;
 }
 
 export function pickSummaryFromPayloads(

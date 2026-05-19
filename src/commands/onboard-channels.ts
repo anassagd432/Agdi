@@ -189,7 +189,7 @@ async function collectChannelStatus(params: {
         channel: meta.id,
         configured,
         statusLines: [`${meta.label}: ${statusLabel}`],
-        selectionHint: configured ? "configured · plugin disabled" : "not configured",
+        selectionHint: configured ? "configured Â· plugin disabled" : "not configured",
         quickstartScore: 0,
       };
     });
@@ -218,7 +218,7 @@ async function collectChannelStatus(params: {
     channel: entry.id,
     configured: false,
     statusLines: [`${entry.meta.label}: install plugin to enable`],
-    selectionHint: "plugin · install",
+    selectionHint: "plugin Â· install",
     quickstartScore: 0,
   }));
   const combinedStatuses = [
@@ -273,7 +273,7 @@ async function noteChannelPrimer(
       `Approve with: ${formatCliCommand("openclaw pairing approve <channel> <code>")}`,
       'Public DMs require dmPolicy="open" + allowFrom=["*"].',
       "Multi-user DMs: run: " +
-        formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
+        formatCliCommand('agdi config set session.dmScope "per-channel-peer"') +
         ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
       `Docs: ${formatDocsLink("/channels/pairing", "channels/pairing")}`,
       "",
@@ -336,7 +336,7 @@ async function maybeConfigureDmPolicies(params: {
         `Allowlist DMs: ${policyKey}="allowlist" + ${allowFromKey} entries.`,
         `Public DMs: ${policyKey}="open" + ${allowFromKey} includes "*".`,
         "Multi-user DMs: run: " +
-          formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
+          formatCliCommand('agdi config set session.dmScope "per-channel-peer"') +
           ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
         `Docs: ${formatDocsLink("/channels/pairing", "channels/pairing")}`,
       ].join("\n"),
@@ -575,7 +575,7 @@ export async function setupChannels(
     entries.map((entry) => {
       const status = statusByChannel.get(entry.id);
       const disabledHint = resolveDisabledHint(entry.id);
-      const hint = [status?.selectionHint, disabledHint].filter(Boolean).join(" · ") || undefined;
+      const hint = [status?.selectionHint, disabledHint].filter(Boolean).join(" Â· ") || undefined;
       return {
         value: entry.meta.id,
         label: entry.meta.selectionLabel ?? entry.meta.label,
@@ -855,7 +855,7 @@ export async function setupChannels(
         {
           value: "__skip__",
           label: "Skip for now",
-          hint: `You can add channels later via \`${formatCliCommand("openclaw channels add")}\``,
+          hint: `You can add channels later via \`${formatCliCommand("agdi channels add")}\``,
         },
       ],
       initialValue: quickstartDefault,

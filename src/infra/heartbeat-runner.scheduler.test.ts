@@ -149,7 +149,7 @@ describe("startHeartbeatRunner", () => {
     // Start runner B (simulates lifecycle reload)
     const runnerB = startHeartbeatRunner({ cfg, runOnce: runSpy2 });
 
-    // Stop runner A (stale cleanup) — should NOT kill runner B's handler
+    // Stop runner A (stale cleanup) â€” should NOT kill runner B's handler
     runnerA.stop();
 
     // Runner B should still fire
@@ -211,7 +211,7 @@ describe("startHeartbeatRunner", () => {
       runOnce: runSpy,
     });
 
-    // Trigger the first heartbeat at t=30m — returns requests-in-flight.
+    // Trigger the first heartbeat at t=30m â€” returns requests-in-flight.
     await vi.advanceTimersByTimeAsync(30 * 60_000 + 1_000);
     expect(runSpy).toHaveBeenCalledTimes(1);
 
@@ -222,7 +222,7 @@ describe("startHeartbeatRunner", () => {
     }
     expect(runSpy).toHaveBeenCalledTimes(5);
 
-    // The next interval tick at ~t=60m should still fire — the schedule
+    // The next interval tick at ~t=60m should still fire â€” the schedule
     // must not have been pushed to t=30m * 6 = 180m by the 5 retries.
     await vi.advanceTimersByTimeAsync(30 * 60_000);
     expect(runSpy).toHaveBeenCalledTimes(6);

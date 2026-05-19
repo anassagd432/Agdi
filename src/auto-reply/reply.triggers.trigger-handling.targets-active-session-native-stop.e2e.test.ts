@@ -41,10 +41,10 @@ vi.mock("./reply/agent-runner.runtime.js", () => ({
     const runEmbeddedPiAgentMock = getRunEmbeddedPiAgentMock();
     const normalizeErrorText = (message: string) => {
       if (/context window exceeded/i.test(message)) {
-        return "⚠️ Context overflow — prompt too large for this model. Try a shorter message or a larger-context model.";
+        return "âš ï¸ Context overflow â€” prompt too large for this model. Try a shorter message or a larger-context model.";
       }
       const trimmed = message.replace(/\.\s*$/, "");
-      return `⚠️ Agent failed before reply: ${trimmed}.\nLogs: openclaw logs --follow`;
+      return `âš ï¸ Agent failed before reply: ${trimmed}.\nLogs: openclaw logs --follow`;
     };
     const stripHeartbeat = (text?: string) => {
       const trimmed = text?.trim();
@@ -197,12 +197,12 @@ describe("trigger handling", () => {
     {
       error: "sandbox is not defined.",
       expected:
-        "⚠️ Agent failed before reply: sandbox is not defined.\nLogs: openclaw logs --follow",
+        "âš ï¸ Agent failed before reply: sandbox is not defined.\nLogs: openclaw logs --follow",
     },
     {
       error: "Context window exceeded",
       expected:
-        "⚠️ Context overflow — prompt too large for this model. Try a shorter message or a larger-context model.",
+        "âš ï¸ Context overflow â€” prompt too large for this model. Try a shorter message or a larger-context model.",
     },
   ] as const) {
     it(`surfaces agent error: ${testCase.error}`, async () => {
@@ -355,7 +355,7 @@ describe("trigger handling", () => {
         cfg,
       );
       const text = maybeReplyText(res);
-      expect(text?.startsWith("⚙️ Compacted")).toBe(true);
+      expect(text?.startsWith("âš™ï¸ Compacted")).toBe(true);
       expect(getCompactEmbeddedPiSessionMock()).toHaveBeenCalledOnce();
       const store = loadSessionStore(storePath);
       const sessionKey = resolveSessionKey("per-sender", request);
@@ -382,7 +382,7 @@ describe("trigger handling", () => {
       );
 
       const text = maybeReplyText(res);
-      expect(text?.startsWith("⚙️ Compacted")).toBe(true);
+      expect(text?.startsWith("âš™ï¸ Compacted")).toBe(true);
       expect(getCompactEmbeddedPiSessionMock()).toHaveBeenCalledOnce();
       expect(getCompactEmbeddedPiSessionMock().mock.calls[0]?.[0]?.sessionFile).toContain(
         join("agents", "worker1", "sessions"),
@@ -455,7 +455,7 @@ describe("trigger handling", () => {
       );
 
       const text = Array.isArray(res) ? res[0]?.text : res?.text;
-      expect(text).toBe("⚙️ Agent was aborted.");
+      expect(text).toBe("âš™ï¸ Agent was aborted.");
       expect(getAbortEmbeddedPiRunMock()).toHaveBeenCalledWith(targetSessionId);
       const store = loadSessionStore(storePath);
       expect(store[targetSessionKey]?.abortedLastRun).toBe(true);

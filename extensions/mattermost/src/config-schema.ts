@@ -1,4 +1,4 @@
-import { requireChannelOpenAllowFrom } from "openclaw/plugin-sdk/extension-shared";
+import { requireChannelOpenAllowFrom } from "agdi/plugin-sdk/extension-shared";
 import { z } from "zod";
 import {
   BlockStreamingCoalesceSchema,

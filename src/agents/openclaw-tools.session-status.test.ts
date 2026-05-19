@@ -185,7 +185,7 @@ async function loadFreshOpenClawToolsForSessionStatusTest() {
     resolveQueueSettings: () => ({ mode: "interrupt" }),
   }));
   vi.doMock("../auto-reply/status.js", () => ({
-    buildStatusMessage: () => "OpenClaw\n🧠 Model: GPT-5.4",
+    buildStatusMessage: () => "OpenClaw\nðŸ§  Model: GPT-5.4",
   }));
   ({ createSessionStatusTool } = await import("./tools/session-status-tool.js"));
 }
@@ -304,7 +304,7 @@ describe("session_status tool", () => {
     const details = result.details as { ok?: boolean; statusText?: string };
     expect(details.ok).toBe(true);
     expect(details.statusText).toContain("OpenClaw");
-    expect(details.statusText).toContain("🧠 Model:");
+    expect(details.statusText).toContain("ðŸ§  Model:");
     expect(details.statusText).not.toContain("OAuth/token status");
   });
 

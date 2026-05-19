@@ -217,7 +217,7 @@ describe("timeout-triggered compaction", () => {
 
     const result = await runEmbeddedPiAgent(overflowBaseRunParams);
 
-    // Compaction was attempted but failed → falls through to timeout error payload
+    // Compaction was attempted but failed â†’ falls through to timeout error payload
     expect(mockedCompactDirect).toHaveBeenCalledTimes(1);
     expect(result.payloads?.[0]?.isError).toBe(true);
     expect(result.payloads?.[0]?.text).toContain("timed out");
@@ -380,7 +380,7 @@ describe("timeout-triggered compaction", () => {
 
     const result = await runEmbeddedPiAgent(overflowBaseRunParams);
 
-    // Should not crash — falls through to normal timeout handling
+    // Should not crash â€” falls through to normal timeout handling
     expect(mockedCompactDirect).toHaveBeenCalledTimes(1);
     expect(result.payloads?.[0]?.isError).toBe(true);
     expect(result.payloads?.[0]?.text).toContain("timed out");
@@ -434,7 +434,7 @@ describe("timeout-triggered compaction", () => {
 
   it("counts compacted:false timeout compactions against the retry cap across profile rotation", async () => {
     useTwoAuthProfiles();
-    // Attempt 1 (profile-a): timeout → compaction #1 fails → rotate to profile-b
+    // Attempt 1 (profile-a): timeout â†’ compaction #1 fails â†’ rotate to profile-b
     mockedRunEmbeddedAttempt
       .mockResolvedValueOnce(
         makeAttemptResult({
@@ -445,7 +445,7 @@ describe("timeout-triggered compaction", () => {
           } as never,
         }),
       )
-      // Attempt 2 (profile-b): timeout → compaction #2 fails → cap exhausted → rotation
+      // Attempt 2 (profile-b): timeout â†’ compaction #2 fails â†’ cap exhausted â†’ rotation
       .mockResolvedValueOnce(
         makeAttemptResult({
           timedOut: true,
@@ -497,7 +497,7 @@ describe("timeout-triggered compaction", () => {
 
   it("counts thrown timeout compactions against the retry cap across profile rotation", async () => {
     useTwoAuthProfiles();
-    // Attempt 1 (profile-a): timeout → compaction #1 throws → rotate to profile-b
+    // Attempt 1 (profile-a): timeout â†’ compaction #1 throws â†’ rotate to profile-b
     mockedRunEmbeddedAttempt
       .mockResolvedValueOnce(
         makeAttemptResult({
@@ -508,7 +508,7 @@ describe("timeout-triggered compaction", () => {
           } as never,
         }),
       )
-      // Attempt 2 (profile-b): timeout → compaction #2 throws → cap exhausted → rotation
+      // Attempt 2 (profile-b): timeout â†’ compaction #2 throws â†’ cap exhausted â†’ rotation
       .mockResolvedValueOnce(
         makeAttemptResult({
           timedOut: true,

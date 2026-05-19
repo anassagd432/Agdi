@@ -86,10 +86,10 @@ x-i18n:
 
 Agdi 在 CLI 输出中使用龙虾色调调色板。
 
-- `accent` (#FF5A2D)：标题、标签、主要高亮。
-- `accentBright` (#FF7A3D)：命令名称、强调。
-- `accentDim` (#D14A22)：次级高亮文本。
-- `info` (#FF8A5B)：信息性值。
+- `accent` (#2D7FF5)：标题、标签、主要高亮。
+- `accentBright` (#3D9AFF)：命令名称、强调。
+- `accentDim` (#2266CC)：次级高亮文本。
+- `info` (#5BA0FF)：信息性值。
 - `success` (#2FBF71)：成功状态。
 - `warn` (#FFB020)：警告、回退、注意事项。
 - `error` (#E23D2D)：错误、失败。

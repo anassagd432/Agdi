@@ -2,12 +2,12 @@ import {
   buildCloudflareAiGatewayModelDefinition,
   CLOUDFLARE_AI_GATEWAY_DEFAULT_MODEL_REF,
   resolveCloudflareAiGatewayBaseUrl,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 import {
   applyAgentDefaultModelPrimary,
   applyProviderConfigWithDefaultModel,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/provider-onboard";
+} from "agdi/plugin-sdk/provider-onboard";
 
 export { CLOUDFLARE_AI_GATEWAY_DEFAULT_MODEL_REF };
 

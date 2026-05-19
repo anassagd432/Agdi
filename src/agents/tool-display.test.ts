@@ -124,7 +124,7 @@ describe("tool display details", () => {
     );
 
     expect(detail).toBe(
-      "install dependencies → run tests (in ~/my-project), `cd ~/my-project && npm install && npm test`",
+      "install dependencies â†’ run tests (in ~/my-project), `cd ~/my-project && npm install && npm test`",
     );
   });
 
@@ -158,9 +158,9 @@ describe("tool display details", () => {
       }),
     );
 
-    // || means npm install runs when cd FAILS — cd should NOT be stripped as preamble.
+    // || means npm install runs when cd FAILS â€” cd should NOT be stripped as preamble.
     // Both stages are summarized; cd is not treated as context prefix.
-    expect(detail).toMatch(/^run cd \/app → install dependencies/);
+    expect(detail).toMatch(/^run cd \/app â†’ install dependencies/);
   });
 
   it("explicit workdir takes priority over cd path", () => {
@@ -183,7 +183,7 @@ describe("tool display details", () => {
     );
 
     expect(detail).toBe(
-      "fetch git changes → rebase git branch, `git fetch && git rebase origin/main`",
+      "fetch git changes â†’ rebase git branch, `git fetch && git rebase origin/main`",
     );
   });
 
@@ -217,8 +217,8 @@ describe("tool display details", () => {
       }),
     );
 
-    // "run cargo build" is generic, but "run tests" is known — keep joined summary
-    expect(detail).toMatch(/^run cargo build → run tests/);
+    // "run cargo build" is generic, but "run tests" is known â€” keep joined summary
+    expect(detail).toMatch(/^run cargo build â†’ run tests/);
   });
 
   it("handles standalone cd as raw command", () => {
@@ -229,7 +229,7 @@ describe("tool display details", () => {
       }),
     );
 
-    // standalone cd (no following command) — treated as raw since it's generic
+    // standalone cd (no following command) â€” treated as raw since it's generic
     expect(detail).toBe("cd /tmp");
   });
 
@@ -253,7 +253,7 @@ describe("tool display details", () => {
       }),
     );
 
-    // The && inside quotes must not be treated as a separator —
+    // The && inside quotes must not be treated as a separator â€”
     // summary line should be "print text", not "run export" (which would happen
     // if the quoted && was mistaken for a real separator).
     expect(detail).toMatch(/^print text/);

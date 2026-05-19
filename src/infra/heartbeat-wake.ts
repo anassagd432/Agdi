@@ -129,7 +129,7 @@ function schedule(coalesceMs: number, kind: WakeTimerKind = "normal") {
     if (typeof timerDueAt === "number" && timerDueAt <= dueAt) {
       return;
     }
-    // New request needs to fire sooner — preempt the existing timer.
+    // New request needs to fire sooner â€” preempt the existing timer.
     clearTimeout(timer);
     timer = null;
     timerDueAt = null;

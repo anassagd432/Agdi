@@ -59,7 +59,7 @@ const isCompatibleModeType = (mode: string | undefined, type: string | undefined
   if (mode === type) {
     return true;
   }
-  // Both token and oauth represent bearer-token auth paths — allow bidirectional compat.
+  // Both token and oauth represent bearer-token auth paths â€” allow bidirectional compat.
   return BEARER_AUTH_MODES.has(mode) && BEARER_AUTH_MODES.has(type);
 };
 

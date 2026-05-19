@@ -1,7 +1,7 @@
 import type { SessionEntry } from "./types.js";
 
 export function applySessionStoreMigrations(store: Record<string, SessionEntry>): void {
-  // Best-effort migration: message provider → channel naming.
+  // Best-effort migration: message provider â†’ channel naming.
   for (const entry of Object.values(store)) {
     if (!entry || typeof entry !== "object") {
       continue;
@@ -16,7 +16,7 @@ export function applySessionStoreMigrations(store: Record<string, SessionEntry>)
       delete rec.lastProvider;
     }
 
-    // Best-effort migration: legacy `room` field → `groupChannel` (keep value, prune old key).
+    // Best-effort migration: legacy `room` field â†’ `groupChannel` (keep value, prune old key).
     if (typeof rec.groupChannel !== "string" && typeof rec.room === "string") {
       rec.groupChannel = rec.room;
       delete rec.room;

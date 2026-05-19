@@ -1,7 +1,7 @@
-import type { BackoffPolicy } from "openclaw/plugin-sdk/infra-runtime";
-import { computeBackoff, sleepWithAbort } from "openclaw/plugin-sdk/infra-runtime";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import type { RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
+import type { BackoffPolicy } from "agdi/plugin-sdk/infra-runtime";
+import { computeBackoff, sleepWithAbort } from "agdi/plugin-sdk/infra-runtime";
+import { logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 import { type SignalSseEvent, streamSignalEvents } from "./client.js";
 
 const DEFAULT_RECONNECT_POLICY: BackoffPolicy = {

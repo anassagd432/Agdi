@@ -346,12 +346,12 @@ describe("isContextOverflowError", () => {
 
   it("matches Chinese context overflow error messages from proxy providers", () => {
     const samples = [
-      "上下文过长",
-      "错误：上下文过长，请减少输入",
-      "上下文超出限制",
-      "上下文长度超出模型最大限制",
-      "超出最大上下文长度",
-      "请压缩上下文后重试",
+      "ä¸Šä¸‹æ–‡è¿‡é•¿",
+      "é”™è¯¯ï¼šä¸Šä¸‹æ–‡è¿‡é•¿ï¼Œè¯·å‡å°‘è¾“å…¥",
+      "ä¸Šä¸‹æ–‡è¶…å‡ºé™åˆ¶",
+      "ä¸Šä¸‹æ–‡é•¿åº¦è¶…å‡ºæ¨¡åž‹æœ€å¤§é™åˆ¶",
+      "è¶…å‡ºæœ€å¤§ä¸Šä¸‹æ–‡é•¿åº¦",
+      "è¯·åŽ‹ç¼©ä¸Šä¸‹æ–‡åŽé‡è¯•",
     ];
     for (const sample of samples) {
       expect(isContextOverflowError(sample)).toBe(true);
@@ -645,7 +645,7 @@ describe("image dimension errors", () => {
   });
 });
 
-describe("classifyFailoverReasonFromHttpStatus – 402 temporary limits", () => {
+describe("classifyFailoverReasonFromHttpStatus â€“ 402 temporary limits", () => {
   it("reclassifies periodic usage limits as rate_limit", () => {
     const samples = [
       "Monthly spend limit reached.",
@@ -818,8 +818,8 @@ describe("classifyFailoverReason", () => {
         "This model is currently experiencing high demand. Please try again later.",
       ),
     ).toBe("overloaded");
-    // "service unavailable" combined with overload/capacity indicator → overloaded
-    // (exercises the new regex — none of the standalone patterns match here)
+    // "service unavailable" combined with overload/capacity indicator â†’ overloaded
+    // (exercises the new regex â€” none of the standalone patterns match here)
     expect(classifyFailoverReason("service unavailable due to capacity limits")).toBe("overloaded");
     expect(
       classifyFailoverReason(

@@ -14,7 +14,7 @@ const runCronIsolatedAgentTurn = await loadRunCronIsolatedAgentTurn();
 
 // ---------- tests ----------
 
-describe("runCronIsolatedAgentTurn — payload.fallbacks", () => {
+describe("runCronIsolatedAgentTurn â€” payload.fallbacks", () => {
   setupRunCronIsolatedAgentTurnSuite();
 
   it.each([

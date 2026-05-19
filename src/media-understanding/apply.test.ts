@@ -1055,7 +1055,7 @@ describe("applyMediaUnderstanding", () => {
   });
 
   it("escapes XML special characters in filenames to prevent injection", async () => {
-    // Use & in filename — valid on all platforms (including Windows, which
+    // Use & in filename â€” valid on all platforms (including Windows, which
     // forbids < and > in NTFS filenames) and still requires XML escaping.
     // Note: The sanitizeFilename in store.ts would strip most dangerous chars,
     // but we test that even if some slip through, they get escaped in output
@@ -1156,8 +1156,8 @@ describe("applyMediaUnderstanding", () => {
 
   it("handles files with non-ASCII Unicode filenames", async () => {
     const filePath = await createTempMediaFile({
-      fileName: "文档.txt",
-      content: "中文内容",
+      fileName: "æ–‡æ¡£.txt",
+      content: "ä¸­æ–‡å†…å®¹",
     });
 
     const { ctx, result } = await applyWithDisabledMedia({
@@ -1167,7 +1167,7 @@ describe("applyMediaUnderstanding", () => {
     });
 
     expect(result.appliedFile).toBe(true);
-    expect(ctx.Body).toContain("中文内容");
+    expect(ctx.Body).toContain("ä¸­æ–‡å†…å®¹");
   });
 
   it("skips binary application/vnd office attachments even when bytes look printable", async () => {

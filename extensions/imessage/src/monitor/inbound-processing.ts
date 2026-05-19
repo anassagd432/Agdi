@@ -6,27 +6,27 @@ import {
   logInboundDrop,
   matchesMentionPatterns,
   resolveEnvelopeFormatOptions,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth";
-import { resolveDualTextControlCommandGate } from "openclaw/plugin-sdk/command-auth";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { hasControlCommand } from "agdi/plugin-sdk/command-auth";
+import { resolveDualTextControlCommandGate } from "agdi/plugin-sdk/command-auth";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveChannelGroupPolicy,
   resolveChannelGroupRequireMention,
-} from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/config-runtime";
 import {
   buildPendingHistoryContextFromMap,
   recordPendingHistoryEntryIfEnabled,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { finalizeInboundContext } from "openclaw/plugin-sdk/reply-runtime";
-import { resolveAgentRoute } from "openclaw/plugin-sdk/routing";
+} from "agdi/plugin-sdk/reply-history";
+import { finalizeInboundContext } from "agdi/plugin-sdk/reply-runtime";
+import { resolveAgentRoute } from "agdi/plugin-sdk/routing";
 import {
   DM_GROUP_ACCESS_REASON,
   resolveDmGroupAccessWithLists,
-} from "openclaw/plugin-sdk/security-runtime";
-import { sanitizeTerminalText } from "openclaw/plugin-sdk/text-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/security-runtime";
+import { sanitizeTerminalText } from "agdi/plugin-sdk/text-runtime";
+import { truncateUtf16Safe } from "agdi/plugin-sdk/text-runtime";
 import {
   formatIMessageChatTarget,
   isAllowedIMessageSender,

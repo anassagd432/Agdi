@@ -1,5 +1,5 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
 
 type DiscordAudioAttachment = {
   content_type?: string;

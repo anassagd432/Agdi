@@ -1,4 +1,4 @@
-import { isAllowedParsedChatSender } from "openclaw/plugin-sdk/allow-from";
+import { isAllowedParsedChatSender } from "agdi/plugin-sdk/allow-from";
 
 export type ServicePrefix<TService extends string> = { prefix: string; service: TService };
 

@@ -288,7 +288,7 @@ describe("applyPatch", () => {
       await fs.writeFile(outsideFile, "victim\n", "utf8");
 
       const linkDir = path.join(dir, "linkdir");
-      // Use 'junction' on Windows — junctions target directories without
+      // Use 'junction' on Windows â€” junctions target directories without
       // requiring SeCreateSymbolicLinkPrivilege.
       await fs.symlink(outsideDir, linkDir, process.platform === "win32" ? "junction" : undefined);
 
@@ -341,7 +341,7 @@ describe("applyPatch", () => {
         await fs.writeFile(outsideTarget, "keep\n", "utf8");
 
         const linkDir = path.join(dir, "link");
-        // Use 'junction' on Windows — junctions target directories without
+        // Use 'junction' on Windows â€” junctions target directories without
         // requiring SeCreateSymbolicLinkPrivilege.
         await fs.symlink(
           outsideDir,

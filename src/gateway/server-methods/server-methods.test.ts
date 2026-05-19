@@ -179,7 +179,7 @@ describe("injectTimestamp", () => {
 
   it("does NOT double-stamp messages with cron-injected timestamps", () => {
     const cronMessage =
-      "[cron:abc123 my-job] do the thing\nCurrent time: Wednesday, January 28th, 2026 — 8:30 PM (America/New_York)";
+      "[cron:abc123 my-job] do the thing\nCurrent time: Wednesday, January 28th, 2026 â€” 8:30 PM (America/New_York)";
     const result = injectTimestamp(cronMessage, { timezone: "America/New_York" });
 
     expect(result).toBe(cronMessage);
@@ -305,7 +305,7 @@ describe("sanitizeChatSendMessageInput", () => {
     {
       name: "normalizes unicode to NFC",
       input: "Cafe\u0301",
-      expected: { ok: true as const, message: "Café" },
+      expected: { ok: true as const, message: "CafÃ©" },
     },
   ])("$name", ({ input, expected }) => {
     expect(sanitizeChatSendMessageInput(input)).toEqual(expected);

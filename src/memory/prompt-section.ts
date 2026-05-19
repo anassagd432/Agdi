@@ -9,7 +9,7 @@ export type MemoryPromptSectionBuilder = (params: {
   citationsMode?: MemoryCitationsMode;
 }) => string[];
 
-// Module-level singleton — only one memory plugin can be active (exclusive slot).
+// Module-level singleton â€” only one memory plugin can be active (exclusive slot).
 let _builder: MemoryPromptSectionBuilder | undefined;
 
 export function registerMemoryPromptSection(builder: MemoryPromptSectionBuilder): void {

@@ -286,7 +286,7 @@ function summarizeCommandOutput(text: string): string | undefined {
   if (!last) {
     return undefined;
   }
-  return last.length > 240 ? `${last.slice(0, 239)}…` : last;
+  return last.length > 240 ? `${last.slice(0, 239)}â€¦` : last;
 }
 
 export async function ensureControlUiAssetsBuilt(
@@ -325,7 +325,7 @@ export async function ensureControlUiAssetsBuilt(
     };
   }
 
-  runtime.log("Control UI assets missing; building (ui:build, auto-installs UI deps)…");
+  runtime.log("Control UI assets missing; building (ui:build, auto-installs UI deps)â€¦");
 
   const build = await runCommandWithTimeout([process.execPath, uiScript, "build"], {
     cwd: repoRoot,

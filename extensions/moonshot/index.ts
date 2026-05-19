@@ -1,8 +1,8 @@
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
+import { defineSingleProviderPluginEntry } from "agdi/plugin-sdk/provider-entry";
 import {
   createMoonshotThinkingWrapper,
   resolveMoonshotThinkingType,
-} from "openclaw/plugin-sdk/provider-stream";
+} from "agdi/plugin-sdk/provider-stream";
 import { moonshotMediaUnderstandingProvider } from "./media-understanding-provider.js";
 import {
   applyMoonshotConfig,

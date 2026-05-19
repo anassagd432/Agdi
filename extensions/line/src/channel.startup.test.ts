@@ -1,4 +1,5 @@
-import type { AGDIConfig, PluginRuntime } from "agdi/plugin-sdk";
+import type { AGDIConfig } from "agdi/plugin-sdk/setup";
+import type { PluginRuntime } from "agdi/plugin-sdk/runtime-store";
 import { describe, expect, it, vi } from "vitest";
 import { linePlugin } from "./channel.js";
 import { setLineRuntime } from "./runtime.js";

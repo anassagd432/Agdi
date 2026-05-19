@@ -292,7 +292,7 @@ describe("initSessionState thread forking", () => {
 
     // Should be marked as forked (to prevent re-attempts) but NOT actually forked from parent
     expect(result.sessionEntry.forkedFromParent).toBe(true);
-    // Session ID should NOT match the parent — it should be a fresh UUID
+    // Session ID should NOT match the parent â€” it should be a fresh UUID
     expect(result.sessionEntry.sessionId).not.toBe(parentSessionId);
     // Session file should NOT be the parent's file (it was not forked)
     expect(result.sessionEntry.sessionFile).not.toBe(parentSessionFile);
@@ -1147,8 +1147,8 @@ describe("initSessionState reset triggers in WhatsApp groups", () => {
       {
         name: "authorized sender",
         allowFrom: ["+41796666864"],
-        body: `[Chat messages since your last reply - for context]\\n[WhatsApp 120363406150318674@g.us 2026-01-13T07:45Z] Someone: hello\\n\\n[Current message - respond to this]\\n[WhatsApp 120363406150318674@g.us 2026-01-13T07:45Z] Peschiño: /new\\n[from: Peschiño (+41796666864)]`,
-        senderName: "Peschiño",
+        body: `[Chat messages since your last reply - for context]\\n[WhatsApp 120363406150318674@g.us 2026-01-13T07:45Z] Someone: hello\\n\\n[Current message - respond to this]\\n[WhatsApp 120363406150318674@g.us 2026-01-13T07:45Z] PeschiÃ±o: /new\\n[from: PeschiÃ±o (+41796666864)]`,
+        senderName: "PeschiÃ±o",
         senderE164: "+41796666864",
         senderId: "41796666864:0@s.whatsapp.net",
         expectedIsNewSession: true,
@@ -2022,7 +2022,7 @@ describe("initSessionState internal channel routing preservation", () => {
       commandAuthorized: true,
     });
 
-    // External route must be preserved — webchat is admin/monitoring only
+    // External route must be preserved â€” webchat is admin/monitoring only
     expect(result.sessionEntry.lastChannel).toBe("imessage");
     expect(result.sessionEntry.lastTo).toBe("+1555");
     expect(result.sessionEntry.deliveryContext?.channel).toBe("imessage");

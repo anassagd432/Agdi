@@ -157,7 +157,7 @@ function addModelSelectOption(params: {
   params.options.push({
     value: key,
     label: key,
-    hint: hints.length > 0 ? hints.join(" · ") : undefined,
+    hint: hints.length > 0 ? hints.join(" Â· ") : undefined,
   });
   params.seen.add(key);
 }

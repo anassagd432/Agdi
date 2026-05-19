@@ -74,8 +74,8 @@ function extendExecMeta(toolName: string, args: unknown, meta?: string): string 
   if (flags.length === 0) {
     return meta;
   }
-  const suffix = flags.join(" · ");
-  return meta ? `${meta} · ${suffix}` : suffix;
+  const suffix = flags.join(" Â· ");
+  return meta ? `${meta} Â· ${suffix}` : suffix;
 }
 
 function pushUniqueMediaUrl(urls: string[], seen: Set<string>, value: unknown): void {

@@ -118,7 +118,7 @@ describe("cdp", () => {
       });
 
       expect(created.targetId).toBe("TARGET_WS_DIRECT");
-      // /json/version should NOT have been called — direct WS skips HTTP discovery
+      // /json/version should NOT have been called â€” direct WS skips HTTP discovery
       expect(fetchSpy).not.toHaveBeenCalled();
     } finally {
       fetchSpy.mockRestore();

@@ -47,12 +47,13 @@ afterEach(async () => {
 });
 
 describe("resolveAcpClientSpawnEnv", () => {
-  it("sets OPENCLAW_SHELL marker and preserves existing env values", () => {
+  it("sets AGDI_SHELL marker and preserves existing env values", () => {
     const env = resolveAcpClientSpawnEnv({
       PATH: "/usr/bin",
       USER: "openclaw",
     });
 
+    expect(env.AGDI_SHELL).toBe("acp-client");
     expect(env.OPENCLAW_SHELL).toBe("acp-client");
     expect(env.PATH).toBe("/usr/bin");
     expect(env.USER).toBe("openclaw");
@@ -62,6 +63,7 @@ describe("resolveAcpClientSpawnEnv", () => {
     const env = resolveAcpClientSpawnEnv({
       OPENCLAW_SHELL: "wrong",
     });
+    expect(env.AGDI_SHELL).toBe("acp-client");
     expect(env.OPENCLAW_SHELL).toBe("acp-client");
   });
 
@@ -81,6 +83,7 @@ describe("resolveAcpClientSpawnEnv", () => {
     );
 
     expect(env.PATH).toBe("/usr/bin");
+    expect(env.AGDI_SHELL).toBe("acp-client");
     expect(env.OPENCLAW_SHELL).toBe("acp-client");
     expect(env.ANTHROPIC_API_KEY).toBe("anthropic-test-value");
     expect(env.OPENAI_API_KEY).toBeUndefined();
@@ -109,6 +112,7 @@ describe("resolveAcpClientSpawnEnv", () => {
       { stripKeys: new Set(["OPENCLAW_SHELL", openAiApiKeyEnv]) },
     );
 
+    expect(env.AGDI_SHELL).toBe("acp-client");
     expect(env.OPENCLAW_SHELL).toBe("acp-client");
     expect(env.OPENAI_API_KEY).toBeUndefined();
   });
@@ -131,6 +135,7 @@ describe("resolveAcpClientSpawnEnv", () => {
     expect(env.HF_TOKEN).toBeUndefined();
     expect(env.OPENCLAW_API_KEY).toBe("keep-me");
     expect(env.PATH).toBe("/usr/bin");
+    expect(env.AGDI_SHELL).toBe("acp-client");
     expect(env.OPENCLAW_SHELL).toBe("acp-client");
   });
 
@@ -607,12 +612,12 @@ describe("resolvePermissionRequest", () => {
       request: {
         toolCall: {
           toolCallId: "tool-bad-title-name",
-          title: "read🚀: src/index.ts",
+          title: "readðŸš€: src/index.ts",
           status: "pending",
         },
       },
       expectedToolName: undefined,
-      expectedTitle: "read🚀: src/index.ts",
+      expectedTitle: "readðŸš€: src/index.ts",
     });
   });
 

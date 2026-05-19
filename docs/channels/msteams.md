@@ -24,7 +24,7 @@ Explainable: keeps core installs lighter and lets Microsoft Teams dependencies u
 Install via CLI (npm registry):
 
 ```bash
-agdi plugins install @agdi/msteams
+agdi plugins install @openclaw/msteams
 ```
 
 Local checkout (when running from a git repo):
@@ -241,7 +241,7 @@ This is often easier than hand-editing JSON manifests.
 ## Setup (minimal text-only)
 
 1. **Install the Microsoft Teams plugin**
-   - From npm: `agdi plugins install @agdi/msteams`
+   - From npm: `agdi plugins install @openclaw/msteams`
    - From a local checkout: `agdi plugins install ./extensions/msteams`
 
 2. **Bot registration**

@@ -580,7 +580,7 @@ export async function runReplyAgent(params: {
         hasUnbackedReminderCommitment(payload.text),
     );
     // Suppress the guard note when an existing cron job (created in a prior
-    // turn) already covers the commitment — avoids false positives (#32228).
+    // turn) already covers the commitment â€” avoids false positives (#32228).
     const coveredByExistingCron =
       hasReminderCommitment && successfulCronAdds === 0
         ? await hasSessionRelatedCronJobs({
@@ -653,7 +653,7 @@ export async function runReplyAgent(params: {
         costConfig,
       });
       if (formatted && responseUsageMode === "full" && sessionKey) {
-        formatted = `${formatted} · session \`${sessionKey}\``;
+        formatted = `${formatted} Â· session \`${sessionKey}\``;
       }
       if (formatted) {
         responseUsageLine = formatted;
@@ -665,7 +665,7 @@ export async function runReplyAgent(params: {
     const verboseNotices: ReplyPayload[] = [];
 
     if (verboseEnabled && activeIsNewSession) {
-      verboseNotices.push({ text: `🧭 New session: ${followupRun.run.sessionId}` });
+      verboseNotices.push({ text: `ðŸ§­ New session: ${followupRun.run.sessionId}` });
     }
 
     if (fallbackTransition.fallbackTransitioned) {
@@ -756,13 +756,13 @@ export async function runReplyAgent(params: {
             }
           })
           .catch(() => {
-            // Silent failure — post-compaction context is best-effort
+            // Silent failure â€” post-compaction context is best-effort
           });
       }
 
       if (verboseEnabled) {
         const suffix = typeof count === "number" ? ` (count ${count})` : "";
-        verboseNotices.push({ text: `🧹 Auto-compaction complete${suffix}.` });
+        verboseNotices.push({ text: `ðŸ§¹ Auto-compaction complete${suffix}.` });
       }
     }
     if (verboseNotices.length > 0) {
@@ -789,7 +789,7 @@ export async function runReplyAgent(params: {
     // markDispatchIdle(), but if the dispatcher exits early, errors,
     // or the reply path doesn't go through it cleanly, the second
     // signal never fires and the typing keepalive loop runs forever.
-    // Calling this twice is harmless — cleanup() is guarded by the
+    // Calling this twice is harmless â€” cleanup() is guarded by the
     // `active` flag.  Same pattern as the followup runner fix (#26881).
     typing.markDispatchIdle();
   }

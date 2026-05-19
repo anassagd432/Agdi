@@ -133,10 +133,10 @@ export async function buildGatewayInstallPlan(params: {
   });
 
   // Merge env sources into the service environment in ascending priority:
-  //   1. ~/.openclaw/.env file vars  (lowest — user secrets / fallback keys)
+  //   1. ~/.openclaw/.env file vars  (lowest â€” user secrets / fallback keys)
   //   2. Config env vars              (openclaw.json env.vars + inline keys)
-  //   3. Auth-profile env refs        (credential store → env var lookups)
-  //   4. Service environment          (HOME, PATH, OPENCLAW_* — highest)
+  //   3. Auth-profile env refs        (credential store â†’ env var lookups)
+  //   4. Service environment          (HOME, PATH, OPENCLAW_* â€” highest)
   return {
     programArguments,
     workingDirectory,

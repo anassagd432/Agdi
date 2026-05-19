@@ -84,7 +84,7 @@ export async function readErrorResponse(res: Response): Promise<string | undefin
     if (collapsed.length <= MAX_ERROR_CHARS) {
       return collapsed;
     }
-    return `${collapsed.slice(0, MAX_ERROR_CHARS)}…`;
+    return `${collapsed.slice(0, MAX_ERROR_CHARS)}â€¦`;
   } catch {
     return undefined;
   }

@@ -655,7 +655,7 @@ describe("deriveSessionTitle", () => {
     const result = deriveSessionTitle(entry, longMsg);
     expect(result).toBeDefined();
     expect(result!.length).toBeLessThanOrEqual(60);
-    expect(result!.endsWith("…")).toBe(true);
+    expect(result!.endsWith("â€¦")).toBe(true);
   });
 
   test("truncates at word boundary when possible", () => {
@@ -666,7 +666,7 @@ describe("deriveSessionTitle", () => {
     const longMsg = "This message has many words and should be truncated at a word boundary nicely";
     const result = deriveSessionTitle(entry, longMsg);
     expect(result).toBeDefined();
-    expect(result!.endsWith("…")).toBe(true);
+    expect(result!.endsWith("â€¦")).toBe(true);
     expect(result!.includes("  ")).toBe(false);
   });
 

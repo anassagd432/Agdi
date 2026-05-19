@@ -89,12 +89,12 @@ describe("state migrations", () => {
       resolveChannelAllowFromPath("telegram", env, "beta"),
     ]);
     expect(detected.preview).toEqual([
-      `- Sessions: ${path.join(stateDir, "sessions")} → ${path.join(stateDir, "agents", "worker-1", "sessions")}`,
+      `- Sessions: ${path.join(stateDir, "sessions")} â†’ ${path.join(stateDir, "agents", "worker-1", "sessions")}`,
       `- Sessions: canonicalize legacy keys in ${path.join(stateDir, "agents", "worker-1", "sessions", "sessions.json")}`,
-      `- Agent dir: ${path.join(stateDir, "agent")} → ${path.join(stateDir, "agents", "worker-1", "agent")}`,
-      `- WhatsApp auth: ${path.join(stateDir, "credentials")} → ${path.join(stateDir, "credentials", "whatsapp", "default")} (keep oauth.json)`,
-      `- Telegram pairing allowFrom: ${resolveChannelAllowFromPath("telegram", env)} → ${resolveChannelAllowFromPath("telegram", env, "alpha")}`,
-      `- Telegram pairing allowFrom: ${resolveChannelAllowFromPath("telegram", env)} → ${resolveChannelAllowFromPath("telegram", env, "beta")}`,
+      `- Agent dir: ${path.join(stateDir, "agent")} â†’ ${path.join(stateDir, "agents", "worker-1", "agent")}`,
+      `- WhatsApp auth: ${path.join(stateDir, "credentials")} â†’ ${path.join(stateDir, "credentials", "whatsapp", "default")} (keep oauth.json)`,
+      `- Telegram pairing allowFrom: ${resolveChannelAllowFromPath("telegram", env)} â†’ ${resolveChannelAllowFromPath("telegram", env, "alpha")}`,
+      `- Telegram pairing allowFrom: ${resolveChannelAllowFromPath("telegram", env)} â†’ ${resolveChannelAllowFromPath("telegram", env, "beta")}`,
     ]);
   });
 
@@ -146,15 +146,15 @@ describe("state migrations", () => {
 
     expect(result.warnings).toEqual([]);
     expect(result.changes).toEqual([
-      `Migrated latest direct-chat session → agent:worker-1:desk`,
-      `Merged sessions store → ${path.join(stateDir, "agents", "worker-1", "sessions", "sessions.json")}`,
+      `Migrated latest direct-chat session â†’ agent:worker-1:desk`,
+      `Merged sessions store â†’ ${path.join(stateDir, "agents", "worker-1", "sessions", "sessions.json")}`,
       "Canonicalized 1 legacy session key(s)",
-      "Moved trace.jsonl → agents/worker-1/sessions",
-      "Moved agent file settings.json → agents/worker-1/agent",
-      "Moved WhatsApp auth creds.json → whatsapp/default",
-      "Moved WhatsApp auth pre-key-1.json → whatsapp/default",
-      `Copied Telegram pairing allowFrom → ${resolveChannelAllowFromPath("telegram", env, "alpha")}`,
-      `Copied Telegram pairing allowFrom → ${resolveChannelAllowFromPath("telegram", env, "beta")}`,
+      "Moved trace.jsonl â†’ agents/worker-1/sessions",
+      "Moved agent file settings.json â†’ agents/worker-1/agent",
+      "Moved WhatsApp auth creds.json â†’ whatsapp/default",
+      "Moved WhatsApp auth pre-key-1.json â†’ whatsapp/default",
+      `Copied Telegram pairing allowFrom â†’ ${resolveChannelAllowFromPath("telegram", env, "alpha")}`,
+      `Copied Telegram pairing allowFrom â†’ ${resolveChannelAllowFromPath("telegram", env, "beta")}`,
     ]);
 
     const mergedStore = JSON.parse(

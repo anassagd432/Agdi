@@ -1,14 +1,14 @@
 import {
   buildModelsProviderData,
   listSkillCommandsForAgents,
-} from "openclaw/plugin-sdk/command-auth";
-import { loadConfig, resolveStorePath } from "openclaw/plugin-sdk/config-runtime";
-import { loadSessionStore } from "openclaw/plugin-sdk/config-runtime";
-import { readChannelAllowFromStore } from "openclaw/plugin-sdk/conversation-runtime";
-import { upsertChannelPairingRequest } from "openclaw/plugin-sdk/conversation-runtime";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/infra-runtime";
-import { dispatchReplyWithBufferedBlockDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "agdi/plugin-sdk/command-auth";
+import { loadConfig, resolveStorePath } from "agdi/plugin-sdk/config-runtime";
+import { loadSessionStore } from "agdi/plugin-sdk/config-runtime";
+import { readChannelAllowFromStore } from "agdi/plugin-sdk/conversation-runtime";
+import { upsertChannelPairingRequest } from "agdi/plugin-sdk/conversation-runtime";
+import { enqueueSystemEvent } from "agdi/plugin-sdk/infra-runtime";
+import { dispatchReplyWithBufferedBlockDispatcher } from "agdi/plugin-sdk/reply-runtime";
+import { loadWebMedia } from "agdi/plugin-sdk/web-media";
 import { deliverReplies, emitInternalMessageSentHook } from "./bot/delivery.js";
 import { createTelegramDraftStream } from "./draft-stream.js";
 import { editMessageTelegram } from "./send.js";

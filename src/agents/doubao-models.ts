@@ -14,8 +14,8 @@ export const DOUBAO_DEFAULT_MODEL_REF = `volcengine/${DOUBAO_DEFAULT_MODEL_ID}`;
 
 // Volcano Engine Doubao pricing (approximate, adjust based on actual pricing)
 export const DOUBAO_DEFAULT_COST = {
-  input: 0.0001, // ¥0.0001 per 1K tokens
-  output: 0.0002, // ¥0.0002 per 1K tokens
+  input: 0.0001, // Â¥0.0001 per 1K tokens
+  output: 0.0002, // Â¥0.0002 per 1K tokens
   cacheRead: 0,
   cacheWrite: 0,
 };

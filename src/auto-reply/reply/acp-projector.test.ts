@@ -277,7 +277,7 @@ describe("createAcpReplyProjector", () => {
 
       await projector.onEvent({
         type: "text_delta",
-        text: "Yes. Send me the term(s), and I’ll run ",
+        text: "Yes. Send me the term(s), and Iâ€™ll run ",
         tag: "agent_message_chunk",
       });
 
@@ -294,7 +294,7 @@ describe("createAcpReplyProjector", () => {
       expect(deliveries).toEqual([
         {
           kind: "block",
-          text: "Yes. Send me the term(s), and I’ll run `wd-cli` searches right away. ",
+          text: "Yes. Send me the term(s), and Iâ€™ll run `wd-cli` searches right away. ",
         },
       ]);
     } finally {

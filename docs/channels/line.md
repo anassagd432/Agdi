@@ -22,7 +22,7 @@ are not supported.
 Install the LINE plugin:
 
 ```bash
-agdi plugins install @agdi/line
+agdi plugins install @openclaw/line
 ```
 
 Local checkout (when running from a git repo):

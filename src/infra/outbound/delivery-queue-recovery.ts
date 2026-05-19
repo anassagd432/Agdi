@@ -159,7 +159,7 @@ export async function recoverPendingDeliveries(opts: {
   }
 
   pending.sort((a, b) => a.enqueuedAt - b.enqueuedAt);
-  opts.log.info(`Found ${pending.length} pending delivery entries — starting recovery`);
+  opts.log.info(`Found ${pending.length} pending delivery entries â€” starting recovery`);
 
   const deadline = Date.now() + (opts.maxRecoveryMs ?? 60_000);
   const summary = createEmptyRecoverySummary();
@@ -168,13 +168,13 @@ export async function recoverPendingDeliveries(opts: {
     const entry = pending[i];
     const now = Date.now();
     if (now >= deadline) {
-      opts.log.warn(`Recovery time budget exceeded — remaining entries deferred to next startup`);
+      opts.log.warn(`Recovery time budget exceeded â€” remaining entries deferred to next startup`);
       await deferRemainingEntriesForBudget(pending.slice(i), opts.stateDir);
       break;
     }
     if (entry.retryCount >= MAX_RETRIES) {
       opts.log.warn(
-        `Delivery ${entry.id} exceeded max retries (${entry.retryCount}/${MAX_RETRIES}) — moving to failed/`,
+        `Delivery ${entry.id} exceeded max retries (${entry.retryCount}/${MAX_RETRIES}) â€” moving to failed/`,
       );
       await moveEntryToFailedWithLogging(entry.id, opts.log, opts.stateDir);
       summary.skippedMaxRetries += 1;
@@ -185,7 +185,7 @@ export async function recoverPendingDeliveries(opts: {
     if (!retryEligibility.eligible) {
       summary.deferredBackoff += 1;
       opts.log.info(
-        `Delivery ${entry.id} not ready for retry yet — backoff ${retryEligibility.remainingBackoffMs}ms remaining`,
+        `Delivery ${entry.id} not ready for retry yet â€” backoff ${retryEligibility.remainingBackoffMs}ms remaining`,
       );
       continue;
     }
@@ -198,7 +198,7 @@ export async function recoverPendingDeliveries(opts: {
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
       if (isPermanentDeliveryError(errMsg)) {
-        opts.log.warn(`Delivery ${entry.id} hit permanent error — moving to failed/: ${errMsg}`);
+        opts.log.warn(`Delivery ${entry.id} hit permanent error â€” moving to failed/: ${errMsg}`);
         await moveEntryToFailedWithLogging(entry.id, opts.log, opts.stateDir);
         summary.failed += 1;
         continue;

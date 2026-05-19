@@ -87,8 +87,11 @@ async function runGatewayHealthCheck(params: {
     value: params.cfg.gateway?.auth?.password,
     path: "gateway.auth.password",
   });
-  const token = process.env.OPENCLAW_GATEWAY_TOKEN ?? configuredToken;
-  const password = process.env.OPENCLAW_GATEWAY_PASSWORD ?? configuredPassword;
+  const token = process.env.AGDI_GATEWAY_TOKEN ?? process.env.OPENCLAW_GATEWAY_TOKEN ?? configuredToken;
+  const password =
+    process.env.AGDI_GATEWAY_PASSWORD ??
+    process.env.OPENCLAW_GATEWAY_PASSWORD ??
+    configuredPassword;
 
   await waitForGatewayReachable({
     url: wsUrl,
@@ -104,8 +107,8 @@ async function runGatewayHealthCheck(params: {
     note(
       [
         "Docs:",
-        "https://docs.openclaw.ai/gateway/health",
-        "https://docs.openclaw.ai/gateway/troubleshooting",
+        "https://docs.agdi.ai/gateway/health",
+        "https://docs.agdi.ai/gateway/troubleshooting",
       ].join("\n"),
       "Health check help",
     );
@@ -195,7 +198,7 @@ async function promptWebToolsConfig(
     [
       "Web search lets your agent look things up online using the `web_search` tool.",
       "Choose a provider. Some providers need an API key, and some work key-free.",
-      "Docs: https://docs.openclaw.ai/tools/web",
+      "Docs: https://docs.agdi.ai/tools/web",
     ].join("\n"),
     "Web search",
   );
@@ -221,7 +224,7 @@ async function promptWebToolsConfig(
         [
           "No web search providers are currently available under this plugin policy.",
           "Enable plugins or remove deny rules, then rerun configure.",
-          "Docs: https://docs.openclaw.ai/tools/web",
+          "Docs: https://docs.agdi.ai/tools/web",
         ].join("\n"),
         "Web search",
       );
@@ -237,9 +240,9 @@ async function promptWebToolsConfig(
           label: entry.label,
           hint:
             entry.requiresCredential === false
-              ? `${entry.hint} · key-free`
+              ? `${entry.hint} Â· key-free`
               : configured
-                ? `${entry.hint} · configured`
+                ? `${entry.hint} Â· configured`
                 : entry.hint,
         };
       });
@@ -270,7 +273,7 @@ async function promptWebToolsConfig(
           [
             `${entry.label} works without an API key.`,
             "Agdi enabled the plugin and selected it as your web_search provider.",
-            `Docs: ${entry.docsUrl ?? "https://docs.openclaw.ai/tools/web"}`,
+            `Docs: ${entry.docsUrl ?? "https://docs.agdi.ai/tools/web"}`,
           ].join("\n"),
           "Web search",
         );
@@ -300,10 +303,10 @@ async function promptWebToolsConfig(
           nextSearch = { ...nextSearch, provider: providerChoice };
           note(
             [
-              "No key stored yet — web_search won't work until a key is available.",
+              "No key stored yet â€” web_search won't work until a key is available.",
               `Store your ${credentialLabel} here or set ${envVarNames} in the Gateway environment.`,
               `Get your API key at: ${entry.signupUrl}`,
-              "Docs: https://docs.openclaw.ai/tools/web",
+              "Docs: https://docs.agdi.ai/tools/web",
             ].join("\n"),
             "Web search",
           );
@@ -357,7 +360,7 @@ export async function runConfigureWizard(
           [
             ...snapshot.issues.map((iss) => `- ${iss.path}: ${iss.message}`),
             "",
-            "Docs: https://docs.openclaw.ai/gateway/configuration",
+            "Docs: https://docs.agdi.ai/gateway/configuration",
           ].join("\n"),
           "Config issues",
         );
@@ -384,8 +387,14 @@ export async function runConfigureWizard(
     });
     const localProbe = await probeGatewayReachable({
       url: localUrl,
-      token: process.env.OPENCLAW_GATEWAY_TOKEN ?? baseLocalProbeToken,
-      password: process.env.OPENCLAW_GATEWAY_PASSWORD ?? baseLocalProbePassword,
+      token:
+        process.env.AGDI_GATEWAY_TOKEN ??
+        process.env.OPENCLAW_GATEWAY_TOKEN ??
+        baseLocalProbeToken,
+      password:
+        process.env.AGDI_GATEWAY_PASSWORD ??
+        process.env.OPENCLAW_GATEWAY_PASSWORD ??
+        baseLocalProbePassword,
     });
     const remoteUrl = baseConfig.gateway?.remote?.url?.trim() ?? "";
     const baseRemoteProbeToken = await resolveGatewaySecretInputForWizard({
@@ -671,6 +680,7 @@ export async function runConfigureWizard(
     });
     // Try both newly written and preexisting passwords while the gateway restarts.
     const newPassword =
+      process.env.AGDI_GATEWAY_PASSWORD ??
       process.env.OPENCLAW_GATEWAY_PASSWORD ??
       (await resolveGatewaySecretInputForWizard({
         cfg: nextConfig,
@@ -678,6 +688,7 @@ export async function runConfigureWizard(
         path: "gateway.auth.password",
       }));
     const oldPassword =
+      process.env.AGDI_GATEWAY_PASSWORD ??
       process.env.OPENCLAW_GATEWAY_PASSWORD ??
       (await resolveGatewaySecretInputForWizard({
         cfg: baseConfig,
@@ -685,6 +696,7 @@ export async function runConfigureWizard(
         path: "gateway.auth.password",
       }));
     const token =
+      process.env.AGDI_GATEWAY_TOKEN ??
       process.env.OPENCLAW_GATEWAY_TOKEN ??
       (await resolveGatewaySecretInputForWizard({
         cfg: nextConfig,
@@ -714,7 +726,7 @@ export async function runConfigureWizard(
         `Web UI: ${links.httpUrl}`,
         `Gateway WS: ${links.wsUrl}`,
         gatewayStatusLine,
-        "Docs: https://docs.openclaw.ai/web/control-ui",
+        "Docs: https://docs.agdi.ai/web/control-ui",
       ].join("\n"),
       "Control UI",
     );

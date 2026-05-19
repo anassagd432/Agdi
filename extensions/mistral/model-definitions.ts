@@ -1,4 +1,4 @@
-import type { ModelDefinitionConfig } from "openclaw/plugin-sdk/provider-models";
+import type { ModelDefinitionConfig } from "agdi/plugin-sdk/provider-models";
 
 export const MISTRAL_BASE_URL = "https://api.mistral.ai/v1";
 export const MISTRAL_DEFAULT_MODEL_ID = "mistral-large-latest";

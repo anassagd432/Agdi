@@ -1,4 +1,4 @@
-import { normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+import { normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 
 function appendNormalizedUnique(entries: Iterable<string>, seen: Set<string>, ordered: string[]) {
   for (const entry of entries) {

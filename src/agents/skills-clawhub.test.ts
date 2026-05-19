@@ -221,7 +221,7 @@ describe("skills-clawhub", () => {
   });
 
   describe("normalizeSlug rejects non-ASCII homograph slugs", () => {
-    it("rejects Cyrillic homograph 'а' (U+0430) in slug", async () => {
+    it("rejects Cyrillic homograph 'Ð°' (U+0430) in slug", async () => {
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
         slug: "re\u0430ct",
@@ -232,7 +232,7 @@ describe("skills-clawhub", () => {
       });
     });
 
-    it("rejects Cyrillic homograph 'е' (U+0435) in slug", async () => {
+    it("rejects Cyrillic homograph 'Ðµ' (U+0435) in slug", async () => {
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
         slug: "r\u0435act",
@@ -243,7 +243,7 @@ describe("skills-clawhub", () => {
       });
     });
 
-    it("rejects Cyrillic homograph 'о' (U+043E) in slug", async () => {
+    it("rejects Cyrillic homograph 'Ð¾' (U+043E) in slug", async () => {
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
         slug: "t\u043Edo",
@@ -257,7 +257,7 @@ describe("skills-clawhub", () => {
     it("rejects slug with mixed Unicode and ASCII", async () => {
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
-        slug: "cаlеndаr",
+        slug: "cÐ°lÐµndÐ°r",
       });
       expect(result).toMatchObject({
         ok: false,
@@ -268,7 +268,7 @@ describe("skills-clawhub", () => {
     it("rejects slug with non-Latin scripts", async () => {
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
-        slug: "技能",
+        slug: "æŠ€èƒ½",
       });
       expect(result).toMatchObject({
         ok: false,
@@ -277,7 +277,7 @@ describe("skills-clawhub", () => {
     });
 
     it("rejects Unicode that case-folds to ASCII (Kelvin sign U+212A)", async () => {
-      // "\u212A" (Kelvin sign) lowercases to "k" — must be caught before lowercasing
+      // "\u212A" (Kelvin sign) lowercases to "k" â€” must be caught before lowercasing
       const result = await installSkillFromClawHub({
         workspaceDir: "/tmp/workspace",
         slug: "\u212Aalendar",

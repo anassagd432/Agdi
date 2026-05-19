@@ -28,11 +28,11 @@ describe("deferGatewayRestartUntilIdle timeout", () => {
       hooks,
     });
 
-    // Advance to just before 5 minutes — should NOT have timed out yet
+    // Advance to just before 5 minutes â€” should NOT have timed out yet
     vi.advanceTimersByTime(299_999);
     expect(hooks.onTimeout).not.toHaveBeenCalled();
 
-    // Advance past 5 minutes — should time out
+    // Advance past 5 minutes â€” should time out
     vi.advanceTimersByTime(1);
     expect(hooks.onTimeout).toHaveBeenCalledOnce();
     expect(hooks.onReady).not.toHaveBeenCalled();

@@ -9,18 +9,18 @@ import {
 import { PollLayoutType } from "discord-api-types/payloads/v10";
 import type { RESTAPIPoll } from "discord-api-types/rest/v10";
 import { Routes, type APIChannel, type APIEmbed } from "discord-api-types/v10";
-import { loadConfig, type OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { RetryRunner } from "openclaw/plugin-sdk/infra-runtime";
-import { buildOutboundMediaLoadOptions } from "openclaw/plugin-sdk/media-runtime";
-import { extensionForMime } from "openclaw/plugin-sdk/media-runtime";
+import { loadConfig, type OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { RetryRunner } from "agdi/plugin-sdk/infra-runtime";
+import { buildOutboundMediaLoadOptions } from "agdi/plugin-sdk/media-runtime";
+import { extensionForMime } from "agdi/plugin-sdk/media-runtime";
 import {
   normalizePollDurationHours,
   normalizePollInput,
   type PollInput,
-} from "openclaw/plugin-sdk/media-runtime";
-import { resolveTextChunksWithFallback } from "openclaw/plugin-sdk/reply-payload";
-import type { ChunkMode } from "openclaw/plugin-sdk/reply-runtime";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "agdi/plugin-sdk/media-runtime";
+import { resolveTextChunksWithFallback } from "agdi/plugin-sdk/reply-payload";
+import type { ChunkMode } from "agdi/plugin-sdk/reply-runtime";
+import { loadWebMedia } from "agdi/plugin-sdk/web-media";
 import { resolveDiscordAccount } from "./accounts.js";
 import { chunkDiscordTextWithMode } from "./chunk.js";
 import { createDiscordClient, resolveDiscordRest } from "./client.js";

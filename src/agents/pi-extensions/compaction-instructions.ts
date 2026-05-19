@@ -18,7 +18,7 @@ export const DEFAULT_COMPACTION_INSTRUCTIONS =
 
 /**
  * Upper bound on custom instruction length to prevent prompt bloat.
- * ~800 chars ≈ ~200 tokens — keeps summarization quality stable.
+ * ~800 chars â‰ˆ ~200 tokens â€” keeps summarization quality stable.
  */
 const MAX_INSTRUCTION_LENGTH = 800;
 
@@ -40,9 +40,9 @@ function normalize(s: string | undefined): string | undefined {
 
 /**
  * Resolve compaction instructions with precedence:
- *   event (SDK) → runtime (config) → DEFAULT constant.
+ *   event (SDK) â†’ runtime (config) â†’ DEFAULT constant.
  *
- * Each input is normalized first (trim + empty→undefined) so that blank
+ * Each input is normalized first (trim + emptyâ†’undefined) so that blank
  * strings don't short-circuit the fallback chain.
  */
 export function resolveCompactionInstructions(

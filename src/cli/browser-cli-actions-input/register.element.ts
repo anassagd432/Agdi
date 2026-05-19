@@ -170,7 +170,7 @@ export function registerBrowserElementCommands(
           endRef,
           targetId: opts.targetId?.trim() || undefined,
         },
-        successMessage: `dragged ${startRef} → ${endRef}`,
+        successMessage: `dragged ${startRef} â†’ ${endRef}`,
       });
     });
 

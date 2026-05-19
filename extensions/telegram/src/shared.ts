@@ -1,11 +1,11 @@
-import { resolveNormalizedAccountEntry } from "openclaw/plugin-sdk/account-resolution";
-import { formatAllowFromLowercase } from "openclaw/plugin-sdk/allow-from";
+import { resolveNormalizedAccountEntry } from "agdi/plugin-sdk/account-resolution";
+import { formatAllowFromLowercase } from "agdi/plugin-sdk/allow-from";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { createChannelPluginBase } from "openclaw/plugin-sdk/core";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
+} from "agdi/plugin-sdk/channel-config-helpers";
+import { createChannelPluginBase } from "agdi/plugin-sdk/core";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/routing";
 import {
   buildChannelConfigSchema,
   getChatChannelMeta,

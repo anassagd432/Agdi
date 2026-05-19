@@ -5,14 +5,14 @@ import {
   type ProviderAuthMethodNonInteractiveContext,
   type ProviderAuthResult,
   type ProviderDiscoveryContext,
-} from "openclaw/plugin-sdk/plugin-entry";
-import { OLLAMA_DEFAULT_BASE_URL, resolveOllamaApiBase } from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/plugin-entry";
+import { OLLAMA_DEFAULT_BASE_URL, resolveOllamaApiBase } from "agdi/plugin-sdk/provider-models";
 
 const PROVIDER_ID = "ollama";
 const DEFAULT_API_KEY = "ollama-local";
 
 async function loadProviderSetup() {
-  return await import("openclaw/plugin-sdk/ollama-setup");
+  return await import("agdi/plugin-sdk/ollama-setup");
 }
 
 export default definePluginEntry({

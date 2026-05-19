@@ -45,23 +45,23 @@ function ttsUsage(): ReplyPayload {
   // Keep usage in one place so help/validation stays consistent.
   return {
     text:
-      `🔊 **TTS (Text-to-Speech) Help**\n\n` +
+      `ðŸ”Š **TTS (Text-to-Speech) Help**\n\n` +
       `**Commands:**\n` +
-      `• /tts on — Enable automatic TTS for replies\n` +
-      `• /tts off — Disable TTS\n` +
-      `• /tts status — Show current settings\n` +
-      `• /tts provider [name] — View/change provider\n` +
-      `• /tts limit [number] — View/change text limit\n` +
-      `• /tts summary [on|off] — View/change auto-summary\n` +
-      `• /tts audio <text> — Generate audio from text\n\n` +
+      `â€¢ /tts on â€” Enable automatic TTS for replies\n` +
+      `â€¢ /tts off â€” Disable TTS\n` +
+      `â€¢ /tts status â€” Show current settings\n` +
+      `â€¢ /tts provider [name] â€” View/change provider\n` +
+      `â€¢ /tts limit [number] â€” View/change text limit\n` +
+      `â€¢ /tts summary [on|off] â€” View/change auto-summary\n` +
+      `â€¢ /tts audio <text> â€” Generate audio from text\n\n` +
       `**Providers:**\n` +
-      `• microsoft — Microsoft Edge-backed speech (default fallback)\n` +
-      `• openai — High quality (requires API key)\n` +
-      `• elevenlabs — Premium voices (requires API key)\n\n` +
+      `â€¢ microsoft â€” Microsoft Edge-backed speech (default fallback)\n` +
+      `â€¢ openai â€” High quality (requires API key)\n` +
+      `â€¢ elevenlabs â€” Premium voices (requires API key)\n\n` +
       `**Text Limit (default: 1500, max: 4096):**\n` +
       `When text exceeds the limit:\n` +
-      `• Summary ON: AI summarizes, then generates audio\n` +
-      `• Summary OFF: Truncates text, then generates audio\n\n` +
+      `â€¢ Summary ON: AI summarizes, then generates audio\n` +
+      `â€¢ Summary OFF: Truncates text, then generates audio\n\n` +
       `**Examples:**\n` +
       `/tts provider microsoft\n` +
       `/tts limit 2000\n` +
@@ -96,12 +96,12 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
 
   if (action === "on") {
     setTtsEnabled(prefsPath, true);
-    return { shouldContinue: false, reply: { text: "🔊 TTS enabled." } };
+    return { shouldContinue: false, reply: { text: "ðŸ”Š TTS enabled." } };
   }
 
   if (action === "off") {
     setTtsEnabled(prefsPath, false);
-    return { shouldContinue: false, reply: { text: "🔇 TTS disabled." } };
+    return { shouldContinue: false, reply: { text: "ðŸ”‡ TTS disabled." } };
   }
 
   if (action === "audio") {
@@ -110,7 +110,7 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
         shouldContinue: false,
         reply: {
           text:
-            `🎤 Generate audio from text.\n\n` +
+            `ðŸŽ¤ Generate audio from text.\n\n` +
             `Usage: /tts audio <text>\n` +
             `Example: /tts audio Hello, this is a test!`,
         },
@@ -153,7 +153,7 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
     });
     return {
       shouldContinue: false,
-      reply: { text: `❌ Error generating audio: ${result.error ?? "unknown error"}` },
+      reply: { text: `âŒ Error generating audio: ${result.error ?? "unknown error"}` },
     };
   }
 
@@ -167,11 +167,11 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
         shouldContinue: false,
         reply: {
           text:
-            `🎙️ TTS provider\n` +
+            `ðŸŽ™ï¸ TTS provider\n` +
             `Primary: ${currentProvider}\n` +
-            `OpenAI key: ${hasOpenAI ? "✅" : "❌"}\n` +
-            `ElevenLabs key: ${hasElevenLabs ? "✅" : "❌"}\n` +
-            `Microsoft enabled: ${hasMicrosoft ? "✅" : "❌"}\n` +
+            `OpenAI key: ${hasOpenAI ? "âœ…" : "âŒ"}\n` +
+            `ElevenLabs key: ${hasElevenLabs ? "âœ…" : "âŒ"}\n` +
+            `Microsoft enabled: ${hasMicrosoft ? "âœ…" : "âŒ"}\n` +
             `Usage: /tts provider openai | elevenlabs | microsoft`,
         },
       };
@@ -186,7 +186,7 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
     setTtsProvider(prefsPath, requested);
     return {
       shouldContinue: false,
-      reply: { text: `✅ TTS provider set to ${nextProvider}.` },
+      reply: { text: `âœ… TTS provider set to ${nextProvider}.` },
     };
   }
 
@@ -197,7 +197,7 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
         shouldContinue: false,
         reply: {
           text:
-            `📏 TTS limit: ${currentLimit} characters.\n\n` +
+            `ðŸ“ TTS limit: ${currentLimit} characters.\n\n` +
             `Text longer than this triggers summary (if enabled).\n` +
             `Range: 100-4096 chars (Telegram max).\n\n` +
             `To change: /tts limit <number>\n` +
@@ -209,13 +209,13 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
     if (!Number.isFinite(next) || next < 100 || next > 4096) {
       return {
         shouldContinue: false,
-        reply: { text: "❌ Limit must be between 100 and 4096 characters." },
+        reply: { text: "âŒ Limit must be between 100 and 4096 characters." },
       };
     }
     setTtsMaxLength(prefsPath, next);
     return {
       shouldContinue: false,
-      reply: { text: `✅ TTS limit set to ${next} characters.` },
+      reply: { text: `âœ… TTS limit set to ${next} characters.` },
     };
   }
 
@@ -227,10 +227,10 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
         shouldContinue: false,
         reply: {
           text:
-            `📝 TTS auto-summary: ${enabled ? "on" : "off"}.\n\n` +
+            `ðŸ“ TTS auto-summary: ${enabled ? "on" : "off"}.\n\n` +
             `When text exceeds ${maxLen} chars:\n` +
-            `• ON: summarizes text, then generates audio\n` +
-            `• OFF: truncates text, then generates audio\n\n` +
+            `â€¢ ON: summarizes text, then generates audio\n` +
+            `â€¢ OFF: truncates text, then generates audio\n\n` +
             `To change: /tts summary on | off`,
         },
       };
@@ -243,7 +243,7 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
     return {
       shouldContinue: false,
       reply: {
-        text: requested === "on" ? "✅ TTS auto-summary enabled." : "❌ TTS auto-summary disabled.",
+        text: requested === "on" ? "âœ… TTS auto-summary enabled." : "âŒ TTS auto-summary disabled.",
       },
     };
   }
@@ -256,16 +256,16 @@ export const handleTtsCommands: CommandHandler = async (params, allowTextCommand
     const summarize = isSummarizationEnabled(prefsPath);
     const last = getLastTtsAttempt();
     const lines = [
-      "📊 TTS status",
-      `State: ${enabled ? "✅ enabled" : "❌ disabled"}`,
-      `Provider: ${provider} (${hasKey ? "✅ configured" : "❌ not configured"})`,
+      "ðŸ“Š TTS status",
+      `State: ${enabled ? "âœ… enabled" : "âŒ disabled"}`,
+      `Provider: ${provider} (${hasKey ? "âœ… configured" : "âŒ not configured"})`,
       `Text limit: ${maxLength} chars`,
       `Auto-summary: ${summarize ? "on" : "off"}`,
     ];
     if (last) {
       const timeAgo = Math.round((Date.now() - last.timestamp) / 1000);
       lines.push("");
-      lines.push(`Last attempt (${timeAgo}s ago): ${last.success ? "✅" : "❌"}`);
+      lines.push(`Last attempt (${timeAgo}s ago): ${last.success ? "âœ…" : "âŒ"}`);
       lines.push(`Text: ${last.textLength} chars${last.summarized ? " (summarized)" : ""}`);
       if (last.success) {
         lines.push(`Provider: ${last.provider ?? "unknown"}`);

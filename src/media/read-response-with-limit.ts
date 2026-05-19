@@ -159,7 +159,7 @@ export async function readResponseTextSnippet(
     return undefined;
   }
   if (collapsed.length > maxChars) {
-    return `${collapsed.slice(0, maxChars)}…`;
+    return `${collapsed.slice(0, maxChars)}â€¦`;
   }
-  return prefix.truncated ? `${collapsed}…` : collapsed;
+  return prefix.truncated ? `${collapsed}â€¦` : collapsed;
 }

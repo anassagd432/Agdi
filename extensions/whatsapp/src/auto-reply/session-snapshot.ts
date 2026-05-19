@@ -1,4 +1,4 @@
-import type { loadConfig } from "openclaw/plugin-sdk/config-runtime";
+import type { loadConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   evaluateSessionFreshness,
   loadSessionStore,
@@ -8,8 +8,8 @@ import {
   resolveSessionResetType,
   resolveSessionKey,
   resolveStorePath,
-} from "openclaw/plugin-sdk/config-runtime";
-import { normalizeMainKey } from "openclaw/plugin-sdk/routing";
+} from "agdi/plugin-sdk/config-runtime";
+import { normalizeMainKey } from "agdi/plugin-sdk/routing";
 
 export function getSessionSnapshot(
   cfg: ReturnType<typeof loadConfig>,

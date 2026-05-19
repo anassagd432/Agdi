@@ -583,7 +583,7 @@ describe("Cron issue regressions", () => {
       schedule: { kind: "at", at: new Date(pastAt).toISOString() },
       sessionTarget: "main",
       wakeMode: "now",
-      payload: { kind: "systemEvent", text: "⏰ Reminder" },
+      payload: { kind: "systemEvent", text: "â° Reminder" },
     } as const;
     const terminalStates: Array<{ id: string; state: CronJobState }> = [
       {
@@ -963,14 +963,14 @@ describe("Cron issue regressions", () => {
       enqueueSystemEvent: vi.fn(),
       requestHeartbeatNow: vi.fn(),
       runIsolatedAgentJob: vi.fn(async () => {
-        // Job completes very quickly (7ms) — still within the same second
+        // Job completes very quickly (7ms) â€” still within the same second
         now += 7;
         fireCount++;
         return { status: "ok" as const, summary: "done" };
       }),
     });
 
-    // First timer tick — should fire the job exactly once
+    // First timer tick â€” should fire the job exactly once
     await onTimer(state);
 
     expect(fireCount).toBe(1);
@@ -981,7 +981,7 @@ describe("Cron issue regressions", () => {
     expect(job!.state.nextRunAtMs).toBeDefined();
     expect(job!.state.nextRunAtMs).toBeGreaterThanOrEqual(nextDay);
 
-    // Second timer tick (simulating the timer re-arm) — should NOT fire again
+    // Second timer tick (simulating the timer re-arm) â€” should NOT fire again
     await onTimer(state);
     expect(fireCount).toBe(1);
   });

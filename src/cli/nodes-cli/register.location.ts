@@ -69,7 +69,7 @@ export function registerNodesLocationCommands(nodes: Command) {
           const lon = payload.lon;
           const acc = payload.accuracyMeters;
           if (typeof lat === "number" && typeof lon === "number") {
-            const accText = typeof acc === "number" ? ` ±${acc.toFixed(1)}m` : "";
+            const accText = typeof acc === "number" ? ` Â±${acc.toFixed(1)}m` : "";
             defaultRuntime.log(`${lat},${lon}${accText}`);
             return;
           }

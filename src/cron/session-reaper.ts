@@ -1,5 +1,5 @@
 /**
- * Cron session reaper — prunes completed isolated cron run sessions
+ * Cron session reaper â€” prunes completed isolated cron run sessions
  * from the session store after a configurable retention period.
  *
  * Pattern: sessions keyed as `...:cron:<jobId>:run:<uuid>` are ephemeral
@@ -46,7 +46,7 @@ export type ReaperResult = {
 
 /**
  * Sweep the session store and prune expired cron run sessions.
- * Designed to be called from the cron timer tick — self-throttles via
+ * Designed to be called from the cron timer tick â€” self-throttles via
  * MIN_SWEEP_INTERVAL_MS to avoid excessive I/O.
  *
  * Lock ordering: this function acquires the session-store file lock via
@@ -56,11 +56,11 @@ export type ReaperResult = {
  */
 export async function sweepCronRunSessions(params: {
   cronConfig?: CronConfig;
-  /** Resolved path to sessions.json — required. */
+  /** Resolved path to sessions.json â€” required. */
   sessionStorePath: string;
   nowMs?: number;
   log: Logger;
-  /** Override for testing — skips the min-interval throttle. */
+  /** Override for testing â€” skips the min-interval throttle. */
   force?: boolean;
 }): Promise<ReaperResult> {
   const now = params.nowMs ?? Date.now();

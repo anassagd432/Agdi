@@ -1,6 +1,6 @@
-import { formatCliCommand } from "openclaw/plugin-sdk/cli-runtime";
-import type { PollInput } from "openclaw/plugin-sdk/media-runtime";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
+import { formatCliCommand } from "agdi/plugin-sdk/cli-runtime";
+import type { PollInput } from "agdi/plugin-sdk/media-runtime";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/routing";
 
 export type ActiveWebSendOptions = {
   gifPlayback?: boolean;

@@ -115,14 +115,14 @@ export async function buildExportSessionReply(params: HandleCommandsParams): Pro
   // 1. Resolve session file
   const sessionEntry = params.sessionEntry;
   if (!sessionEntry?.sessionId) {
-    return { text: "❌ No active session found." };
+    return { text: "âŒ No active session found." };
   }
 
   const storePath = resolveDefaultSessionStorePath(params.agentId);
   const store = loadSessionStore(storePath, { skipCache: true });
   const entry = store[params.sessionKey] as SessionEntry | undefined;
   if (!entry?.sessionId) {
-    return { text: `❌ Session not found: ${params.sessionKey}` };
+    return { text: `âŒ Session not found: ${params.sessionKey}` };
   }
 
   let sessionFile: string;
@@ -134,12 +134,12 @@ export async function buildExportSessionReply(params: HandleCommandsParams): Pro
     );
   } catch (err) {
     return {
-      text: `❌ Failed to resolve session file: ${err instanceof Error ? err.message : String(err)}`,
+      text: `âŒ Failed to resolve session file: ${err instanceof Error ? err.message : String(err)}`,
     };
   }
 
   if (!fs.existsSync(sessionFile)) {
-    return { text: `❌ Session file not found: ${sessionFile}` };
+    return { text: `âŒ Session file not found: ${sessionFile}` };
   }
 
   // 2. Load session entries
@@ -192,12 +192,12 @@ export async function buildExportSessionReply(params: HandleCommandsParams): Pro
 
   return {
     text: [
-      "✅ Session exported!",
+      "âœ… Session exported!",
       "",
-      `📄 File: ${displayPath}`,
-      `📊 Entries: ${entries.length}`,
-      `🧠 System prompt: ${systemPrompt.length.toLocaleString()} chars`,
-      `🔧 Tools: ${tools.length}`,
+      `ðŸ“„ File: ${displayPath}`,
+      `ðŸ“Š Entries: ${entries.length}`,
+      `ðŸ§  System prompt: ${systemPrompt.length.toLocaleString()} chars`,
+      `ðŸ”§ Tools: ${tools.length}`,
     ].join("\n"),
   };
 }

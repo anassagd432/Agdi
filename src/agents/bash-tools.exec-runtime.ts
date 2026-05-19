@@ -219,7 +219,7 @@ function compactNotifyOutput(value: string, maxChars = DEFAULT_NOTIFY_SNIPPET_CH
     return normalized;
   }
   const safe = Math.max(1, maxChars - 1);
-  return `${normalized.slice(0, safe)}…`;
+  return `${normalized.slice(0, safe)}â€¦`;
 }
 
 export function applyShellPath(env: Record<string, string>, shellPath?: string | null) {

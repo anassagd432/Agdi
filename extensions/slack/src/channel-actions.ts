@@ -3,7 +3,7 @@ import { Type } from "@sinclair/typebox";
 import {
   type ChannelMessageActionAdapter,
   type ChannelMessageToolDiscovery,
-} from "openclaw/plugin-sdk/channel-contract";
+} from "agdi/plugin-sdk/channel-contract";
 import type { SlackActionContext } from "./action-runtime.js";
 import { handleSlackAction } from "./action-runtime.js";
 import { isSlackInteractiveRepliesEnabled } from "./interactive-replies.js";

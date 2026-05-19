@@ -19,7 +19,7 @@ export async function resolveStableNodePath(nodePath: string): Promise<string> {
   const formula = cellarMatch[2]; // e.g. "node" or "node@22"
   const pathModule = nodePath.includes("\\") ? path.win32 : path.posix;
 
-  // Try the Homebrew opt symlink first — works for both default and versioned formulas.
+  // Try the Homebrew opt symlink first â€” works for both default and versioned formulas.
   const optPath = pathModule.join(prefix, "opt", formula, "bin", "node");
   try {
     await fs.access(optPath);

@@ -5,8 +5,8 @@ import type { TelegramContext } from "./types.js";
 const saveMediaBuffer = vi.fn();
 const fetchRemoteMedia = vi.fn();
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/media-runtime")>();
+vi.mock("agdi/plugin-sdk/media-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/media-runtime")>();
   return {
     ...actual,
     saveMediaBuffer: (...args: unknown[]) => saveMediaBuffer(...args),
@@ -14,8 +14,8 @@ vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/runtime-env")>();
+vi.mock("agdi/plugin-sdk/runtime-env", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/runtime-env")>();
   return {
     ...actual,
     logVerbose: () => {},

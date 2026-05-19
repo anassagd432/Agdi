@@ -118,7 +118,7 @@ export async function handleSubagentsFocusAction(
   const { params, runs, restTokens } = ctx;
   const channel = resolveCommandSurfaceChannel(params);
   if (channel !== "discord" && channel !== "matrix" && channel !== "telegram") {
-    return stopWithText("⚠️ /focus is only available on Discord, Matrix, and Telegram.");
+    return stopWithText("âš ï¸ /focus is only available on Discord, Matrix, and Telegram.");
   }
 
   const token = restTokens.join(" ").trim();
@@ -139,25 +139,25 @@ export async function handleSubagentsFocusAction(
         : channel === "matrix"
           ? "Matrix thread"
           : "Telegram conversation";
-    return stopWithText(`⚠️ ${label} bindings are unavailable for this account.`);
+    return stopWithText(`âš ï¸ ${label} bindings are unavailable for this account.`);
   }
 
   const focusTarget = await resolveFocusTargetSession({ runs, token });
   if (!focusTarget) {
-    return stopWithText(`⚠️ Unable to resolve focus target: ${token}`);
+    return stopWithText(`âš ï¸ Unable to resolve focus target: ${token}`);
   }
 
   const bindingContext = resolveFocusBindingContext(params);
   if (!bindingContext) {
     if (channel === "telegram") {
       return stopWithText(
-        "⚠️ /focus on Telegram requires a topic context in groups, or a direct-message conversation.",
+        "âš ï¸ /focus on Telegram requires a topic context in groups, or a direct-message conversation.",
       );
     }
     if (channel === "matrix") {
-      return stopWithText("⚠️ Could not resolve a Matrix room for /focus.");
+      return stopWithText("âš ï¸ Could not resolve a Matrix room for /focus.");
     }
-    return stopWithText("⚠️ Could not resolve a Discord channel for /focus.");
+    return stopWithText("âš ï¸ Could not resolve a Discord channel for /focus.");
   }
 
   if (channel === "matrix") {
@@ -169,7 +169,7 @@ export async function handleSubagentsFocusAction(
     });
     if (!spawnPolicy.enabled) {
       return stopWithText(
-        `⚠️ ${formatThreadBindingDisabledError({
+        `âš ï¸ ${formatThreadBindingDisabledError({
           channel: spawnPolicy.channel,
           accountId: spawnPolicy.accountId,
           kind: "subagent",
@@ -178,7 +178,7 @@ export async function handleSubagentsFocusAction(
     }
     if (bindingContext.placement === "child" && !spawnPolicy.spawnEnabled) {
       return stopWithText(
-        `⚠️ ${formatThreadBindingSpawnDisabledError({
+        `âš ï¸ ${formatThreadBindingSpawnDisabledError({
           channel: spawnPolicy.channel,
           accountId: spawnPolicy.accountId,
           kind: "subagent",
@@ -202,7 +202,7 @@ export async function handleSubagentsFocusAction(
       ? existingBinding.metadata.boundBy.trim()
       : "";
   if (existingBinding && boundBy && boundBy !== "system" && senderId && senderId !== boundBy) {
-    return stopWithText(`⚠️ Only ${boundBy} can refocus this ${bindingContext.labelNoun}.`);
+    return stopWithText(`âš ï¸ Only ${boundBy} can refocus this ${bindingContext.labelNoun}.`);
   }
 
   const label = focusTarget.label || token;
@@ -214,7 +214,7 @@ export async function handleSubagentsFocusAction(
         })?.acp
       : undefined;
   if (!capabilities.placements.includes(bindingContext.placement)) {
-    return stopWithText(`⚠️ ${channel} bindings are unavailable for this account.`);
+    return stopWithText(`âš ï¸ ${channel} bindings are unavailable for this account.`);
   }
 
   let binding;
@@ -266,7 +266,7 @@ export async function handleSubagentsFocusAction(
     });
   } catch {
     return stopWithText(
-      `⚠️ Failed to bind this ${bindingContext.labelNoun} to the target session.`,
+      `âš ï¸ Failed to bind this ${bindingContext.labelNoun} to the target session.`,
     );
   }
 
@@ -274,5 +274,5 @@ export async function handleSubagentsFocusAction(
     bindingContext.placement === "child"
       ? `created thread ${binding.conversation.conversationId} and bound it to ${binding.targetSessionKey}`
       : `bound this ${bindingContext.labelNoun} to ${binding.targetSessionKey}`;
-  return stopWithText(`✅ ${actionText} (${focusTarget.targetKind}).`);
+  return stopWithText(`âœ… ${actionText} (${focusTarget.targetKind}).`);
 }

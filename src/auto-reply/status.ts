@@ -210,7 +210,7 @@ const formatQueueDetails = (queue?: QueueStatus) => {
   if (queue.dropPolicy) {
     detailParts.push(`drop ${queue.dropPolicy}`);
   }
-  return detailParts.length ? ` (${detailParts.join(" · ")})` : "";
+  return detailParts.length ? ` (${detailParts.join(" Â· ")})` : "";
 };
 
 const readUsageFromSessionLog = (
@@ -315,7 +315,7 @@ const formatUsagePair = (input?: number | null, output?: number | null) => {
   }
   const inputLabel = typeof input === "number" ? formatTokenCount(input) : "?";
   const outputLabel = typeof output === "number" ? formatTokenCount(output) : "?";
-  return `🧮 Tokens: ${inputLabel} in / ${outputLabel} out`;
+  return `ðŸ§® Tokens: ${inputLabel} in / ${outputLabel} out`;
 };
 
 const formatCacheLine = (
@@ -345,7 +345,7 @@ const formatCacheLine = (
       ? Math.round((cacheRead / totalInput) * 100)
       : 0;
 
-  return `🗄️ Cache: ${hitRate}% hit · ${cachedLabel} cached, ${newLabel} new`;
+  return `ðŸ—„ï¸ Cache: ${hitRate}% hit Â· ${cachedLabel} cached, ${newLabel} new`;
 };
 
 const formatMediaUnderstandingLine = (decisions?: ReadonlyArray<MediaUnderstandingDecision>) => {
@@ -388,7 +388,7 @@ const formatMediaUnderstandingLine = (decisions?: ReadonlyArray<MediaUnderstandi
   if (parts.every((part) => part.endsWith(" none"))) {
     return null;
   }
-  return `📎 Media: ${parts.join(" · ")}`;
+  return `ðŸ“Ž Media: ${parts.join(" Â· ")}`;
 };
 
 const formatVoiceModeLine = (
@@ -411,7 +411,7 @@ const formatVoiceModeLine = (
   const provider = getTtsProvider(ttsConfig, prefsPath);
   const maxLength = getTtsMaxLength(prefsPath);
   const summarize = isSummarizationEnabled(prefsPath) ? "on" : "off";
-  return `🔊 Voice: ${autoMode} · provider=${provider} · limit=${maxLength} · summary=${summarize}`;
+  return `ðŸ”Š Voice: ${autoMode} Â· provider=${provider} Â· limit=${maxLength} Â· summary=${summarize}`;
 };
 
 export function buildStatusMessage(args: StatusArgs): string {
@@ -645,7 +645,7 @@ export function buildStatusMessage(args: StatusArgs): string {
     typeof updatedAt === "number" ? `updated ${formatTimeAgo(now - updatedAt)}` : "no activity",
   ]
     .filter(Boolean)
-    .join(" • ");
+    .join(" â€¢ ");
 
   const isGroupSession =
     entry?.chatType === "group" ||
@@ -658,10 +658,10 @@ export function buildStatusMessage(args: StatusArgs): string {
 
   const contextLine = [
     `Context: ${formatTokens(totalTokens, contextTokens ?? null)}`,
-    `🧹 Compactions: ${entry?.compactionCount ?? 0}`,
+    `ðŸ§¹ Compactions: ${entry?.compactionCount ?? 0}`,
   ]
     .filter(Boolean)
-    .join(" · ");
+    .join(" Â· ");
 
   const queueMode = args.queue?.mode ?? "unknown";
   const queueDetails = formatQueueDetails(args.queue);
@@ -681,12 +681,12 @@ export function buildStatusMessage(args: StatusArgs): string {
     reasoningLevel !== "off" ? `Reasoning: ${reasoningLevel}` : null,
     elevatedLabel,
   ];
-  const optionsLine = optionParts.filter(Boolean).join(" · ");
+  const optionsLine = optionParts.filter(Boolean).join(" Â· ");
   const activationParts = [
-    groupActivationValue ? `👥 Activation: ${groupActivationValue}` : null,
-    `🪢 Queue: ${queueMode}${queueDetails}`,
+    groupActivationValue ? `ðŸ‘¥ Activation: ${groupActivationValue}` : null,
+    `ðŸª¢ Queue: ${queueMode}${queueDetails}`,
   ];
-  const activationLine = activationParts.filter(Boolean).join(" · ");
+  const activationLine = activationParts.filter(Boolean).join(" Â· ");
 
   const selectedAuthMode =
     normalizeAuthMode(args.modelAuth) ?? resolveModelAuthMode(selectedProvider, args.config);
@@ -728,7 +728,7 @@ export function buildStatusMessage(args: StatusArgs): string {
       : undefined;
   const costLabel = showCost && hasUsage ? formatUsd(cost) : undefined;
 
-  const selectedAuthLabel = selectedAuthLabelValue ? ` · 🔑 ${selectedAuthLabelValue}` : "";
+  const selectedAuthLabel = selectedAuthLabelValue ? ` Â· ðŸ”‘ ${selectedAuthLabelValue}` : "";
   const channelModelNote = (() => {
     if (!args.config || !entry) {
       return undefined;
@@ -767,21 +767,21 @@ export function buildStatusMessage(args: StatusArgs): string {
     }
     return "channel override";
   })();
-  const modelNote = channelModelNote ? ` · ${channelModelNote}` : "";
-  const modelLine = `🧠 Model: ${selectedModelLabel}${selectedAuthLabel}${modelNote}`;
+  const modelNote = channelModelNote ? ` Â· ${channelModelNote}` : "";
+  const modelLine = `ðŸ§  Model: ${selectedModelLabel}${selectedAuthLabel}${modelNote}`;
   const showFallbackAuth = activeAuthLabelValue && activeAuthLabelValue !== selectedAuthLabelValue;
   const fallbackLine = fallbackState.active
-    ? `↪️ Fallback: ${activeModelLabel}${
-        showFallbackAuth ? ` · 🔑 ${activeAuthLabelValue}` : ""
+    ? `â†ªï¸ Fallback: ${activeModelLabel}${
+        showFallbackAuth ? ` Â· ðŸ”‘ ${activeAuthLabelValue}` : ""
       } (${fallbackState.reason ?? "selected model unavailable"})`
     : null;
   const commit = resolveCommitHash({ moduleUrl: import.meta.url });
-  const versionLine = `🦞 OpenClaw ${VERSION}${commit ? ` (${commit})` : ""}`;
+  const versionLine = `ðŸ¦ž OpenClaw ${VERSION}${commit ? ` (${commit})` : ""}`;
   const usagePair = formatUsagePair(inputTokens, outputTokens);
   const cacheLine = formatCacheLine(inputTokens, cacheRead, cacheWrite);
-  const costLine = costLabel ? `💵 Cost: ${costLabel}` : null;
+  const costLine = costLabel ? `ðŸ’µ Cost: ${costLabel}` : null;
   const usageCostLine =
-    usagePair && costLine ? `${usagePair} · ${costLine}` : (usagePair ?? costLine);
+    usagePair && costLine ? `${usagePair} Â· ${costLine}` : (usagePair ?? costLine);
   const mediaLine = formatMediaUnderstandingLine(args.mediaDecisions);
   const voiceLine = formatVoiceModeLine(args.config, args.sessionEntry);
 
@@ -792,12 +792,12 @@ export function buildStatusMessage(args: StatusArgs): string {
     fallbackLine,
     usageCostLine,
     cacheLine,
-    `📚 ${contextLine}`,
+    `ðŸ“š ${contextLine}`,
     mediaLine,
     args.usageLine,
-    `🧵 ${sessionLine}`,
+    `ðŸ§µ ${sessionLine}`,
     args.subagentsLine,
-    `⚙️ ${optionsLine}`,
+    `âš™ï¸ ${optionsLine}`,
     voiceLine,
     activationLine,
   ]
@@ -842,7 +842,7 @@ function groupCommandsByCategory(
 }
 
 export function buildHelpMessage(cfg?: OpenClawConfig): string {
-  const lines = ["ℹ️ Help", ""];
+  const lines = ["â„¹ï¸ Help", ""];
 
   lines.push("Session");
   lines.push("  /new  |  /reset  |  /compact [instructions]  |  /stop");
@@ -1071,7 +1071,7 @@ export function buildCommandsMessagePaginated(
   const items = buildCommandItems(commands, pluginCommands);
 
   if (!isTelegram) {
-    const lines = ["ℹ️ Slash commands", ""];
+    const lines = ["â„¹ï¸ Slash commands", ""];
     lines.push(formatCommandList(items));
     lines.push("", "More: /tools for available capabilities");
     return {
@@ -1090,7 +1090,7 @@ export function buildCommandsMessagePaginated(
   const endIndex = startIndex + COMMANDS_PER_PAGE;
   const pageItems = items.slice(startIndex, endIndex);
 
-  const lines = [`ℹ️ Commands (${currentPage}/${totalPages})`, ""];
+  const lines = [`â„¹ï¸ Commands (${currentPage}/${totalPages})`, ""];
   lines.push(formatCommandList(pageItems));
 
   return {

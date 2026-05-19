@@ -359,7 +359,7 @@ export class MemoryIndexManager extends MemoryManagerEmbeddingOps implements Mem
       }
 
       // Extract keywords for better FTS matching on conversational queries
-      // e.g., "that thing we discussed about the API" → ["discussed", "API"]
+      // e.g., "that thing we discussed about the API" â†’ ["discussed", "API"]
       const keywords = extractKeywords(cleaned);
       const searchTerms = keywords.length > 0 ? keywords : [cleaned];
 

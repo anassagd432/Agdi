@@ -150,12 +150,12 @@ export function formatSlackStreamModeMigrationMessage(
   pathPrefix: string,
   resolvedStreaming: string,
 ): string {
-  return `Moved ${pathPrefix}.streamMode → ${pathPrefix}.streaming (${resolvedStreaming}).`;
+  return `Moved ${pathPrefix}.streamMode â†’ ${pathPrefix}.streaming (${resolvedStreaming}).`;
 }
 
 export function formatSlackStreamingBooleanMigrationMessage(
   pathPrefix: string,
   resolvedNativeStreaming: boolean,
 ): string {
-  return `Moved ${pathPrefix}.streaming (boolean) → ${pathPrefix}.nativeStreaming (${resolvedNativeStreaming}).`;
+  return `Moved ${pathPrefix}.streaming (boolean) â†’ ${pathPrefix}.nativeStreaming (${resolvedNativeStreaming}).`;
 }

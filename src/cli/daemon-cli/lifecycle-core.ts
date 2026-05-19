@@ -112,7 +112,7 @@ async function resolveServiceLoadedOrFail(params: {
  *
  * Note: This reads the config file snapshot in the current CLI environment.
  * Configs using env vars only available in the service context (launchd/systemd)
- * may produce false positives, but the check is intentionally best-effort —
+ * may produce false positives, but the check is intentionally best-effort â€”
  * a false positive here is safer than a crash on startup. (#35862)
  */
 async function getConfigValidationError(): Promise<string | null> {
@@ -199,7 +199,7 @@ export async function runServiceStart(params: {
   ) {
     return;
   }
-  // Pre-flight config validation (#35862) — run for both loaded and not-loaded
+  // Pre-flight config validation (#35862) â€” run for both loaded and not-loaded
   // to prevent launching from invalid config in any start path.
   {
     const configError = await getConfigValidationError();
@@ -408,7 +408,7 @@ export async function runServiceRestart(params: {
           : driftIssue.message;
         warnings.push(warning);
         if (!json) {
-          defaultRuntime.log(`\n⚠️  ${driftIssue.message}`);
+          defaultRuntime.log(`\nâš ï¸  ${driftIssue.message}`);
           if (driftIssue.detail) {
             defaultRuntime.log(`   ${driftIssue.detail}\n`);
           }
@@ -420,7 +420,7 @@ export async function runServiceRestart(params: {
           "Unable to verify gateway token drift: gateway.auth.token SecretRef is configured but unavailable in this command path.";
         warnings.push(warning);
         if (!json) {
-          defaultRuntime.log(`\n⚠️  ${warning}\n`);
+          defaultRuntime.log(`\nâš ï¸  ${warning}\n`);
         }
       }
     }

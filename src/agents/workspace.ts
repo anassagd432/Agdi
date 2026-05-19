@@ -594,7 +594,7 @@ export async function loadExtraBootstrapFilesWithDiagnostics(
           resolvedPaths.add(m);
         }
       } catch {
-        // glob not available or pattern error — fall back to literal
+        // glob not available or pattern error â€” fall back to literal
         resolvedPaths.add(pattern);
       }
     } else {

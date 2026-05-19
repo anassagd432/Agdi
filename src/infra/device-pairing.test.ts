@@ -458,7 +458,7 @@ describe("device pairing tokens", () => {
 
   test("treats multibyte same-length token input as mismatch without throwing", async () => {
     const { baseDir, token } = await setupOperatorToken(["operator.read"]);
-    const multibyteToken = "é".repeat(token.length);
+    const multibyteToken = "Ã©".repeat(token.length);
     expect(Buffer.from(multibyteToken).length).not.toBe(Buffer.from(token).length);
 
     await expect(

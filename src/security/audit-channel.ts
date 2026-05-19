@@ -579,7 +579,7 @@ export async function collectChannelSecurityFindings(params: {
               severity: "critical",
               title: "Discord slash commands are unrestricted",
               detail:
-                "commands.useAccessGroups=false disables sender allowlists for Discord slash commands unless a per-guild/channel users allowlist is configured; with no users allowlist, any user in allowed guild channels can invoke /… commands.",
+                "commands.useAccessGroups=false disables sender allowlists for Discord slash commands unless a per-guild/channel users allowlist is configured; with no users allowlist, any user in allowed guild channels can invoke /â€¦ commands.",
               remediation:
                 "Set commands.useAccessGroups=true (recommended), or configure channels.discord.guilds.<id>.users (or channels.discord.guilds.<id>.channels.<channel>.users).",
             });
@@ -595,7 +595,7 @@ export async function collectChannelSecurityFindings(params: {
               severity: "warn",
               title: "Discord slash commands have no allowlists",
               detail:
-                "Discord slash commands are enabled, but neither an owner allowFrom list nor any per-guild/channel users allowlist is configured; /… commands will be rejected for everyone.",
+                "Discord slash commands are enabled, but neither an owner allowFrom list nor any per-guild/channel users allowlist is configured; /â€¦ commands will be rejected for everyone.",
               remediation:
                 "Add your user id to channels.discord.allowFrom (or approve yourself via pairing), or configure channels.discord.guilds.<id>.users.",
             });
@@ -675,7 +675,7 @@ export async function collectChannelSecurityFindings(params: {
               severity: "critical",
               title: "Slack slash commands bypass access groups",
               detail:
-                "Slack slash/native commands are enabled while commands.useAccessGroups=false; this can allow unrestricted /… command execution from channels/users you didn't explicitly authorize.",
+                "Slack slash/native commands are enabled while commands.useAccessGroups=false; this can allow unrestricted /â€¦ command execution from channels/users you didn't explicitly authorize.",
               remediation: "Set commands.useAccessGroups=true (recommended).",
             });
           } else {
@@ -714,7 +714,7 @@ export async function collectChannelSecurityFindings(params: {
                 severity: "warn",
                 title: "Slack slash commands have no allowlists",
                 detail:
-                  "Slack slash/native commands are enabled, but neither an owner allowFrom list nor any channels.<id>.users allowlist is configured; /… commands will be rejected for everyone.",
+                  "Slack slash/native commands are enabled, but neither an owner allowFrom list nor any channels.<id>.users allowlist is configured; /â€¦ commands will be rejected for everyone.",
                 remediation:
                   "Approve yourself via pairing (recommended), or set channels.slack.allowFrom and/or channels.slack.channels.<id>.users.",
               });
@@ -872,7 +872,7 @@ export async function collectChannelSecurityFindings(params: {
           severity: "critical",
           title: "Telegram group allowlist contains wildcard",
           detail:
-            'Telegram group sender allowlist contains "*", which allows any group member to run /… commands and control directives.',
+            'Telegram group sender allowlist contains "*", which allows any group member to run /â€¦ commands and control directives.',
           remediation:
             'Remove "*" from channels.telegram.groupAllowFrom and pairing store; prefer explicit numeric Telegram user IDs.',
         });
@@ -893,7 +893,7 @@ export async function collectChannelSecurityFindings(params: {
           severity: "critical",
           title: "Telegram group commands have no sender allowlist",
           detail:
-            `Telegram group access is enabled but no sender allowlist is configured; this allows any group member to invoke /… commands` +
+            `Telegram group access is enabled but no sender allowlist is configured; this allows any group member to invoke /â€¦ commands` +
             (skillsEnabled ? " (including skill commands)." : "."),
           remediation:
             "Approve yourself via pairing (recommended), or set channels.telegram.groupAllowFrom (or per-group groups.<id>.allowFrom).",

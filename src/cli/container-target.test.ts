@@ -92,11 +92,17 @@ describe("parseCliContainerArgs", () => {
 });
 
 describe("resolveCliContainerTarget", () => {
-  it("uses argv first and falls back to OPENCLAW_CONTAINER", () => {
+  it("uses argv first and falls back to AGDI_CONTAINER before OPENCLAW_CONTAINER", () => {
     expect(
       resolveCliContainerTarget(["node", "openclaw", "--container", "demo", "status"], {}),
     ).toBe("demo");
     expect(resolveCliContainerTarget(["node", "openclaw", "status"], {})).toBeNull();
+    expect(
+      resolveCliContainerTarget(["node", "openclaw", "status"], {
+        AGDI_CONTAINER: "agdi-demo",
+        OPENCLAW_CONTAINER: "legacy-demo",
+      } as NodeJS.ProcessEnv),
+    ).toBe("agdi-demo");
     expect(
       resolveCliContainerTarget(["node", "openclaw", "status"], {
         OPENCLAW_CONTAINER: "demo",
@@ -113,7 +119,7 @@ describe("maybeRunCliInContainer", () => {
     });
   });
 
-  it("uses OPENCLAW_CONTAINER when the flag is absent", () => {
+  it("uses AGDI_CONTAINER when the flag is absent", () => {
     const spawnSync = vi
       .fn()
       .mockReturnValueOnce({
@@ -131,7 +137,7 @@ describe("maybeRunCliInContainer", () => {
 
     expect(
       maybeRunCliInContainer(["node", "openclaw", "status"], {
-        env: { OPENCLAW_CONTAINER: "demo" } as NodeJS.ProcessEnv,
+        env: { AGDI_CONTAINER: "demo" } as NodeJS.ProcessEnv,
         spawnSync,
       }),
     ).toEqual({
@@ -146,6 +152,10 @@ describe("maybeRunCliInContainer", () => {
         "exec",
         "-i",
         "--env",
+        "AGDI_CONTAINER_HINT=demo",
+        "--env",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "--env",
         "OPENCLAW_CONTAINER_HINT=demo",
         "--env",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -156,13 +166,14 @@ describe("maybeRunCliInContainer", () => {
       {
         stdio: "inherit",
         env: {
+          AGDI_CONTAINER: "",
           OPENCLAW_CONTAINER: "",
         },
       },
     );
   });
 
-  it("clears inherited host routing and gateway env before execing into the child CLI", () => {
+  it("clears inherited Agdi and legacy host routing and gateway env before execing into the child CLI", () => {
     const spawnSync = vi
       .fn()
       .mockReturnValueOnce({
@@ -180,6 +191,12 @@ describe("maybeRunCliInContainer", () => {
 
     maybeRunCliInContainer(["node", "openclaw", "status"], {
       env: {
+        AGDI_CONTAINER: "demo",
+        AGDI_PROFILE: "work",
+        AGDI_GATEWAY_PORT: "19001",
+        AGDI_GATEWAY_URL: "ws://127.0.0.1:18789",
+        AGDI_GATEWAY_TOKEN: "agdi-token",
+        AGDI_GATEWAY_PASSWORD: "agdi-password",
         OPENCLAW_CONTAINER: "demo",
         OPENCLAW_PROFILE: "work",
         OPENCLAW_GATEWAY_PORT: "19001",
@@ -197,6 +214,10 @@ describe("maybeRunCliInContainer", () => {
         "exec",
         "-i",
         "--env",
+        "AGDI_CONTAINER_HINT=demo",
+        "--env",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "--env",
         "OPENCLAW_CONTAINER_HINT=demo",
         "--env",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -207,6 +228,7 @@ describe("maybeRunCliInContainer", () => {
       {
         stdio: "inherit",
         env: {
+          AGDI_CONTAINER: "",
           OPENCLAW_CONTAINER: "",
         },
       },
@@ -252,6 +274,10 @@ describe("maybeRunCliInContainer", () => {
         "exec",
         "-i",
         "--env",
+        "AGDI_CONTAINER_HINT=demo",
+        "--env",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "--env",
         "OPENCLAW_CONTAINER_HINT=demo",
         "--env",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -261,7 +287,7 @@ describe("maybeRunCliInContainer", () => {
       ],
       {
         stdio: "inherit",
-        env: { OPENCLAW_CONTAINER: "" },
+        env: { AGDI_CONTAINER: "", OPENCLAW_CONTAINER: "" },
       },
     );
   });
@@ -305,6 +331,10 @@ describe("maybeRunCliInContainer", () => {
         "exec",
         "-i",
         "-e",
+        "AGDI_CONTAINER_HINT=demo",
+        "-e",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "-e",
         "OPENCLAW_CONTAINER_HINT=demo",
         "-e",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -314,7 +344,7 @@ describe("maybeRunCliInContainer", () => {
       ],
       {
         stdio: "inherit",
-        env: { USER: "openclaw", OPENCLAW_CONTAINER: "" },
+        env: { USER: "openclaw", AGDI_CONTAINER: "", OPENCLAW_CONTAINER: "" },
       },
     );
   });
@@ -368,6 +398,10 @@ describe("maybeRunCliInContainer", () => {
         "exec",
         "-i",
         "-e",
+        "AGDI_CONTAINER_HINT=demo",
+        "-e",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "-e",
         "OPENCLAW_CONTAINER_HINT=demo",
         "-e",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -377,7 +411,7 @@ describe("maybeRunCliInContainer", () => {
       ],
       {
         stdio: "inherit",
-        env: { USER: "somalley", OPENCLAW_CONTAINER: "" },
+        env: { USER: "somalley", AGDI_CONTAINER: "", OPENCLAW_CONTAINER: "" },
       },
     );
     expect(spawnSync).toHaveBeenCalledTimes(3);
@@ -474,6 +508,10 @@ describe("maybeRunCliInContainer", () => {
         "-i",
         "-t",
         "--env",
+        "AGDI_CONTAINER_HINT=demo",
+        "--env",
+        "AGDI_CLI_CONTAINER_BYPASS=1",
+        "--env",
         "OPENCLAW_CONTAINER_HINT=demo",
         "--env",
         "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -483,7 +521,7 @@ describe("maybeRunCliInContainer", () => {
       ],
       {
         stdio: "inherit",
-        env: { OPENCLAW_CONTAINER: "" },
+        env: { AGDI_CONTAINER: "", OPENCLAW_CONTAINER: "" },
       },
     );
   });
@@ -559,7 +597,7 @@ describe("maybeRunCliInContainer", () => {
         spawnSync,
       }),
     ).toThrow(
-      "openclaw update is not supported with --container; rebuild or restart the container image instead.",
+      "agdi update is not supported with --container; rebuild or restart the container image instead.",
     );
     expect(spawnSync).not.toHaveBeenCalled();
   });
@@ -576,7 +614,7 @@ describe("maybeRunCliInContainer", () => {
         spawnSync,
       }),
     ).toThrow(
-      "openclaw update is not supported with --container; rebuild or restart the container image instead.",
+      "agdi update is not supported with --container; rebuild or restart the container image instead.",
     );
     expect(spawnSync).not.toHaveBeenCalled();
   });
@@ -593,7 +631,7 @@ describe("maybeRunCliInContainer", () => {
         spawnSync,
       }),
     ).toThrow(
-      "openclaw update is not supported with --container; rebuild or restart the container image instead.",
+      "agdi update is not supported with --container; rebuild or restart the container image instead.",
     );
     expect(spawnSync).not.toHaveBeenCalled();
   });

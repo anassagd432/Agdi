@@ -754,7 +754,7 @@ export abstract class MemoryManagerSyncOps {
       params.progress.report({
         completed: params.progress.completed,
         total: params.progress.total,
-        label: this.batch.enabled ? "Indexing memory files (batch)..." : "Indexing memory files…",
+        label: this.batch.enabled ? "Indexing memory files (batch)..." : "Indexing memory filesâ€¦",
       });
     }
 
@@ -861,7 +861,7 @@ export abstract class MemoryManagerSyncOps {
       params.progress.report({
         completed: params.progress.completed,
         total: params.progress.total,
-        label: this.batch.enabled ? "Indexing session files (batch)..." : "Indexing session files…",
+        label: this.batch.enabled ? "Indexing session files (batch)..." : "Indexing session filesâ€¦",
       });
     }
 
@@ -980,7 +980,7 @@ export abstract class MemoryManagerSyncOps {
       progress.report({
         completed: progress.completed,
         total: progress.total,
-        label: "Loading vector extension…",
+        label: "Loading vector extensionâ€¦",
       });
     }
     const vectorReady = await this.ensureVectorReady();
@@ -1005,8 +1005,8 @@ export abstract class MemoryManagerSyncOps {
           this.shouldFallbackOnError(reason) && (await this.activateFallbackProvider(reason));
         if (activated) {
           if (
-            process.env.OPENCLAW_TEST_FAST === "1" &&
-            process.env.OPENCLAW_TEST_MEMORY_UNSAFE_REINDEX === "1"
+            (process.env.AGDI_TEST_FAST ?? process.env.OPENCLAW_TEST_FAST) === "1" &&
+            (process.env.AGDI_TEST_MEMORY_UNSAFE_REINDEX ?? process.env.OPENCLAW_TEST_MEMORY_UNSAFE_REINDEX) === "1"
           ) {
             await this.runUnsafeReindex({
               reason: params?.reason,

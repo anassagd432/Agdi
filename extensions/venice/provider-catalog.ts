@@ -2,7 +2,7 @@ import {
   discoverVeniceModels,
   type ModelProviderConfig,
   VENICE_BASE_URL,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export async function buildVeniceProvider(): Promise<ModelProviderConfig> {
   const models = await discoverVeniceModels();

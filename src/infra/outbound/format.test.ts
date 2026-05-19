@@ -17,13 +17,13 @@ describe("formatOutboundDeliverySummary", () => {
         name: "fallback telegram",
         channel: "telegram" as const,
         result: undefined,
-        expected: "✅ Sent via Telegram. Message ID: unknown",
+        expected: "âœ… Sent via Telegram. Message ID: unknown",
       },
       {
         name: "fallback imessage",
         channel: "imessage" as const,
         result: undefined,
-        expected: "✅ Sent via iMessage. Message ID: unknown",
+        expected: "âœ… Sent via iMessage. Message ID: unknown",
       },
       {
         name: "telegram with chat detail",
@@ -33,7 +33,7 @@ describe("formatOutboundDeliverySummary", () => {
           messageId: "m1",
           chatId: "c1",
         },
-        expected: "✅ Sent via Telegram. Message ID: m1 (chat c1)",
+        expected: "âœ… Sent via Telegram. Message ID: m1 (chat c1)",
       },
       {
         name: "discord with channel detail",
@@ -43,7 +43,7 @@ describe("formatOutboundDeliverySummary", () => {
           messageId: "d1",
           channelId: "chan",
         },
-        expected: "✅ Sent via Discord. Message ID: d1 (channel chan)",
+        expected: "âœ… Sent via Discord. Message ID: d1 (channel chan)",
       },
       {
         name: "slack with room detail",
@@ -53,7 +53,7 @@ describe("formatOutboundDeliverySummary", () => {
           messageId: "s1",
           roomId: "room-1",
         },
-        expected: "✅ Sent via Slack. Message ID: s1 (room room-1)",
+        expected: "âœ… Sent via Slack. Message ID: s1 (room room-1)",
       },
       {
         name: "msteams with conversation detail",
@@ -63,7 +63,7 @@ describe("formatOutboundDeliverySummary", () => {
           messageId: "t1",
           conversationId: "conv-1",
         },
-        expected: "✅ Sent via msteams. Message ID: t1 (conversation conv-1)",
+        expected: "âœ… Sent via msteams. Message ID: t1 (conversation conv-1)",
       },
     ];
 
@@ -163,17 +163,17 @@ describe("formatGatewaySummary", () => {
       {
         name: "default send action",
         input: { channel: "whatsapp", messageId: "m1" },
-        expected: "✅ Sent via gateway (whatsapp). Message ID: m1",
+        expected: "âœ… Sent via gateway (whatsapp). Message ID: m1",
       },
       {
         name: "custom action",
         input: { action: "Poll sent", channel: "discord", messageId: "p1" },
-        expected: "✅ Poll sent via gateway (discord). Message ID: p1",
+        expected: "âœ… Poll sent via gateway (discord). Message ID: p1",
       },
       {
         name: "missing channel and message id",
         input: {},
-        expected: "✅ Sent via gateway. Message ID: unknown",
+        expected: "âœ… Sent via gateway. Message ID: unknown",
       },
     ];
 

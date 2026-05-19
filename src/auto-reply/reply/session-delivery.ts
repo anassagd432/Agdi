@@ -93,7 +93,7 @@ export function resolveLastChannelRaw(params: {
   // WebChat should own reply routing for direct-session UI turns, but only when
   // the session has no established external delivery route. If the session was
   // created via an external channel (e.g. Telegram, iMessage), webchat/dashboard
-  // access must not overwrite the persisted route — doing so causes subagent
+  // access must not overwrite the persisted route â€” doing so causes subagent
   // completion events to be delivered to the dashboard instead of the original
   // channel. See: https://github.com/openclaw/openclaw/issues/47745
   const persistedChannel = normalizeMessageChannel(params.persistedLastChannel);

@@ -247,23 +247,23 @@ describe("abort detection", () => {
       "stop please",
       "STOP OPENCLAW",
       "stop openclaw!!!",
-      "stop don’t do anything",
+      "stop donâ€™t do anything",
       "detente",
-      "detén",
-      "arrête",
-      "停止",
-      "やめて",
-      "止めて",
-      "रुको",
-      "توقف",
-      "стоп",
-      "остановись",
-      "останови",
-      "остановить",
-      "прекрати",
+      "detÃ©n",
+      "arrÃªte",
+      "åœæ­¢",
+      "ã‚„ã‚ã¦",
+      "æ­¢ã‚ã¦",
+      "à¤°à¥à¤•à¥‹",
+      "ØªÙˆÙ‚Ù",
+      "ÑÑ‚Ð¾Ð¿",
+      "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸ÑÑŒ",
+      "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸",
+      "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ",
+      "Ð¿Ñ€ÐµÐºÑ€Ð°Ñ‚Ð¸",
       "halt",
       "anhalten",
-      "aufhören",
+      "aufhÃ¶ren",
       "hoer auf",
       "stopp",
       "pare",
@@ -288,12 +288,12 @@ describe("abort detection", () => {
     expect(isAbortRequestText("STOP")).toBe(true);
     expect(isAbortRequestText("stop action")).toBe(true);
     expect(isAbortRequestText("stop openclaw!!!")).toBe(true);
-    expect(isAbortRequestText("やめて")).toBe(true);
-    expect(isAbortRequestText("остановись")).toBe(true);
+    expect(isAbortRequestText("ã‚„ã‚ã¦")).toBe(true);
+    expect(isAbortRequestText("Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸ÑÑŒ")).toBe(true);
     expect(isAbortRequestText("halt")).toBe(true);
     expect(isAbortRequestText("stopp")).toBe(true);
     expect(isAbortRequestText("pare")).toBe(true);
-    expect(isAbortRequestText(" توقف ")).toBe(true);
+    expect(isAbortRequestText(" ØªÙˆÙ‚Ù ")).toBe(true);
     expect(isAbortRequestText("/stop@openclaw_bot", { botUsername: "openclaw_bot" })).toBe(true);
     expect(isAbortRequestText("/Stop@openclaw_bot", { botUsername: "openclaw_bot" })).toBe(true);
 

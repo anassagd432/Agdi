@@ -99,7 +99,7 @@ describe("readResponseTextSnippet", () => {
       makeStream([new TextEncoder().encode("12345"), new TextEncoder().encode("67890")]),
     );
     await expect(readResponseTextSnippet(res, { maxBytes: 7, maxChars: 50 })).resolves.toBe(
-      "1234567…",
+      "1234567â€¦",
     );
   });
 

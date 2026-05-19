@@ -1,7 +1,7 @@
 import {
   resolveSendableOutboundReplyParts,
   sendMediaWithLeadingCaption,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import {
   chunkByParagraph,
   chunkMarkdownTextWithMode,
@@ -512,11 +512,11 @@ export async function deliverOutboundPayloads(
         silent: params.silent,
         mirror: params.mirror,
         gatewayClientScopes: params.gatewayClientScopes,
-      }).catch(() => null); // Best-effort — don't block delivery if queue write fails.
+      }).catch(() => null); // Best-effort â€” don't block delivery if queue write fails.
 
   // Wrap onError to detect partial failures under bestEffort mode.
   // When bestEffort is true, per-payload errors are caught and passed to onError
-  // without throwing — so the outer try/catch never fires. We track whether any
+  // without throwing â€” so the outer try/catch never fires. We track whether any
   // payload failed so we can call failDelivery instead of ackDelivery.
   let hadPartialFailure = false;
   const wrappedParams = params.onError

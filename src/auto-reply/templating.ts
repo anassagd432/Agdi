@@ -147,7 +147,7 @@ export type MsgContext = {
   GatewayClientScopes?: string[];
   /** Thread identifier (Telegram topic id or Matrix thread event id). */
   MessageThreadId?: string | number;
-  /** Platform-native channel/conversation id (e.g. Slack DM channel "D…" id). */
+  /** Platform-native channel/conversation id (e.g. Slack DM channel "Dâ€¦" id). */
   NativeChannelId?: string;
   /** Telegram forum supergroup marker. */
   IsForum?: boolean;

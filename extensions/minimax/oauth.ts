@@ -1,6 +1,6 @@
 import { randomBytes, randomUUID } from "node:crypto";
-import { ensureGlobalUndiciEnvProxyDispatcher } from "openclaw/plugin-sdk/infra-runtime";
-import { generatePkceVerifierChallenge, toFormUrlEncoded } from "openclaw/plugin-sdk/provider-auth";
+import { ensureGlobalUndiciEnvProxyDispatcher } from "agdi/plugin-sdk/infra-runtime";
+import { generatePkceVerifierChallenge, toFormUrlEncoded } from "agdi/plugin-sdk/provider-auth";
 
 export type MiniMaxRegion = "cn" | "global";
 

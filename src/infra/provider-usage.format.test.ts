@@ -34,11 +34,11 @@ describe("provider-usage.format", () => {
       { now, includeResets: true },
     );
 
-    expect(summary).toContain("Now 90% left ⏱now");
-    expect(summary).toContain("Minute 80% left ⏱30m");
-    expect(summary).toContain("Hour 70% left ⏱2h 15m");
-    expect(summary).toContain("Day 60% left ⏱2d 3h");
-    expect(summary).toMatch(/Date 50% left ⏱[A-Z][a-z]{2} \d{1,2}/);
+    expect(summary).toContain("Now 90% left â±now");
+    expect(summary).toContain("Minute 80% left â±30m");
+    expect(summary).toContain("Hour 70% left â±2h 15m");
+    expect(summary).toContain("Day 60% left â±2d 3h");
+    expect(summary).toMatch(/Date 50% left â±[A-Z][a-z]{2} \d{1,2}/);
   });
 
   it("honors max windows and reset toggle", () => {
@@ -51,7 +51,7 @@ describe("provider-usage.format", () => {
       { now, maxWindows: 2, includeResets: false },
     );
 
-    expect(summary).toBe("A 90% left · B 80% left");
+    expect(summary).toBe("A 90% left Â· B 80% left");
   });
 
   it("treats non-positive max windows as all windows and clamps overused percentages", () => {
@@ -63,7 +63,7 @@ describe("provider-usage.format", () => {
       { now, maxWindows: 0, includeResets: true },
     );
 
-    expect(summary).toBe("Over 0% left ⏱1m · Under 100% left");
+    expect(summary).toBe("Over 0% left â±1m Â· Under 100% left");
   });
 
   it("formats summary line from highest-usage window and provider cap", () => {
@@ -87,7 +87,7 @@ describe("provider-usage.format", () => {
     };
 
     expect(formatUsageSummaryLine(summary, { now, maxProviders: 1 })).toBe(
-      "📊 Usage: Claude 30% left (Week)",
+      "ðŸ“Š Usage: Claude 30% left (Week)",
     );
   });
 
@@ -157,7 +157,7 @@ describe("provider-usage.format", () => {
     expect(formatUsageReportLines(summary, { now })).toEqual([
       "Usage:",
       "  Claude (Pro)",
-      "    Daily: 75% left · resets 2h",
+      "    Daily: 75% left Â· resets 2h",
     ]);
   });
 });

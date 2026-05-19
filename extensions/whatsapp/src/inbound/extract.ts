@@ -4,9 +4,9 @@ import {
   getContentType,
   normalizeMessageContent,
 } from "@whiskeysockets/baileys";
-import { formatLocationText, type NormalizedLocation } from "openclaw/plugin-sdk/channel-inbound";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { jidToE164 } from "openclaw/plugin-sdk/text-runtime";
+import { formatLocationText, type NormalizedLocation } from "agdi/plugin-sdk/channel-inbound";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
+import { jidToE164 } from "agdi/plugin-sdk/text-runtime";
 import { resolveComparableIdentity, type WhatsAppReplyContext } from "../identity.js";
 import { parseVcard } from "../vcard.js";
 

@@ -15,7 +15,7 @@ export {
   WhatsAppConfigSchema,
   type ChannelPlugin,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/whatsapp-core";
+} from "agdi/plugin-sdk/whatsapp-core";
 
 export {
   createWhatsAppOutboundBase,
@@ -28,7 +28,7 @@ export {
   type DmPolicy,
   type GroupPolicy,
   type WhatsAppAccountConfig,
-} from "openclaw/plugin-sdk/whatsapp-shared";
+} from "agdi/plugin-sdk/whatsapp-shared";
 export {
   isWhatsAppGroupJid,
   isWhatsAppUserTarget,

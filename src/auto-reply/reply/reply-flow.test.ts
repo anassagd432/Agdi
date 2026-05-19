@@ -438,7 +438,7 @@ describe("parseLineDirectives", () => {
         {
           name: "all fields",
           text: "Now playing:\n[[media_player: Bohemian Rhapsody | Queen | Speaker | https://example.com/album.jpg | playing]]",
-          expectedAltText: "🎵 Bohemian Rhapsody - Queen",
+          expectedAltText: "ðŸŽµ Bohemian Rhapsody - Queen",
           expectedText: "Now playing:",
           expectFooter: true,
           expectBodyContents: false,
@@ -446,7 +446,7 @@ describe("parseLineDirectives", () => {
         {
           name: "minimal",
           text: "[[media_player: Unknown Track]]",
-          expectedAltText: "🎵 Unknown Track",
+          expectedAltText: "ðŸŽµ Unknown Track",
           expectedText: undefined,
           expectFooter: false,
           expectBodyContents: false,
@@ -489,11 +489,11 @@ describe("parseLineDirectives", () => {
       const cases = [
         {
           text: "[[event: Team Meeting | January 24, 2026 | 2:00 PM - 3:00 PM | Conference Room A | Discuss Q1 roadmap]]",
-          altText: "📅 Team Meeting - January 24, 2026 2:00 PM - 3:00 PM",
+          altText: "ðŸ“… Team Meeting - January 24, 2026 2:00 PM - 3:00 PM",
         },
         {
           text: "[[event: Birthday Party | March 15]]",
-          altText: "📅 Birthday Party - March 15",
+          altText: "ðŸ“… Birthday Party - March 15",
         },
       ];
 
@@ -511,11 +511,11 @@ describe("parseLineDirectives", () => {
       const cases = [
         {
           text: "[[agenda: Today's Schedule | Team Meeting:9:00 AM, Lunch:12:00 PM, Review:3:00 PM]]",
-          altText: "📋 Today's Schedule (3 events)",
+          altText: "ðŸ“‹ Today's Schedule (3 events)",
         },
         {
           text: "[[agenda: Tasks | Buy groceries, Call mom, Workout]]",
-          altText: "📋 Tasks (3 events)",
+          altText: "ðŸ“‹ Tasks (3 events)",
         },
       ];
 
@@ -533,11 +533,11 @@ describe("parseLineDirectives", () => {
       const cases = [
         {
           text: "[[device: TV | Streaming Box | Playing | Play/Pause:toggle, Menu:menu]]",
-          altText: "📱 TV: Playing",
+          altText: "ðŸ“± TV: Playing",
         },
         {
           text: "[[device: Speaker]]",
-          altText: "📱 Speaker",
+          altText: "ðŸ“± Speaker",
         },
       ];
 
@@ -1683,7 +1683,7 @@ describe("followup queue drain restart after idle window", () => {
     // Let drain finish and delete the queue.
     await new Promise<void>((resolve) => setImmediate(resolve));
 
-    // Clear queues (simulates session teardown) — should also clear the callback.
+    // Clear queues (simulates session teardown) â€” should also clear the callback.
     const { clearSessionQueues } = await import("./queue.js");
     clearSessionQueues([key]);
 

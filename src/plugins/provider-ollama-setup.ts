@@ -76,7 +76,7 @@ async function checkOllamaCloudAuth(baseUrl: string): Promise<OllamaCloudAuthRes
     }
     return { signedIn: true };
   } catch {
-    // /api/me not supported or unreachable — fail closed so cloud mode
+    // /api/me not supported or unreachable â€” fail closed so cloud mode
     // doesn't silently skip auth; the caller handles the fallback.
     return { signedIn: false };
   }
@@ -337,7 +337,7 @@ export async function promptAndConfigureOllama(params: {
     ],
   })) as OllamaMode;
 
-  // 4. Cloud auth — check /api/me upfront for remote (cloud+local) mode
+  // 4. Cloud auth â€” check /api/me upfront for remote (cloud+local) mode
   let cloudAuthVerified = false;
   if (mode === "remote") {
     const authResult = await checkOllamaCloudAuth(baseUrl);
@@ -377,7 +377,7 @@ export async function promptAndConfigureOllama(params: {
         if (!continueAnyway) {
           throw new WizardCancelledError("Ollama cloud auth could not be verified");
         }
-        // Cloud auth unverified — fall back to local defaults so the model
+        // Cloud auth unverified â€” fall back to local defaults so the model
         // picker doesn't steer toward cloud models that may fail.
       }
     } else {
@@ -385,7 +385,7 @@ export async function promptAndConfigureOllama(params: {
     }
   }
 
-  // 5. Model ordering — suggested models first.
+  // 5. Model ordering â€” suggested models first.
   // Use cloud defaults only when auth was actually verified; otherwise fall
   // back to local defaults so the user isn't steered toward cloud models
   // that may fail at runtime.

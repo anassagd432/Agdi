@@ -159,8 +159,8 @@ describe("stripReasoningTagsFromText", () => {
     it("handles unicode, attributes, and case-insensitive tag names", () => {
       const cases = [
         {
-          input: "你好 <think>思考 🤔</think> 世界",
-          expected: "你好  世界",
+          input: "ä½ å¥½ <think>æ€è€ƒ ðŸ¤”</think> ä¸–ç•Œ",
+          expected: "ä½ å¥½  ä¸–ç•Œ",
         },
         {
           input: "A <think id='test' class=\"foo\">hidden</think> B",

@@ -113,7 +113,7 @@ export async function doctorCommand(
     const lines = [
       "gateway.mode is unset; gateway start will be blocked.",
       `Fix: run ${formatCliCommand("openclaw configure")} and set Gateway mode (local/remote).`,
-      `Or set directly: ${formatCliCommand("openclaw config set gateway.mode local")}`,
+      `Or set directly: ${formatCliCommand("agdi config set gateway.mode local")}`,
     ];
     if (!fs.existsSync(configPath)) {
       lines.push(`Missing config: run ${formatCliCommand("openclaw setup")} first.`);
@@ -125,8 +125,8 @@ export async function doctorCommand(
       [
         "gateway.auth.token and gateway.auth.password are both configured while gateway.auth.mode is unset.",
         "Set an explicit mode to avoid ambiguous auth selection and startup/runtime failures.",
-        `Set token mode: ${formatCliCommand("openclaw config set gateway.auth.mode token")}`,
-        `Set password mode: ${formatCliCommand("openclaw config set gateway.auth.mode password")}`,
+        `Set token mode: ${formatCliCommand("agdi config set gateway.auth.mode token")}`,
+        `Set password mode: ${formatCliCommand("agdi config set gateway.auth.mode password")}`,
       ].join("\n"),
       "Gateway auth",
     );

@@ -19,7 +19,7 @@ describe("system-presence", () => {
     });
 
     updateSystemPresence({
-      text: "Node: Peter-Mac-Studio (10.0.0.1) · ui 2.0.0 · last input 5s ago · mode ui · reason beacon",
+      text: "Node: Peter-Mac-Studio (10.0.0.1) Â· ui 2.0.0 Â· last input 5s ago Â· mode ui Â· reason beacon",
       instanceId: instanceIdLower,
       host: "Peter-Mac-Studio",
       ip: "10.0.0.1",
@@ -63,7 +63,7 @@ describe("system-presence", () => {
 
   it("parses node presence text and normalizes the update key", () => {
     const update = updateSystemPresence({
-      text: "Node: Relay-Host (10.0.0.9) · app 2.1.0 · last input 7s ago · mode ui · reason beacon",
+      text: "Node: Relay-Host (10.0.0.9) Â· app 2.1.0 Â· last input 7s ago Â· mode ui Â· reason beacon",
       instanceId: "  Mixed-Case-Node  ",
     });
 
@@ -76,7 +76,7 @@ describe("system-presence", () => {
       lastInputSeconds: 7,
       mode: "ui",
       reason: "beacon",
-      text: "Node: Relay-Host (10.0.0.9) · app 2.1.0 · last input 7s ago · mode ui · reason beacon",
+      text: "Node: Relay-Host (10.0.0.9) Â· app 2.1.0 Â· last input 7s ago Â· mode ui Â· reason beacon",
     });
   });
 
@@ -94,7 +94,7 @@ describe("system-presence", () => {
     const entry = listSystemPresence().find((candidate) => candidate.deviceId === deviceId);
     expect(entry?.roles).toEqual(["operator"]);
     expect(entry?.scopes).toEqual(["operator.admin"]);
-    expect(entry?.text).toBe("Node: relay-host · mode operator");
+    expect(entry?.text).toBe("Node: relay-host Â· mode operator");
   });
 
   it("prunes stale non-self entries after TTL", () => {

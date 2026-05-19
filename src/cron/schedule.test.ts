@@ -150,7 +150,7 @@ describe("cron schedule", () => {
     const noonMs = Date.parse("2026-02-08T12:00:00.000Z");
 
     it("advances past current second when nowMs is exactly at the match", () => {
-      // Fix #14164: must NOT return the current second — that caused infinite
+      // Fix #14164: must NOT return the current second â€” that caused infinite
       // re-fires when multiple jobs triggered simultaneously.
       const next = computeNextRunAtMs(dailyNoon, noonMs);
       expect(next).toBe(noonMs + 86_400_000); // next day

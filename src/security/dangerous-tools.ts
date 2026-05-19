@@ -7,15 +7,15 @@
  * or interactive flows that don't make sense over a non-interactive HTTP surface.
  */
 export const DEFAULT_GATEWAY_HTTP_TOOL_DENY = [
-  // Session orchestration — spawning agents remotely is RCE
+  // Session orchestration â€” spawning agents remotely is RCE
   "sessions_spawn",
-  // Cross-session injection — message injection across sessions
+  // Cross-session injection â€” message injection across sessions
   "sessions_send",
-  // Persistent automation control plane — can create/update/remove scheduled runs
+  // Persistent automation control plane â€” can create/update/remove scheduled runs
   "cron",
-  // Gateway control plane — prevents gateway reconfiguration via HTTP
+  // Gateway control plane â€” prevents gateway reconfiguration via HTTP
   "gateway",
-  // Interactive setup — requires terminal QR scan, hangs on HTTP
+  // Interactive setup â€” requires terminal QR scan, hangs on HTTP
   "whatsapp_login",
 ] as const;
 

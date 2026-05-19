@@ -1,4 +1,4 @@
-import type { ModelProviderConfig } from "openclaw/plugin-sdk/provider-models";
+import type { ModelProviderConfig } from "agdi/plugin-sdk/provider-models";
 import { buildXaiCatalogModels, XAI_BASE_URL } from "./model-definitions.js";
 
 export function buildXaiProvider(

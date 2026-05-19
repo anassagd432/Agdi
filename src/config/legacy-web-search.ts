@@ -95,7 +95,7 @@ function migratePluginWebSearchConfig(params: {
 
   if (!existing) {
     config.webSearch = cloneRecord(params.payload);
-    params.changes.push(`Moved ${params.legacyPath} → ${params.targetPath}.`);
+    params.changes.push(`Moved ${params.legacyPath} â†’ ${params.targetPath}.`);
     return;
   }
 
@@ -105,7 +105,7 @@ function migratePluginWebSearchConfig(params: {
   config.webSearch = merged;
   if (changed) {
     params.changes.push(
-      `Merged ${params.legacyPath} → ${params.targetPath} (filled missing fields from legacy; kept explicit plugin config values).`,
+      `Merged ${params.legacyPath} â†’ ${params.targetPath} (filled missing fields from legacy; kept explicit plugin config values).`,
     );
     return;
   }

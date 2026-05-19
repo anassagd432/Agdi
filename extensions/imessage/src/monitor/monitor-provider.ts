@@ -1,42 +1,42 @@
 import fs from "node:fs/promises";
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveHumanDelayConfig } from "agdi/plugin-sdk/agent-runtime";
 import {
   createChannelInboundDebouncer,
   shouldDebounceTextInbound,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { createChannelPairingChallengeIssuer } from "openclaw/plugin-sdk/channel-pairing";
-import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { createChannelPairingChallengeIssuer } from "agdi/plugin-sdk/channel-pairing";
+import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveOpenProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/config-runtime";
-import { readSessionUpdatedAt, resolveStorePath } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/config-runtime";
+import { readSessionUpdatedAt, resolveStorePath } from "agdi/plugin-sdk/config-runtime";
 import {
   readChannelAllowFromStore,
   upsertChannelPairingRequest,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
-import { normalizeScpRemoteHost } from "openclaw/plugin-sdk/infra-runtime";
-import { waitForTransportReady } from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/conversation-runtime";
+import { recordInboundSession } from "agdi/plugin-sdk/conversation-runtime";
+import { normalizeScpRemoteHost } from "agdi/plugin-sdk/infra-runtime";
+import { waitForTransportReady } from "agdi/plugin-sdk/infra-runtime";
 import {
   isInboundPathAllowed,
   resolveIMessageAttachmentRoots,
   resolveIMessageRemoteAttachmentRoots,
-} from "openclaw/plugin-sdk/media-runtime";
-import { kindFromMime } from "openclaw/plugin-sdk/media-runtime";
+} from "agdi/plugin-sdk/media-runtime";
+import { kindFromMime } from "agdi/plugin-sdk/media-runtime";
 import {
   clearHistoryEntriesIfEnabled,
   DEFAULT_GROUP_HISTORY_LIMIT,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-runtime";
-import { dispatchInboundMessage } from "openclaw/plugin-sdk/reply-runtime";
-import { createReplyDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import { danger, logVerbose, shouldLogVerbose, warn } from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
-import { truncateUtf16Safe } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/reply-history";
+import { resolveTextChunkLimit } from "agdi/plugin-sdk/reply-runtime";
+import { dispatchInboundMessage } from "agdi/plugin-sdk/reply-runtime";
+import { createReplyDispatcher } from "agdi/plugin-sdk/reply-runtime";
+import { danger, logVerbose, shouldLogVerbose, warn } from "agdi/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "agdi/plugin-sdk/security-runtime";
+import { truncateUtf16Safe } from "agdi/plugin-sdk/text-runtime";
 import { resolveIMessageAccount } from "../accounts.js";
 import { createIMessageRpcClient } from "../client.js";
 import { DEFAULT_IMESSAGE_PROBE_TIMEOUT_MS } from "../constants.js";

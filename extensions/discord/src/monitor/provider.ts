@@ -15,35 +15,35 @@ import {
   listNativeCommandSpecsForConfig,
   listSkillCommandsForAgents,
   type NativeCommandSpec,
-} from "openclaw/plugin-sdk/command-auth";
+} from "agdi/plugin-sdk/command-auth";
 import {
   isNativeCommandsExplicitlyDisabled,
   resolveNativeCommandsEnabled,
   resolveNativeSkillsEnabled,
-} from "openclaw/plugin-sdk/config-runtime";
-import type { OpenClawConfig, ReplyToMode } from "openclaw/plugin-sdk/config-runtime";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/config-runtime";
+import type { OpenClawConfig, ReplyToMode } from "agdi/plugin-sdk/config-runtime";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { isDangerousNameMatchingEnabled } from "agdi/plugin-sdk/config-runtime";
 import {
   GROUP_POLICY_BLOCKED_LABEL,
   resolveOpenProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/config-runtime";
-import { createConnectedChannelStatusPatch } from "openclaw/plugin-sdk/gateway-runtime";
-import { formatErrorMessage } from "openclaw/plugin-sdk/infra-runtime";
-import { getPluginCommandSpecs } from "openclaw/plugin-sdk/plugin-runtime";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-runtime";
+} from "agdi/plugin-sdk/config-runtime";
+import { createConnectedChannelStatusPatch } from "agdi/plugin-sdk/gateway-runtime";
+import { formatErrorMessage } from "agdi/plugin-sdk/infra-runtime";
+import { getPluginCommandSpecs } from "agdi/plugin-sdk/plugin-runtime";
+import { resolveTextChunkLimit } from "agdi/plugin-sdk/reply-runtime";
 import {
   danger,
   isVerbose,
   logVerbose,
   shouldLogVerbose,
   warn,
-} from "openclaw/plugin-sdk/runtime-env";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { summarizeStringEntries } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/runtime-env";
+import { createSubsystemLogger } from "agdi/plugin-sdk/runtime-env";
+import { createNonExitingRuntime, type RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { summarizeStringEntries } from "agdi/plugin-sdk/text-runtime";
 import { resolveDiscordAccount } from "../accounts.js";
 import { fetchDiscordApplicationId } from "../probe.js";
 import { normalizeDiscordToken } from "../token.js";
@@ -951,7 +951,7 @@ export async function monitorDiscordProvider(opts: MonitorDiscordOpts = {}) {
     const logger = createSubsystemLogger("discord/monitor");
     const guildHistories = new Map<
       string,
-      import("openclaw/plugin-sdk/reply-history").HistoryEntry[]
+      import("agdi/plugin-sdk/reply-history").HistoryEntry[]
     >();
     let botUserId: string | undefined;
     let botUserName: string | undefined;

@@ -437,7 +437,7 @@ describe("bootstrap prompt warnings", () => {
     const optimizedTurns = [stableSystemPrompt, stableSystemPrompt, stableSystemPrompt];
     const injectLegacyWarning = (prompt: string, lines: string[]) => {
       const warningBlock = [
-        "⚠ Bootstrap truncation warning:",
+        "âš  Bootstrap truncation warning:",
         ...lines.map((line) => `- ${line}`),
         "",
       ].join("\n");
@@ -455,6 +455,6 @@ describe("bootstrap prompt warnings", () => {
 
     expect(cacheHitRate(legacyTurns)).toBe(0);
     expect(cacheHitRate(optimizedTurns)).toBe(1);
-    expect(optimizedTurns[0]).not.toContain("⚠ Bootstrap truncation warning:");
+    expect(optimizedTurns[0]).not.toContain("âš  Bootstrap truncation warning:");
   });
 });

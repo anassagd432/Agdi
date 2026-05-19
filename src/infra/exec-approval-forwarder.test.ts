@@ -344,7 +344,7 @@ describe("exec approval forwarder", () => {
     await Promise.resolve();
 
     const text = getFirstDeliveryText(deliver);
-    expect(text).toContain("🔒 Exec approval required");
+    expect(text).toContain("ðŸ”’ Exec approval required");
     expect(text).toContain("Command: `echo hello`");
     expect(text).toContain("Expires in: 5s");
     expect(text).toContain("Reply with: /approve <id> allow-once|allow-always|deny");

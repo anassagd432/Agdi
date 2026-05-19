@@ -25,7 +25,7 @@ function truncate(value: string, maxChars: number): string {
   if (maxChars <= 1) {
     return value.slice(0, maxChars);
   }
-  return `${value.slice(0, maxChars - 1)}…`;
+  return `${value.slice(0, maxChars - 1)}â€¦`;
 }
 
 function toTrimmedString(value: unknown): string | undefined {

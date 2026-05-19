@@ -167,7 +167,7 @@ export async function buildStatusReply(params: {
           includeResets: true,
         });
         if (summaryLine) {
-          usageLine = `📊 Usage: ${summaryLine}`;
+          usageLine = `ðŸ“Š Usage: ${summaryLine}`;
         }
       }
     } catch {
@@ -214,9 +214,9 @@ export async function buildStatusReply(params: {
           .filter(Boolean)
           .slice(0, 3);
         const labelText = labels.length ? ` (${labels.join(", ")})` : "";
-        subagentsLine = `🤖 Subagents: ${active.length} active${labelText} · ${done} done`;
+        subagentsLine = `ðŸ¤– Subagents: ${active.length} active${labelText} Â· ${done} done`;
       } else if (active.length > 0) {
-        subagentsLine = `🤖 Subagents: ${active.length} active`;
+        subagentsLine = `ðŸ¤– Subagents: ${active.length} active`;
       }
     }
   }

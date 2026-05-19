@@ -19,12 +19,12 @@ describe("parseAvailableTags", () => {
   test("keeps falsy ids and sanitizes emoji fields", () => {
     const result = parseAvailableTags([
       { id: "0", name: "General", emoji_id: null },
-      { id: "1", name: "Docs", emoji_name: "📚" },
+      { id: "1", name: "Docs", emoji_name: "ðŸ“š" },
       { name: "Bad", emoji_id: 123 },
     ]);
     expect(result).toEqual([
       { id: "0", name: "General", emoji_id: null },
-      { id: "1", name: "Docs", emoji_name: "📚" },
+      { id: "1", name: "Docs", emoji_name: "ðŸ“š" },
       { name: "Bad" },
     ]);
   });

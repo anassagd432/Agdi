@@ -11,12 +11,12 @@ import {
   type StringSelectMenuInteraction,
 } from "@buape/carbon";
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
-import { resolveHumanDelayConfig } from "openclaw/plugin-sdk/agent-runtime";
-import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
+import { resolveHumanDelayConfig } from "agdi/plugin-sdk/agent-runtime";
+import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
 import {
   resolveCommandAuthorizedFromAuthorizers,
   resolveNativeCommandSessionTargets,
-} from "openclaw/plugin-sdk/command-auth";
+} from "agdi/plugin-sdk/command-auth";
 import {
   buildCommandTextFromArgs,
   findCommandByNativeName,
@@ -30,23 +30,23 @@ import {
   type CommandArgValues,
   type CommandArgs,
   type NativeCommandSpec,
-} from "openclaw/plugin-sdk/command-auth";
-import type { OpenClawConfig, loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/config-runtime";
-import { resolveOpenProviderRuntimeGroupPolicy } from "openclaw/plugin-sdk/config-runtime";
-import { buildPairingReply } from "openclaw/plugin-sdk/conversation-runtime";
-import { getAgentScopedMediaLocalRoots } from "openclaw/plugin-sdk/media-runtime";
-import { executePluginCommand, matchPluginCommand } from "openclaw/plugin-sdk/plugin-runtime";
+} from "agdi/plugin-sdk/command-auth";
+import type { OpenClawConfig, loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { isDangerousNameMatchingEnabled } from "agdi/plugin-sdk/config-runtime";
+import { resolveOpenProviderRuntimeGroupPolicy } from "agdi/plugin-sdk/config-runtime";
+import { buildPairingReply } from "agdi/plugin-sdk/conversation-runtime";
+import { getAgentScopedMediaLocalRoots } from "agdi/plugin-sdk/media-runtime";
+import { executePluginCommand, matchPluginCommand } from "agdi/plugin-sdk/plugin-runtime";
 import {
   resolveSendableOutboundReplyParts,
   resolveTextChunksWithFallback,
-} from "openclaw/plugin-sdk/reply-payload";
-import { resolveChunkMode, resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-runtime";
-import { dispatchReplyWithDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { createSubsystemLogger } from "openclaw/plugin-sdk/runtime-env";
-import { loadWebMedia } from "openclaw/plugin-sdk/web-media";
+} from "agdi/plugin-sdk/reply-payload";
+import { resolveChunkMode, resolveTextChunkLimit } from "agdi/plugin-sdk/reply-runtime";
+import { dispatchReplyWithDispatcher } from "agdi/plugin-sdk/reply-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
+import { createSubsystemLogger } from "agdi/plugin-sdk/runtime-env";
+import { loadWebMedia } from "agdi/plugin-sdk/web-media";
 import { resolveDiscordMaxLinesPerMessage } from "../accounts.js";
 import { chunkDiscordTextWithMode } from "../chunk.js";
 import {

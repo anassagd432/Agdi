@@ -543,7 +543,7 @@ describe("plugin sdk alias helpers", () => {
     const loaderModuleUrl = pathToFileURL(path.join(fixture.root, "openclaw.mjs")).href;
 
     // Use externalPluginRoot as cwd so process.cwd() fallback cannot accidentally
-    // resolve to the fixture root — only the moduleUrl hint can bridge the gap.
+    // resolve to the fixture root â€” only the moduleUrl hint can bridge the gap.
     // Pass "" for argv1: undefined would trigger the STARTUP_ARGV1 default (the vitest
     // runner binary, inside the openclaw repo), which resolves before moduleUrl is checked.
     // An empty string is falsy so resolveTrustedOpenClawRootFromArgvHint returns null,

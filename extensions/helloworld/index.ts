@@ -1,8 +1,8 @@
-import type { AGDIPluginModule } from "../../src/plugins/types.js";
 import { Type } from "@sinclair/typebox";
-import { type AnyAgentTool, jsonResult } from "../../src/agents/tools/common.js";
+import type { OpenClawPluginDefinition } from "agdi/plugin-sdk/plugin-entry";
+import { type AnyAgentTool, jsonResult } from "agdi/plugin-sdk/agent-runtime";
 
-const HelloWorldPlugin: AGDIPluginModule = {
+const HelloWorldPlugin: OpenClawPluginDefinition = {
   id: "helloworld",
   name: "Hello World",
   description: "A demonstration plugin showing how to extend Agdi with custom commands and tools",

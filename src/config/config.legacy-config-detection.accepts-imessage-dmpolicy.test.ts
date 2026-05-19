@@ -215,7 +215,7 @@ describe("legacy config detection", () => {
       telegram: { requireMention: false },
     });
     expect(res.changes).toContain(
-      'Moved telegram.requireMention → channels.telegram.groups."*".requireMention.',
+      'Moved telegram.requireMention â†’ channels.telegram.groups."*".requireMention.',
     );
     expect(res.config?.channels?.telegram?.groups?.["*"]?.requireMention).toBe(false);
     expect(
@@ -226,7 +226,7 @@ describe("legacy config detection", () => {
     const res = migrateLegacyConfig({
       messages: { tts: { enabled: true } },
     });
-    expect(res.changes).toContain("Moved messages.tts.enabled → messages.tts.auto (always).");
+    expect(res.changes).toContain("Moved messages.tts.enabled â†’ messages.tts.auto (always).");
     expect(res.config?.messages?.tts?.auto).toBe("always");
     expect(res.config?.messages?.tts?.enabled).toBeUndefined();
   });

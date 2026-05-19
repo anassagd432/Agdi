@@ -17,14 +17,14 @@ import { markdownToIR } from "./ir.js";
  * PLAIN TEXT OUTPUT DECISION:
  *
  * The HR element is a block-level thematic separator. In plain text output,
- * we render HRs as a visible separator "───" to maintain visual distinction.
+ * we render HRs as a visible separator "â”€â”€â”€" to maintain visual distinction.
  */
 
 describe("hr (thematic break) spacing", () => {
   describe("current behavior documentation", () => {
     it("just hr alone renders as separator", () => {
       const result = markdownToIR("---");
-      expect(result.text).toBe("───");
+      expect(result.text).toBe("â”€â”€â”€");
     });
 
     it("hr interrupting paragraph (setext heading case)", () => {
@@ -35,7 +35,7 @@ describe("hr (thematic break) spacing", () => {
 Para 2`;
       const result = markdownToIR(input);
       // HR interrupts para, renders visibly
-      expect(result.text).toContain("───");
+      expect(result.text).toContain("â”€â”€â”€");
     });
   });
 
@@ -47,7 +47,7 @@ Para 2`;
 
 Para 2`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("Para 1\n\n───\n\nPara 2");
+      expect(result.text).toBe("Para 1\n\nâ”€â”€â”€\n\nPara 2");
     });
 
     it("hr between paragraphs using *** should render with separator", () => {
@@ -57,7 +57,7 @@ Para 2`;
 
 Para 2`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("Para 1\n\n───\n\nPara 2");
+      expect(result.text).toBe("Para 1\n\nâ”€â”€â”€\n\nPara 2");
     });
 
     it("hr between paragraphs using ___ should render with separator", () => {
@@ -67,7 +67,7 @@ ___
 
 Para 2`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("Para 1\n\n───\n\nPara 2");
+      expect(result.text).toBe("Para 1\n\nâ”€â”€â”€\n\nPara 2");
     });
 
     it("consecutive hrs should produce multiple separators", () => {
@@ -76,7 +76,7 @@ Para 2`;
 ---`;
       const result = markdownToIR(input);
       // Each HR renders as a separator
-      expect(result.text).toBe("───\n\n───\n\n───");
+      expect(result.text).toBe("â”€â”€â”€\n\nâ”€â”€â”€\n\nâ”€â”€â”€");
     });
 
     it("hr at document end renders separator", () => {
@@ -84,7 +84,7 @@ Para 2`;
 
 ---`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("Para\n\n───");
+      expect(result.text).toBe("Para\n\nâ”€â”€â”€");
     });
 
     it("hr at document start renders separator", () => {
@@ -92,7 +92,7 @@ Para 2`;
 
 Para`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("───\n\nPara");
+      expect(result.text).toBe("â”€â”€â”€\n\nPara");
     });
 
     it("should not produce triple newlines regardless of hr placement", () => {
@@ -122,7 +122,7 @@ Para`;
 
 Para 2`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("Para 1\n\n───\n\n───\n\n───\n\nPara 2");
+      expect(result.text).toBe("Para 1\n\nâ”€â”€â”€\n\nâ”€â”€â”€\n\nâ”€â”€â”€\n\nPara 2");
     });
   });
 
@@ -132,7 +132,7 @@ Para 2`;
 - ---
 - Item 2`;
       const result = markdownToIR(input);
-      expect(result.text).toBe("• Item 1\n\n───\n\n• Item 2");
+      expect(result.text).toBe("â€¢ Item 1\n\nâ”€â”€â”€\n\nâ€¢ Item 2");
       expect(result.text).not.toMatch(/\n{3,}/);
     });
 
@@ -145,7 +145,7 @@ Para`;
       const result = markdownToIR(input);
       // HR renders as separator, heading renders, para follows
       expect(result.text).not.toMatch(/\n{3,}/);
-      expect(result.text).toContain("───");
+      expect(result.text).toContain("â”€â”€â”€");
     });
 
     it("heading followed by hr", () => {
@@ -157,7 +157,7 @@ Para`;
       const result = markdownToIR(input);
       // Heading ends, HR renders, para follows
       expect(result.text).not.toMatch(/\n{3,}/);
-      expect(result.text).toContain("───");
+      expect(result.text).toContain("â”€â”€â”€");
     });
   });
 });

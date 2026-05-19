@@ -1,8 +1,8 @@
-import { normalizeAccountId } from "openclaw/plugin-sdk/account-id";
+import { normalizeAccountId } from "agdi/plugin-sdk/account-id";
 import {
   listConfiguredAccountIds,
   resolveNormalizedAccountEntry,
-} from "openclaw/plugin-sdk/account-resolution";
+} from "agdi/plugin-sdk/account-resolution";
 import { DEFAULT_ACCOUNT_ID } from "../runtime-api.js";
 import type { CoreConfig, MatrixAccountConfig, MatrixConfig } from "../types.js";
 

@@ -3,7 +3,7 @@ import {
   type RemoteShellSandboxHandle,
   type SandboxContext,
   type SandboxFsBridge,
-} from "openclaw/plugin-sdk/sandbox";
+} from "agdi/plugin-sdk/sandbox";
 
 export function createOpenShellRemoteFsBridge(params: {
   sandbox: SandboxContext;

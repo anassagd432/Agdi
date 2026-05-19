@@ -1,4 +1,4 @@
-import { createPatchedAccountSetupAdapter } from "openclaw/plugin-sdk/setup";
+import { createPatchedAccountSetupAdapter } from "agdi/plugin-sdk/setup";
 
 const channel = "zalouser" as const;
 

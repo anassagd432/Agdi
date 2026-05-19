@@ -22,7 +22,7 @@ function shorten(message: string, maxLen: number): string {
   if (cleaned.length <= maxLen) {
     return cleaned;
   }
-  return `${cleaned.slice(0, Math.max(0, maxLen - 1))}…`;
+  return `${cleaned.slice(0, Math.max(0, maxLen - 1))}â€¦`;
 }
 
 function normalizeGwsLine(line: string): string {
@@ -121,7 +121,7 @@ export function summarizeLogTail(rawLines: string[], opts?: { maxLines?: number 
             ? "re-auth required"
             : shorten(msg, 52)
           : null;
-        const base = `[${tag}] token refresh ${status}${code ? ` ${code}` : ""}${msgShort ? ` · ${msgShort}` : ""}`;
+        const base = `[${tag}] token refresh ${status}${code ? ` ${code}` : ""}${msgShort ? ` Â· ${msgShort}` : ""}`;
         addGroup(`token:${tag}:${status}:${code ?? ""}:${msgShort ?? ""}`, base);
         continue;
       }
@@ -137,7 +137,7 @@ export function summarizeLogTail(rawLines: string[], opts?: { maxLines?: number 
       continue;
     }
 
-    // "[gws] ⇄ res ✗ agent ... errorCode=UNAVAILABLE errorMessage=Error: OAuth token refresh failed ... runId=..."
+    // "[gws] â‡„ res âœ— agent ... errorCode=UNAVAILABLE errorMessage=Error: OAuth token refresh failed ... runId=..."
     if (
       line.startsWith("[gws]") &&
       line.includes("errorCode=UNAVAILABLE") &&
@@ -155,7 +155,7 @@ export function summarizeLogTail(rawLines: string[], opts?: { maxLines?: number 
     if (g.count <= 1) {
       continue;
     }
-    out[g.index] = `${g.base} ×${g.count}`;
+    out[g.index] = `${g.base} Ã—${g.count}`;
   }
 
   const deduped: string[] = [];
@@ -174,7 +174,7 @@ export function summarizeLogTail(rawLines: string[], opts?: { maxLines?: number 
   const tail = Math.max(1, maxLines - head - 1);
   const kept = [
     ...deduped.slice(0, head),
-    `… ${deduped.length - head - tail} lines omitted …`,
+    `â€¦ ${deduped.length - head - tail} lines omitted â€¦`,
     ...deduped.slice(-tail),
   ];
   return kept;

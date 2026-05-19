@@ -17,23 +17,23 @@ vi.mock("@mariozechner/pi-ai/oauth", async () => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/provider-models", () => ({
+vi.mock("agdi/plugin-sdk/provider-models", () => ({
   normalizeModelCompat: (model: Record<string, unknown>) => model,
 }));
 
 const loadJsonFile = vi.fn();
 const saveJsonFile = vi.fn();
 
-vi.mock("openclaw/plugin-sdk/json-store", () => ({
+vi.mock("agdi/plugin-sdk/json-store", () => ({
   loadJsonFile,
   saveJsonFile,
 }));
 
-vi.mock("openclaw/plugin-sdk/state-paths", () => ({
+vi.mock("agdi/plugin-sdk/state-paths", () => ({
   resolveStateDir: () => "/tmp/openclaw-state",
 }));
 
-import type { ProviderResolveDynamicModelContext } from "openclaw/plugin-sdk/core";
+import type { ProviderResolveDynamicModelContext } from "agdi/plugin-sdk/core";
 import { resolveCopilotForwardCompatModel } from "./models.js";
 
 let deriveCopilotApiBaseUrlFromToken: typeof import("./token.js").deriveCopilotApiBaseUrlFromToken;

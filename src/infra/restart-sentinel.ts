@@ -142,5 +142,5 @@ export function trimLogTail(input?: string | null, maxChars = 8000) {
   if (text.length <= maxChars) {
     return text;
   }
-  return `…${text.slice(text.length - maxChars)}`;
+  return `â€¦${text.slice(text.length - maxChars)}`;
 }

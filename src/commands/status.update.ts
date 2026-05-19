@@ -65,8 +65,8 @@ export function formatUpdateAvailableHint(update: UpdateCheckResult): string | n
   if (availability.hasRegistryUpdate && availability.latestVersion) {
     details.push(`npm ${availability.latestVersion}`);
   }
-  const suffix = details.length > 0 ? ` (${details.join(" · ")})` : "";
-  return `Update available${suffix}. Run: ${formatCliCommand("openclaw update")}`;
+  const suffix = details.length > 0 ? ` (${details.join(" Â· ")})` : "";
+  return `Update available${suffix}. Run: ${formatCliCommand("agdi update")}`;
 }
 
 export function formatUpdateOneLiner(update: UpdateCheckResult): string {
@@ -96,7 +96,7 @@ export function formatUpdateOneLiner(update: UpdateCheckResult): string {
     const branch = update.git.branch ? `git ${update.git.branch}` : "git";
     parts.push(branch);
     if (update.git.upstream) {
-      parts.push(`↔ ${update.git.upstream}`);
+      parts.push(`â†” ${update.git.upstream}`);
     }
     if (update.git.dirty === true) {
       parts.push("dirty");
@@ -132,5 +132,5 @@ export function formatUpdateOneLiner(update: UpdateCheckResult): string {
       parts.push("deps stale");
     }
   }
-  return `Update: ${parts.join(" · ")}`;
+  return `Update: ${parts.join(" Â· ")}`;
 }

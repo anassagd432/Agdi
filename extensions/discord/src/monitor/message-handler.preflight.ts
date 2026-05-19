@@ -1,37 +1,37 @@
 import { ChannelType, MessageType, type Message, type User } from "@buape/carbon";
 import { Routes, type APIMessage } from "discord-api-types/v10";
-import { formatAllowlistMatchMeta } from "openclaw/plugin-sdk/allow-from";
+import { formatAllowlistMatchMeta } from "agdi/plugin-sdk/allow-from";
 import {
   buildMentionRegexes,
   logInboundDrop,
   matchesMentionWithExplicit,
   resolveMentionGatingWithBypass,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { resolveControlCommandGate } from "openclaw/plugin-sdk/command-auth";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth";
-import { shouldHandleTextCommands } from "openclaw/plugin-sdk/command-auth";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { resolveControlCommandGate } from "agdi/plugin-sdk/command-auth";
+import { hasControlCommand } from "agdi/plugin-sdk/command-auth";
+import { shouldHandleTextCommands } from "agdi/plugin-sdk/command-auth";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { isDangerousNameMatchingEnabled } from "agdi/plugin-sdk/config-runtime";
 import {
   ensureConfiguredBindingRouteReady,
   resolveConfiguredBindingRoute,
-} from "openclaw/plugin-sdk/conversation-runtime";
+} from "agdi/plugin-sdk/conversation-runtime";
 import {
   getSessionBindingService,
   type SessionBindingRecord,
-} from "openclaw/plugin-sdk/conversation-runtime";
-import { buildPairingReply } from "openclaw/plugin-sdk/conversation-runtime";
-import { isPluginOwnedSessionBindingRecord } from "openclaw/plugin-sdk/conversation-runtime";
-import { recordChannelActivity } from "openclaw/plugin-sdk/infra-runtime";
-import { enqueueSystemEvent } from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/conversation-runtime";
+import { buildPairingReply } from "agdi/plugin-sdk/conversation-runtime";
+import { isPluginOwnedSessionBindingRecord } from "agdi/plugin-sdk/conversation-runtime";
+import { recordChannelActivity } from "agdi/plugin-sdk/infra-runtime";
+import { enqueueSystemEvent } from "agdi/plugin-sdk/infra-runtime";
 import {
   recordPendingHistoryEntryIfEnabled,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { getChildLogger } from "openclaw/plugin-sdk/runtime-env";
-import { logDebug } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/reply-history";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import { getChildLogger } from "agdi/plugin-sdk/runtime-env";
+import { logDebug } from "agdi/plugin-sdk/text-runtime";
 import { fetchPluralKitMessageInfo } from "../pluralkit.js";
 import { sendMessageDiscord } from "../send.js";
 import {

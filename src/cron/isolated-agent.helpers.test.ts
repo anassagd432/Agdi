@@ -16,7 +16,7 @@ describe("resolveCronPayloadOutcome", () => {
     const result = resolveCronPayloadOutcome({
       payloads: [
         {
-          text: "⚠️ 🛠️ Exec failed: /bin/bash: line 1: python: command not found",
+          text: "âš ï¸ ðŸ› ï¸ Exec failed: /bin/bash: line 1: python: command not found",
           isError: true,
         },
       ],
@@ -30,7 +30,7 @@ describe("resolveCronPayloadOutcome", () => {
   it("treats transient error payloads as non-fatal when a later success exists", () => {
     const result = resolveCronPayloadOutcome({
       payloads: [
-        { text: "⚠️ ✍️ Write: failed", isError: true },
+        { text: "âš ï¸ âœï¸ Write: failed", isError: true },
         { text: "Write completed successfully.", isError: false },
       ],
     });
@@ -57,6 +57,6 @@ describe("resolveCronPayloadOutcome", () => {
       payloads: [{ text: "a".repeat(2001) }],
     });
 
-    expect(String(result.summary ?? "")).toMatch(/…$/);
+    expect(String(result.summary ?? "")).toMatch(/â€¦$/);
   });
 });

@@ -1,37 +1,37 @@
-import { resolveIdentityNamePrefix } from "openclaw/plugin-sdk/agent-runtime";
+import { resolveIdentityNamePrefix } from "agdi/plugin-sdk/agent-runtime";
 import {
   resolveInboundSessionEnvelopeContext,
   toLocationContext,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { formatInboundEnvelope } from "openclaw/plugin-sdk/channel-inbound";
-import { createChannelReplyPipeline } from "openclaw/plugin-sdk/channel-reply-pipeline";
-import { shouldComputeCommandAuthorized } from "openclaw/plugin-sdk/command-auth";
-import type { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { resolveMarkdownTableMode } from "openclaw/plugin-sdk/config-runtime";
-import { recordSessionMetaFromInbound } from "openclaw/plugin-sdk/config-runtime";
-import { getAgentScopedMediaLocalRoots } from "openclaw/plugin-sdk/media-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { formatInboundEnvelope } from "agdi/plugin-sdk/channel-inbound";
+import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
+import { shouldComputeCommandAuthorized } from "agdi/plugin-sdk/command-auth";
+import type { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { resolveMarkdownTableMode } from "agdi/plugin-sdk/config-runtime";
+import { recordSessionMetaFromInbound } from "agdi/plugin-sdk/config-runtime";
+import { getAgentScopedMediaLocalRoots } from "agdi/plugin-sdk/media-runtime";
 import {
   buildHistoryContextFromEntries,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
-import { resolveChunkMode, resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-runtime";
-import type { getReplyFromConfig } from "openclaw/plugin-sdk/reply-runtime";
-import { finalizeInboundContext } from "openclaw/plugin-sdk/reply-runtime";
-import { dispatchReplyWithBufferedBlockDispatcher } from "openclaw/plugin-sdk/reply-runtime";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+} from "agdi/plugin-sdk/reply-history";
+import { resolveSendableOutboundReplyParts } from "agdi/plugin-sdk/reply-payload";
+import { resolveChunkMode, resolveTextChunkLimit } from "agdi/plugin-sdk/reply-runtime";
+import type { getReplyFromConfig } from "agdi/plugin-sdk/reply-runtime";
+import { finalizeInboundContext } from "agdi/plugin-sdk/reply-runtime";
+import { dispatchReplyWithBufferedBlockDispatcher } from "agdi/plugin-sdk/reply-runtime";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
 import {
   resolveInboundLastRouteSessionKey,
   type resolveAgentRoute,
-} from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import type { getChildLogger } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import type { getChildLogger } from "agdi/plugin-sdk/runtime-env";
 import {
   readStoreAllowFromForDmPolicy,
   resolvePinnedMainDmOwnerFromAllowlist,
   resolveDmGroupAccessWithCommandGate,
-} from "openclaw/plugin-sdk/security-runtime";
-import { jidToE164, normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/security-runtime";
+import { jidToE164, normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 import { resolveWhatsAppAccount } from "../../accounts.js";
 import {
   getPrimaryIdentityId,

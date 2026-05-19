@@ -1,4 +1,4 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
 import { buildMicrosoftFoundryProvider } from "./provider.js";
 
 export default definePluginEntry({

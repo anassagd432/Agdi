@@ -1,4 +1,4 @@
-import type { SlackSlashCommandConfig } from "openclaw/plugin-sdk/config-runtime";
+import type { SlackSlashCommandConfig } from "agdi/plugin-sdk/config-runtime";
 
 /**
  * Strip Slack mentions (<@U123>, <@U123|name>) so command detection works on

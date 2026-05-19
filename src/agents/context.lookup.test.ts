@@ -251,7 +251,7 @@ describe("lookupContextTokens", () => {
 
   it("resolveContextTokensForModel: config direct scan prevents OpenRouter qualified key collision for Google provider", async () => {
     // When provider is explicitly "google" and cfg has a Google contextWindow
-    // override, the config direct scan returns it before any cache lookup —
+    // override, the config direct scan returns it before any cache lookup â€”
     // so the OpenRouter raw "google/gemini-2.5-pro" qualified entry is never hit.
     // Real callers (status.summary.ts) always pass cfg when provider is explicit.
     mockDiscoveryDeps([{ id: "google/gemini-2.5-pro", contextWindow: 999_000 }]);
@@ -280,7 +280,7 @@ describe("lookupContextTokens", () => {
   it("resolveContextTokensForModel prefers exact provider key over alias-normalized match", async () => {
     // When both "qwen" and "qwen-portal" exist as config keys (alias pattern),
     // resolveConfiguredProviderContextWindow must return the exact-key match first,
-    // not the first normalized hit — mirroring pi-embedded-runner/model.ts behaviour.
+    // not the first normalized hit â€” mirroring pi-embedded-runner/model.ts behaviour.
     mockDiscoveryDeps([]);
 
     const cfg = {
@@ -326,7 +326,7 @@ describe("lookupContextTokens", () => {
     await flushAsyncWarmup();
 
     // model-only call (no explicit provider) must NOT apply config direct scan.
-    // Falls through to bare cache lookup: "google/gemini-2.5-pro" → 999k ✓.
+    // Falls through to bare cache lookup: "google/gemini-2.5-pro" â†’ 999k âœ“.
     const modelOnlyResult = resolveContextTokensForModel({
       cfg: cfg as never,
       model: "google/gemini-2.5-pro",
@@ -334,7 +334,7 @@ describe("lookupContextTokens", () => {
     });
     expect(modelOnlyResult).toBe(999_000);
 
-    // Explicit provider still uses config scan ✓.
+    // Explicit provider still uses config scan âœ“.
     const explicitResult = resolveContextTokensForModel({
       cfg: cfg as never,
       provider: "google",
@@ -358,8 +358,8 @@ describe("lookupContextTokens", () => {
     lookupContextTokens("google-gemini-cli/gemini-3.1-pro-preview");
     await flushAsyncWarmup();
 
-    // Qualified "google-gemini-cli/gemini-3.1-pro-preview" → 1M wins over
-    // bare "gemini-3.1-pro-preview" → 128k (cross-provider minimum).
+    // Qualified "google-gemini-cli/gemini-3.1-pro-preview" â†’ 1M wins over
+    // bare "gemini-3.1-pro-preview" â†’ 128k (cross-provider minimum).
     const result = resolveContextTokensForModel({
       provider: "google-gemini-cli",
       model: "gemini-3.1-pro-preview",

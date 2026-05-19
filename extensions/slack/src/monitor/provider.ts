@@ -6,25 +6,25 @@ import {
   mergeAllowlist,
   patchAllowlistUsersInConfigEntries,
   summarizeMapping,
-} from "openclaw/plugin-sdk/allow-from";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
-import { isDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/allow-from";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
+import { isDangerousNameMatchingEnabled } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveOpenProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/config-runtime";
-import type { SessionScope } from "openclaw/plugin-sdk/config-runtime";
-import { createConnectedChannelStatusPatch } from "openclaw/plugin-sdk/gateway-runtime";
-import { computeBackoff, sleepWithAbort } from "openclaw/plugin-sdk/infra-runtime";
-import { installRequestBodyLimitGuard } from "openclaw/plugin-sdk/infra-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT } from "openclaw/plugin-sdk/reply-history";
-import { resolveTextChunkLimit } from "openclaw/plugin-sdk/reply-runtime";
-import { normalizeMainKey } from "openclaw/plugin-sdk/routing";
-import { warn } from "openclaw/plugin-sdk/runtime-env";
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeResolvedSecretInputString } from "openclaw/plugin-sdk/secret-input";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/config-runtime";
+import type { SessionScope } from "agdi/plugin-sdk/config-runtime";
+import { createConnectedChannelStatusPatch } from "agdi/plugin-sdk/gateway-runtime";
+import { computeBackoff, sleepWithAbort } from "agdi/plugin-sdk/infra-runtime";
+import { installRequestBodyLimitGuard } from "agdi/plugin-sdk/infra-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT } from "agdi/plugin-sdk/reply-history";
+import { resolveTextChunkLimit } from "agdi/plugin-sdk/reply-runtime";
+import { normalizeMainKey } from "agdi/plugin-sdk/routing";
+import { warn } from "agdi/plugin-sdk/runtime-env";
+import { createNonExitingRuntime, type RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { normalizeResolvedSecretInputString } from "agdi/plugin-sdk/secret-input";
+import { normalizeStringEntries } from "agdi/plugin-sdk/text-runtime";
 import { resolveSlackAccount } from "../accounts.js";
 import { resolveSlackWebClientOptions } from "../client.js";
 import { normalizeSlackWebhookPath, registerSlackHttpHandler } from "../http/index.js";

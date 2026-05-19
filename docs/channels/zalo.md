@@ -13,7 +13,7 @@ Status: experimental. DMs are supported. The [Capabilities](#capabilities) secti
 
 Zalo ships as a plugin and is not bundled with the core install.
 
-- Install via CLI: `agdi plugins install @agdi/zalo`
+- Install via CLI: `agdi plugins install @openclaw/zalo`
 - Or select **Zalo** during setup and confirm the install prompt
 - Details: [Plugins](/tools/plugin)
 
@@ -21,7 +21,7 @@ Zalo ships as a plugin and is not bundled with the core install.
 
 1. Install the Zalo plugin:
    - From a source checkout: `agdi plugins install ./extensions/zalo`
-   - From npm (if published): `agdi plugins install @agdi/zalo`
+   - From npm (if published): `agdi plugins install @openclaw/zalo`
    - Or pick **Zalo** in setup and confirm the install prompt
 2. Set the token:
    - Env: `ZALO_BOT_TOKEN=...`

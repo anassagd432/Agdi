@@ -301,7 +301,7 @@ export async function rotateSessionFile(
     return false;
   }
 
-  // Clean up old backups — keep only the 3 most recent .bak.* files.
+  // Clean up old backups â€” keep only the 3 most recent .bak.* files.
   try {
     const dir = path.dirname(storePath);
     const baseName = path.basename(storePath);

@@ -29,7 +29,7 @@ async function createWorkspaceSkillDirs() {
   };
 }
 
-describe("buildWorkspaceSkillsPrompt — .agents/skills/ directories", () => {
+describe("buildWorkspaceSkillsPrompt â€” .agents/skills/ directories", () => {
   let fakeHome: string;
 
   beforeEach(async () => {

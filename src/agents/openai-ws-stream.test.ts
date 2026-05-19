@@ -3,7 +3,7 @@
  *
  * Covers:
  *  - Message format converters (convertMessagesToInputItems, convertTools)
- *  - Response → AssistantMessage parser (buildAssistantMessageFromResponse)
+ *  - Response â†’ AssistantMessage parser (buildAssistantMessageFromResponse)
  *  - createOpenAIWebSocketStreamFn behaviour (connect, send, receive, fallback)
  *  - Session registry helpers (releaseWsSession, hasWsSession)
  */
@@ -21,9 +21,9 @@ import {
   releaseWsSession,
 } from "./openai-ws-stream.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Mock OpenAIWebSocketManager
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // We mock the entire openai-ws-connection module so no real WebSocket is opened.
 const { MockManager } = vi.hoisted(() => {
@@ -66,7 +66,7 @@ const { MockManager } = vi.hoisted(() => {
 
     send(event: unknown): void {
       if (!this._connected) {
-        throw new Error("cannot send — not connected");
+        throw new Error("cannot send â€” not connected");
       }
       if (this.sendShouldFail) {
         throw new Error("Mock send failure");
@@ -183,9 +183,9 @@ const mockStreamSimple = vi.fn((model: unknown, context: unknown) => {
   return stream;
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /** Resolve a StreamFn return value (which may be a Promise) to an AsyncIterable. */
 async function resolveStream(
@@ -194,9 +194,9 @@ async function resolveStream(
   return stream instanceof Promise ? await stream : stream;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Fixtures
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type FakeMessage =
   | { role: "user"; content: string | unknown[]; timestamp: number }
@@ -316,9 +316,9 @@ function makeResponseObject(
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Test suite
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("convertTools", () => {
   it("returns empty array for undefined tools", () => {
@@ -354,7 +354,7 @@ describe("convertTools", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("convertMessagesToInputItems", () => {
   it("converts a simple user text message", () => {
@@ -594,7 +594,7 @@ describe("convertMessagesToInputItems", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("buildAssistantMessageFromResponse", () => {
   const modelInfo = { api: "openai-responses", provider: "openai", id: "gpt-5.2" };
@@ -677,7 +677,7 @@ describe("buildAssistantMessageFromResponse", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("createOpenAIWebSocketStreamFn", () => {
   const modelStub = {
@@ -928,7 +928,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
         contextStub as Parameters<typeof streamFn>[1],
       );
 
-      // Consume — should fall back to HTTP (streamSimple mock).
+      // Consume â€” should fall back to HTTP (streamSimple mock).
       const messages: unknown[] = [];
       for await (const ev of await resolveStream(stream)) {
         messages.push(ev);
@@ -948,7 +948,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
     const sessionId = "sess-incremental";
     const streamFn = createOpenAIWebSocketStreamFn("sk-test", sessionId);
 
-    // ── Turn 1: full context ─────────────────────────────────────────────
+    // â”€â”€ Turn 1: full context â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ctx1 = {
       systemPrompt: "You are helpful.",
       messages: [userMsg("Run ls")] as Parameters<typeof convertMessagesToInputItems>[0],
@@ -976,7 +976,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
     manager.simulateEvent({ type: "response.completed", response: turn1Response });
     await done1;
 
-    // ── Turn 2: incremental (tool results only) ───────────────────────────
+    // â”€â”€ Turn 2: incremental (tool results only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const ctx2 = {
       systemPrompt: "You are helpful.",
       messages: [
@@ -1084,7 +1084,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
     MockManager.lastInstance!.sendShouldFail = true;
     const callsBefore = streamSimpleCalls.length;
 
-    // 3. Second call: send throws → must fall back to HTTP and clear registry
+    // 3. Second call: send throws â†’ must fall back to HTTP and clear registry
     const stream2 = streamFn(
       modelStub as Parameters<typeof streamFn>[0],
       contextStub as Parameters<typeof streamFn>[1],
@@ -1246,7 +1246,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
           expect(hasError).toBe(true);
           resolve();
         } catch {
-          // The error propagation is also acceptable — promise rejected
+          // The error propagation is also acceptable â€” promise rejected
           resolve();
         }
       });
@@ -1315,7 +1315,7 @@ describe("createOpenAIWebSocketStreamFn", () => {
   });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 describe("releaseWsSession / hasWsSession", () => {
   beforeEach(() => {

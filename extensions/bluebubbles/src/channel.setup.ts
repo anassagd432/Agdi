@@ -1,4 +1,4 @@
-import type { ChannelPlugin } from "openclaw/plugin-sdk/core";
+import type { ChannelPlugin } from "agdi/plugin-sdk/core";
 import { type ResolvedBlueBubblesAccount } from "./accounts.js";
 import {
   bluebubblesCapabilities,

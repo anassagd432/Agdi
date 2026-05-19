@@ -104,7 +104,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
     // to seed this for new installs, but existing bind=lan/bind=custom installs that upgrade
     // crash-loop immediately on next startup with no recovery path (issue #29385).
     //
-    // This migration runs on every gateway start via migrateLegacyConfig → applyLegacyMigrations
+    // This migration runs on every gateway start via migrateLegacyConfig â†’ applyLegacyMigrations
     // and writes the seeded origins to disk before the startup guard fires, preventing the loop.
     id: "gateway.controlUi.allowedOrigins-seed-for-non-loopback",
     describe: "Seed gateway.controlUi.allowedOrigins for existing non-loopback gateway installs",
@@ -157,9 +157,9 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
         fieldKey: "memorySearch",
         legacyValue: legacyMemorySearch,
         changes,
-        movedMessage: "Moved memorySearch → agents.defaults.memorySearch.",
+        movedMessage: "Moved memorySearch â†’ agents.defaults.memorySearch.",
         mergedMessage:
-          "Merged memorySearch → agents.defaults.memorySearch (filled missing fields from legacy; kept explicit agents.defaults values).",
+          "Merged memorySearch â†’ agents.defaults.memorySearch (filled missing fields from legacy; kept explicit agents.defaults values).",
       });
       delete raw.memorySearch;
     },
@@ -181,7 +181,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
         return;
       }
       claudeCli.mode = "oauth";
-      changes.push('Updated auth.profiles["anthropic:claude-cli"].mode → "oauth".');
+      changes.push('Updated auth.profiles["anthropic:claude-cli"].mode â†’ "oauth".');
     },
   },
   // tools.alsoAllow migration removed (field not shipped in prod; enforce via schema instead).
@@ -196,7 +196,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       }
       if (tools.exec === undefined) {
         tools.exec = bash;
-        changes.push("Moved tools.bash → tools.exec.");
+        changes.push("Moved tools.bash â†’ tools.exec.");
       } else {
         changes.push("Removed tools.bash (tools.exec already set).");
       }
@@ -224,7 +224,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       }
       tts.auto = tts.enabled ? "always" : "off";
       delete tts.enabled;
-      changes.push(`Moved messages.tts.enabled → messages.tts.auto (${String(tts.auto)}).`);
+      changes.push(`Moved messages.tts.enabled â†’ messages.tts.auto (${String(tts.auto)}).`);
     },
   },
   {
@@ -244,11 +244,11 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       if (agentTools) {
         if (tools.allow === undefined && agentTools.allow !== undefined) {
           tools.allow = agentTools.allow;
-          changes.push("Moved agent.tools.allow → tools.allow.");
+          changes.push("Moved agent.tools.allow â†’ tools.allow.");
         }
         if (tools.deny === undefined && agentTools.deny !== undefined) {
           tools.deny = agentTools.deny;
-          changes.push("Moved agent.tools.deny → tools.deny.");
+          changes.push("Moved agent.tools.deny â†’ tools.deny.");
         }
       }
 
@@ -256,7 +256,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       if (elevated) {
         if (tools.elevated === undefined) {
           tools.elevated = elevated;
-          changes.push("Moved agent.elevated → tools.elevated.");
+          changes.push("Moved agent.elevated â†’ tools.elevated.");
         } else {
           changes.push("Removed agent.elevated (tools.elevated already set).");
         }
@@ -266,7 +266,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       if (bash) {
         if (tools.exec === undefined) {
           tools.exec = bash;
-          changes.push("Moved agent.bash → tools.exec.");
+          changes.push("Moved agent.bash â†’ tools.exec.");
         } else {
           changes.push("Removed agent.bash (tools.exec already set).");
         }
@@ -280,7 +280,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
           const toolPolicy = ensureRecord(toolsSandbox, "tools");
           mergeMissing(toolPolicy, sandboxTools);
           delete sandbox.tools;
-          changes.push("Moved agent.sandbox.tools → tools.sandbox.tools.");
+          changes.push("Moved agent.sandbox.tools â†’ tools.sandbox.tools.");
         }
       }
 
@@ -292,7 +292,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
           const toolPolicy = ensureRecord(toolsSubagents, "tools");
           mergeMissing(toolPolicy, subagentTools);
           delete subagents.tools;
-          changes.push("Moved agent.subagents.tools → tools.subagents.tools.");
+          changes.push("Moved agent.subagents.tools â†’ tools.subagents.tools.");
         }
       }
 
@@ -311,7 +311,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       agents.defaults = defaults;
       raw.agents = agents;
       delete raw.agent;
-      changes.push("Moved agent → agents.defaults.");
+      changes.push("Moved agent â†’ agents.defaults.");
     },
   },
   {
@@ -332,9 +332,9 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
           fieldKey: "heartbeat",
           legacyValue: agentHeartbeat,
           changes,
-          movedMessage: "Moved heartbeat → agents.defaults.heartbeat.",
+          movedMessage: "Moved heartbeat â†’ agents.defaults.heartbeat.",
           mergedMessage:
-            "Merged heartbeat → agents.defaults.heartbeat (filled missing fields from legacy; kept explicit agents.defaults values).",
+            "Merged heartbeat â†’ agents.defaults.heartbeat (filled missing fields from legacy; kept explicit agents.defaults values).",
         });
       }
 
@@ -345,9 +345,9 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
           fieldKey: "heartbeat",
           legacyValue: channelHeartbeat,
           changes,
-          movedMessage: "Moved heartbeat visibility → channels.defaults.heartbeat.",
+          movedMessage: "Moved heartbeat visibility â†’ channels.defaults.heartbeat.",
           mergedMessage:
-            "Merged heartbeat visibility → channels.defaults.heartbeat (filled missing fields from legacy; kept explicit channels.defaults values).",
+            "Merged heartbeat visibility â†’ channels.defaults.heartbeat (filled missing fields from legacy; kept explicit channels.defaults values).",
         });
       }
 
@@ -372,7 +372,7 @@ export const LEGACY_CONFIG_MIGRATIONS_PART_3: LegacyConfigMigration[] = [
       const entry = ensureAgentEntry(list, defaultId);
       if (entry.identity === undefined) {
         entry.identity = identity;
-        changes.push(`Moved identity → agents.list (id "${defaultId}").identity.`);
+        changes.push(`Moved identity â†’ agents.list (id "${defaultId}").identity.`);
       } else {
         changes.push("Removed identity (agents.list identity already set).");
       }

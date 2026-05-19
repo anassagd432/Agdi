@@ -100,7 +100,7 @@ export type MediaUnderstandingConfig = MediaProviderRequestConfig & {
   echoTranscript?: boolean;
   /**
    * Format string for the echoed transcript. Use `{transcript}` as placeholder.
-   * Default: '📝 "{transcript}"'
+   * Default: 'ðŸ“ "{transcript}"'
    */
   echoFormat?: string;
 };

@@ -8,8 +8,8 @@ import {
   listCombinedAccountIds,
   resolveMergedAccountConfig,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { resolveDangerousNameMatchingEnabled } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/account-resolution";
+import { resolveDangerousNameMatchingEnabled } from "agdi/plugin-sdk/config-runtime";
 import type {
   SynologyChatChannelConfig,
   ResolvedSynologyChatAccount,

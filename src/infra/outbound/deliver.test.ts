@@ -946,7 +946,7 @@ describe("deliverOutboundPayloads", () => {
     // onError was called for the first payload's failure.
     expect(onError).toHaveBeenCalledTimes(1);
 
-    // Queue entry should NOT be acked — failDelivery should be called instead.
+    // Queue entry should NOT be acked â€” failDelivery should be called instead.
     expect(queueMocks.ackDelivery).not.toHaveBeenCalled();
     expect(queueMocks.failDelivery).toHaveBeenCalledWith(
       "mock-queue-id",

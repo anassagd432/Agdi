@@ -812,7 +812,7 @@ describe("gateway agent handler", () => {
     await waitForAssertion(() => expect(mocks.agentCommand).toHaveBeenCalled());
     expect(mocks.performGatewaySessionReset).toHaveBeenCalledTimes(1);
     const call = readLastAgentCommandCall();
-    // Message is now dynamically built with current date — check key substrings
+    // Message is now dynamically built with current date â€” check key substrings
     expect(call?.message).toContain("Run your Session Startup sequence");
     expect(call?.message).toContain("Current time:");
     expect(call?.message).not.toBe(BARE_SESSION_RESET_PROMPT);

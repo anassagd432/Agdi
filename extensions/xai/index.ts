@@ -1,6 +1,6 @@
-import { defineSingleProviderPluginEntry } from "openclaw/plugin-sdk/provider-entry";
-import { applyXaiModelCompat } from "openclaw/plugin-sdk/provider-models";
-import { createToolStreamWrapper } from "openclaw/plugin-sdk/provider-stream";
+import { defineSingleProviderPluginEntry } from "agdi/plugin-sdk/provider-entry";
+import { applyXaiModelCompat } from "agdi/plugin-sdk/provider-models";
+import { createToolStreamWrapper } from "agdi/plugin-sdk/provider-stream";
 import { applyXaiConfig, XAI_DEFAULT_MODEL_REF } from "./onboard.js";
 import { buildXaiProvider } from "./provider-catalog.js";
 import { isModernXaiModel, resolveXaiForwardCompatModel } from "./provider-models.js";

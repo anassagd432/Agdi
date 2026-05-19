@@ -26,7 +26,7 @@ function formatEnvValue(value: string, redact?: boolean): string {
   if (singleLine.length <= 160) {
     return singleLine;
   }
-  return `${singleLine.slice(0, 160)}…`;
+  return `${singleLine.slice(0, 160)}â€¦`;
 }
 
 export function logAcceptedEnvOption(option: AcceptedEnvOption): void {

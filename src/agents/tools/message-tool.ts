@@ -684,7 +684,7 @@ export function createMessageTool(options?: MessageToolOptions): AnyAgentTool {
       // Shallow-copy so we don't mutate the original event args (used for logging/dedup).
       const params = { ...(args as Record<string, unknown>) };
 
-      // Strip reasoning tags from text fields — models may include <think>…</think>
+      // Strip reasoning tags from text fields â€” models may include <think>â€¦</think>
       // in tool arguments, and the messaging tool send path has no other tag filtering.
       for (const field of ["text", "content", "message", "caption"]) {
         if (typeof params[field] === "string") {

@@ -51,7 +51,7 @@ export type PluginRuntimeCore = {
     /**
      * Run a single heartbeat cycle immediately (bypassing the coalesce timer).
      * Accepts an optional `heartbeat` config override so callers can force
-     * delivery to the last active channel — the same pattern the cron service
+     * delivery to the last active channel â€” the same pattern the cron service
      * uses to avoid the default `target: "none"` suppression.
      */
     runHeartbeatOnce: (opts?: RunHeartbeatOnceOptions) => Promise<HeartbeatRunResult>;

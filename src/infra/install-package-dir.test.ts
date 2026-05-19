@@ -120,7 +120,7 @@ describe("installPackageDir", () => {
       timeoutMs: 1_000,
       copyErrorPrefix: "failed to copy plugin",
       hasDeps: false,
-      depsLogMessage: "Installing deps…",
+      depsLogMessage: "Installing depsâ€¦",
       afterCopy: async (installedDir) => {
         expect(installedDir).not.toBe(targetDir);
         await expect(fs.readFile(path.join(installedDir, "marker.txt"), "utf8")).resolves.toBe(
@@ -170,7 +170,7 @@ describe("installPackageDir", () => {
       timeoutMs: 1_000,
       copyErrorPrefix: "failed to copy plugin",
       hasDeps: false,
-      depsLogMessage: "Installing deps…",
+      depsLogMessage: "Installing depsâ€¦",
     });
 
     expect(result).toEqual({
@@ -212,7 +212,7 @@ describe("installPackageDir", () => {
             timeoutMs: 1_000,
             copyErrorPrefix: "failed to copy plugin",
             hasDeps: false,
-            depsLogMessage: "Installing deps…",
+            depsLogMessage: "Installing depsâ€¦",
             logger: { warn: (message) => warnings.push(message) },
           }),
         ).resolves.toEqual({
@@ -260,7 +260,7 @@ describe("installPackageDir", () => {
           timeoutMs: 1_000,
           copyErrorPrefix: "failed to copy plugin",
           hasDeps: false,
-          depsLogMessage: "Installing deps…",
+          depsLogMessage: "Installing depsâ€¦",
           logger: { warn: (message) => warnings.push(message) },
         }),
     });
@@ -311,7 +311,7 @@ describe("installPackageDir", () => {
       timeoutMs: 1_000,
       copyErrorPrefix: "failed to copy plugin",
       hasDeps: true,
-      depsLogMessage: "Installing deps…",
+      depsLogMessage: "Installing depsâ€¦",
     });
 
     expect(result).toEqual({ ok: true });
@@ -368,7 +368,7 @@ describe("installPackageDir", () => {
       timeoutMs: 1_000,
       copyErrorPrefix: "failed to copy plugin",
       hasDeps: true,
-      depsLogMessage: "Installing deps…",
+      depsLogMessage: "Installing depsâ€¦",
     });
 
     expect(result).toEqual({ ok: true });

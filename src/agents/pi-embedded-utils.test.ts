@@ -438,8 +438,8 @@ File contents here`,
     const cases = [
       {
         name: "think tag",
-        text: "<think>El usuario quiere retomar una tarea...</think>Aquí está tu respuesta.",
-        expected: "Aquí está tu respuesta.",
+        text: "<think>El usuario quiere retomar una tarea...</think>AquÃ­ estÃ¡ tu respuesta.",
+        expected: "AquÃ­ estÃ¡ tu respuesta.",
       },
       {
         name: "think tag with attributes",

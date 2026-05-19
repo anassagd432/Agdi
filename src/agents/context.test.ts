@@ -58,14 +58,14 @@ describe("applyConfiguredContextWindows", () => {
     });
 
     expect(cache.get("anthropic/claude-opus-4-6")).toBe(200_000);
-    // Discovery entry is untouched — no synthetic write that could corrupt
+    // Discovery entry is untouched â€” no synthetic write that could corrupt
     // an unrelated provider's raw slash-containing model ID.
     expect(cache.get("openrouter/anthropic/claude-opus-4-6")).toBe(1_000_000);
   });
 
   it("does not write synthetic provider-qualified keys; only bare model ids go into cache", () => {
     // applyConfiguredContextWindows must NOT write "google-gemini-cli/gemini-3.1-pro-preview"
-    // into the cache — that keyspace is reserved for raw discovery model IDs and
+    // into the cache â€” that keyspace is reserved for raw discovery model IDs and
     // a synthetic write would overwrite unrelated entries (e.g. OpenRouter's
     // "google/gemini-2.5-pro" being clobbered by a Google provider config).
     const cache = new Map<string, number>();

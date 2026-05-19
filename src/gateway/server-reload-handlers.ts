@@ -130,8 +130,8 @@ export function createGatewayReloadHandlers(params: {
 
     if (plan.restartChannels.size > 0) {
       if (
-        isTruthyEnvValue(process.env.OPENCLAW_SKIP_CHANNELS) ||
-        isTruthyEnvValue(process.env.OPENCLAW_SKIP_PROVIDERS)
+        isTruthyEnvValue(process.env.AGDI_SKIP_CHANNELS ?? process.env.OPENCLAW_SKIP_CHANNELS) ||
+        isTruthyEnvValue(process.env.AGDI_SKIP_PROVIDERS ?? process.env.OPENCLAW_SKIP_PROVIDERS)
       ) {
         params.logChannels.info(
           "skipping channel reload (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)",
@@ -207,14 +207,14 @@ export function createGatewayReloadHandlers(params: {
       // Avoid spinning up duplicate polling loops from repeated config changes.
       if (restartPending) {
         params.logReload.info(
-          `config change requires gateway restart (${reasons}) — already waiting for operations to complete`,
+          `config change requires gateway restart (${reasons}) â€” already waiting for operations to complete`,
         );
         return;
       }
       restartPending = true;
       const initialDetails = formatActiveDetails(active);
       params.logReload.warn(
-        `config change requires gateway restart (${reasons}) — deferring until ${initialDetails.join(", ")} complete`,
+        `config change requires gateway restart (${reasons}) â€” deferring until ${initialDetails.join(", ")} complete`,
       );
 
       deferGatewayRestartUntilIdle({

@@ -47,7 +47,7 @@ function truncateText(input: string, maxChars: number): string {
   if (maxChars <= 1) {
     return input.slice(0, maxChars);
   }
-  return `${input.slice(0, maxChars - 1)}…`;
+  return `${input.slice(0, maxChars - 1)}â€¦`;
 }
 
 function hashText(text: string): string {
@@ -154,7 +154,7 @@ function renderToolSummaryText(event: Extract<AcpRuntimeEvent, { type: "tool_cal
   }
   const display = resolveToolDisplay({
     name: "tool_call",
-    meta: detailParts.join(" · ") || "tool call",
+    meta: detailParts.join(" Â· ") || "tool call",
   });
   return formatToolSummary(display);
 }

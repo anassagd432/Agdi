@@ -2,9 +2,9 @@ import "./test-helpers.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import * as ssrf from "openclaw/plugin-sdk/infra-runtime";
-import { resetInboundDedupe } from "openclaw/plugin-sdk/reply-runtime";
-import { resetLogger, setLoggerOverride } from "openclaw/plugin-sdk/runtime-env";
+import * as ssrf from "agdi/plugin-sdk/infra-runtime";
+import { resetInboundDedupe } from "agdi/plugin-sdk/reply-runtime";
+import { resetLogger, setLoggerOverride } from "agdi/plugin-sdk/runtime-env";
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from "vitest";
 import type { WebInboundMessage, WebListenerCloseReason } from "./inbound.js";
 import {
@@ -29,8 +29,8 @@ type MockWebListener = {
 
 export const TEST_NET_IP = "203.0.113.10";
 
-vi.mock("openclaw/plugin-sdk/agent-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/agent-runtime")>();
+vi.mock("agdi/plugin-sdk/agent-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/agent-runtime")>();
   return {
     ...actual,
     abortEmbeddedPiRun: vi.fn().mockReturnValue(false),

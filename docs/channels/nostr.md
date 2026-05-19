@@ -29,7 +29,7 @@ You can always override the choice in the prompt.
 ### Manual install
 
 ```bash
-agdi plugins install @agdi/nostr
+agdi plugins install @openclaw/nostr
 ```
 
 Use a local checkout (dev workflows):

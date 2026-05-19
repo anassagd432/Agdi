@@ -1,7 +1,7 @@
 /**
  * Blockquote Spacing Tests
  *
- * Per CommonMark spec (§5.1 Block quotes), blockquotes are "container blocks" that
+ * Per CommonMark spec (Â§5.1 Block quotes), blockquotes are "container blocks" that
  * contain other block-level elements (paragraphs, code blocks, etc.).
  *
  * In plaintext rendering, the expected spacing between block-level elements is
@@ -102,8 +102,8 @@ describe("blockquote spacing", () => {
       const input = "> quote\n\n- item";
       const result = markdownToIR(input);
 
-      // The list item becomes "• item"
-      expect(result.text).toBe("quote\n\n• item");
+      // The list item becomes "â€¢ item"
+      expect(result.text).toBe("quote\n\nâ€¢ item");
       expect(result.text).not.toContain("\n\n\n");
     });
 
@@ -188,7 +188,7 @@ describe("comparison with other block elements (control group)", () => {
     const result = markdownToIR(input);
 
     // Lists already work correctly
-    expect(result.text).toContain("• item 2\n\nparagraph");
+    expect(result.text).toContain("â€¢ item 2\n\nparagraph");
     expect(result.text).not.toContain("\n\n\n");
   });
 

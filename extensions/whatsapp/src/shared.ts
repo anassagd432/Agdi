@@ -1,12 +1,12 @@
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
+import { describeAccountSnapshot } from "agdi/plugin-sdk/account-helpers";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
   createScopedDmSecurityResolver,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { createAllowlistProviderRouteAllowlistWarningCollector } from "openclaw/plugin-sdk/channel-policy";
-import { createChannelPluginBase } from "openclaw/plugin-sdk/core";
-import { createDelegatedSetupWizardProxy } from "openclaw/plugin-sdk/setup";
+} from "agdi/plugin-sdk/channel-config-helpers";
+import { createAllowlistProviderRouteAllowlistWarningCollector } from "agdi/plugin-sdk/channel-policy";
+import { createChannelPluginBase } from "agdi/plugin-sdk/core";
+import { createDelegatedSetupWizardProxy } from "agdi/plugin-sdk/setup";
 import {
   listWhatsAppAccountIds,
   resolveDefaultWhatsAppAccountId,

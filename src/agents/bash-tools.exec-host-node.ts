@@ -188,7 +188,7 @@ export async function executeNodeHostCommand(
     logInfo(
       `exec: obfuscation detected (node=${nodeQuery ?? "default"}): ${obfuscation.reasons.join(", ")}`,
     );
-    params.warnings.push(`⚠️ Obfuscated command detected: ${obfuscation.reasons.join("; ")}`);
+    params.warnings.push(`âš ï¸ Obfuscated command detected: ${obfuscation.reasons.join("; ")}`);
   }
   const requiresAsk =
     requiresExecApproval({

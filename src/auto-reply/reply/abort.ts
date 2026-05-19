@@ -86,10 +86,10 @@ export const __testing = {
 
 export function formatAbortReplyText(stoppedSubagents?: number): string {
   if (typeof stoppedSubagents !== "number" || stoppedSubagents <= 0) {
-    return "⚙️ Agent was aborted.";
+    return "âš™ï¸ Agent was aborted.";
   }
   const label = stoppedSubagents === 1 ? "sub-agent" : "sub-agents";
-  return `⚙️ Agent was aborted. Stopped ${stoppedSubagents} ${label}.`;
+  return `âš™ï¸ Agent was aborted. Stopped ${stoppedSubagents} ${label}.`;
 }
 
 export function resolveSessionEntryForKey(

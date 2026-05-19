@@ -270,7 +270,7 @@ function appendListPrefix(state: RenderState) {
   }
   top.index += 1;
   const indent = "  ".repeat(Math.max(0, stack.length - 1));
-  const prefix = top.type === "ordered" ? `${top.index}. ` : "• ";
+  const prefix = top.type === "ordered" ? `${top.index}. ` : "â€¢ ";
   state.text += `${indent}${prefix}`;
 }
 
@@ -413,7 +413,7 @@ function appendTableBulletValue(
   if (!value?.text) {
     return;
   }
-  state.text += "• ";
+  state.text += "â€¢ ";
   if (header?.text) {
     appendCell(state, header);
     state.text += ": ";
@@ -744,7 +744,7 @@ function renderTokens(tokens: MarkdownToken[], state: RenderState): void {
 
       case "hr":
         // Render as a visual separator
-        state.text += "───\n\n";
+        state.text += "â”€â”€â”€\n\n";
         break;
       default:
         if (token.children) {

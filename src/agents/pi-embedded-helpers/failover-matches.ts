@@ -20,7 +20,7 @@ const ERROR_PATTERNS = {
     /overloaded_error|"type"\s*:\s*"overloaded_error"/i,
     "overloaded",
     // Match "service unavailable" only when combined with an explicit overload
-    // indicator — a generic 503 from a proxy/CDN should not be classified as
+    // indicator â€” a generic 503 from a proxy/CDN should not be classified as
     // provider-overload (#32828).
     /service[_ ]unavailable.*(?:overload|capacity|high[_ ]demand)|(?:overload|capacity|high[_ ]demand).*service[_ ]unavailable/i,
     "high demand",

@@ -655,11 +655,11 @@ describe("/compact command", () => {
     expect(result).toEqual({
       shouldContinue: false,
       reply: {
-        text: "⚙️ Compaction skipped: nothing compactable in this session yet • Context 31k/?",
+        text: "âš™ï¸ Compaction skipped: nothing compactable in this session yet â€¢ Context 31k/?",
       },
     });
     expect(vi.mocked(enqueueSystemEvent)).toHaveBeenCalledWith(
-      "Compaction skipped: nothing compactable in this session yet • Context 31k/?",
+      "Compaction skipped: nothing compactable in this session yet â€¢ Context 31k/?",
       { sessionKey: params.sessionKey },
     );
   });
@@ -692,7 +692,7 @@ describe("/compact command", () => {
     expect(result).toEqual({
       shouldContinue: false,
       reply: {
-        text: "⚙️ Compaction skipped: context is below the compaction threshold • Context 31k/?",
+        text: "âš™ï¸ Compaction skipped: context is below the compaction threshold â€¢ Context 31k/?",
       },
     });
   });
@@ -725,7 +725,7 @@ describe("/compact command", () => {
     expect(result).toEqual({
       shouldContinue: false,
       reply: {
-        text: "⚙️ Compaction failed: Compaction safeguard could not resolve an API key for anthropic/claude-opus-4-6. • Context 109k/?",
+        text: "âš™ï¸ Compaction failed: Compaction safeguard could not resolve an API key for anthropic/claude-opus-4-6. â€¢ Context 109k/?",
       },
     });
   });
@@ -772,9 +772,9 @@ describe("buildCommandsPaginationKeyboard", () => {
   it("adds agent id to callback data when provided", () => {
     const keyboard = buildCommandsPaginationKeyboard(2, 3, "agent-main");
     expect(keyboard[0]).toEqual([
-      { text: "◀ Prev", callback_data: "commands_page_1:agent-main" },
+      { text: "â—€ Prev", callback_data: "commands_page_1:agent-main" },
       { text: "2/3", callback_data: "commands_page_noop:agent-main" },
-      { text: "Next ▶", callback_data: "commands_page_3:agent-main" },
+      { text: "Next â–¶", callback_data: "commands_page_3:agent-main" },
     ]);
   });
 });
@@ -2152,7 +2152,7 @@ describe("handleCommands subagents", () => {
         });
       },
       verboseLevel: "off" as const,
-      expectedText: ["🤖 Subagents: 1 active"],
+      expectedText: ["ðŸ¤– Subagents: 1 active"],
       unexpectedText: [] as string[],
     },
     {
@@ -2182,7 +2182,7 @@ describe("handleCommands subagents", () => {
         });
       },
       verboseLevel: "on" as const,
-      expectedText: ["🤖 Subagents: 1 active", "· 1 done"],
+      expectedText: ["ðŸ¤– Subagents: 1 active", "Â· 1 done"],
       unexpectedText: [] as string[],
     },
   ])("$name", async ({ seedRuns, verboseLevel, expectedText, unexpectedText }) => {
@@ -2441,7 +2441,7 @@ describe("handleCommands subagents", () => {
     const params = buildParams("/subagents send 1 continue with follow-up details", cfg);
     const result = await handleCommands(params);
     expect(result.shouldContinue).toBe(false);
-    expect(result.reply?.text).toContain("✅ Sent to");
+    expect(result.reply?.text).toContain("âœ… Sent to");
 
     const agentCall = callGatewayMock.mock.calls.find(
       (call) => (call[0] as { method?: string }).method === "agent",

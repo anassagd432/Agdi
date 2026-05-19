@@ -322,13 +322,13 @@ async function callTool(
       arguments: args,
     })) as ChromeMcpToolResult;
   } catch (err) {
-    // Transport/connection error — tear down session so it reconnects on next call
+    // Transport/connection error â€” tear down session so it reconnects on next call
     sessions.delete(cacheKey);
     await session.client.close().catch(() => {});
     throw err;
   }
   // Tool-level errors (element not found, script error, etc.) don't indicate a
-  // broken connection — don't tear down the session for these.
+  // broken connection â€” don't tear down the session for these.
   if (result.isError) {
     throw new Error(extractToolErrorMessage(result, name));
   }

@@ -8,7 +8,7 @@ import {
   type ChannelOnboardingDmPolicy,
   type AGDIConfig,
   type WizardPrompter,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import type { CoreConfig, DmPolicy } from "./types.js";
 import {
   listNextcloudTalkAccountIds,

@@ -92,7 +92,7 @@ export const handleCompactCommand: CommandHandler = async (params) => {
   if (!params.sessionEntry?.sessionId) {
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Compaction unavailable (missing session id)." },
+      reply: { text: "âš™ï¸ Compaction unavailable (missing session id)." },
     };
   }
   const sessionId = params.sessionEntry.sessionId;
@@ -146,7 +146,7 @@ export const handleCompactCommand: CommandHandler = async (params) => {
     result.ok || isCompactionSkipReason(result.reason)
       ? result.compacted
         ? result.result?.tokensBefore != null && result.result?.tokensAfter != null
-          ? `Compacted (${formatTokenCount(result.result.tokensBefore)} → ${formatTokenCount(result.result.tokensAfter)})`
+          ? `Compacted (${formatTokenCount(result.result.tokensBefore)} â†’ ${formatTokenCount(result.result.tokensAfter)})`
           : result.result?.tokensBefore
             ? `Compacted (${formatTokenCount(result.result.tokensBefore)} before)`
             : "Compacted"
@@ -171,8 +171,8 @@ export const handleCompactCommand: CommandHandler = async (params) => {
   );
   const reason = formatCompactionReason(result.reason);
   const line = reason
-    ? `${compactLabel}: ${reason} • ${contextSummary}`
-    : `${compactLabel} • ${contextSummary}`;
+    ? `${compactLabel}: ${reason} â€¢ ${contextSummary}`
+    : `${compactLabel} â€¢ ${contextSummary}`;
   enqueueSystemEvent(line, { sessionKey: params.sessionKey });
-  return { shouldContinue: false, reply: { text: `⚙️ ${line}` } };
+  return { shouldContinue: false, reply: { text: `âš™ï¸ ${line}` } };
 };

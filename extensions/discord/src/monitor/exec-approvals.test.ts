@@ -67,8 +67,8 @@ vi.mock("../send.shared.js", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/gateway-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/gateway-runtime")>();
+vi.mock("agdi/plugin-sdk/gateway-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/gateway-runtime")>();
   type CreateOperatorApprovalsGatewayClientParams = Parameters<
     typeof actual.createOperatorApprovalsGatewayClient
   >[0];
@@ -126,8 +126,8 @@ vi.mock("openclaw/plugin-sdk/gateway-runtime", async (importOriginal) => {
   };
 });
 
-vi.mock("openclaw/plugin-sdk/text-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/text-runtime")>();
+vi.mock("agdi/plugin-sdk/text-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/text-runtime")>();
   return {
     ...actual,
     logDebug: vi.fn(),

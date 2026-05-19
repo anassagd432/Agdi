@@ -5,13 +5,13 @@ import type {
   DmPolicy,
   WizardPrompter,
   MSTeamsTeamConfig,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import {
   addWildcardAllowFrom,
   DEFAULT_ACCOUNT_ID,
   formatDocsLink,
   promptChannelAccessConfig,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import {
   parseMSTeamsTeamEntry,
   resolveMSTeamsChannelAllowlist,

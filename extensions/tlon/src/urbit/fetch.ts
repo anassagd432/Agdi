@@ -2,7 +2,7 @@ import {
   fetchWithSsrFGuard,
   type LookupFn,
   type SsrFPolicy,
-} from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/infra-runtime";
 import { validateUrbitBaseUrl } from "./base-url.js";
 import { UrbitUrlError } from "./errors.js";
 

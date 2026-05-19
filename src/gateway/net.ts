@@ -267,12 +267,12 @@ export async function resolveGatewayBindHost(
     const host = customHost?.trim();
     if (!host) {
       return "0.0.0.0";
-    } // invalid config → fall back to all
+    } // invalid config â†’ fall back to all
 
     if (isValidIPv4(host) && (await canBindToHost(host))) {
       return host;
     }
-    // Custom IP failed → fall back to LAN
+    // Custom IP failed â†’ fall back to LAN
     return "0.0.0.0";
   }
 
@@ -379,7 +379,7 @@ export function isPrivateOrLoopbackHost(host: string): boolean {
     return false;
   }
   // isPrivateOrLoopbackAddress reuses SSRF-blocking ranges for IPv6, which
-  // include unspecified (::) and multicast (ff00::/8). Exclude these —
+  // include unspecified (::) and multicast (ff00::/8). Exclude these â€”
   // they are not private/loopback unicast endpoints. (Multicast is UDP-only
   // so TCP/WebSocket connections would fail regardless.)
   if (net.isIP(normalized) === 6) {

@@ -1,5 +1,5 @@
-import type { SpeechProviderPlugin } from "openclaw/plugin-sdk/core";
-import { elevenLabsTTS, type SpeechVoiceOption } from "openclaw/plugin-sdk/speech";
+import type { SpeechProviderPlugin } from "agdi/plugin-sdk/core";
+import { elevenLabsTTS, type SpeechVoiceOption } from "agdi/plugin-sdk/speech";
 
 const ELEVENLABS_TTS_MODELS = [
   "eleven_multilingual_v2",

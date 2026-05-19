@@ -9,22 +9,22 @@ const ABORT_TRIGGERS = new Set([
   "interrupt",
   "detente",
   "deten",
-  "detén",
+  "detÃ©n",
   "arrete",
-  "arrête",
-  "停止",
-  "やめて",
-  "止めて",
-  "रुको",
-  "توقف",
-  "стоп",
-  "остановись",
-  "останови",
-  "остановить",
-  "прекрати",
+  "arrÃªte",
+  "åœæ­¢",
+  "ã‚„ã‚ã¦",
+  "æ­¢ã‚ã¦",
+  "à¤°à¥à¤•à¥‹",
+  "ØªÙˆÙ‚Ù",
+  "ÑÑ‚Ð¾Ð¿",
+  "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸ÑÑŒ",
+  "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸",
+  "Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ",
+  "Ð¿Ñ€ÐµÐºÑ€Ð°Ñ‚Ð¸",
   "halt",
   "anhalten",
-  "aufhören",
+  "aufhÃ¶ren",
   "hoer auf",
   "stopp",
   "pare",
@@ -46,13 +46,13 @@ const ABORT_TRIGGERS = new Set([
 ]);
 const ABORT_MEMORY = new Map<string, boolean>();
 const ABORT_MEMORY_MAX = 2000;
-const TRAILING_ABORT_PUNCTUATION_RE = /[.!?…,，。;；:：'"’”)\]}]+$/u;
+const TRAILING_ABORT_PUNCTUATION_RE = /[.!?â€¦,ï¼Œã€‚;ï¼›:ï¼š'"â€™â€)\]}]+$/u;
 
 function normalizeAbortTriggerText(text: string): string {
   return text
     .trim()
     .toLowerCase()
-    .replace(/[’`]/g, "'")
+    .replace(/[â€™`]/g, "'")
     .replace(/\s+/g, " ")
     .replace(TRAILING_ABORT_PUNCTUATION_RE, "")
     .trim();

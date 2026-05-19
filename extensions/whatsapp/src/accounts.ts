@@ -8,8 +8,8 @@ import {
   resolveMergedAccountConfig,
   resolveUserPath,
   type OpenClawConfig,
-} from "openclaw/plugin-sdk/account-resolution";
-import { resolveOAuthDir } from "openclaw/plugin-sdk/state-paths";
+} from "agdi/plugin-sdk/account-resolution";
+import { resolveOAuthDir } from "agdi/plugin-sdk/state-paths";
 import { hasWebCredsSync } from "./auth-store.js";
 import type { DmPolicy, GroupPolicy, WhatsAppAccountConfig } from "./runtime-api.js";
 

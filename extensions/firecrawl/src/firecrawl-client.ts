@@ -1,5 +1,5 @@
-import { markdownToText, truncateText } from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+import { markdownToText, truncateText } from "agdi/plugin-sdk/agent-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   DEFAULT_CACHE_TTL_MINUTES,
   normalizeCacheKey,
@@ -7,8 +7,8 @@ import {
   readCache,
   resolveCacheTtlMs,
   writeCache,
-} from "openclaw/plugin-sdk/provider-web-search";
-import { wrapExternalContent, wrapWebContent } from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/provider-web-search";
+import { wrapExternalContent, wrapWebContent } from "agdi/plugin-sdk/security-runtime";
 import {
   resolveFirecrawlApiKey,
   resolveFirecrawlBaseUrl,

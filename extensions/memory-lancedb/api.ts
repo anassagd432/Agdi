@@ -1,1 +1,1 @@
-export * from "openclaw/plugin-sdk/memory-lancedb";
+export * from "agdi/plugin-sdk/memory-lancedb";

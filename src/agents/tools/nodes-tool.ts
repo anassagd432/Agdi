@@ -709,7 +709,7 @@ export function createNodesTool(options?: {
               }
             }
 
-            // Node requires approval – create a pending approval request on
+            // Node requires approval â€“ create a pending approval request on
             // the gateway and wait for the user to approve/deny via the UI.
             const APPROVAL_TIMEOUT_MS = 120_000;
             const approvalId = crypto.randomUUID();

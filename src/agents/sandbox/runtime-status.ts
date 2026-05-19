@@ -117,7 +117,7 @@ function redactSessionKey(value: string): string {
   if (trimmed.length <= 12) {
     return "(redacted)";
   }
-  return `${sanitizeForSingleLineDisplay(trimmed.slice(0, 6))}…${sanitizeForSingleLineDisplay(trimmed.slice(-6))}`;
+  return `${sanitizeForSingleLineDisplay(trimmed.slice(0, 6))}â€¦${sanitizeForSingleLineDisplay(trimmed.slice(-6))}`;
 }
 
 function shellEscapeSingleArg(value: string): string {

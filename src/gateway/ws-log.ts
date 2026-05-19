@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { resolveSendableOutboundReplyParts } from "openclaw/plugin-sdk/reply-payload";
+import { resolveSendableOutboundReplyParts } from "agdi/plugin-sdk/reply-payload";
 import { isVerbose } from "../globals.js";
 import { shouldLogSubsystemToConsole } from "../logging/console.js";
 import { getDefaultRedactPatterns, redactSensitiveText } from "../logging/redact.js";
@@ -63,7 +63,7 @@ function buildWsStatusToken(kind: string, ok?: boolean): string | undefined {
   if (kind !== "res" || ok === undefined) {
     return undefined;
   }
-  return ok ? chalk.greenBright("✓") : chalk.redBright("✗");
+  return ok ? chalk.greenBright("âœ“") : chalk.redBright("âœ—");
 }
 
 function logWsInfoLine(params: {
@@ -92,12 +92,12 @@ export function shouldLogWs(): boolean {
 export function shortId(value: string): string {
   const s = value.trim();
   if (UUID_RE.test(s)) {
-    return `${s.slice(0, 8)}…${s.slice(-4)}`;
+    return `${s.slice(0, 8)}â€¦${s.slice(-4)}`;
   }
   if (s.length <= 24) {
     return s;
   }
-  return `${s.slice(0, 12)}…${s.slice(-4)}`;
+  return `${s.slice(0, 12)}â€¦${s.slice(-4)}`;
 }
 
 export function formatForLog(value: unknown): string {
@@ -161,7 +161,7 @@ function compactPreview(input: string, maxLen = 160): string {
   if (oneLine.length <= maxLen) {
     return oneLine;
   }
-  return `${oneLine.slice(0, Math.max(0, maxLen - 1))}…`;
+  return `${oneLine.slice(0, Math.max(0, maxLen - 1))}â€¦`;
 }
 
 export function summarizeAgentEventForWsLog(payload: unknown): Record<string, unknown> {
@@ -294,7 +294,7 @@ export function logWs(direction: "in" | "out", kind: string, meta?: Record<strin
         })()
       : undefined;
 
-  const dirArrow = direction === "in" ? "←" : "→";
+  const dirArrow = direction === "in" ? "â†" : "â†’";
   const dirColor = direction === "in" ? chalk.greenBright : chalk.cyanBright;
   const prefix = `${dirColor(dirArrow)} ${chalk.bold(kind)}`;
 
@@ -336,7 +336,7 @@ function logWsOptimized(direction: "in" | "out", kind: string, meta?: Record<str
     const errorMsg = typeof meta?.error === "string" ? formatForLog(meta.error) : undefined;
     wsLog.warn(
       [
-        `${chalk.redBright("✗")} ${chalk.bold("parse-error")}`,
+        `${chalk.redBright("âœ—")} ${chalk.bold("parse-error")}`,
         errorMsg ? `${chalk.dim("error")}=${errorMsg}` : undefined,
         `${chalk.dim("conn")}=${chalk.gray(shortId(connId ?? "?"))}`,
       ]
@@ -368,7 +368,7 @@ function logWsOptimized(direction: "in" | "out", kind: string, meta?: Record<str
   const restMeta = collectWsRestMeta(meta);
 
   logWsInfoLine({
-    prefix: `${chalk.yellowBright("⇄")} ${chalk.bold("res")}`,
+    prefix: `${chalk.yellowBright("â‡„")} ${chalk.bold("res")}`,
     statusToken,
     headline: method ? chalk.bold(method) : undefined,
     durationToken,
@@ -395,9 +395,9 @@ function logWsCompact(direction: "in" | "out", kind: string, meta?: Record<strin
 
   const compactArrow = (() => {
     if (kind === "req" || kind === "res") {
-      return "⇄";
+      return "â‡„";
     }
-    return direction === "in" ? "←" : "→";
+    return direction === "in" ? "â†" : "â†’";
   })();
   const arrowColor =
     kind === "req" || kind === "res"

@@ -1190,7 +1190,7 @@ describe("QmdMemoryManager", () => {
     }
 
     await expect(
-      manager.search("記憶系統升級 QMD", { sessionKey: "agent:main:slack:dm:u123" }),
+      manager.search("è¨˜æ†¶ç³»çµ±å‡ç´š QMD", { sessionKey: "agent:main:slack:dm:u123" }),
     ).resolves.toEqual([]);
 
     const searchCall = spawnMock.mock.calls.find(
@@ -1198,7 +1198,7 @@ describe("QmdMemoryManager", () => {
     );
     expect(searchCall?.[1]).toEqual([
       "search",
-      "記憶 憶系 系統 統升 升級 qmd",
+      "è¨˜æ†¶ æ†¶ç³» ç³»çµ± çµ±å‡ å‡ç´š qmd",
       "--json",
       "-n",
       String(maxResults),
@@ -1231,14 +1231,14 @@ describe("QmdMemoryManager", () => {
     });
 
     const { manager } = await createManager();
-    await expect(manager.search("記", { sessionKey: "agent:main:slack:dm:u123" })).resolves.toEqual(
+    await expect(manager.search("è¨˜", { sessionKey: "agent:main:slack:dm:u123" })).resolves.toEqual(
       [],
     );
 
     const searchCall = spawnMock.mock.calls.find(
       (call: unknown[]) => (call[1] as string[])?.[0] === "search",
     );
-    expect(searchCall?.[1]?.[1]).toBe("記");
+    expect(searchCall?.[1]?.[1]).toBe("è¨˜");
     await manager.close();
   });
 
@@ -1266,13 +1266,13 @@ describe("QmdMemoryManager", () => {
 
     const { manager } = await createManager();
     await expect(
-      manager.search("記憶系統升級 QMD", { sessionKey: "agent:main:slack:dm:u123" }),
+      manager.search("è¨˜æ†¶ç³»çµ±å‡ç´š QMD", { sessionKey: "agent:main:slack:dm:u123" }),
     ).resolves.toEqual([]);
 
     const queryCall = spawnMock.mock.calls.find(
       (call: unknown[]) => (call[1] as string[])?.[0] === "query",
     );
-    expect(queryCall?.[1]?.[1]).toBe("記憶系統升級 QMD");
+    expect(queryCall?.[1]?.[1]).toBe("è¨˜æ†¶ç³»çµ±å‡ç´š QMD");
     await manager.close();
   });
 

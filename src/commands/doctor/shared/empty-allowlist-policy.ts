@@ -48,7 +48,7 @@ export function collectEmptyAllowlistPolicyWarningsForAccount(
 
   if (dmPolicy === "allowlist" && !hasAllowFromEntries(effectiveAllowFrom)) {
     warnings.push(
-      `- ${params.prefix}.dmPolicy is "allowlist" but allowFrom is empty — all DMs will be blocked. Add sender IDs to ${params.prefix}.allowFrom, or run "${params.doctorFixCommand}" to auto-migrate from pairing store when entries exist.`,
+      `- ${params.prefix}.dmPolicy is "allowlist" but allowFrom is empty â€” all DMs will be blocked. Add sender IDs to ${params.prefix}.allowFrom, or run "${params.doctorFixCommand}" to auto-migrate from pairing store when entries exist.`,
     );
   }
 
@@ -81,11 +81,11 @@ export function collectEmptyAllowlistPolicyWarningsForAccount(
 
   if (fallbackToAllowFrom) {
     warnings.push(
-      `- ${params.prefix}.groupPolicy is "allowlist" but groupAllowFrom (and allowFrom) is empty — all group messages will be silently dropped. Add sender IDs to ${params.prefix}.groupAllowFrom or ${params.prefix}.allowFrom, or set groupPolicy to "open".`,
+      `- ${params.prefix}.groupPolicy is "allowlist" but groupAllowFrom (and allowFrom) is empty â€” all group messages will be silently dropped. Add sender IDs to ${params.prefix}.groupAllowFrom or ${params.prefix}.allowFrom, or set groupPolicy to "open".`,
     );
   } else {
     warnings.push(
-      `- ${params.prefix}.groupPolicy is "allowlist" but groupAllowFrom is empty — this channel does not fall back to allowFrom, so all group messages will be silently dropped. Add sender IDs to ${params.prefix}.groupAllowFrom, or set groupPolicy to "open".`,
+      `- ${params.prefix}.groupPolicy is "allowlist" but groupAllowFrom is empty â€” this channel does not fall back to allowFrom, so all group messages will be silently dropped. Add sender IDs to ${params.prefix}.groupAllowFrom, or set groupPolicy to "open".`,
     );
   }
 

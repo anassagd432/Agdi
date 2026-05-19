@@ -37,7 +37,7 @@ let modelSuppressionPromise: Promise<typeof import("./model-suppression.runtime.
 const NON_PI_NATIVE_MODEL_PROVIDERS = new Set(["deepseek", "kilocode"]);
 
 function shouldLogModelCatalogTiming(): boolean {
-  return process.env.OPENCLAW_DEBUG_INGRESS_TIMING === "1";
+  return (process.env.AGDI_DEBUG_INGRESS_TIMING ?? process.env.OPENCLAW_DEBUG_INGRESS_TIMING) === "1";
 }
 
 function loadModelSuppression() {

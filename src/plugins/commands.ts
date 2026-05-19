@@ -200,7 +200,7 @@ export async function executePluginCommand(params: {
     logVerbose(
       `Plugin command /${command.name} blocked: unauthorized sender ${senderId || "<unknown>"}`,
     );
-    return { text: "⚠️ This command requires authorization." };
+    return { text: "âš ï¸ This command requires authorization." };
   }
 
   // Sanitize args before passing to handler
@@ -274,7 +274,7 @@ export async function executePluginCommand(params: {
     const error = err as Error;
     logVerbose(`Plugin command /${command.name} error: ${error.message}`);
     // Don't leak internal error details - return a safe generic message
-    return { text: "⚠️ Command failed. Please try again later." };
+    return { text: "âš ï¸ Command failed. Please try again later." };
   } finally {
     setPluginCommandRegistryLocked(false);
   }

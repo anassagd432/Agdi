@@ -126,8 +126,8 @@ Other Gateway slash commands (for example, `/context`) are forwarded to the Gate
 ## Terminal colors
 
 - The TUI keeps assistant body text in your terminal's default foreground so dark and light terminals both stay readable.
-- If your terminal uses a light background and auto-detection is wrong, set `OPENCLAW_THEME=light` before launching `agdi tui`.
-- To force the original dark palette instead, set `OPENCLAW_THEME=dark`.
+- If your terminal uses a light background and auto-detection is wrong, set `AGDI_THEME=light` (or `OPENCLAW_THEME`) before launching `agdi tui`.
+- To force the original dark palette instead, set `AGDI_THEME=dark`.
 
 ## History + streaming
 

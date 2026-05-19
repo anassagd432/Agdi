@@ -57,7 +57,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
   if (configCommand.action === "error") {
     return {
       shouldContinue: false,
-      reply: { text: `⚠️ ${configCommand.message}` },
+      reply: { text: `âš ï¸ ${configCommand.message}` },
     };
   }
 
@@ -66,7 +66,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
     const missingAdminScope = requireGatewayClientScopeForInternalChannel(params, {
       label: "/config write",
       allowedScopes: ["operator.admin"],
-      missingText: "❌ /config set|unset requires operator.admin for gateway clients.",
+      missingText: "âŒ /config set|unset requires operator.admin for gateway clients.",
     });
     if (missingAdminScope) {
       return missingAdminScope;
@@ -75,7 +75,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
     if (!parsedPath.ok || !parsedPath.path) {
       return {
         shouldContinue: false,
-        reply: { text: `⚠️ ${parsedPath.error ?? "Invalid path."}` },
+        reply: { text: `âš ï¸ ${parsedPath.error ?? "Invalid path."}` },
       };
     }
     parsedWritePath = parsedPath.path;
@@ -103,7 +103,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
     return {
       shouldContinue: false,
       reply: {
-        text: "⚠️ Config file is invalid; fix it before using /config.",
+        text: "âš ï¸ Config file is invalid; fix it before using /config.",
       },
     };
   }
@@ -116,7 +116,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
       if (!parsedPath.ok || !parsedPath.path) {
         return {
           shouldContinue: false,
-          reply: { text: `⚠️ ${parsedPath.error ?? "Invalid path."}` },
+          reply: { text: `âš ï¸ ${parsedPath.error ?? "Invalid path."}` },
         };
       }
       const value = getConfigValueAtPath(parsedBase, parsedPath.path);
@@ -124,14 +124,14 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
       return {
         shouldContinue: false,
         reply: {
-          text: `⚙️ Config ${pathRaw}:\n\`\`\`json\n${rendered}\n\`\`\``,
+          text: `âš™ï¸ Config ${pathRaw}:\n\`\`\`json\n${rendered}\n\`\`\``,
         },
       };
     }
     const json = JSON.stringify(parsedBase, null, 2);
     return {
       shouldContinue: false,
-      reply: { text: `⚙️ Config (raw):\n\`\`\`json\n${json}\n\`\`\`` },
+      reply: { text: `âš™ï¸ Config (raw):\n\`\`\`json\n${json}\n\`\`\`` },
     };
   }
 
@@ -140,7 +140,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
     if (!removed) {
       return {
         shouldContinue: false,
-        reply: { text: `⚙️ No config value found for ${configCommand.path}.` },
+        reply: { text: `âš™ï¸ No config value found for ${configCommand.path}.` },
       };
     }
     const validated = validateConfigObjectWithPlugins(parsedBase);
@@ -149,14 +149,14 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
       return {
         shouldContinue: false,
         reply: {
-          text: `⚠️ Config invalid after unset (${issue.path}: ${issue.message}).`,
+          text: `âš ï¸ Config invalid after unset (${issue.path}: ${issue.message}).`,
         },
       };
     }
     await writeConfigFile(validated.config);
     return {
       shouldContinue: false,
-      reply: { text: `⚙️ Config updated: ${configCommand.path} removed.` },
+      reply: { text: `âš™ï¸ Config updated: ${configCommand.path} removed.` },
     };
   }
 
@@ -168,7 +168,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
       return {
         shouldContinue: false,
         reply: {
-          text: `⚠️ Config invalid after set (${issue.path}: ${issue.message}).`,
+          text: `âš ï¸ Config invalid after set (${issue.path}: ${issue.message}).`,
         },
       };
     }
@@ -180,7 +180,7 @@ export const handleConfigCommand: CommandHandler = async (params, allowTextComma
     return {
       shouldContinue: false,
       reply: {
-        text: `⚙️ Config updated: ${configCommand.path}=${valueLabel ?? "null"}`,
+        text: `âš™ï¸ Config updated: ${configCommand.path}=${valueLabel ?? "null"}`,
       },
     };
   }
@@ -214,7 +214,7 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
   if (debugCommand.action === "error") {
     return {
       shouldContinue: false,
-      reply: { text: `⚠️ ${debugCommand.message}` },
+      reply: { text: `âš ï¸ ${debugCommand.message}` },
     };
   }
   if (debugCommand.action === "show") {
@@ -223,14 +223,14 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
     if (!hasOverrides) {
       return {
         shouldContinue: false,
-        reply: { text: "⚙️ Debug overrides: (none)" },
+        reply: { text: "âš™ï¸ Debug overrides: (none)" },
       };
     }
     const json = JSON.stringify(overrides, null, 2);
     return {
       shouldContinue: false,
       reply: {
-        text: `⚙️ Debug overrides (memory-only):\n\`\`\`json\n${json}\n\`\`\``,
+        text: `âš™ï¸ Debug overrides (memory-only):\n\`\`\`json\n${json}\n\`\`\``,
       },
     };
   }
@@ -238,7 +238,7 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
     resetConfigOverrides();
     return {
       shouldContinue: false,
-      reply: { text: "⚙️ Debug overrides cleared; using config on disk." },
+      reply: { text: "âš™ï¸ Debug overrides cleared; using config on disk." },
     };
   }
   if (debugCommand.action === "unset") {
@@ -246,20 +246,20 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
     if (!result.ok) {
       return {
         shouldContinue: false,
-        reply: { text: `⚠️ ${result.error ?? "Invalid path."}` },
+        reply: { text: `âš ï¸ ${result.error ?? "Invalid path."}` },
       };
     }
     if (!result.removed) {
       return {
         shouldContinue: false,
         reply: {
-          text: `⚙️ No debug override found for ${debugCommand.path}.`,
+          text: `âš™ï¸ No debug override found for ${debugCommand.path}.`,
         },
       };
     }
     return {
       shouldContinue: false,
-      reply: { text: `⚙️ Debug override removed for ${debugCommand.path}.` },
+      reply: { text: `âš™ï¸ Debug override removed for ${debugCommand.path}.` },
     };
   }
   if (debugCommand.action === "set") {
@@ -267,7 +267,7 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
     if (!result.ok) {
       return {
         shouldContinue: false,
-        reply: { text: `⚠️ ${result.error ?? "Invalid override."}` },
+        reply: { text: `âš ï¸ ${result.error ?? "Invalid override."}` },
       };
     }
     const valueLabel =
@@ -277,7 +277,7 @@ export const handleDebugCommand: CommandHandler = async (params, allowTextComman
     return {
       shouldContinue: false,
       reply: {
-        text: `⚙️ Debug override set: ${debugCommand.path}=${valueLabel ?? "null"}`,
+        text: `âš™ï¸ Debug override set: ${debugCommand.path}=${valueLabel ?? "null"}`,
       },
     };
   }

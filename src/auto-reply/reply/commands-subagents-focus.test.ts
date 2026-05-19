@@ -234,7 +234,7 @@ describe("/focus, /unfocus, /agents", () => {
         }),
         metadata: expect.objectContaining({
           introText:
-            "⚙️ codex-acp session active (idle auto-unfocus after 24h inactivity). Messages here go directly to this session.",
+            "âš™ï¸ codex-acp session active (idle auto-unfocus after 24h inactivity). Messages here go directly to this session.",
         }),
       }),
     );

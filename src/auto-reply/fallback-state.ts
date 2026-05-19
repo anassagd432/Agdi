@@ -21,7 +21,7 @@ function truncateFallbackReasonPart(value: string, max = FALLBACK_REASON_PART_MA
   if (text.length <= max) {
     return text;
   }
-  return `${text.slice(0, Math.max(0, max - 1)).trimEnd()}…`;
+  return `${text.slice(0, Math.max(0, max - 1)).trimEnd()}â€¦`;
 }
 
 export function formatFallbackAttemptReason(attempt: RuntimeFallbackAttempt): string {
@@ -71,7 +71,7 @@ export function buildFallbackNotice(params: {
     return null;
   }
   const reasonSummary = buildFallbackReasonSummary(params.attempts);
-  return `↪️ Model Fallback: ${active} (selected ${selected}; ${reasonSummary})`;
+  return `â†ªï¸ Model Fallback: ${active} (selected ${selected}; ${reasonSummary})`;
 }
 
 export function buildFallbackClearedNotice(params: {
@@ -82,9 +82,9 @@ export function buildFallbackClearedNotice(params: {
   const selected = formatProviderModelRef(params.selectedProvider, params.selectedModel);
   const previous = normalizeFallbackModelRef(params.previousActiveModel);
   if (previous && previous !== selected) {
-    return `↪️ Model Fallback cleared: ${selected} (was ${previous})`;
+    return `â†ªï¸ Model Fallback cleared: ${selected} (was ${previous})`;
   }
-  return `↪️ Model Fallback cleared: ${selected}`;
+  return `â†ªï¸ Model Fallback cleared: ${selected}`;
 }
 
 export function resolveActiveFallbackState(params: {

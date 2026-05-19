@@ -197,7 +197,7 @@ export function stopWithText(text: string): CommandHandlerResult {
 }
 
 export function stopWithUnknownTargetError(error?: string): CommandHandlerResult {
-  return stopWithText(`⚠️ ${error ?? "Unknown subagent."}`);
+  return stopWithText(`âš ï¸ ${error ?? "Unknown subagent."}`);
 }
 
 export function resolveSubagentTarget(

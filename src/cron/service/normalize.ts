@@ -25,7 +25,7 @@ function truncateText(input: string, maxLen: number) {
   if (input.length <= maxLen) {
     return input;
   }
-  return `${truncateUtf16Safe(input, Math.max(0, maxLen - 1)).trimEnd()}…`;
+  return `${truncateUtf16Safe(input, Math.max(0, maxLen - 1)).trimEnd()}â€¦`;
 }
 
 export function normalizeOptionalAgentId(raw: unknown) {

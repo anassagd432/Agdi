@@ -94,7 +94,7 @@ function initSelfPresence() {
     }
     return p;
   })();
-  const text = `Gateway: ${host}${ip ? ` (${ip})` : ""} · app ${version} · mode gateway · reason self`;
+  const text = `Gateway: ${host}${ip ? ` (${ip})` : ""} Â· app ${version} Â· mode gateway Â· reason self`;
   const selfEntry: SystemPresence = {
     host,
     ip,
@@ -136,7 +136,7 @@ initSelfPresence();
 function parsePresence(text: string): SystemPresence {
   const trimmed = text.trim();
   const pattern =
-    /Node:\s*([^ (]+)\s*\(([^)]+)\)\s*·\s*app\s*([^·]+?)\s*·\s*last input\s*([0-9]+)s ago\s*·\s*mode\s*([^·]+?)\s*·\s*reason\s*(.+)$/i;
+    /Node:\s*([^ (]+)\s*\(([^)]+)\)\s*Â·\s*app\s*([^Â·]+?)\s*Â·\s*last input\s*([0-9]+)s ago\s*Â·\s*mode\s*([^Â·]+?)\s*Â·\s*reason\s*(.+)$/i;
   const match = trimmed.match(pattern);
   if (!match) {
     return { text: trimmed, ts: Date.now() };
@@ -260,7 +260,7 @@ export function upsertPresence(key: string, presence: Partial<SystemPresence>) {
     text:
       presence.text ||
       existing.text ||
-      `Node: ${presence.host ?? existing.host ?? "unknown"} · mode ${
+      `Node: ${presence.host ?? existing.host ?? "unknown"} Â· mode ${
         presence.mode ?? existing.mode ?? "unknown"
       }`,
   };

@@ -3,7 +3,7 @@ import {
   type ModelProviderConfig,
   SYNTHETIC_BASE_URL,
   SYNTHETIC_MODEL_CATALOG,
-} from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-models";
 
 export function buildSyntheticProvider(): ModelProviderConfig {
   return {

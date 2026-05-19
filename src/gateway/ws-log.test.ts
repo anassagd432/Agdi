@@ -6,12 +6,12 @@ describe("gateway ws log helpers", () => {
     {
       name: "compacts uuids",
       input: "12345678-1234-1234-1234-123456789abc",
-      expected: "12345678…9abc",
+      expected: "12345678â€¦9abc",
     },
     {
       name: "compacts long strings",
       input: "a".repeat(30),
-      expected: "aaaaaaaaaaaa…aaaa",
+      expected: "aaaaaaaaaaaaâ€¦aaaa",
     },
     {
       name: "trims before checking length",
@@ -42,7 +42,7 @@ describe("gateway ws log helpers", () => {
     const out = formatForLog({ token });
     expect(out).toContain("token");
     expect(out).not.toContain(token);
-    expect(out).toContain("…");
+    expect(out).toContain("â€¦");
   });
 
   test("summarizeAgentEventForWsLog compacts assistant payloads", () => {
@@ -59,7 +59,7 @@ describe("gateway ws log helpers", () => {
 
     expect(summary).toMatchObject({
       agent: "main",
-      run: "12345678…9abc",
+      run: "12345678â€¦9abc",
       session: "main",
       stream: "assistant",
       aseq: 2,
@@ -80,7 +80,7 @@ describe("gateway ws log helpers", () => {
       run: "run-1",
       stream: "tool",
       tool: "start:fetch",
-      call: "12345678…9abc",
+      call: "12345678â€¦9abc",
     });
   });
 

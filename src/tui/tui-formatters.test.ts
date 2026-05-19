@@ -90,7 +90,7 @@ describe("extractTextFromMessage", () => {
   it("redacts heavily corrupted binary-like lines", () => {
     const text = extractTextFromMessage({
       role: "assistant",
-      content: [{ type: "text", text: "������������������������" }],
+      content: [{ type: "text", text: "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" }],
     });
 
     expect(text).toBe("[binary data omitted]");
@@ -264,21 +264,21 @@ describe("sanitizeRenderableText", () => {
   });
 
   it("wraps rtl lines with directional isolation marks", () => {
-    const input = "مرحبا بالعالم";
+    const input = "Ù…Ø±Ø­Ø¨Ø§ Ø¨Ø§Ù„Ø¹Ø§Ù„Ù…";
     const sanitized = sanitizeRenderableText(input);
 
-    expect(sanitized).toBe("\u2067مرحبا بالعالم\u2069");
+    expect(sanitized).toBe("\u2067Ù…Ø±Ø­Ø¨Ø§ Ø¨Ø§Ù„Ø¹Ø§Ù„Ù…\u2069");
   });
 
   it("only wraps lines that contain rtl script", () => {
-    const input = "hello\nمرحبا";
+    const input = "hello\nÙ…Ø±Ø­Ø¨Ø§";
     const sanitized = sanitizeRenderableText(input);
 
-    expect(sanitized).toBe("hello\n\u2067مرحبا\u2069");
+    expect(sanitized).toBe("hello\n\u2067Ù…Ø±Ø­Ø¨Ø§\u2069");
   });
 
   it("does not double-wrap lines that already include bidi controls", () => {
-    const input = "\u2067مرحبا\u2069";
+    const input = "\u2067Ù…Ø±Ø­Ø¨Ø§\u2069";
     const sanitized = sanitizeRenderableText(input);
 
     expect(sanitized).toBe(input);

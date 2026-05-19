@@ -72,7 +72,7 @@ export async function appendStatusAllDiagnosis(params: {
   const { lines, muted, ok, warn, fail } = params;
 
   const emitCheck = (label: string, status: "ok" | "warn" | "fail") => {
-    const icon = status === "ok" ? ok("✓") : status === "warn" ? warn("!") : fail("✗");
+    const icon = status === "ok" ? ok("âœ“") : status === "warn" ? warn("!") : fail("âœ—");
     const colored = status === "ok" ? ok(label) : status === "warn" ? warn(label) : fail(label);
     lines.push(`${icon} ${colored}`);
   };
@@ -98,7 +98,7 @@ export async function appendStatusAllDiagnosis(params: {
       lines.push(`  ${formatConfigIssueLine(issue, "-")}`);
     }
     if (uniqueIssues.length > 12) {
-      lines.push(`  ${muted(`… +${uniqueIssues.length - 12} more`)}`);
+      lines.push(`  ${muted(`â€¦ +${uniqueIssues.length - 12} more`)}`);
     }
   } else {
     emitCheck("Config: read failed", "warn");
@@ -118,13 +118,13 @@ export async function appendStatusAllDiagnosis(params: {
     lines.push(`  - ${muted(redactSecrets(diagnostic))}`);
   }
   if (params.secretDiagnostics.length > 10) {
-    lines.push(`  ${muted(`… +${params.secretDiagnostics.length - 10} more`)}`);
+    lines.push(`  ${muted(`â€¦ +${params.secretDiagnostics.length - 10} more`)}`);
   }
 
   if (params.sentinel?.payload) {
     emitCheck("Restart sentinel present", "warn");
     lines.push(
-      `  ${muted(`${summarizeRestartSentinel(params.sentinel.payload)} · ${formatTimeAgo(Date.now() - params.sentinel.payload.ts)}`)}`,
+      `  ${muted(`${summarizeRestartSentinel(params.sentinel.payload)} Â· ${formatTimeAgo(Date.now() - params.sentinel.payload.ts)}`)}`,
     );
   } else {
     emitCheck("Restart sentinel: none", "ok");
@@ -154,15 +154,15 @@ export async function appendStatusAllDiagnosis(params: {
     const hasDns = Boolean(params.tailscale.dnsName);
     const label =
       params.tailscaleMode === "off"
-        ? `Tailscale: off · ${backend}${params.tailscale.dnsName ? ` · ${params.tailscale.dnsName}` : ""}`
-        : `Tailscale: ${params.tailscaleMode} · ${backend}${params.tailscale.dnsName ? ` · ${params.tailscale.dnsName}` : ""}`;
+        ? `Tailscale: off Â· ${backend}${params.tailscale.dnsName ? ` Â· ${params.tailscale.dnsName}` : ""}`
+        : `Tailscale: ${params.tailscaleMode} Â· ${backend}${params.tailscale.dnsName ? ` Â· ${params.tailscale.dnsName}` : ""}`;
     emitCheck(label, okBackend && (params.tailscaleMode === "off" || hasDns) ? "ok" : "warn");
     if (params.tailscale.error) {
       lines.push(`  ${muted(`error: ${params.tailscale.error}`)}`);
     }
     if (params.tailscale.ips.length > 0) {
       lines.push(
-        `  ${muted(`ips: ${params.tailscale.ips.slice(0, 3).join(", ")}${params.tailscale.ips.length > 3 ? "…" : ""}`)}`,
+        `  ${muted(`ips: ${params.tailscale.ips.slice(0, 3).join(", ")}${params.tailscale.ips.length > 3 ? "â€¦" : ""}`)}`,
       );
     }
     if (params.tailscaleHttpsUrl) {
@@ -176,7 +176,7 @@ export async function appendStatusAllDiagnosis(params: {
       (s) => s.eligible && Object.values(s.missing).some((arr) => arr.length),
     ).length;
     emitCheck(
-      `Skills: ${eligible} eligible · ${missing} missing · ${params.skillStatus.workspaceDir}`,
+      `Skills: ${eligible} eligible Â· ${missing} missing Â· ${params.skillStatus.workspaceDir}`,
       missing === 0 ? "ok" : "warn",
     );
   }
@@ -190,10 +190,10 @@ export async function appendStatusAllDiagnosis(params: {
     lines.push(`  - [${severity}] ${formatPluginCompatibilityNotice(notice)}`);
   }
   if (params.pluginCompatibility.length > 12) {
-    lines.push(`  ${muted(`… +${params.pluginCompatibility.length - 12} more`)}`);
+    lines.push(`  ${muted(`â€¦ +${params.pluginCompatibility.length - 12} more`)}`);
   }
 
-  params.progress.setLabel("Reading logs…");
+  params.progress.setLabel("Reading logsâ€¦");
   const logPaths = (() => {
     try {
       return resolveGatewayLogPaths(process.env);
@@ -202,7 +202,7 @@ export async function appendStatusAllDiagnosis(params: {
     }
   })();
   if (logPaths) {
-    params.progress.setLabel("Reading logs…");
+    params.progress.setLabel("Reading logsâ€¦");
     const [stderrTail, stdoutTail] = await Promise.all([
       readFileTailLines(logPaths.stderrPath, 40).catch(() => []),
       readFileTailLines(logPaths.stdoutPath, 40).catch(() => []),
@@ -228,13 +228,13 @@ export async function appendStatusAllDiagnosis(params: {
       params.channelIssues.length === 0 ? "ok" : "warn",
     );
     for (const issue of params.channelIssues.slice(0, 12)) {
-      const fixText = issue.fix ? ` · fix: ${issue.fix}` : "";
+      const fixText = issue.fix ? ` Â· fix: ${issue.fix}` : "";
       lines.push(
         `  - ${issue.channel}[${issue.accountId}] ${issue.kind}: ${issue.message}${fixText}`,
       );
     }
     if (params.channelIssues.length > 12) {
-      lines.push(`  ${muted(`… +${params.channelIssues.length - 12} more`)}`);
+      lines.push(`  ${muted(`â€¦ +${params.channelIssues.length - 12} more`)}`);
     }
   } else {
     emitCheck(
@@ -272,6 +272,6 @@ export async function appendStatusAllDiagnosis(params: {
 
   lines.push("");
   lines.push(muted("Pasteable debug report. Auth tokens redacted."));
-  lines.push("Troubleshooting: https://docs.openclaw.ai/troubleshooting");
+  lines.push("Troubleshooting: https://docs.agdi.ai/troubleshooting");
   lines.push("");
 }

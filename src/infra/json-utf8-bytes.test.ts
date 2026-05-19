@@ -20,8 +20,8 @@ describe("jsonUtf8Bytes", () => {
     },
     {
       name: "unicode strings",
-      value: "🙂",
-      expected: Buffer.byteLength(JSON.stringify("🙂"), "utf8"),
+      value: "ðŸ™‚",
+      expected: Buffer.byteLength(JSON.stringify("ðŸ™‚"), "utf8"),
     },
   ])("returns utf8 byte length for $name", ({ value, expected }) => {
     expect(jsonUtf8Bytes(value)).toBe(expected);

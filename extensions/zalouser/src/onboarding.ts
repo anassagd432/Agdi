@@ -3,14 +3,14 @@ import type {
   ChannelOnboardingDmPolicy,
   AGDIConfig,
   WizardPrompter,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import {
   addWildcardAllowFrom,
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId,
   promptAccountId,
   promptChannelAccessConfig,
-} from "agdi/plugin-sdk";
+} from "agdi/plugin-sdk/setup";
 import type { ZcaFriend, ZcaGroup } from "./types.js";
 import {
   listZalouserAccountIds,

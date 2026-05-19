@@ -16,7 +16,7 @@ describe("buildAllowlistResolutionSummary", () => {
       { input: "c", resolved: true },
     ];
     const result = buildAllowlistResolutionSummary(resolvedUsers);
-    expect(result.mapping).toEqual(["a→1"]);
+    expect(result.mapping).toEqual(["aâ†’1"]);
     expect(result.additions).toEqual(["1"]);
     expect(result.unresolved).toEqual(["b", "c"]);
   });
@@ -25,9 +25,9 @@ describe("buildAllowlistResolutionSummary", () => {
     const resolvedUsers = [{ input: "a", resolved: true, id: "1", note: "x" }];
     const result = buildAllowlistResolutionSummary(resolvedUsers, {
       formatResolved: (entry) =>
-        `${entry.input}→${entry.id}${(entry as { note?: string }).note ? " (note)" : ""}`,
+        `${entry.input}â†’${entry.id}${(entry as { note?: string }).note ? " (note)" : ""}`,
     });
-    expect(result.mapping).toEqual(["a→1 (note)"]);
+    expect(result.mapping).toEqual(["aâ†’1 (note)"]);
   });
 
   it("supports custom unresolved formatting", () => {

@@ -64,7 +64,7 @@ describeLive("pi embedded extra params (live)", () => {
 
     expect(stopReason).toBeDefined();
     expect(outputTokens).toBeDefined();
-    // Should respect maxTokens from config (16) — allow a small buffer for provider rounding.
+    // Should respect maxTokens from config (16) â€” allow a small buffer for provider rounding.
     expect(outputTokens ?? 0).toBeLessThanOrEqual(20);
   }, 30_000);
 

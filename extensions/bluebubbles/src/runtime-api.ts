@@ -1,1 +1,1 @@
-export * from "openclaw/plugin-sdk/bluebubbles";
+export * from "agdi/plugin-sdk/bluebubbles";

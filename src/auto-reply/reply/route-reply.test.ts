@@ -317,7 +317,7 @@ describe("routeReply", () => {
         list: [
           {
             id: "rich",
-            identity: { name: "Richbot", theme: "lion bot", emoji: "🦁" },
+            identity: { name: "Richbot", theme: "lion bot", emoji: "ðŸ¦" },
           },
         ],
       },

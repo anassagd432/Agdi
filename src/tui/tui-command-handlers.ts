@@ -177,7 +177,7 @@ export function createCommandHandlers(context: CommandHandlerContext) {
           : "";
         const preview = session.lastMessagePreview?.replace(/\s+/g, " ").trim();
         const description =
-          timePart && preview ? `${timePart} · ${preview}` : (preview ?? timePart);
+          timePart && preview ? `${timePart} Â· ${preview}` : (preview ?? timePart);
         return {
           value: session.key,
           label,
@@ -504,7 +504,7 @@ export function createCommandHandlers(context: CommandHandlerContext) {
 
   const sendMessage = async (text: string) => {
     if (!state.isConnected) {
-      chatLog.addSystem("not connected to gateway — message not sent");
+      chatLog.addSystem("not connected to gateway â€” message not sent");
       setActivityStatus("disconnected");
       tui.requestRender();
       return;

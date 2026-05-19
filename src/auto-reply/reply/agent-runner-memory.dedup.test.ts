@@ -51,20 +51,20 @@ describe("hash-based memory flush dedup", () => {
     { role: "assistant", content: "Hi there! How can I help?" },
   ];
 
-  it("first flush — no previous hash, should NOT skip", () => {
+  it("first flush â€” no previous hash, should NOT skip", () => {
     const result = shouldSkipFlushByHash(transcript, undefined);
     expect(result.skip).toBe(false);
     expect(result.hash).toBeDefined();
   });
 
-  it("same transcript — hash matches, should skip", () => {
+  it("same transcript â€” hash matches, should skip", () => {
     const hash = computeContextHash(transcript);
     const result = shouldSkipFlushByHash(transcript, hash);
     expect(result.skip).toBe(true);
     expect(result.hash).toBe(hash);
   });
 
-  it("different transcript — hash mismatch, should NOT skip", () => {
+  it("different transcript â€” hash mismatch, should NOT skip", () => {
     const previousHash = computeContextHash(transcript);
     const changedTranscript = [...transcript, { role: "user", content: "tell me more" }];
     const result = shouldSkipFlushByHash(changedTranscript, previousHash);
@@ -72,13 +72,13 @@ describe("hash-based memory flush dedup", () => {
     expect(result.hash).not.toBe(previousHash);
   });
 
-  it("empty transcript tail — should NOT skip (degenerate case)", () => {
+  it("empty transcript tail â€” should NOT skip (degenerate case)", () => {
     const result = shouldSkipFlushByHash([], "somehash");
     expect(result.skip).toBe(false);
     expect(result.hash).toBeUndefined();
   });
 
-  it("session reset clears hash — first flush after reset should NOT skip", () => {
+  it("session reset clears hash â€” first flush after reset should NOT skip", () => {
     const clearedHash: string | undefined = undefined;
     const result = shouldSkipFlushByHash(transcript, clearedHash);
     expect(result.skip).toBe(false);
@@ -131,7 +131,7 @@ describe("post-flush hash storage", () => {
 });
 
 describe("compaction event completion detection", () => {
-  it("successful compaction (completed=true) → completed", () => {
+  it("successful compaction (completed=true) â†’ completed", () => {
     expect(
       shouldMarkCompactionCompleted({
         phase: "end",
@@ -141,7 +141,7 @@ describe("compaction event completion detection", () => {
     ).toBe(true);
   });
 
-  it("willRetry=true with completed=true → still completed (overflow recovery)", () => {
+  it("willRetry=true with completed=true â†’ still completed (overflow recovery)", () => {
     expect(
       shouldMarkCompactionCompleted({
         phase: "end",
@@ -151,7 +151,7 @@ describe("compaction event completion detection", () => {
     ).toBe(true);
   });
 
-  it("aborted compaction (completed=false) → NOT completed", () => {
+  it("aborted compaction (completed=false) â†’ NOT completed", () => {
     expect(
       shouldMarkCompactionCompleted({
         phase: "end",
@@ -161,7 +161,7 @@ describe("compaction event completion detection", () => {
     ).toBe(false);
   });
 
-  it("missing completed field → NOT completed (strict check)", () => {
+  it("missing completed field â†’ NOT completed (strict check)", () => {
     expect(
       shouldMarkCompactionCompleted({
         phase: "end",
@@ -170,7 +170,7 @@ describe("compaction event completion detection", () => {
     ).toBe(false);
   });
 
-  it("start phase → NOT completed", () => {
+  it("start phase â†’ NOT completed", () => {
     expect(
       shouldMarkCompactionCompleted({
         phase: "start",

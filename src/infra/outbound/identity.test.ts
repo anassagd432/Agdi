@@ -27,13 +27,13 @@ describe("normalizeOutboundIdentity", () => {
       normalizeOutboundIdentity({
         name: "  Demo Bot  ",
         avatarUrl: " https://example.com/a.png ",
-        emoji: "  🤖  ",
+        emoji: "  ðŸ¤–  ",
         theme: "  ocean  ",
       }),
     ).toEqual({
       name: "Demo Bot",
       avatarUrl: "https://example.com/a.png",
-      emoji: "🤖",
+      emoji: "ðŸ¤–",
       theme: "ocean",
     });
     expect(
@@ -50,7 +50,7 @@ describe("resolveAgentOutboundIdentity", () => {
   it("builds normalized identity data and keeps only remote avatars", () => {
     resolveAgentIdentityMock.mockReturnValueOnce({
       name: "  Agent Smith  ",
-      emoji: "  🕶️  ",
+      emoji: "  ðŸ•¶ï¸  ",
       theme: "  noir  ",
     });
     resolveAgentAvatarMock.mockReturnValueOnce({
@@ -60,7 +60,7 @@ describe("resolveAgentOutboundIdentity", () => {
 
     expect(resolveAgentOutboundIdentity({} as never, "main")).toEqual({
       name: "Agent Smith",
-      emoji: "🕶️",
+      emoji: "ðŸ•¶ï¸",
       avatarUrl: "https://example.com/avatar.png",
       theme: "noir",
     });
@@ -82,7 +82,7 @@ describe("resolveAgentOutboundIdentity", () => {
   it("drops blank remote avatar urls while keeping other identity fields", () => {
     resolveAgentIdentityMock.mockReturnValueOnce({
       name: "  Agent Smith  ",
-      emoji: "  🕶️  ",
+      emoji: "  ðŸ•¶ï¸  ",
     });
     resolveAgentAvatarMock.mockReturnValueOnce({
       kind: "remote",
@@ -91,7 +91,7 @@ describe("resolveAgentOutboundIdentity", () => {
 
     expect(resolveAgentOutboundIdentity({} as never, "main")).toEqual({
       name: "Agent Smith",
-      emoji: "🕶️",
+      emoji: "ðŸ•¶ï¸",
     });
   });
 });

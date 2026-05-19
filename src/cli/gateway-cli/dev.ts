@@ -10,7 +10,7 @@ import { resolveUserPath, shortenHomePath } from "../../utils.js";
 
 const DEV_IDENTITY_NAME = "C3-PO";
 const DEV_IDENTITY_THEME = "protocol droid";
-const DEV_IDENTITY_EMOJI = "🤖";
+const DEV_IDENTITY_EMOJI = "ðŸ¤–";
 const DEV_AGENT_WORKSPACE_SUFFIX = "dev";
 
 async function loadDevTemplate(name: string, fallback: string): Promise<string> {
@@ -32,7 +32,7 @@ async function loadDevTemplate(name: string, fallback: string): Promise<string> 
 
 const resolveDevWorkspaceDir = (env: NodeJS.ProcessEnv = process.env): string => {
   const baseDir = resolveDefaultAgentWorkspaceDir(env, os.homedir);
-  const profile = env.OPENCLAW_PROFILE?.trim().toLowerCase();
+  const profile = (env.AGDI_PROFILE ?? env.OPENCLAW_PROFILE)?.trim().toLowerCase();
   if (profile === "dev") {
     return baseDir;
   }

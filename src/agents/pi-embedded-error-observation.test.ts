@@ -111,7 +111,7 @@ describe("buildApiErrorObservationFields", () => {
     expect(observed.providerErrorMessagePreview).toBeDefined();
     expect(observed.rawErrorPreview?.length).toBeLessThanOrEqual(401);
     expect(observed.providerErrorMessagePreview?.length).toBeLessThanOrEqual(201);
-    expect(observed.providerErrorMessagePreview?.endsWith("…")).toBe(true);
+    expect(observed.providerErrorMessagePreview?.endsWith("â€¦")).toBe(true);
   });
 
   it("caps oversized raw inputs before hashing and fingerprinting", () => {

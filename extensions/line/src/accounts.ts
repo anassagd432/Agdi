@@ -2,10 +2,10 @@ import {
   DEFAULT_ACCOUNT_ID,
   normalizeAccountId as normalizeSharedAccountId,
   normalizeOptionalAccountId,
-} from "openclaw/plugin-sdk/account-id";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/account-resolution";
-import { resolveAccountEntry } from "openclaw/plugin-sdk/account-resolution";
-import { tryReadSecretFileSync } from "openclaw/plugin-sdk/infra-runtime";
+} from "agdi/plugin-sdk/account-id";
+import type { OpenClawConfig } from "agdi/plugin-sdk/account-resolution";
+import { resolveAccountEntry } from "agdi/plugin-sdk/account-resolution";
+import { tryReadSecretFileSync } from "agdi/plugin-sdk/infra-runtime";
 import type {
   LineAccountConfig,
   LineConfig,
@@ -13,7 +13,7 @@ import type {
   ResolvedLineAccount,
 } from "./types.js";
 
-export { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
+export { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/account-id";
 
 function readFileIfExists(filePath: string | undefined): string | undefined {
   return tryReadSecretFileSync(filePath, "LINE credential file", { rejectSymlink: true });

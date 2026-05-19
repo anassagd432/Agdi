@@ -3,7 +3,7 @@ import fs from "node:fs";
 import {
   hasOutboundReplyContent,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
+} from "agdi/plugin-sdk/reply-payload";
 import { resolveBootstrapWarningSignaturesSeen } from "../../agents/bootstrap-budget.js";
 import { runCliAgent } from "../../agents/cli-runner.js";
 import { getCliSessionId } from "../../agents/cli-session.js";
@@ -85,19 +85,19 @@ export type AgentRunLoopResult =
  */
 function buildRateLimitCooldownMessage(err: unknown): string {
   if (!isFallbackSummaryError(err)) {
-    return "⚠️ All models are temporarily rate-limited. Please try again in a few minutes.";
+    return "âš ï¸ All models are temporarily rate-limited. Please try again in a few minutes.";
   }
   const expiry = err.soonestCooldownExpiry;
   const now = Date.now();
   if (typeof expiry === "number" && expiry > now) {
     const secsLeft = Math.max(1, Math.ceil((expiry - now) / 1000));
     if (secsLeft <= 60) {
-      return `⚠️ Rate-limited — ready in ~${secsLeft}s. Please wait a moment.`;
+      return `âš ï¸ Rate-limited â€” ready in ~${secsLeft}s. Please wait a moment.`;
     }
     const minsLeft = Math.ceil(secsLeft / 60);
-    return `⚠️ Rate-limited — ready in ~${minsLeft} min. Please try again shortly.`;
+    return `âš ï¸ Rate-limited â€” ready in ~${minsLeft} min. Please try again shortly.`;
   }
-  return "⚠️ All models are temporarily rate-limited. Please try again in a few minutes.";
+  return "âš ï¸ All models are temporarily rate-limited. Please try again in a few minutes.";
 }
 
 function isPureTransientRateLimitSummary(err: unknown): boolean {
@@ -461,7 +461,7 @@ export async function runAgentTurnWithFallback(params: {
                         const currentMessageId =
                           params.sessionCtx.MessageSidFull ?? params.sessionCtx.MessageSid;
                         const noticePayload = params.applyReplyToMode({
-                          text: "🧹 Compacting context...",
+                          text: "ðŸ§¹ Compacting context...",
                           replyToId: currentMessageId,
                           replyToCurrent: true,
                           isCompactionNotice: true,
@@ -577,7 +577,7 @@ export async function runAgentTurnWithFallback(params: {
         return {
           kind: "final",
           payload: {
-            text: "⚠️ Context limit exceeded. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
+            text: "âš ï¸ Context limit exceeded. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
           },
         };
       }
@@ -587,7 +587,7 @@ export async function runAgentTurnWithFallback(params: {
           return {
             kind: "final",
             payload: {
-              text: "⚠️ Message ordering conflict. I've reset the conversation - please try again.",
+              text: "âš ï¸ Message ordering conflict. I've reset the conversation - please try again.",
             },
           };
         }
@@ -612,7 +612,7 @@ export async function runAgentTurnWithFallback(params: {
         return {
           kind: "final",
           payload: {
-            text: "⚠️ Context limit exceeded during compaction. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
+            text: "âš ï¸ Context limit exceeded during compaction. I've reset our conversation to start fresh - please try again.\n\nTo prevent this, increase your compaction buffer by setting `agents.defaults.compaction.reserveTokensFloor` to 20000 or higher in your config.",
           },
         };
       }
@@ -622,7 +622,7 @@ export async function runAgentTurnWithFallback(params: {
           return {
             kind: "final",
             payload: {
-              text: "⚠️ Message ordering conflict. I've reset the conversation - please try again.",
+              text: "âš ï¸ Message ordering conflict. I've reset the conversation - please try again.",
             },
           };
         }
@@ -668,17 +668,17 @@ export async function runAgentTurnWithFallback(params: {
         return {
           kind: "final",
           payload: {
-            text: "⚠️ Session history was corrupted. I've reset the conversation - please try again!",
+            text: "âš ï¸ Session history was corrupted. I've reset the conversation - please try again!",
           },
         };
       }
 
       if (isTransientHttp && !didRetryTransientHttpError) {
         didRetryTransientHttpError = true;
-        // Retry the full runWithModelFallback() cycle — transient errors
+        // Retry the full runWithModelFallback() cycle â€” transient errors
         // (502/521/etc.) typically affect the whole provider, so falling
         // back to an alternate model first would not help. Instead we wait
-        // and retry the complete primary→fallback chain.
+        // and retry the complete primaryâ†’fallback chain.
         defaultRuntime.error(
           `Transient HTTP provider error before reply (${message}). Retrying once in ${TRANSIENT_HTTP_RETRY_DELAY_MS}ms.`,
         );
@@ -705,10 +705,10 @@ export async function runAgentTurnWithFallback(params: {
         : isRateLimit
           ? buildRateLimitCooldownMessage(err)
           : isContextOverflow
-            ? "⚠️ Context overflow — prompt too large for this model. Try a shorter message or a larger-context model."
+            ? "âš ï¸ Context overflow â€” prompt too large for this model. Try a shorter message or a larger-context model."
             : isRoleOrderingError
-              ? "⚠️ Message ordering conflict - please try again. If this persists, use /new to start a fresh session."
-              : `⚠️ Agent failed before reply: ${trimmedMessage}.\nLogs: openclaw logs --follow`;
+              ? "âš ï¸ Message ordering conflict - please try again. If this persists, use /new to start a fresh session."
+              : `âš ï¸ Agent failed before reply: ${trimmedMessage}.\nLogs: openclaw logs --follow`;
 
       return {
         kind: "final",
@@ -732,7 +732,7 @@ export async function runAgentTurnWithFallback(params: {
       return {
         kind: "final",
         payload: {
-          text: "⚠️ Context overflow — this conversation is too large for the model. Use /new to start a fresh session.",
+          text: "âš ï¸ Context overflow â€” this conversation is too large for the model. Use /new to start a fresh session.",
         },
       };
     }
@@ -743,14 +743,14 @@ export async function runAgentTurnWithFallback(params: {
   // Only applies when the assistant produced no valid (non-error) reply text,
   // so tool-level rate-limit messages don't override a successful turn.
   // Prioritize metaErrorMsg (raw upstream error) over errorPayloadText to
-  // avoid self-matching on pre-formatted "⚠️" messages from run.ts, and
+  // avoid self-matching on pre-formatted "âš ï¸" messages from run.ts, and
   // skip already-formatted payloads so tool-specific 429 errors (e.g.
   // browser/search tool failures) are preserved rather than overwritten.
   //
   // Instead of early-returning kind:"final" (which would bypass
   // buildReplyPayloads() filtering and session bookkeeping), inject the
   // error payload into runResult so it flows through the normal
-  // kind:"success" path — preserving streaming dedup, message_send
+  // kind:"success" path â€” preserving streaming dedup, message_send
   // suppression, and usage/model metadata updates.
   if (runResult) {
     const hasNonErrorContent = runResult.payloads?.some(
@@ -759,7 +759,7 @@ export async function runAgentTurnWithFallback(params: {
     if (!hasNonErrorContent) {
       const metaErrorMsg = finalEmbeddedError?.message ?? "";
       const rawErrorPayloadText =
-        runResult.payloads?.find((p) => p.isError && p.text?.trim() && !p.text.startsWith("⚠️"))
+        runResult.payloads?.find((p) => p.isError && p.text?.trim() && !p.text.startsWith("âš ï¸"))
           ?.text ?? "";
       const errorCandidate = metaErrorMsg || rawErrorPayloadText;
       if (
@@ -768,7 +768,7 @@ export async function runAgentTurnWithFallback(params: {
       ) {
         runResult.payloads = [
           {
-            text: "⚠️ API rate limit reached — the model couldn't generate a response. Please try again in a moment.",
+            text: "âš ï¸ API rate limit reached â€” the model couldn't generate a response. Please try again in a moment.",
             isError: true,
           },
         ];

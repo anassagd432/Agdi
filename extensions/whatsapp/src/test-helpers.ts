@@ -48,8 +48,8 @@ function resolveStorePathFallback(store?: string, opts?: { agentId?: string }) {
   return path.resolve(store.replaceAll("{agentId}", opts?.agentId?.trim() || "main"));
 }
 
-vi.mock("openclaw/plugin-sdk/config-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/config-runtime")>();
+vi.mock("agdi/plugin-sdk/config-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/config-runtime")>();
   const mockModule = Object.create(null) as Record<string, unknown>;
   Object.defineProperties(mockModule, Object.getOwnPropertyDescriptors(actual));
   Object.defineProperties(mockModule, {
@@ -124,7 +124,7 @@ vi.mock("../../config/config.js", async (importOriginal) => {
   // `../../config/config.js` is correct for modules under `src/web/auto-reply/*`.
   // For typing in this file (which lives in `src/web/*`), refer to the same module
   // via the local relative path.
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/config-runtime")>();
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/config-runtime")>();
   const mockModule = Object.create(null) as Record<string, unknown>;
   Object.defineProperties(mockModule, Object.getOwnPropertyDescriptors(actual));
   Object.defineProperty(mockModule, "loadConfig", {
@@ -142,8 +142,8 @@ vi.mock("../../config/config.js", async (importOriginal) => {
   return mockModule;
 });
 
-vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/media-runtime")>();
+vi.mock("agdi/plugin-sdk/media-runtime", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/media-runtime")>();
   const mockModule = Object.create(null) as Record<string, unknown>;
   Object.defineProperties(mockModule, Object.getOwnPropertyDescriptors(actual));
   Object.defineProperty(mockModule, "saveMediaBuffer", {
@@ -160,8 +160,8 @@ vi.mock("openclaw/plugin-sdk/media-runtime", async (importOriginal) => {
   return mockModule;
 });
 
-vi.mock("openclaw/plugin-sdk/state-paths", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("openclaw/plugin-sdk/state-paths")>();
+vi.mock("agdi/plugin-sdk/state-paths", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("agdi/plugin-sdk/state-paths")>();
   return {
     ...actual,
     resolveOAuthDir: () => "/tmp/openclaw-oauth",

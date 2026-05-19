@@ -1,8 +1,8 @@
-import { mapAllowFromEntries } from "openclaw/plugin-sdk/channel-config-helpers";
+import { mapAllowFromEntries } from "agdi/plugin-sdk/channel-config-helpers";
 import {
   listInspectedDirectoryEntriesFromSources,
   type DirectoryConfigParams,
-} from "openclaw/plugin-sdk/directory-runtime";
+} from "agdi/plugin-sdk/directory-runtime";
 import { inspectTelegramAccount, type InspectedTelegramAccount } from "./account-inspect.js";
 
 export async function listTelegramDirectoryPeersFromConfig(params: DirectoryConfigParams) {

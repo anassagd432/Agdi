@@ -21,7 +21,7 @@ import {
   type WebSearchProviderPlugin,
   type WebSearchProviderToolDefinition,
   writeCachedSearchPayload,
-} from "openclaw/plugin-sdk/provider-web-search";
+} from "agdi/plugin-sdk/provider-web-search";
 import {
   buildXaiWebSearchPayload,
   extractXaiWebSearchContent,

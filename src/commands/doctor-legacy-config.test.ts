@@ -13,7 +13,7 @@ describe("normalizeCompatibilityConfigValues preview streaming aliases", () => {
 
     expect(res.config.channels?.telegram?.streaming).toBe("off");
     expect(res.config.channels?.telegram?.streamMode).toBeUndefined();
-    expect(res.changes).toEqual(["Normalized channels.telegram.streaming boolean → enum (off)."]);
+    expect(res.changes).toEqual(["Normalized channels.telegram.streaming boolean â†’ enum (off)."]);
   });
 
   it("normalizes discord boolean streaming aliases to enum", () => {
@@ -28,7 +28,7 @@ describe("normalizeCompatibilityConfigValues preview streaming aliases", () => {
     expect(res.config.channels?.discord?.streaming).toBe("partial");
     expect(res.config.channels?.discord?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Normalized channels.discord.streaming boolean → enum (partial).",
+      "Normalized channels.discord.streaming boolean â†’ enum (partial).",
     ]);
   });
 
@@ -43,7 +43,7 @@ describe("normalizeCompatibilityConfigValues preview streaming aliases", () => {
 
     expect(res.config.channels?.discord?.streaming).toBe("off");
     expect(res.config.channels?.discord?.streamMode).toBeUndefined();
-    expect(res.changes).toEqual(["Normalized channels.discord.streaming boolean → enum (off)."]);
+    expect(res.changes).toEqual(["Normalized channels.discord.streaming boolean â†’ enum (off)."]);
   });
 
   it("explains why discord preview streaming stays off when legacy config resolves to off", () => {
@@ -58,7 +58,7 @@ describe("normalizeCompatibilityConfigValues preview streaming aliases", () => {
     expect(res.config.channels?.discord?.streaming).toBe("off");
     expect(res.config.channels?.discord?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved channels.discord.streamMode → channels.discord.streaming (off).",
+      "Moved channels.discord.streamMode â†’ channels.discord.streaming (off).",
       'channels.discord.streaming remains off by default to avoid Discord preview-edit rate limits; set channels.discord.streaming="partial" to opt in explicitly.',
     ]);
   });
@@ -76,7 +76,7 @@ describe("normalizeCompatibilityConfigValues preview streaming aliases", () => {
     expect(res.config.channels?.slack?.nativeStreaming).toBe(false);
     expect(res.config.channels?.slack?.streamMode).toBeUndefined();
     expect(res.changes).toEqual([
-      "Moved channels.slack.streaming (boolean) → channels.slack.nativeStreaming (false).",
+      "Moved channels.slack.streaming (boolean) â†’ channels.slack.nativeStreaming (false).",
     ]);
   });
 });

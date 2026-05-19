@@ -79,11 +79,11 @@ describe("sweepCronRunSessions", () => {
       },
       "agent:main:cron:job1:run:old-run": {
         sessionId: "old-run",
-        updatedAt: now - 25 * 3_600_000, // 25h ago — expired
+        updatedAt: now - 25 * 3_600_000, // 25h ago â€” expired
       },
       "agent:main:cron:job1:run:recent-run": {
         sessionId: "recent-run",
-        updatedAt: now - 1 * 3_600_000, // 1h ago — not expired
+        updatedAt: now - 1 * 3_600_000, // 1h ago â€” not expired
       },
       "agent:main:telegram:dm:123": {
         sessionId: "regular-session",

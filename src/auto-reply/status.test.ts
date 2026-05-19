@@ -597,7 +597,7 @@ describe("buildStatusMessage", () => {
     });
 
     const normalized = normalizeTestText(text);
-    expect(normalized).toContain("Media: image ok (openai/gpt-5.2) · audio skipped (maxBytes)");
+    expect(normalized).toContain("Media: image ok (openai/gpt-5.2) Â· audio skipped (maxBytes)");
   });
 
   it("omits media line when all decisions are none", () => {
@@ -627,7 +627,7 @@ describe("buildStatusMessage", () => {
       queue: { mode: "collect", depth: 0 },
     });
 
-    const optionsLine = text.split("\n").find((line) => line.trim().startsWith("⚙️"));
+    const optionsLine = text.split("\n").find((line) => line.trim().startsWith("âš™ï¸"));
     expect(optionsLine).toBeTruthy();
     expect(optionsLine).not.toContain("elevated");
   });
@@ -654,7 +654,7 @@ describe("buildStatusMessage", () => {
       sessionScope: "per-sender",
       queue: { mode: "collect", depth: 0 },
       modelAuth: "api-key",
-      activeModelAuth: "api-key di_123…abc (deepinfra:default)",
+      activeModelAuth: "api-key di_123â€¦abc (deepinfra:default)",
     });
 
     const normalized = normalizeTestText(text);
@@ -685,7 +685,7 @@ describe("buildStatusMessage", () => {
       sessionScope: "per-sender",
       queue: { mode: "collect", depth: 0 },
       modelAuth: "api-key",
-      activeModelAuth: "api-key di_123…abc (deepinfra:default)",
+      activeModelAuth: "api-key di_123â€¦abc (deepinfra:default)",
     });
 
     const normalized = normalizeTestText(text);
@@ -779,7 +779,7 @@ describe("buildStatusMessage", () => {
       modelAuth: "api-key",
     });
 
-    expect(text).toContain("Queue: collect (depth 3 · debounce 2s · cap 5 · drop old)");
+    expect(text).toContain("Queue: collect (depth 3 Â· debounce 2s Â· cap 5 Â· drop old)");
   });
 
   it("inserts usage summary beneath context line", () => {
@@ -789,7 +789,7 @@ describe("buildStatusMessage", () => {
       sessionKey: "agent:main:main",
       sessionScope: "per-sender",
       queue: { mode: "collect", depth: 0 },
-      usageLine: "📊 Usage: Claude 80% left (5h)",
+      usageLine: "ðŸ“Š Usage: Claude 80% left (5h)",
       modelAuth: "api-key",
     });
 
@@ -828,7 +828,7 @@ describe("buildStatusMessage", () => {
       modelAuth: "oauth",
     });
 
-    expect(text).not.toContain("💵 Cost:");
+    expect(text).not.toContain("ðŸ’µ Cost:");
   });
 
   function writeTranscriptUsageLog(params: {
@@ -1270,7 +1270,7 @@ describe("buildCommandsMessage", () => {
     const text = buildCommandsMessage({
       commands: { config: false, debug: false },
     } as unknown as OpenClawConfig);
-    expect(text).toContain("ℹ️ Slash commands");
+    expect(text).toContain("â„¹ï¸ Slash commands");
     expect(text).toContain("Status");
     expect(text).toContain("/commands - List all slash commands.");
     expect(text).toContain("/skill - Run a skill by name.");
@@ -1322,7 +1322,7 @@ describe("buildCommandsMessagePaginated", () => {
       undefined,
       { surface: "telegram", page: 1 },
     );
-    expect(result.text).toContain("ℹ️ Commands (1/");
+    expect(result.text).toContain("â„¹ï¸ Commands (1/");
     expect(result.text).toContain("Session");
     expect(result.text).toContain("/stop - Stop the current run.");
   });

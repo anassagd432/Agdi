@@ -674,7 +674,7 @@ async function tryTerminateExecutionViaCdp(opts: {
  *
  * Instead we:
  * 1. Null out `cached` so the next call triggers a fresh connectOverCDP
- * 2. Fire-and-forget browser.close() — it may hang but won't block us
+ * 2. Fire-and-forget browser.close() â€” it may hang but won't block us
  * 3. The next connectBrowser() creates a completely new CDP WebSocket connection
  *
  * The old browser.close() eventually resolves when the in-browser evaluate timeout fires,

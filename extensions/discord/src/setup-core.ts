@@ -1,14 +1,14 @@
-import { DEFAULT_ACCOUNT_ID } from "openclaw/plugin-sdk/account-id";
-import type { DiscordGuildEntry } from "openclaw/plugin-sdk/config-runtime";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { createEnvPatchedAccountSetupAdapter } from "openclaw/plugin-sdk/setup-adapter-runtime";
+import { DEFAULT_ACCOUNT_ID } from "agdi/plugin-sdk/account-id";
+import type { DiscordGuildEntry } from "agdi/plugin-sdk/config-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { createEnvPatchedAccountSetupAdapter } from "agdi/plugin-sdk/setup-adapter-runtime";
 import type {
   ChannelSetupAdapter,
   ChannelSetupDmPolicy,
   ChannelSetupWizard,
-} from "openclaw/plugin-sdk/setup-runtime";
-import { createStandardChannelSetupStatus } from "openclaw/plugin-sdk/setup-runtime";
-import { formatDocsLink } from "openclaw/plugin-sdk/setup-tools";
+} from "agdi/plugin-sdk/setup-runtime";
+import { createStandardChannelSetupStatus } from "agdi/plugin-sdk/setup-runtime";
+import { formatDocsLink } from "agdi/plugin-sdk/setup-tools";
 import {
   inspectDiscordSetupAccount,
   listDiscordSetupAccountIds,

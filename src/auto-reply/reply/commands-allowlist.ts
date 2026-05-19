@@ -250,7 +250,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     return null;
   }
   if (parsed.action === "error") {
-    return { shouldContinue: false, reply: { text: `⚠️ ${parsed.message}` } };
+    return { shouldContinue: false, reply: { text: `âš ï¸ ${parsed.message}` } };
   }
   const unauthorized = rejectUnauthorizedCommand(params, "/allowlist");
   if (unauthorized) {
@@ -264,14 +264,14 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   if (!channelId) {
     return {
       shouldContinue: false,
-      reply: { text: "⚠️ Unknown channel. Add channel=<id> to the command." },
+      reply: { text: "âš ï¸ Unknown channel. Add channel=<id> to the command." },
     };
   }
   if (parsed.account?.trim() && !normalizeOptionalAccountId(parsed.account)) {
     return {
       shouldContinue: false,
       reply: {
-        text: "⚠️ Invalid account id. Reserved keys (__proto__, constructor, prototype) are blocked.",
+        text: "âš ï¸ Invalid account id. Reserved keys (__proto__, constructor, prototype) are blocked.",
       },
     };
   }
@@ -283,7 +283,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     if (!plugin?.allowlist?.readConfig && !supportsStore) {
       return {
         shouldContinue: false,
-        reply: { text: `⚠️ ${channelId} does not expose allowlist configuration.` },
+        reply: { text: `âš ï¸ ${channelId} does not expose allowlist configuration.` },
       };
     }
     const storeAllowFrom = supportsStore
@@ -343,7 +343,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
           })
         : undefined;
 
-    const lines: string[] = ["🧾 Allowlist"];
+    const lines: string[] = ["ðŸ§¾ Allowlist"];
     lines.push(`Channel: ${channelId}${accountId ? ` (account ${accountId})` : ""}`);
     if (configState.dmPolicy) {
       lines.push(`DM policy: ${configState.dmPolicy}`);
@@ -390,7 +390,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   const missingAdminScope = requireGatewayClientScopeForInternalChannel(params, {
     label: "/allowlist write",
     allowedScopes: ["operator.admin"],
-    missingText: "❌ /allowlist add|remove requires operator.admin for gateway clients.",
+    missingText: "âŒ /allowlist add|remove requires operator.admin for gateway clients.",
   });
   if (missingAdminScope) {
     return missingAdminScope;
@@ -412,14 +412,14 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     if (parsed.scope === "all") {
       return {
         shouldContinue: false,
-        reply: { text: "⚠️ /allowlist add|remove requires scope dm or group." },
+        reply: { text: "âš ï¸ /allowlist add|remove requires scope dm or group." },
       };
     }
     if (!plugin?.allowlist?.applyConfigEdit) {
       return {
         shouldContinue: false,
         reply: {
-          text: `⚠️ ${channelId} does not support ${parsed.scope} allowlist edits via /allowlist.`,
+          text: `âš ï¸ ${channelId} does not support ${parsed.scope} allowlist edits via /allowlist.`,
         },
       };
     }
@@ -428,7 +428,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     if (!snapshot.valid || !snapshot.parsed || typeof snapshot.parsed !== "object") {
       return {
         shouldContinue: false,
-        reply: { text: "⚠️ Config file is invalid; fix it before using /allowlist." },
+        reply: { text: "âš ï¸ Config file is invalid; fix it before using /allowlist." },
       };
     }
     const parsedConfig = structuredClone(snapshot.parsed as Record<string, unknown>);
@@ -444,14 +444,14 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
       return {
         shouldContinue: false,
         reply: {
-          text: `⚠️ ${channelId} does not support ${parsed.scope} allowlist edits via /allowlist.`,
+          text: `âš ï¸ ${channelId} does not support ${parsed.scope} allowlist edits via /allowlist.`,
         },
       };
     }
     if (editResult.kind === "invalid-entry") {
       return {
         shouldContinue: false,
-        reply: { text: "⚠️ Invalid allowlist entry." },
+        reply: { text: "âš ï¸ Invalid allowlist entry." },
       };
     }
     const deniedText = resolveConfigWriteDeniedText({
@@ -478,14 +478,14 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
         const issue = validated.issues[0];
         return {
           shouldContinue: false,
-          reply: { text: `⚠️ Config invalid after update (${issue.path}: ${issue.message}).` },
+          reply: { text: `âš ï¸ Config invalid after update (${issue.path}: ${issue.message}).` },
         };
       }
       await writeConfigFile(validated.config);
     }
 
     if (!configChanged && !shouldTouchStore) {
-      const message = parsed.action === "add" ? "✅ Already allowlisted." : "⚠️ Entry not found.";
+      const message = parsed.action === "add" ? "âœ… Already allowlisted." : "âš ï¸ Entry not found.";
       return { shouldContinue: false, reply: { text: message } };
     }
 
@@ -511,7 +511,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     return {
       shouldContinue: false,
       reply: {
-        text: `✅ ${scopeLabel} allowlist ${actionLabel}: ${targetLabel}.`,
+        text: `âœ… ${scopeLabel} allowlist ${actionLabel}: ${targetLabel}.`,
       },
     };
   }
@@ -519,7 +519,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   if (!shouldTouchStore) {
     return {
       shouldContinue: false,
-      reply: { text: "⚠️ This channel does not support allowlist storage." },
+      reply: { text: "âš ï¸ This channel does not support allowlist storage." },
     };
   }
 
@@ -534,6 +534,6 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   const scopeLabel = parsed.scope === "dm" ? "DM" : "group";
   return {
     shouldContinue: false,
-    reply: { text: `✅ ${scopeLabel} allowlist ${actionLabel} in pairing store.` },
+    reply: { text: `âœ… ${scopeLabel} allowlist ${actionLabel} in pairing store.` },
   };
 };

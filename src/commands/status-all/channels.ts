@@ -58,7 +58,7 @@ function summarizeSources(sources: Array<string | undefined>): {
   }
   const parts = [...counts.entries()]
     .toSorted((a, b) => b[1] - a[1])
-    .map(([key, n]) => `${key}${n > 1 ? `×${n}` : ""}`);
+    .map(([key, n]) => `${key}${n > 1 ? `Ã—${n}` : ""}`);
   const label = parts.length > 0 ? parts.join("+") : "unknown";
   return { label, parts };
 }
@@ -81,14 +81,14 @@ function formatTokenHint(token: string, opts: { showSecrets: boolean }): string 
     return "empty";
   }
   if (!opts.showSecrets) {
-    return `sha256:${sha256HexPrefix(t, 8)} · len ${t.length}`;
+    return `sha256:${sha256HexPrefix(t, 8)} Â· len ${t.length}`;
   }
   const head = t.slice(0, 4);
   const tail = t.slice(-4);
   if (t.length <= 10) {
-    return `${t} · len ${t.length}`;
+    return `${t} Â· len ${t.length}`;
   }
-  return `${head}…${tail} · len ${t.length}`;
+  return `${head}â€¦${tail} Â· len ${t.length}`;
 }
 
 async function inspectChannelAccount(
@@ -317,14 +317,14 @@ function summarizeTokenConfig(params: {
     if (unavailable.length > 0) {
       return {
         state: "warn",
-        detail: `configured http credentials unavailable in this command path · accounts ${unavailable.length}`,
+        detail: `configured http credentials unavailable in this command path Â· accounts ${unavailable.length}`,
       };
     }
 
     if (partial.length > 0) {
       return {
         state: "warn",
-        detail: `partial credentials (need bot+signing) · accounts ${partial.length}`,
+        detail: `partial credentials (need bot+signing) Â· accounts ${partial.length}`,
       };
     }
 
@@ -349,7 +349,7 @@ function summarizeTokenConfig(params: {
       botHint || signingHint ? ` (bot ${botHint || "?"}, signing ${signingHint || "?"})` : "";
     return {
       state: "ok",
-      detail: `credentials ok (bot ${botSources.label}, signing ${signingSources.label})${hint} · accounts ${ready.length}/${enabled.length || 1}`,
+      detail: `credentials ok (bot ${botSources.label}, signing ${signingSources.label})${hint} Â· accounts ${ready.length}/${enabled.length || 1}`,
     };
   }
 
@@ -373,14 +373,14 @@ function summarizeTokenConfig(params: {
     if (partial.length > 0) {
       return {
         state: "warn",
-        detail: `partial tokens (need bot+app) · accounts ${partial.length}`,
+        detail: `partial tokens (need bot+app) Â· accounts ${partial.length}`,
       };
     }
 
     if (unavailable.length > 0) {
       return {
         state: "warn",
-        detail: `configured tokens unavailable in this command path · accounts ${unavailable.length}`,
+        detail: `configured tokens unavailable in this command path Â· accounts ${unavailable.length}`,
       };
     }
 
@@ -404,7 +404,7 @@ function summarizeTokenConfig(params: {
     const hint = botHint || appHint ? ` (bot ${botHint || "?"}, app ${appHint || "?"})` : "";
     return {
       state: "ok",
-      detail: `tokens ok (bot ${botSources.label}, app ${appSources.label})${hint} · accounts ${ready.length}/${enabled.length || 1}`,
+      detail: `tokens ok (bot ${botSources.label}, app ${appSources.label})${hint} Â· accounts ${ready.length}/${enabled.length || 1}`,
     };
   }
 
@@ -419,7 +419,7 @@ function summarizeTokenConfig(params: {
     if (unavailable.length > 0) {
       return {
         state: "warn",
-        detail: `configured bot token unavailable in this command path · accounts ${unavailable.length}`,
+        detail: `configured bot token unavailable in this command path Â· accounts ${unavailable.length}`,
       };
     }
 
@@ -436,7 +436,7 @@ function summarizeTokenConfig(params: {
 
     return {
       state: "ok",
-      detail: `bot token config${hint} · accounts ${ready.length}/${enabled.length || 1}`,
+      detail: `bot token config${hint} Â· accounts ${ready.length}/${enabled.length || 1}`,
     };
   }
 
@@ -448,7 +448,7 @@ function summarizeTokenConfig(params: {
   if (unavailable.length > 0) {
     return {
       state: "warn",
-      detail: `configured token unavailable in this command path · accounts ${unavailable.length}`,
+      detail: `configured token unavailable in this command path Â· accounts ${unavailable.length}`,
     };
   }
   if (ready.length === 0) {
@@ -463,7 +463,7 @@ function summarizeTokenConfig(params: {
     : "";
   return {
     state: "ok",
-    detail: `token ${sources.label}${hint} · accounts ${ready.length}/${enabled.length || 1}`,
+    detail: `token ${sources.label}${hint} Â· accounts ${ready.length}/${enabled.length || 1}`,
   };
 }
 
@@ -597,14 +597,14 @@ export async function buildChannelsTable(
         if (accounts.length > 1 || plugin.meta.forceAccountBinding) {
           extra.push(`accounts ${accounts.length || 1}`);
         }
-        return extra.length > 0 ? `${base} · ${extra.join(" · ")}` : base;
+        return extra.length > 0 ? `${base} Â· ${extra.join(" Â· ")}` : base;
       }
 
       if (unavailableConfiguredAccounts.length > 0) {
         if (tokenSummary.detail?.includes("unavailable")) {
           return tokenSummary.detail;
         }
-        return `configured credentials unavailable in this command path · accounts ${unavailableConfiguredAccounts.length}`;
+        return `configured credentials unavailable in this command path Â· accounts ${unavailableConfiguredAccounts.length}`;
       }
 
       if (tokenSummary.detail) {
@@ -616,7 +616,7 @@ export async function buildChannelsTable(
         if (accounts.length <= 1 && !plugin.meta.forceAccountBinding) {
           return head;
         }
-        return `${head} · accounts ${configuredAccounts.length}/${enabledAccounts.length || 1}`;
+        return `${head} Â· accounts ${configuredAccounts.length}/${enabledAccounts.length || 1}`;
       }
 
       const reason =
@@ -649,7 +649,7 @@ export async function buildChannelsTable(
               entry.enabled && !hasConfiguredUnavailableCredentialStatus(entry.account)
                 ? "OK"
                 : "WARN",
-            Notes: notes.join(" · "),
+            Notes: notes.join(" Â· "),
           };
         }),
       });

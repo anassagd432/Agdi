@@ -1,7 +1,7 @@
 import type { OpenClawConfig, HumanDelayConfig, IdentityConfig } from "../config/config.js";
 import { resolveAgentConfig } from "./agent-scope.js";
 
-const DEFAULT_ACK_REACTION = "👀";
+const DEFAULT_ACK_REACTION = "ðŸ‘€";
 
 export function resolveAgentIdentity(
   cfg: OpenClawConfig,

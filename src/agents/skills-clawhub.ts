@@ -283,7 +283,7 @@ async function performClawHubSkillInstall(
       };
     }
 
-    params.logger?.info?.(`Downloading ${params.slug}@${version} from ClawHub…`);
+    params.logger?.info?.(`Downloading ${params.slug}@${version} from ClawHubâ€¦`);
     const archive = await downloadClawHubSkillArchive({
       slug: params.slug,
       version,

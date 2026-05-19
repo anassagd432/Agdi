@@ -7,10 +7,10 @@ describe("shortenText", () => {
   });
 
   it("truncates and appends ellipsis when over limit", () => {
-    expect(shortenText("openclaw-status-output", 10)).toBe("openclaw-…");
+    expect(shortenText("openclaw-status-output", 10)).toBe("openclaw-â€¦");
   });
 
   it("counts multi-byte characters correctly", () => {
-    expect(shortenText("hello🙂world", 7)).toBe("hello🙂…");
+    expect(shortenText("helloðŸ™‚world", 7)).toBe("helloðŸ™‚â€¦");
   });
 });

@@ -346,7 +346,7 @@ export async function maybeHandleModelDirectiveInfo(params: {
       const label = `${provider}/${entry.id}`;
       const aliases = params.aliasIndex.byKey.get(label);
       const aliasSuffix = aliases && aliases.length > 0 ? ` (${aliases.join(", ")})` : "";
-      lines.push(`  • ${label}${aliasSuffix}`);
+      lines.push(`  â€¢ ${label}${aliasSuffix}`);
     }
   }
   return { text: lines.join("\n") };

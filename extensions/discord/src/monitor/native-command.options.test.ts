@@ -9,9 +9,9 @@ const { loggerWarnMock } = vi.hoisted(() => ({
   loggerWarnMock: vi.fn(),
 }));
 
-vi.mock("openclaw/plugin-sdk/runtime-env", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/runtime-env")>(
-    "openclaw/plugin-sdk/runtime-env",
+vi.mock("agdi/plugin-sdk/runtime-env", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/runtime-env")>(
+    "agdi/plugin-sdk/runtime-env",
   );
   return {
     ...actual,

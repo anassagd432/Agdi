@@ -217,8 +217,8 @@ export async function runGatewayLoop(params: {
       // After an in-process restart (SIGUSR1), reset command-queue lane state.
       // Interrupted tasks from the previous lifecycle may have left `active`
       // counts elevated (their finally blocks never ran), permanently blocking
-      // new work from draining. This must happen here — at the restart
-      // coordinator level — rather than inside individual subsystem init
+      // new work from draining. This must happen here â€” at the restart
+      // coordinator level â€” rather than inside individual subsystem init
       // functions, to avoid surprising cross-cutting side effects.
       resetAllLanes();
     });

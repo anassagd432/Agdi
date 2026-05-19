@@ -2,7 +2,7 @@ import { ALLOWED_LOG_LEVELS, type LogLevel, tryParseLogLevel } from "./levels.js
 import { loggingState } from "./state.js";
 
 export function resolveEnvLogLevelOverride(): LogLevel | undefined {
-  const raw = process.env.OPENCLAW_LOG_LEVEL;
+  const raw = process.env.AGDI_LOG_LEVEL ?? process.env.OPENCLAW_LOG_LEVEL;
   const trimmed = typeof raw === "string" ? raw.trim() : "";
   if (!trimmed) {
     loggingState.invalidEnvLogLevelValue = null;

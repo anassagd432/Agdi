@@ -378,9 +378,9 @@ describe("media store", () => {
 
     it("preserves original name with special characters", async () => {
       await withTempStore(async (store) => {
-        const filename = "报告_2024---a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf";
+        const filename = "æŠ¥å‘Š_2024---a1b2c3d4-e5f6-7890-abcd-ef1234567890.pdf";
         const result = store.extractOriginalFilename(`/media/${filename}`);
-        expect(result).toBe("报告_2024.pdf");
+        expect(result).toBe("æŠ¥å‘Š_2024.pdf");
       });
     });
   });

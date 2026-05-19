@@ -128,7 +128,7 @@ describe("restart sentinel", () => {
     const text = "a".repeat(9000);
     const trimmed = trimLogTail(text, 8000);
     expect(trimmed?.length).toBeLessThanOrEqual(8001);
-    expect(trimmed?.startsWith("…")).toBe(true);
+    expect(trimmed?.startsWith("â€¦")).toBe(true);
   });
 
   it("formats restart messages without volatile timestamps", () => {

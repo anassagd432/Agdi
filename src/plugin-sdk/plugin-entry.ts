@@ -10,6 +10,7 @@ import type {
 export type {
   AnyAgentTool,
   MediaUnderstandingProviderPlugin,
+  OpenClawPluginApi as AGDIPluginApi,
   OpenClawPluginApi,
   PluginCommandContext,
   OpenClawPluginConfigSchema,
@@ -83,7 +84,7 @@ function resolvePluginConfigSchema(
  *
  * Use this for provider, tool, command, service, memory, and context-engine
  * plugins. Channel plugins should use `defineChannelPluginEntry(...)` from
- * `openclaw/plugin-sdk/core` so they inherit the channel capability wiring.
+ * `agdi/plugin-sdk/core` so they inherit the channel capability wiring.
  */
 export function definePluginEntry({
   id,

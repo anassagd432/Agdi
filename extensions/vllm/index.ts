@@ -3,17 +3,17 @@ import {
   VLLM_DEFAULT_BASE_URL,
   VLLM_MODEL_PLACEHOLDER,
   VLLM_PROVIDER_LABEL,
-} from "openclaw/plugin-sdk/agent-runtime";
+} from "agdi/plugin-sdk/agent-runtime";
 import {
   definePluginEntry,
   type OpenClawPluginApi,
   type ProviderAuthMethodNonInteractiveContext,
-} from "openclaw/plugin-sdk/plugin-entry";
+} from "agdi/plugin-sdk/plugin-entry";
 
 const PROVIDER_ID = "vllm";
 
 async function loadProviderSetup() {
-  return await import("openclaw/plugin-sdk/self-hosted-provider-setup");
+  return await import("agdi/plugin-sdk/self-hosted-provider-setup");
 }
 
 export default definePluginEntry({

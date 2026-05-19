@@ -25,7 +25,7 @@ describe("shared/entry-status", () => {
     const result = evaluateEntryMetadataRequirements({
       always: false,
       metadata: {
-        emoji: "🦀",
+        emoji: "ðŸ¦€",
         homepage: "https://openclaw.ai",
         requires: {
           bins: ["bun"],
@@ -36,8 +36,8 @@ describe("shared/entry-status", () => {
         os: ["darwin"],
       },
       frontmatter: {
-        emoji: "🙂",
-        homepage: "https://docs.openclaw.ai",
+        emoji: "ðŸ™‚",
+        homepage: "https://docs.agdi.ai",
       },
       hasLocalBin: (bin) => bin === "bun",
       localPlatform: "linux",
@@ -49,7 +49,7 @@ describe("shared/entry-status", () => {
     });
 
     expect(result).toEqual({
-      emoji: "🦀",
+      emoji: "ðŸ¦€",
       homepage: "https://openclaw.ai",
       required: {
         bins: ["bun"],
@@ -99,8 +99,8 @@ describe("shared/entry-status", () => {
           },
         },
         frontmatter: {
-          website: " https://docs.openclaw.ai ",
-          emoji: "🙂",
+          website: " https://docs.agdi.ai ",
+          emoji: "ðŸ™‚",
         },
       },
       hasLocalBin: () => false,
@@ -109,8 +109,8 @@ describe("shared/entry-status", () => {
     });
 
     expect(result).toEqual({
-      emoji: "🙂",
-      homepage: "https://docs.openclaw.ai",
+      emoji: "ðŸ™‚",
+      homepage: "https://docs.agdi.ai",
       required: {
         bins: ["missing-bin"],
         anyBins: [],

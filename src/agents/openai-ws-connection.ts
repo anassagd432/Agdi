@@ -17,9 +17,9 @@ import { EventEmitter } from "node:events";
 import WebSocket, { type ClientOptions } from "ws";
 import { resolveProviderAttributionHeaders } from "./provider-attribution.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// WebSocket Event Types (Server → Client)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// WebSocket Event Types (Server â†’ Client)
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface ResponseObject {
   id: string;
@@ -177,9 +177,9 @@ export type OpenAIWebSocketEvent =
   | RateLimitUpdatedEvent
   | ErrorEvent;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Client → Server Event Types
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Client â†’ Server Event Types
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type ContentPart =
   | { type: "input_text"; text: string }
@@ -243,9 +243,9 @@ export interface WarmUpEvent extends ResponseCreateEvent {
 
 export type ClientEvent = ResponseCreateEvent | WarmUpEvent;
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Connection Manager
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const OPENAI_WS_URL = "wss://api.openai.com/v1/responses";
 const MAX_RETRIES = 5;
@@ -319,7 +319,7 @@ export class OpenAIWebSocketManager extends EventEmitter<InternalEvents> {
       options.socketFactory ?? ((url, socketOptions) => new WebSocket(url, socketOptions));
   }
 
-  // ─── Public API ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   /**
    * Returns the previous_response_id from the last completed response,
@@ -348,7 +348,7 @@ export class OpenAIWebSocketManager extends EventEmitter<InternalEvents> {
   send(event: ClientEvent): void {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       throw new Error(
-        `OpenAIWebSocketManager: cannot send — connection is not open (readyState=${this.ws?.readyState ?? "no socket"})`,
+        `OpenAIWebSocketManager: cannot send â€” connection is not open (readyState=${this.ws?.readyState ?? "no socket"})`,
       );
     }
     this.ws.send(JSON.stringify(event));
@@ -394,7 +394,7 @@ export class OpenAIWebSocketManager extends EventEmitter<InternalEvents> {
     }
   }
 
-  // ─── Internal: Connection Lifecycle ────────────────────────────────────────
+  // â”€â”€â”€ Internal: Connection Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private _openConnection(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -505,7 +505,7 @@ export class OpenAIWebSocketManager extends EventEmitter<InternalEvents> {
     } else if (data instanceof ArrayBuffer) {
       text = Buffer.from(data).toString("utf8");
     } else {
-      // Blob or other — coerce to string
+      // Blob or other â€” coerce to string
       text = String(data);
     }
 

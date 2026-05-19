@@ -14,8 +14,8 @@ const formatAge = (ms: number) => formatDurationCompact(ms, { spaced: true }) ??
 describe("sandbox-formatters", () => {
   describe("formatStatus", () => {
     it.each([
-      { running: true, expected: "🟢 running" },
-      { running: false, expected: "⚫ stopped" },
+      { running: true, expected: "ðŸŸ¢ running" },
+      { running: false, expected: "âš« stopped" },
     ])("formats running=$running", ({ running, expected }) => {
       expect(formatStatus(running)).toBe(expected);
     });
@@ -32,8 +32,8 @@ describe("sandbox-formatters", () => {
 
   describe("formatImageMatch", () => {
     it.each([
-      { imageMatch: true, expected: "✓" },
-      { imageMatch: false, expected: "⚠️  mismatch" },
+      { imageMatch: true, expected: "âœ“" },
+      { imageMatch: false, expected: "âš ï¸  mismatch" },
     ])("formats imageMatch=$imageMatch", ({ imageMatch, expected }) => {
       expect(formatImageMatch(imageMatch)).toBe(expected);
     });

@@ -124,8 +124,8 @@ function defaultIndexHTML() {
   statusEl.innerHTML =
     "Bridge: " +
     (hasHelper() ? "<span class='ok'>ready</span>" : "<span class='bad'>missing</span>") +
-    " · iOS=" + (hasIOS() ? "yes" : "no") +
-    " · Android=" + (hasAndroid() ? "yes" : "no");
+    " Â· iOS=" + (hasIOS() ? "yes" : "no") +
+    " Â· Android=" + (hasAndroid() ? "yes" : "no");
 
   const onStatus = (ev) => {
     const d = ev && ev.detail || {};
@@ -161,10 +161,10 @@ function defaultIndexHTML() {
 }
 
 function isDisabledByEnv() {
-  if (isTruthyEnvValue(process.env.OPENCLAW_SKIP_CANVAS_HOST)) {
+  if (isTruthyEnvValue(process.env.AGDI_SKIP_CANVAS_HOST ?? process.env.OPENCLAW_SKIP_CANVAS_HOST)) {
     return true;
   }
-  if (isTruthyEnvValue(process.env.OPENCLAW_SKIP_CANVAS_HOST)) {
+  if (isTruthyEnvValue(process.env.AGDI_SKIP_CANVAS_HOST ?? process.env.OPENCLAW_SKIP_CANVAS_HOST)) {
     return true;
   }
   if (process.env.NODE_ENV === "test") {

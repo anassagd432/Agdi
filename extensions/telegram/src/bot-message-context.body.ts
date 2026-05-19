@@ -2,8 +2,8 @@ import {
   findModelInCatalog,
   loadModelCatalog,
   modelSupportsVision,
-} from "openclaw/plugin-sdk/agent-runtime";
-import { resolveDefaultModelForAgent } from "openclaw/plugin-sdk/agent-runtime";
+} from "agdi/plugin-sdk/agent-runtime";
+import { resolveDefaultModelForAgent } from "agdi/plugin-sdk/agent-runtime";
 import {
   buildMentionRegexes,
   formatLocationText,
@@ -11,21 +11,21 @@ import {
   matchesMentionWithExplicit,
   resolveMentionGatingWithBypass,
   type NormalizedLocation,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { resolveControlCommandGate } from "openclaw/plugin-sdk/command-auth";
-import { hasControlCommand } from "openclaw/plugin-sdk/command-auth";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { resolveControlCommandGate } from "agdi/plugin-sdk/command-auth";
+import { hasControlCommand } from "agdi/plugin-sdk/command-auth";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import type {
   TelegramDirectConfig,
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/config-runtime";
 import {
   recordPendingHistoryEntryIfEnabled,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import type { MsgContext } from "openclaw/plugin-sdk/reply-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+} from "agdi/plugin-sdk/reply-history";
+import type { MsgContext } from "agdi/plugin-sdk/reply-runtime";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
 import type { NormalizedAllowFrom } from "./bot-access.js";
 import { isSenderAllowed } from "./bot-access.js";
 import type {

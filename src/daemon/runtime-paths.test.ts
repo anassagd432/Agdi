@@ -192,7 +192,7 @@ describe("resolveStableNodePath", () => {
   });
 });
 
-describe("resolvePreferredNodePath — Homebrew Cellar", () => {
+describe("resolvePreferredNodePath â€” Homebrew Cellar", () => {
   it("resolves Cellar execPath to stable Homebrew symlink", async () => {
     const cellarNode = "/opt/homebrew/Cellar/node/25.7.0/bin/node";
     const stableNode = "/opt/homebrew/opt/node/bin/node";

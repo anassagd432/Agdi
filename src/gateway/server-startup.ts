@@ -154,8 +154,9 @@ export async function startGatewaySidecars(params: {
   }
 
   // Launch configured channels so gateway replies via the surface the message came from.
-  // Tests can opt out via OPENCLAW_SKIP_CHANNELS (or legacy OPENCLAW_SKIP_PROVIDERS).
+  // Tests can opt out via AGDI_SKIP_CHANNELS (or legacy OPENCLAW_SKIP_CHANNELS/OPENCLAW_SKIP_PROVIDERS).
   const skipChannels =
+    isTruthyEnvValue(process.env.AGDI_SKIP_CHANNELS) ||
     isTruthyEnvValue(process.env.OPENCLAW_SKIP_CHANNELS) ||
     isTruthyEnvValue(process.env.OPENCLAW_SKIP_PROVIDERS);
   if (!skipChannels) {
@@ -170,7 +171,7 @@ export async function startGatewaySidecars(params: {
     }
   } else {
     params.logChannels.info(
-      "skipping channel start (OPENCLAW_SKIP_CHANNELS=1 or OPENCLAW_SKIP_PROVIDERS=1)",
+      "skipping channel start (AGDI_SKIP_CHANNELS=1)",
     );
   }
 

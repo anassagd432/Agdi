@@ -145,7 +145,7 @@ function trimBootstrapContent(
   const marker = [
     "",
     `[...truncated, read ${fileName} for full content...]`,
-    `…(truncated ${fileName}: kept ${headChars}+${tailChars} chars of ${trimmed.length})…`,
+    `â€¦(truncated ${fileName}: kept ${headChars}+${tailChars} chars of ${trimmed.length})â€¦`,
     "",
   ].join("\n");
   const contentWithMarker = [head, marker, tail].join("\n");
@@ -168,7 +168,7 @@ function clampToBudget(content: string, budget: number): string {
     return truncateUtf16Safe(content, budget);
   }
   const safe = budget - 1;
-  return `${truncateUtf16Safe(content, safe)}…`;
+  return `${truncateUtf16Safe(content, safe)}â€¦`;
 }
 
 export async function ensureSessionHeader(params: {
@@ -213,7 +213,7 @@ export function buildBootstrapContextFiles(
     const pathValue = typeof file.path === "string" ? file.path.trim() : "";
     if (!pathValue) {
       opts?.warn?.(
-        `skipping bootstrap file "${file.name}" — missing or invalid "path" field (hook may have used "filePath" instead)`,
+        `skipping bootstrap file "${file.name}" â€” missing or invalid "path" field (hook may have used "filePath" instead)`,
       );
       continue;
     }

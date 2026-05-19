@@ -42,7 +42,7 @@ describe("doctor command", () => {
         channels: { whatsapp: { allowFrom: ["+15555550123"] } },
         gateway: { remote: { token: "legacy-remote-token" } },
       },
-      changes: ["Moved routing.allowFrom → channels.whatsapp.allowFrom."],
+      changes: ["Moved routing.allowFrom â†’ channels.whatsapp.allowFrom."],
     });
 
     await doctorCommand(runtime, { repair: true });

@@ -146,7 +146,7 @@ export async function isChromeReachable(
   try {
     await assertCdpEndpointAllowed(cdpUrl, ssrfPolicy);
     if (isWebSocketUrl(cdpUrl)) {
-      // Direct WebSocket endpoint — probe via WS handshake.
+      // Direct WebSocket endpoint â€” probe via WS handshake.
       return await canOpenWebSocket(cdpUrl, timeoutMs);
     }
     const version = await fetchChromeVersion(cdpUrl, timeoutMs, ssrfPolicy);
@@ -192,7 +192,7 @@ export async function getChromeWebSocketUrl(
 ): Promise<string | null> {
   await assertCdpEndpointAllowed(cdpUrl, ssrfPolicy);
   if (isWebSocketUrl(cdpUrl)) {
-    // Direct WebSocket endpoint — the cdpUrl is already the WebSocket URL.
+    // Direct WebSocket endpoint â€” the cdpUrl is already the WebSocket URL.
     return cdpUrl;
   }
   const version = await fetchChromeVersion(cdpUrl, timeoutMs, ssrfPolicy);
@@ -374,7 +374,7 @@ export async function launchOpenClawChrome(
         name: profile.name,
         color: profile.color,
       });
-      log.info(`🦞 openclaw browser profile decorated (${profile.color})`);
+      log.info(`ðŸ¦ž openclaw browser profile decorated (${profile.color})`);
     } catch (err) {
       log.warn(`openclaw browser profile decoration failed: ${String(err)}`);
     }
@@ -425,13 +425,13 @@ export async function launchOpenClawChrome(
     );
   }
 
-  // Chrome started successfully — detach the stderr listener and release the buffer.
+  // Chrome started successfully â€” detach the stderr listener and release the buffer.
   proc.stderr?.off("data", onStderr);
   stderrChunks.length = 0;
 
   const pid = proc.pid ?? -1;
   log.info(
-    `🦞 openclaw browser started (${exe.kind}) profile "${profile.name}" on 127.0.0.1:${profile.cdpPort} (pid ${pid})`,
+    `ðŸ¦ž openclaw browser started (${exe.kind}) profile "${profile.name}" on 127.0.0.1:${profile.cdpPort} (pid ${pid})`,
   );
 
   return {

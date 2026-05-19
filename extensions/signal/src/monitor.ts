@@ -1,28 +1,28 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import type { SignalReactionNotificationMode } from "openclaw/plugin-sdk/config-runtime";
-import { loadConfig } from "openclaw/plugin-sdk/config-runtime";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import type { SignalReactionNotificationMode } from "agdi/plugin-sdk/config-runtime";
+import { loadConfig } from "agdi/plugin-sdk/config-runtime";
 import {
   resolveAllowlistProviderRuntimeGroupPolicy,
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
-} from "openclaw/plugin-sdk/config-runtime";
-import type { BackoffPolicy } from "openclaw/plugin-sdk/infra-runtime";
-import { waitForTransportReady } from "openclaw/plugin-sdk/infra-runtime";
-import { saveMediaBuffer } from "openclaw/plugin-sdk/media-runtime";
-import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "openclaw/plugin-sdk/reply-history";
+} from "agdi/plugin-sdk/config-runtime";
+import type { BackoffPolicy } from "agdi/plugin-sdk/infra-runtime";
+import { waitForTransportReady } from "agdi/plugin-sdk/infra-runtime";
+import { saveMediaBuffer } from "agdi/plugin-sdk/media-runtime";
+import { DEFAULT_GROUP_HISTORY_LIMIT, type HistoryEntry } from "agdi/plugin-sdk/reply-history";
 import {
   deliverTextOrMediaReply,
   resolveSendableOutboundReplyParts,
-} from "openclaw/plugin-sdk/reply-payload";
-import type { ReplyPayload } from "openclaw/plugin-sdk/reply-runtime";
+} from "agdi/plugin-sdk/reply-payload";
+import type { ReplyPayload } from "agdi/plugin-sdk/reply-runtime";
 import {
   chunkTextWithMode,
   resolveChunkMode,
   resolveTextChunkLimit,
-} from "openclaw/plugin-sdk/reply-runtime";
-import { createNonExitingRuntime, type RuntimeEnv } from "openclaw/plugin-sdk/runtime-env";
-import { normalizeStringEntries } from "openclaw/plugin-sdk/text-runtime";
-import { normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+} from "agdi/plugin-sdk/reply-runtime";
+import { createNonExitingRuntime, type RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
+import { normalizeStringEntries } from "agdi/plugin-sdk/text-runtime";
+import { normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 import { resolveSignalAccount } from "./accounts.js";
 import { signalCheck, signalRpcRequest } from "./client.js";
 import { formatSignalDaemonExit, spawnSignalDaemon, type SignalDaemonHandle } from "./daemon.js";

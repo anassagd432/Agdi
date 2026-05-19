@@ -150,7 +150,7 @@ export async function getTailnetHostname(exec: typeof runExec = runExec, detecte
 let cachedTailscaleBinary: string | null = null;
 
 export async function getTailscaleBinary(): Promise<string> {
-  const forcedBinary = process.env.OPENCLAW_TEST_TAILSCALE_BINARY?.trim();
+  const forcedBinary = (process.env.AGDI_TEST_TAILSCALE_BINARY ?? process.env.OPENCLAW_TEST_TAILSCALE_BINARY)?.trim();
   if (forcedBinary) {
     cachedTailscaleBinary = forcedBinary;
     return forcedBinary;
@@ -195,7 +195,7 @@ export async function ensureGoInstalled(
     runtime.error("Go is required to build tailscaled from source. Aborting.");
     runtime.exit(1);
   }
-  logVerbose("Installing Go via Homebrew…");
+  logVerbose("Installing Go via Homebrewâ€¦");
   await exec("brew", ["install", "go"]);
 }
 
@@ -221,7 +221,7 @@ export async function ensureTailscaledInstalled(
     runtime.error("tailscaled is required for user-space funnel. Aborting.");
     runtime.exit(1);
   }
-  logVerbose("Installing tailscaled via Homebrew…");
+  logVerbose("Installing tailscaled via Homebrewâ€¦");
   await exec("brew", ["install", "tailscale"]);
 }
 
@@ -331,7 +331,7 @@ export async function ensureFunnel(
       await ensureTailscaledInstalled(exec, prompt, runtime);
     }
 
-    logVerbose(`Enabling funnel on port ${port}…`);
+    logVerbose(`Enabling funnel on port ${port}â€¦`);
     // Attempt with fallback
     const { stdout } = await execWithSudoFallback(
       exec,

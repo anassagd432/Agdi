@@ -26,7 +26,7 @@ with Agdi), others are **external** (published on npm by the community).
   <Step title="Install a plugin">
     ```bash
     # From npm
-    agdi plugins install @agdi/voice-call
+    agdi plugins install @openclaw/voice-call
 
     # From a local directory or archive
     agdi plugins install ./my-plugin
@@ -48,7 +48,7 @@ with Agdi), others are **external** (published on npm by the community).
 If you prefer chat-native control, enable `commands.plugins: true` and use:
 
 ```text
-/plugin install clawhub:@agdi/voice-call
+/plugin install clawhub:@openclaw/voice-call
 /plugin show voice-call
 /plugin enable voice-call
 ```
@@ -62,8 +62,14 @@ Agdi recognizes two plugin formats:
 
 | Format     | How it works                                                       | Examples                                               |
 | ---------- | ------------------------------------------------------------------ | ------------------------------------------------------ |
-| **Native** | `agdi.plugin.json` + runtime module; executes in-process       | Official plugins, community npm packages               |
+| **Native** | `openclaw.plugin.json` + runtime module; executes in-process       | Official plugins, community npm packages               |
 | **Bundle** | Codex/Claude/Cursor-compatible layout; mapped to Agdi features | `.codex-plugin/`, `.claude-plugin/`, `.cursor-plugin/` |
+
+<Note>
+  The native manifest filename and official npm package scope remain
+  `openclaw.plugin.json` and `@openclaw/*` for compatibility. Use `agdi` for
+  CLI commands and `agdi/plugin-sdk/*` for new plugin SDK imports.
+</Note>
 
 Both show up under `agdi plugins list`. See [Plugin Bundles](/plugins/bundles) for bundle details.
 
@@ -76,12 +82,12 @@ and the [Plugin SDK Overview](/plugins/sdk-overview).
 
 | Plugin          | Package                | Docs                                 |
 | --------------- | ---------------------- | ------------------------------------ |
-| Matrix          | `@agdi/matrix`     | [Matrix](/channels/matrix)           |
-| Microsoft Teams | `@agdi/msteams`    | [Microsoft Teams](/channels/msteams) |
-| Nostr           | `@agdi/nostr`      | [Nostr](/channels/nostr)             |
-| Voice Call      | `@agdi/voice-call` | [Voice Call](/plugins/voice-call)    |
-| Zalo            | `@agdi/zalo`       | [Zalo](/channels/zalo)               |
-| Zalo Personal   | `@agdi/zalouser`   | [Zalo Personal](/plugins/zalouser)   |
+| Matrix          | `@openclaw/matrix`     | [Matrix](/channels/matrix)           |
+| Microsoft Teams | `@openclaw/msteams`    | [Microsoft Teams](/channels/msteams) |
+| Nostr           | `@openclaw/nostr`      | [Nostr](/channels/nostr)             |
+| Voice Call      | `@openclaw/voice-call` | [Voice Call](/plugins/voice-call)    |
+| Zalo            | `@openclaw/zalo`       | [Zalo](/channels/zalo)               |
+| Zalo Personal   | `@openclaw/zalouser`   | [Zalo Personal](/plugins/zalouser)   |
 
 ### Core (shipped with Agdi)
 

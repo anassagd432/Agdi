@@ -182,7 +182,7 @@ export async function handleInlineActions(params: {
   const shouldLoadSkillCommands =
     allowTextCommands &&
     slashCommandName !== null &&
-    // `/skill …` needs the full skill command list.
+    // `/skill â€¦` needs the full skill command list.
     (slashCommandName === "skill" || !getBuiltinSlashCommands().has(slashCommandName));
   const skillCommands =
     shouldLoadSkillCommands && params.skillCommands
@@ -236,7 +236,7 @@ export async function handleInlineActions(params: {
       const tool = authorizedTools.find((candidate) => candidate.name === dispatch.toolName);
       if (!tool) {
         typing.cleanup();
-        return { kind: "reply", reply: { text: `❌ Tool not available: ${dispatch.toolName}` } };
+        return { kind: "reply", reply: { text: `âŒ Tool not available: ${dispatch.toolName}` } };
       }
 
       const toolCallId = `cmd_${generateSecureToken(8)}`;
@@ -247,13 +247,13 @@ export async function handleInlineActions(params: {
           skillName: skillInvocation.command.skillName,
           // oxlint-disable-next-line typescript/no-explicit-any
         } as any);
-        const text = extractTextFromToolResult(result) ?? "✅ Done.";
+        const text = extractTextFromToolResult(result) ?? "âœ… Done.";
         typing.cleanup();
         return { kind: "reply", reply: { text } };
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         typing.cleanup();
-        return { kind: "reply", reply: { text: `❌ ${message}` } };
+        return { kind: "reply", reply: { text: `âŒ ${message}` } };
       }
     }
 

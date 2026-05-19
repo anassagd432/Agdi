@@ -1,4 +1,4 @@
-import { jidToE164, normalizeE164 } from "openclaw/plugin-sdk/text-runtime";
+import { jidToE164, normalizeE164 } from "agdi/plugin-sdk/text-runtime";
 import { getSenderIdentity } from "../../identity.js";
 import type { WebInboundMsg } from "../types.js";
 

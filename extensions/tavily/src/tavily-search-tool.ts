@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
-import { jsonResult, readNumberParam, readStringParam } from "openclaw/plugin-sdk/agent-runtime";
-import type { OpenClawPluginApi } from "openclaw/plugin-sdk/plugin-runtime";
+import { jsonResult, readNumberParam, readStringParam } from "agdi/plugin-sdk/agent-runtime";
+import type { OpenClawPluginApi } from "agdi/plugin-sdk/plugin-runtime";
 import { runTavilySearch } from "./tavily-client.js";
 
 function optionalStringEnum<const T extends readonly string[]>(

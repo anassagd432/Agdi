@@ -106,7 +106,7 @@ describe("models-config: explicit reasoning override", () => {
 
         const m25 = await generateAndReadMinimaxModel(cfg);
         expect(m25).toBeDefined();
-        // Must honour the explicit false — built-in true must NOT win.
+        // Must honour the explicit false â€” built-in true must NOT win.
         expect(m25?.reasoning).toBe(false);
       });
     });
@@ -140,7 +140,7 @@ describe("models-config: explicit reasoning override", () => {
 
         const m25 = await generateAndReadMinimaxModel(cfg);
         expect(m25).toBeDefined();
-        // Built-in catalog has reasoning:true — should be applied as default.
+        // Built-in catalog has reasoning:true â€” should be applied as default.
         expect(m25?.reasoning).toBe(true);
       });
     });

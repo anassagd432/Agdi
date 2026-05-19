@@ -254,14 +254,14 @@ export function buildBuiltinChatCommands(): ChatCommandDefinition[] {
         arg: "action",
         title:
           "TTS Actions:\n" +
-          "• On – Enable TTS for responses\n" +
-          "• Off – Disable TTS\n" +
-          "• Status – Show current settings\n" +
-          "• Provider – Set voice provider (edge, elevenlabs, openai)\n" +
-          "• Limit – Set max characters for TTS\n" +
-          "• Summary – Toggle AI summary for long texts\n" +
-          "• Audio – Generate TTS from custom text\n" +
-          "• Help – Show usage guide",
+          "â€¢ On â€“ Enable TTS for responses\n" +
+          "â€¢ Off â€“ Disable TTS\n" +
+          "â€¢ Status â€“ Show current settings\n" +
+          "â€¢ Provider â€“ Set voice provider (edge, elevenlabs, openai)\n" +
+          "â€¢ Limit â€“ Set max characters for TTS\n" +
+          "â€¢ Summary â€“ Toggle AI summary for long texts\n" +
+          "â€¢ Audio â€“ Generate TTS from custom text\n" +
+          "â€¢ Help â€“ Show usage guide",
       },
     }),
     defineChatCommand({

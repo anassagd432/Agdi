@@ -5,7 +5,7 @@ import type { OpenClawConfig } from "../config/config.js";
 import type { AuthProfileStore } from "./auth-profiles.js";
 import { makeModelFallbackCfg } from "./test-helpers/model-fallback-config-fixture.js";
 
-// Mock auth-profiles module — must be before importing model-fallback
+// Mock auth-profiles module â€” must be before importing model-fallback
 vi.mock("./auth-profiles.js", () => ({
   ensureAuthProfileStore: vi.fn(),
   getSoonestCooldownExpiry: vi.fn(),
@@ -144,7 +144,7 @@ async function expectProbeFailureFallsBack({
   });
 }
 
-describe("runWithModelFallback – probe logic", () => {
+describe("runWithModelFallback â€“ probe logic", () => {
   let realDateNow: () => number;
   const NOW = 1_700_000_000_000;
 
@@ -205,7 +205,7 @@ describe("runWithModelFallback – probe logic", () => {
 
   it("skips primary model when far from cooldown expiry (30 min remaining)", async () => {
     const cfg = makeCfg();
-    // Cooldown expires in 30 min — well beyond the 2-min margin
+    // Cooldown expires in 30 min â€” well beyond the 2-min margin
     const expiresIn30Min = NOW + 30 * 60 * 1000;
     mockedGetSoonestCooldownExpiry.mockReturnValue(expiresIn30Min);
 
@@ -231,7 +231,7 @@ describe("runWithModelFallback – probe logic", () => {
 
   it("probes primary model when within 2-min margin of cooldown expiry", async () => {
     const cfg = makeCfg();
-    // Cooldown expires in 1 minute — within 2-min probe margin
+    // Cooldown expires in 1 minute â€” within 2-min probe margin
     const expiresIn1Min = NOW + 60 * 1000;
     mockedGetSoonestCooldownExpiry.mockReturnValue(expiresIn1Min);
 
@@ -421,7 +421,7 @@ describe("runWithModelFallback – probe logic", () => {
       }),
     ).rejects.toThrow(/All models failed \(3\)/);
 
-    // All three candidates must be attempted — the abort must not short-circuit
+    // All three candidates must be attempted â€” the abort must not short-circuit
     expect(run).toHaveBeenCalledTimes(3);
 
     expect(run).toHaveBeenNthCalledWith(1, "google", "gemini-3-flash-preview", {
@@ -444,7 +444,7 @@ describe("runWithModelFallback – probe logic", () => {
 
     const result = await runPrimaryCandidate(cfg, run);
 
-    // Should be throttled → skip primary, use fallback
+    // Should be throttled â†’ skip primary, use fallback
     expectFallbackUsed(result, run);
   });
 
@@ -453,7 +453,7 @@ describe("runWithModelFallback – probe logic", () => {
     const almostExpired = NOW + 30 * 1000;
     mockedGetSoonestCooldownExpiry.mockReturnValue(almostExpired);
 
-    // Last probe was 31s ago — should NOT be throttled
+    // Last probe was 31s ago â€” should NOT be throttled
     _probeThrottleInternals.lastProbeAttempt.set("openai", NOW - 31_000);
 
     const run = vi.fn().mockResolvedValue("probed-ok");
@@ -495,7 +495,7 @@ describe("runWithModelFallback – probe logic", () => {
   it("handles non-finite soonest safely (treats as probe-worthy)", async () => {
     const cfg = makeCfg();
 
-    // Return Infinity — should be treated as "probe" per the guard
+    // Return Infinity â€” should be treated as "probe" per the guard
     mockedGetSoonestCooldownExpiry.mockReturnValue(Infinity);
 
     const run = vi.fn().mockResolvedValue("ok-infinity");
@@ -625,7 +625,7 @@ describe("runWithModelFallback – probe logic", () => {
 
   it("probes billing-cooldowned primary with fallbacks when near cooldown expiry", async () => {
     const cfg = makeCfg();
-    // Cooldown expires in 1 minute — within 2-min probe margin
+    // Cooldown expires in 1 minute â€” within 2-min probe margin
     const expiresIn1Min = NOW + 60 * 1000;
     mockedGetSoonestCooldownExpiry.mockReturnValue(expiresIn1Min);
     mockedResolveProfilesUnavailableReason.mockReturnValue("billing");

@@ -172,7 +172,7 @@ export function writeGatewayStatusText(params: {
       colorize(
         params.rich,
         theme.muted,
-        "Tip: if the gateway is remote, mDNS won’t cross networks; use Wide-Area Bonjour (split DNS) or SSH tunnels.",
+        "Tip: if the gateway is remote, mDNS wonâ€™t cross networks; use Wide-Area Bonjour (split DNS) or SSH tunnels.",
       ),
     );
   }
@@ -190,8 +190,8 @@ export function writeGatewayStatusText(params: {
     if (result.probe.ok && result.self) {
       const host = result.self.host ?? "unknown";
       const ip = result.self.ip ? ` (${result.self.ip})` : "";
-      const platform = result.self.platform ? ` · ${result.self.platform}` : "";
-      const version = result.self.version ? ` · app ${result.self.version}` : "";
+      const platform = result.self.platform ? ` Â· ${result.self.platform}` : "";
+      const version = result.self.version ? ` Â· app ${result.self.version}` : "";
       params.runtime.log(
         `  ${colorize(params.rich, theme.info, "Gateway")}: ${host}${ip}${platform}${version}`,
       );

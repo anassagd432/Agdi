@@ -54,7 +54,7 @@ export const handleSubagentsCommand: CommandHandler = async (params, allowTextCo
         })
       : resolveRequesterSessionKey(params);
   if (!requesterKey) {
-    return stopWithText("⚠️ Missing session key.");
+    return stopWithText("âš ï¸ Missing session key.");
   }
 
   const ctx: SubagentsCommandContext = {

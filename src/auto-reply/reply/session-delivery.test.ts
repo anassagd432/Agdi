@@ -13,7 +13,7 @@ describe("session delivery direct-session routing overrides", () => {
     "preserves persisted external route when webchat accesses channel-peer session %s (fixes #47745)",
     (sessionKey) => {
       // Webchat/dashboard viewing an external-channel session must not overwrite
-      // the delivery route — subagents must still deliver to the original channel.
+      // the delivery route â€” subagents must still deliver to the original channel.
       expect(
         resolveLastChannelRaw({
           originatingChannelRaw: "webchat",

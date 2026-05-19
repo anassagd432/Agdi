@@ -3,8 +3,8 @@ import {
   buildApiKeyCredential,
   type ProviderAuthResult,
   type SecretInput,
-} from "openclaw/plugin-sdk/provider-auth";
-import type { ModelApi, ModelProviderConfig } from "openclaw/plugin-sdk/provider-models";
+} from "agdi/plugin-sdk/provider-auth";
+import type { ModelApi, ModelProviderConfig } from "agdi/plugin-sdk/provider-models";
 
 export const PROVIDER_ID = "microsoft-foundry";
 export const DEFAULT_API = "openai-completions";

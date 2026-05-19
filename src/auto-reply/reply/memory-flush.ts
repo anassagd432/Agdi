@@ -257,8 +257,8 @@ export function shouldRunPreflightCompaction(params: {
 
 /**
  * Returns true when a memory flush has already been performed for the current
- * compaction cycle. This prevents repeated flush runs within the same cycle —
- * important for both the token-based and transcript-size–based trigger paths.
+ * compaction cycle. This prevents repeated flush runs within the same cycle â€”
+ * important for both the token-based and transcript-sizeâ€“based trigger paths.
  */
 export function hasAlreadyFlushedForCurrentCompaction(
   entry: Pick<SessionEntry, "compactionCount" | "memoryFlushCompactionCount">,
@@ -270,7 +270,7 @@ export function hasAlreadyFlushedForCurrentCompaction(
 
 /**
  * Compute a lightweight content hash from the tail of a session transcript.
- * Used for state-based flush deduplication — if the hash hasn't changed since
+ * Used for state-based flush deduplication â€” if the hash hasn't changed since
  * the last flush, the context is effectively the same and flushing again would
  * produce duplicate memory entries.
  *

@@ -47,7 +47,7 @@ export type SignalAccountConfig = CommonChannelMessagingConfig & {
   /**
    * Controls agent reaction behavior:
    * - "off": No reactions
-   * - "ack": Only automatic ack reactions (👀 when processing)
+   * - "ack": Only automatic ack reactions (ðŸ‘€ when processing)
    * - "minimal": Agent can react sparingly (default)
    * - "extensive": Agent can react liberally
    */

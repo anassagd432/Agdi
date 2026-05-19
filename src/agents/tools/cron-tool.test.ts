@@ -361,7 +361,7 @@ describe("cron tool", () => {
     });
   });
 
-  // ── Flat-params recovery (issue #11310) ──────────────────────────────
+  // â”€â”€ Flat-params recovery (issue #11310) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   it("recovers flat params when job is missing", async () => {
     callGatewayMock.mockResolvedValueOnce({ ok: true });

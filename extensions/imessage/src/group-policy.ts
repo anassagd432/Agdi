@@ -2,8 +2,8 @@ import {
   resolveChannelGroupRequireMention,
   resolveChannelGroupToolsPolicy,
   type GroupToolPolicyConfig,
-} from "openclaw/plugin-sdk/channel-policy";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+} from "agdi/plugin-sdk/channel-policy";
+import type { OpenClawConfig } from "agdi/plugin-sdk/core";
 
 type IMessageGroupContext = {
   cfg: OpenClawConfig;

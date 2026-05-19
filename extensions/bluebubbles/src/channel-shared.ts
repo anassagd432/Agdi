@@ -1,10 +1,10 @@
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
-import { formatNormalizedAllowFromEntries } from "openclaw/plugin-sdk/allow-from";
+import { describeAccountSnapshot } from "agdi/plugin-sdk/account-helpers";
+import { formatNormalizedAllowFromEntries } from "agdi/plugin-sdk/allow-from";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
-import { buildChannelConfigSchema } from "openclaw/plugin-sdk/channel-config-schema";
+} from "agdi/plugin-sdk/channel-config-helpers";
+import { buildChannelConfigSchema } from "agdi/plugin-sdk/channel-config-schema";
 import {
   listBlueBubblesAccountIds,
   type ResolvedBlueBubblesAccount,

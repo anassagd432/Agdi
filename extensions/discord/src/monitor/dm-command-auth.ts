@@ -1,9 +1,9 @@
-import { resolveCommandAuthorizedFromAuthorizers } from "openclaw/plugin-sdk/command-auth";
+import { resolveCommandAuthorizedFromAuthorizers } from "agdi/plugin-sdk/command-auth";
 import {
   readStoreAllowFromForDmPolicy,
   resolveDmGroupAccessWithLists,
   type DmGroupAccessDecision,
-} from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/security-runtime";
 import { normalizeDiscordAllowList, resolveDiscordAllowListMatch } from "./allow-list.js";
 
 const DISCORD_ALLOW_LIST_PREFIXES = ["discord:", "user:", "pk:"];

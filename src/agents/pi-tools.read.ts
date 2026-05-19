@@ -791,7 +791,7 @@ function createHostEditOperations(root: string, options?: { workspaceOnly?: bool
       try {
         relative = toRelativeWorkspacePath(root, absolutePath);
       } catch {
-        // Path escapes workspace root.  Don't throw here – the upstream
+        // Path escapes workspace root.  Don't throw here â€“ the upstream
         // library replaces any `access` error with a misleading "File not
         // found" message.  By returning silently the subsequent `readFile`
         // call will throw the same "Path escapes workspace root" error
@@ -809,7 +809,7 @@ function createHostEditOperations(root: string, options?: { workspaceOnly?: bool
           throw createFsAccessError("ENOENT", absolutePath);
         }
         if (error instanceof SafeOpenError && error.code === "outside-workspace") {
-          // Don't throw here – see the comment above about the upstream
+          // Don't throw here â€“ see the comment above about the upstream
           // library swallowing access errors as "File not found".
           return;
         }

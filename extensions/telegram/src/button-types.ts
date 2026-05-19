@@ -1,9 +1,9 @@
-import { reduceInteractiveReply } from "openclaw/plugin-sdk/interactive-runtime";
+import { reduceInteractiveReply } from "agdi/plugin-sdk/interactive-runtime";
 import {
   normalizeInteractiveReply,
   type InteractiveReply,
   type InteractiveReplyButton,
-} from "openclaw/plugin-sdk/interactive-runtime";
+} from "agdi/plugin-sdk/interactive-runtime";
 
 export type TelegramButtonStyle = "danger" | "success" | "primary";
 

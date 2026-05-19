@@ -2,7 +2,7 @@
  * Maximal Marginal Relevance (MMR) re-ranking algorithm.
  *
  * MMR balances relevance with diversity by iteratively selecting results
- * that maximize: λ * relevance - (1-λ) * max_similarity_to_selected
+ * that maximize: Î» * relevance - (1-Î») * max_similarity_to_selected
  *
  * @see Carbonell & Goldstein, "The Use of MMR, Diversity-Based Reranking" (1998)
  */
@@ -95,7 +95,7 @@ function maxSimilarityToSelected(
 
 /**
  * Compute MMR score for a candidate item.
- * MMR = λ * relevance - (1-λ) * max_similarity_to_selected
+ * MMR = Î» * relevance - (1-Î») * max_similarity_to_selected
  */
 export function computeMMRScore(relevance: number, maxSimilarity: number, lambda: number): number {
   return lambda * relevance - (1 - lambda) * maxSimilarity;
@@ -107,7 +107,7 @@ export function computeMMRScore(relevance: number, maxSimilarity: number, lambda
  * The algorithm iteratively selects items that balance relevance with diversity:
  * 1. Start with the highest-scoring item
  * 2. For each remaining slot, select the item that maximizes the MMR score
- * 3. MMR score = λ * relevance - (1-λ) * max_similarity_to_already_selected
+ * 3. MMR score = Î» * relevance - (1-Î») * max_similarity_to_already_selected
  *
  * @param items - Items to re-rank, must have score and content
  * @param config - MMR configuration (lambda, enabled)

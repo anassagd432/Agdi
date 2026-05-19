@@ -1,7 +1,7 @@
 import { messagingApi } from "@line/bot-sdk";
-import { loadConfig, type OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { recordChannelActivity } from "openclaw/plugin-sdk/infra-runtime";
-import { logVerbose } from "openclaw/plugin-sdk/runtime-env";
+import { loadConfig, type OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { recordChannelActivity } from "agdi/plugin-sdk/infra-runtime";
+import { logVerbose } from "agdi/plugin-sdk/runtime-env";
 import { resolveLineAccount } from "./accounts.js";
 import { resolveLineChannelAccessToken } from "./channel-access-token.js";
 import type { LineSendResult } from "./types.js";

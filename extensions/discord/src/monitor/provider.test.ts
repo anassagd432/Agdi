@@ -54,9 +54,9 @@ function createConfigWithDiscordAccount(overrides: Record<string, unknown> = {})
   } as OpenClawConfig;
 }
 
-vi.mock("openclaw/plugin-sdk/plugin-runtime", async () => {
-  const actual = await vi.importActual<typeof import("openclaw/plugin-sdk/plugin-runtime")>(
-    "openclaw/plugin-sdk/plugin-runtime",
+vi.mock("agdi/plugin-sdk/plugin-runtime", async () => {
+  const actual = await vi.importActual<typeof import("agdi/plugin-sdk/plugin-runtime")>(
+    "agdi/plugin-sdk/plugin-runtime",
   );
   return {
     ...actual,

@@ -1,4 +1,4 @@
-import { mapAllowFromEntries } from "openclaw/plugin-sdk/channel-config-helpers";
+import { mapAllowFromEntries } from "agdi/plugin-sdk/channel-config-helpers";
 import type { RuntimeEnv } from "../../runtime.js";
 import { summarizeStringEntries } from "../../shared/string-sample.js";
 
@@ -44,7 +44,7 @@ export function buildAllowlistResolutionSummary<T extends AllowlistUserResolutio
 } {
   const resolvedMap = new Map(resolvedUsers.map((entry) => [entry.input, entry]));
   const resolvedOk = (entry: T) => Boolean(entry.resolved && entry.id);
-  const formatResolved = opts?.formatResolved ?? ((entry: T) => `${entry.input}→${entry.id}`);
+  const formatResolved = opts?.formatResolved ?? ((entry: T) => `${entry.input}â†’${entry.id}`);
   const formatUnresolved = opts?.formatUnresolved ?? ((entry: T) => entry.input);
   const mapping = resolvedUsers.filter(resolvedOk).map(formatResolved);
   const additions = resolvedUsers

@@ -5,11 +5,11 @@ describe("shared/entry-metadata", () => {
   it("prefers metadata emoji and homepage when present", () => {
     expect(
       resolveEmojiAndHomepage({
-        metadata: { emoji: "🦀", homepage: " https://openclaw.ai " },
-        frontmatter: { emoji: "🙂", homepage: "https://example.com" },
+        metadata: { emoji: "ðŸ¦€", homepage: " https://openclaw.ai " },
+        frontmatter: { emoji: "ðŸ™‚", homepage: "https://example.com" },
       }),
     ).toEqual({
-      emoji: "🦀",
+      emoji: "ðŸ¦€",
       homepage: "https://openclaw.ai",
     });
   });
@@ -18,7 +18,7 @@ describe("shared/entry-metadata", () => {
     expect(
       resolveEmojiAndHomepage({
         metadata: { emoji: "", homepage: "   " },
-        frontmatter: { emoji: "🙂", homepage: "https://example.com" },
+        frontmatter: { emoji: "ðŸ™‚", homepage: "https://example.com" },
       }),
     ).toEqual({});
   });
@@ -26,11 +26,11 @@ describe("shared/entry-metadata", () => {
   it("falls back through frontmatter homepage aliases and drops blanks", () => {
     expect(
       resolveEmojiAndHomepage({
-        frontmatter: { emoji: "🙂", website: " https://docs.openclaw.ai " },
+        frontmatter: { emoji: "ðŸ™‚", website: " https://docs.agdi.ai " },
       }),
     ).toEqual({
-      emoji: "🙂",
-      homepage: "https://docs.openclaw.ai",
+      emoji: "ðŸ™‚",
+      homepage: "https://docs.agdi.ai",
     });
     expect(
       resolveEmojiAndHomepage({
@@ -52,7 +52,7 @@ describe("shared/entry-metadata", () => {
       resolveEmojiAndHomepage({
         frontmatter: {
           homepage: " ",
-          website: "https://docs.openclaw.ai",
+          website: "https://docs.agdi.ai",
           url: "https://openclaw.ai/install",
         },
       }),

@@ -250,7 +250,7 @@ describe("resolveUsableCustomProviderApiKey", () => {
   });
 });
 
-describe("resolveApiKeyForProvider – synthetic local auth for custom providers", () => {
+describe("resolveApiKeyForProvider â€“ synthetic local auth for custom providers", () => {
   it("synthesizes a local auth marker for custom providers with a local baseUrl and no apiKey", async () => {
     const auth = await resolveApiKeyForProvider({
       provider: "custom-127-0-0-1-8080",

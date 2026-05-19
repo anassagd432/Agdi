@@ -23,7 +23,7 @@ export async function ensureLoaded(
     skipRecompute?: boolean;
   },
 ) {
-  // Fast path: store is already in memory. Other callers (add, list, run, …)
+  // Fast path: store is already in memory. Other callers (add, list, run, â€¦)
   // trust the in-memory copy to avoid a stat syscall on every operation.
   if (state.store && !opts?.forceReload) {
     return;

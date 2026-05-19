@@ -28,7 +28,7 @@ export const handleBtwCommand: CommandHandler = async (params, allowTextCommands
   if (!params.sessionEntry?.sessionId) {
     return {
       shouldContinue: false,
-      reply: { text: "⚠️ /btw requires an active session with existing context." },
+      reply: { text: "âš ï¸ /btw requires an active session with existing context." },
     };
   }
 
@@ -36,7 +36,7 @@ export const handleBtwCommand: CommandHandler = async (params, allowTextCommands
     return {
       shouldContinue: false,
       reply: {
-        text: "⚠️ /btw is unavailable because the active agent directory could not be resolved.",
+        text: "âš ï¸ /btw is unavailable because the active agent directory could not be resolved.",
       },
     };
   }
@@ -71,7 +71,7 @@ export const handleBtwCommand: CommandHandler = async (params, allowTextCommands
     return {
       shouldContinue: false,
       reply: {
-        text: `⚠️ /btw failed${message ? `: ${message}` : "."}`,
+        text: `âš ï¸ /btw failed${message ? `: ${message}` : "."}`,
         btw: { question },
         isError: true,
       },

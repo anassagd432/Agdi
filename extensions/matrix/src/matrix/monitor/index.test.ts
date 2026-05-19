@@ -426,7 +426,7 @@ describe("matrix plugin registration", () => {
       loadRuntimeApiExportTypesViaJiti({
         modulePath: runtimeApiPath,
         exportNames: ["resolveMatrixAccountStringValues"],
-        realPluginSdkSpecifiers: ["openclaw/plugin-sdk/matrix"],
+        realPluginSdkSpecifiers: ["agdi/plugin-sdk/matrix"],
       }),
     ).toEqual({
       resolveMatrixAccountStringValues: "function",

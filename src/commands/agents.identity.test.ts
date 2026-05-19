@@ -133,7 +133,7 @@ describe("agents set-identity command", () => {
         workspace,
         fromIdentity: true,
         name: "Nova",
-        emoji: "🦞",
+        emoji: "ðŸ¦ž",
         avatar: "https://example.com/override.png",
       },
       runtime,
@@ -142,7 +142,7 @@ describe("agents set-identity command", () => {
     expect(getWrittenMainIdentity()).toEqual({
       name: "Nova",
       theme: "space lobster",
-      emoji: "🦞",
+      emoji: "ðŸ¦ž",
       avatar: "https://example.com/override.png",
     });
   });
@@ -152,7 +152,7 @@ describe("agents set-identity command", () => {
     const identityPath = await writeIdentityFile(workspace, [
       "- **Name:** C-3PO",
       "- **Creature:** Flustered Protocol Droid",
-      "- **Emoji:** 🤖",
+      "- **Emoji:** ðŸ¤–",
       "- **Avatar:** avatars/c3po.png",
       "",
     ]);
@@ -167,7 +167,7 @@ describe("agents set-identity command", () => {
     expect(getWrittenMainIdentity()).toEqual({
       name: "C-3PO",
       theme: "Flustered Protocol Droid",
-      emoji: "🤖",
+      emoji: "ðŸ¤–",
       avatar: "avatars/c3po.png",
     });
   });

@@ -3,25 +3,25 @@ import {
   resolveEnvelopeFormatOptions,
   toLocationContext,
   type NormalizedLocation,
-} from "openclaw/plugin-sdk/channel-inbound";
-import { normalizeCommandBody } from "openclaw/plugin-sdk/command-auth";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { readSessionUpdatedAt, resolveStorePath } from "openclaw/plugin-sdk/config-runtime";
+} from "agdi/plugin-sdk/channel-inbound";
+import { normalizeCommandBody } from "agdi/plugin-sdk/command-auth";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { readSessionUpdatedAt, resolveStorePath } from "agdi/plugin-sdk/config-runtime";
 import type {
   TelegramDirectConfig,
   TelegramGroupConfig,
   TelegramTopicConfig,
-} from "openclaw/plugin-sdk/config-runtime";
-import { recordInboundSession } from "openclaw/plugin-sdk/conversation-runtime";
+} from "agdi/plugin-sdk/config-runtime";
+import { recordInboundSession } from "agdi/plugin-sdk/conversation-runtime";
 import {
   buildPendingHistoryContextFromMap,
   type HistoryEntry,
-} from "openclaw/plugin-sdk/reply-history";
-import { finalizeInboundContext } from "openclaw/plugin-sdk/reply-runtime";
-import type { ResolvedAgentRoute } from "openclaw/plugin-sdk/routing";
-import { resolveInboundLastRouteSessionKey } from "openclaw/plugin-sdk/routing";
-import { logVerbose, shouldLogVerbose } from "openclaw/plugin-sdk/runtime-env";
-import { resolvePinnedMainDmOwnerFromAllowlist } from "openclaw/plugin-sdk/security-runtime";
+} from "agdi/plugin-sdk/reply-history";
+import { finalizeInboundContext } from "agdi/plugin-sdk/reply-runtime";
+import type { ResolvedAgentRoute } from "agdi/plugin-sdk/routing";
+import { resolveInboundLastRouteSessionKey } from "agdi/plugin-sdk/routing";
+import { logVerbose, shouldLogVerbose } from "agdi/plugin-sdk/runtime-env";
+import { resolvePinnedMainDmOwnerFromAllowlist } from "agdi/plugin-sdk/security-runtime";
 import { normalizeAllowFrom } from "./bot-access.js";
 import type {
   TelegramMediaRef,

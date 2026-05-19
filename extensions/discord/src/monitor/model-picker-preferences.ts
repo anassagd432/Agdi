@@ -1,11 +1,11 @@
 import os from "node:os";
 import path from "node:path";
-import { normalizeAccountId as normalizeSharedAccountId } from "openclaw/plugin-sdk/account-id";
-import { normalizeProviderId } from "openclaw/plugin-sdk/agent-runtime";
-import { withFileLock } from "openclaw/plugin-sdk/infra-runtime";
-import { resolveRequiredHomeDir } from "openclaw/plugin-sdk/infra-runtime";
-import { readJsonFileWithFallback, writeJsonFileAtomically } from "openclaw/plugin-sdk/json-store";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
+import { normalizeAccountId as normalizeSharedAccountId } from "agdi/plugin-sdk/account-id";
+import { normalizeProviderId } from "agdi/plugin-sdk/agent-runtime";
+import { withFileLock } from "agdi/plugin-sdk/infra-runtime";
+import { resolveRequiredHomeDir } from "agdi/plugin-sdk/infra-runtime";
+import { readJsonFileWithFallback, writeJsonFileAtomically } from "agdi/plugin-sdk/json-store";
+import { resolveStateDir } from "agdi/plugin-sdk/state-paths";
 
 const MODEL_PICKER_PREFERENCES_LOCK_OPTIONS = {
   retries: {

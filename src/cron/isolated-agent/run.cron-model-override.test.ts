@@ -48,7 +48,7 @@ function makeParams(overrides?: Record<string, unknown>) {
 function makeFreshSessionEntry(overrides?: Record<string, unknown>) {
   return {
     ...makeCronSessionEntry(),
-    // Crucially: no model or modelProvider — simulates a brand-new session
+    // Crucially: no model or modelProvider â€” simulates a brand-new session
     model: undefined as string | undefined,
     modelProvider: undefined as string | undefined,
     ...overrides,
@@ -76,9 +76,9 @@ function makeSuccessfulRunResult(overrides?: Record<string, unknown>) {
 
 // ---------- tests ----------
 
-describe("runCronIsolatedAgentTurn — cron model override (#21057)", () => {
+describe("runCronIsolatedAgentTurn â€” cron model override (#21057)", () => {
   let previousFastTestEnv: string | undefined;
-  // Hold onto the cron session *object* — the code may reassign its
+  // Hold onto the cron session *object* â€” the code may reassign its
   // `sessionEntry` property (e.g. during skills snapshot refresh), so
   // checking a stale reference would give a false negative.
   let cronSession: ReturnType<typeof makeCronSession>;
@@ -132,7 +132,7 @@ describe("runCronIsolatedAgentTurn — cron model override (#21057)", () => {
 
   it("session entry already carries cron model at pre-run persist time (race condition)", async () => {
     // Capture a deep snapshot of the session entry at each persist call so we
-    // can inspect what sessions_list would see mid-run — before the post-run
+    // can inspect what sessions_list would see mid-run â€” before the post-run
     // persist overwrites the entry with the actual model from agentMeta.
     const persistedSnapshots: Array<{
       model?: string;
@@ -175,7 +175,7 @@ describe("runCronIsolatedAgentTurn — cron model override (#21057)", () => {
 
     expect(result.status).toBe("error");
     expect(result.error).toContain("Model not allowed");
-    // Model should remain undefined — the early return happens before the
+    // Model should remain undefined â€” the early return happens before the
     // pre-run persist block, so neither the session entry nor the store
     // should be touched with a rejected model.
     expect(cronSession.sessionEntry.model).toBeUndefined();
@@ -183,7 +183,7 @@ describe("runCronIsolatedAgentTurn — cron model override (#21057)", () => {
   });
 
   it("persists session-level /model override on session entry before the run", async () => {
-    // No cron payload model — the job has no model field
+    // No cron payload model â€” the job has no model field
     const jobWithoutModel = makeJob({
       payload: { kind: "agentTurn", message: "run daily digest" },
     });
@@ -206,14 +206,14 @@ describe("runCronIsolatedAgentTurn — cron model override (#21057)", () => {
 
     expect(result.status).toBe("error");
     // Even though the run failed, the session-level model override should
-    // be persisted on the entry — not the agent default (Opus).
+    // be persisted on the entry â€” not the agent default (Opus).
     expect(cronSession.sessionEntry.model).toBe("claude-haiku-4-5");
     expect(cronSession.sessionEntry.modelProvider).toBe("anthropic");
   });
 
   it("logs warning and continues when pre-run persist fails", async () => {
     // Persist ordering: [1] skills snapshot, [2] pre-run, [3] post-run.
-    // Only the pre-run persist (call 2) should fail — the skills snapshot
+    // Only the pre-run persist (call 2) should fail â€” the skills snapshot
     // persist is pre-existing code without a try-catch guard.
     let callCount = 0;
     updateSessionStoreMock.mockImplementation(async () => {

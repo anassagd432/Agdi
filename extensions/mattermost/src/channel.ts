@@ -1,25 +1,25 @@
 import { Type } from "@sinclair/typebox";
-import { describeAccountSnapshot } from "openclaw/plugin-sdk/account-helpers";
-import { formatNormalizedAllowFromEntries } from "openclaw/plugin-sdk/allow-from";
-import { createMessageToolButtonsSchema } from "openclaw/plugin-sdk/channel-actions";
+import { describeAccountSnapshot } from "agdi/plugin-sdk/account-helpers";
+import { formatNormalizedAllowFromEntries } from "agdi/plugin-sdk/allow-from";
+import { createMessageToolButtonsSchema } from "agdi/plugin-sdk/channel-actions";
 import {
   adaptScopedAccountAccessor,
   createScopedChannelConfigAdapter,
-} from "openclaw/plugin-sdk/channel-config-helpers";
+} from "agdi/plugin-sdk/channel-config-helpers";
 import type {
   ChannelMessageActionAdapter,
   ChannelMessageActionName,
   ChannelMessageToolDiscovery,
-} from "openclaw/plugin-sdk/channel-contract";
-import { createLoggedPairingApprovalNotifier } from "openclaw/plugin-sdk/channel-pairing";
-import { createRestrictSendersChannelSecurity } from "openclaw/plugin-sdk/channel-policy";
-import { createChatChannelPlugin } from "openclaw/plugin-sdk/core";
-import { createChannelDirectoryAdapter } from "openclaw/plugin-sdk/directory-runtime";
-import { buildPassiveProbedChannelStatusSummary } from "openclaw/plugin-sdk/extension-shared";
+} from "agdi/plugin-sdk/channel-contract";
+import { createLoggedPairingApprovalNotifier } from "agdi/plugin-sdk/channel-pairing";
+import { createRestrictSendersChannelSecurity } from "agdi/plugin-sdk/channel-policy";
+import { createChatChannelPlugin } from "agdi/plugin-sdk/core";
+import { createChannelDirectoryAdapter } from "agdi/plugin-sdk/directory-runtime";
+import { buildPassiveProbedChannelStatusSummary } from "agdi/plugin-sdk/extension-shared";
 import {
   createComputedAccountStatusAdapter,
   createDefaultChannelRuntimeState,
-} from "openclaw/plugin-sdk/status-helpers";
+} from "agdi/plugin-sdk/status-helpers";
 import { MattermostConfigSchema } from "./config-schema.js";
 import { resolveMattermostGroupRequireMention } from "./group-mentions.js";
 import {

@@ -264,7 +264,7 @@ export async function runCliAgent(params: {
         log.info(
           `cli exec: provider=${params.provider} model=${normalizedModel} promptChars=${params.prompt.length}`,
         );
-        const logOutputText = isTruthyEnvValue(process.env.OPENCLAW_CLAUDE_CLI_LOG_OUTPUT);
+        const logOutputText = isTruthyEnvValue(process.env.AGDI_CLAUDE_CLI_LOG_OUTPUT ?? process.env.OPENCLAW_CLAUDE_CLI_LOG_OUTPUT);
         if (logOutputText) {
           const logArgs: string[] = [];
           for (let i = 0; i < args.length; i += 1) {

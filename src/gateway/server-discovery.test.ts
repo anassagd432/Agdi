@@ -4,7 +4,25 @@ const getTailnetHostname = vi.hoisted(() => vi.fn());
 
 vi.mock("../infra/tailscale.js", () => ({ getTailnetHostname }));
 
-import { resolveTailnetDnsHint } from "./server-discovery.js";
+import { formatBonjourInstanceName, resolveTailnetDnsHint } from "./server-discovery.js";
+
+describe("formatBonjourInstanceName", () => {
+  test("uses Agdi for empty display names", () => {
+    expect(formatBonjourInstanceName("  ")).toBe("Agdi");
+  });
+
+  test("brands plain machine names as Agdi", () => {
+    expect(formatBonjourInstanceName("Studio")).toBe("Studio (Agdi)");
+  });
+
+  test("preserves explicitly Agdi-branded names", () => {
+    expect(formatBonjourInstanceName("Studio (Agdi)")).toBe("Studio (Agdi)");
+  });
+
+  test("preserves legacy OpenClaw-branded names", () => {
+    expect(formatBonjourInstanceName("Studio (OpenClaw)")).toBe("Studio (OpenClaw)");
+  });
+});
 
 describe("resolveTailnetDnsHint", () => {
   const prevTailnetDns = { value: undefined as string | undefined };

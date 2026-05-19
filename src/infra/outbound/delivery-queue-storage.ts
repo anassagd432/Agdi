@@ -15,7 +15,7 @@ export type QueuedDeliveryPayload = {
   accountId?: string;
   /**
    * Original payloads before plugin hooks. On recovery, hooks re-run on these
-   * payloads — this is intentional since hooks are stateless transforms and
+   * payloads â€” this is intentional since hooks are stateless transforms and
    * should produce the same result on replay.
    */
   payloads: ReplyPayload[];
@@ -154,7 +154,7 @@ export async function enqueueDelivery(
  *
  * Uses a two-phase approach so that a crash between delivery and cleanup
  * does not cause the message to be replayed on the next recovery scan:
- *   Phase 1: atomic rename  {id}.json → {id}.delivered
+ *   Phase 1: atomic rename  {id}.json â†’ {id}.delivered
  *   Phase 2: unlink the .delivered marker
  * If the process dies between phase 1 and phase 2 the marker is cleaned up
  * by {@link loadPendingDeliveries} on the next startup without re-sending.
@@ -167,7 +167,7 @@ export async function ackDelivery(id: string, stateDir?: string): Promise<void> 
   } catch (err) {
     const code = getErrnoCode(err);
     if (code === "ENOENT") {
-      // .json already gone — may have been renamed by a previous ack attempt.
+      // .json already gone â€” may have been renamed by a previous ack attempt.
       // Try to clean up a leftover .delivered marker if present.
       await unlinkBestEffort(deliveredPath);
       return;

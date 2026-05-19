@@ -325,12 +325,12 @@ describe("readLastMessagePreviewFromTranscript", () => {
     const sessionId = "test-last-utf8";
     const transcriptPath = path.join(tmpDir, `${sessionId}.jsonl`);
     const validLine = JSON.stringify({
-      message: { role: "user", content: "Valid UTF-8: 你好世界 🌍" },
+      message: { role: "user", content: "Valid UTF-8: ä½ å¥½ä¸–ç•Œ ðŸŒ" },
     });
     fs.writeFileSync(transcriptPath, validLine, "utf-8");
 
     const result = readLastMessagePreviewFromTranscript(sessionId, storePath);
-    expect(result).toBe("Valid UTF-8: 你好世界 🌍");
+    expect(result).toBe("Valid UTF-8: ä½ å¥½ä¸–ç•Œ ðŸŒ");
   });
 
   test("strips inline directives from last preview text", () => {

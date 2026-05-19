@@ -82,7 +82,7 @@ export function resolveCliContainerTarget(
   if (!parsed.ok) {
     throw new Error(parsed.error);
   }
-  return parsed.container ?? env.OPENCLAW_CONTAINER?.trim() ?? null;
+  return parsed.container ?? env.AGDI_CONTAINER?.trim() ?? env.OPENCLAW_CONTAINER?.trim() ?? null;
 }
 
 function isContainerRunning(params: {
@@ -162,6 +162,10 @@ function buildContainerExecArgs(params: {
     "exec",
     ...interactiveFlags,
     envFlag,
+    `AGDI_CONTAINER_HINT=${params.containerName}`,
+    envFlag,
+    "AGDI_CLI_CONTAINER_BYPASS=1",
+    envFlag,
     `OPENCLAW_CONTAINER_HINT=${params.containerName}`,
     envFlag,
     "OPENCLAW_CLI_CONTAINER_BYPASS=1",
@@ -175,6 +179,12 @@ function buildContainerExecEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const next = { ...env };
   // Container-targeted CLI invocations should use the container's own profile
   // and gateway auth/runtime state rather than inheriting host overrides.
+  delete next.AGDI_PROFILE;
+  delete next.AGDI_GATEWAY_PORT;
+  delete next.AGDI_GATEWAY_URL;
+  delete next.AGDI_GATEWAY_TOKEN;
+  delete next.AGDI_GATEWAY_PASSWORD;
+  // Backward compat: also clean legacy OPENCLAW_* names
   delete next.OPENCLAW_PROFILE;
   delete next.OPENCLAW_GATEWAY_PORT;
   delete next.OPENCLAW_GATEWAY_URL;
@@ -183,6 +193,7 @@ function buildContainerExecEnv(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   // The child CLI should render container-aware follow-up commands via
   // OPENCLAW_CONTAINER_HINT, but it should not treat itself as still
   // container-targeted for validation/routing.
+  next.AGDI_CONTAINER = "";
   next.OPENCLAW_CONTAINER = "";
   return next;
 }
@@ -225,6 +236,9 @@ export function maybeRunCliInContainer(
   if (resolvedDeps.env.OPENCLAW_CLI_CONTAINER_BYPASS === "1") {
     return { handled: false, argv };
   }
+  if (resolvedDeps.env.AGDI_CLI_CONTAINER_BYPASS === "1") {
+    return { handled: false, argv };
+  }
 
   const parsed = parseCliContainerArgs(argv);
   if (!parsed.ok) {
@@ -236,7 +250,7 @@ export function maybeRunCliInContainer(
   }
   if (isBlockedContainerCommand(parsed.argv.slice(2))) {
     throw new Error(
-      "openclaw update is not supported with --container; rebuild or restart the container image instead.",
+      "agdi update is not supported with --container; rebuild or restart the container image instead.",
     );
   }
 

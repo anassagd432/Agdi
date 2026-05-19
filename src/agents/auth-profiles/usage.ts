@@ -75,7 +75,7 @@ export function isProfileInCooldown(
   const ts = now ?? Date.now();
   // Model-aware bypass: if the cooldown was caused by a rate_limit on a
   // specific model and the caller is requesting a *different* model, allow it.
-  // We still honour any active billing/auth disable (`disabledUntil`) — those
+  // We still honour any active billing/auth disable (`disabledUntil`) â€” those
   // are profile-wide and must not be short-circuited by model scoping.
   if (shouldBypassModelScopedCooldown(stats, ts, forModel)) {
     return false;
@@ -217,9 +217,9 @@ function shouldBypassModelScopedCooldown(
  *
  * When `cooldownUntil` or `disabledUntil` has passed, the corresponding fields
  * are removed and error counters are reset so the profile gets a fresh start
- * (circuit-breaker half-open → closed). Without this, a stale `errorCount`
+ * (circuit-breaker half-open â†’ closed). Without this, a stale `errorCount`
  * causes the *next* transient failure to immediately escalate to a much longer
- * cooldown — the root cause of profiles appearing "stuck" after rate limits.
+ * cooldown â€” the root cause of profiles appearing "stuck" after rate limits.
  *
  * `cooldownUntil` and `disabledUntil` are handled independently: if a profile
  * has both and only one has expired, only that field is cleared.
@@ -464,7 +464,7 @@ function computeNextProfileUsageStats(params: {
   // in-memory during profile ordering, but the on-disk state may still carry
   // the old counters when the lock-based updater reads a fresh store. Without
   // this check, stale error counts from an expired cooldown cause the next
-  // failure to escalate to a much longer cooldown (e.g. 1 min → 25 min).
+  // failure to escalate to a much longer cooldown (e.g. 1 min â†’ 25 min).
   const unusableUntil = resolveProfileUnusableUntil(params.existing);
   const previousCooldownExpired = typeof unusableUntil === "number" && params.now >= unusableUntil;
 
@@ -513,8 +513,8 @@ function computeNextProfileUsageStats(params: {
     if (existingCooldownActive) {
       // Always use the latest failure reason so that downstream consumers
       // (e.g. isProfileInCooldown model-bypass) see the most recent signal.
-      // A non-rate_limit failure (auth, billing, …) is profile-wide, so
-      // upgrading from rate_limit → auth correctly blocks all models.
+      // A non-rate_limit failure (auth, billing, â€¦) is profile-wide, so
+      // upgrading from rate_limit â†’ auth correctly blocks all models.
       updatedStats.cooldownReason = params.reason;
       // If a different model fails during an active window, widen the scope
       // to all models (undefined) so neither model bypasses the cooldown.
@@ -533,7 +533,7 @@ function computeNextProfileUsageStats(params: {
         // widen scope conservatively so no model can bypass on stale metadata.
         updatedStats.cooldownModel = undefined;
       } else if (params.reason !== "rate_limit") {
-        // Non-rate-limit failures are profile-wide — clear model scope even
+        // Non-rate-limit failures are profile-wide â€” clear model scope even
         // when the same model fails, so that no model can bypass.
         updatedStats.cooldownModel = undefined;
       } else {

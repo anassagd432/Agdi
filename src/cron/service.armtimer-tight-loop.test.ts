@@ -141,7 +141,7 @@ describe("CronService - armTimer tight loop prevention", () => {
     timeoutSpy.mockRestore();
   });
 
-  it("breaks the onTimer→armTimer hot-loop with stuck runningAtMs", async () => {
+  it("breaks the onTimerâ†’armTimer hot-loop with stuck runningAtMs", async () => {
     const timeoutSpy = vi.spyOn(globalThis, "setTimeout");
     const store = await makeStorePath();
     const now = Date.parse("2026-02-28T12:32:00.000Z");
@@ -177,7 +177,7 @@ describe("CronService - armTimer tight loop prevention", () => {
     // MIN_REFIRE_GAP_MS to prevent the hot-loop.
     const allDelays = extractTimeoutDelays(timeoutSpy);
 
-    // The last setTimeout call is from the finally→armTimer path.
+    // The last setTimeout call is from the finallyâ†’armTimer path.
     const lastDelay = allDelays[allDelays.length - 1];
     expect(lastDelay).toBeGreaterThanOrEqual(2_000);
 

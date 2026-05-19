@@ -170,7 +170,7 @@ describe("extra-params: Kilocode kilo/auto reasoning", () => {
       thinkingLevel: "high",
     });
 
-    // x-ai models reject reasoning.effort — should be skipped
+    // x-ai models reject reasoning.effort â€” should be skipped
     expect(capturedPayload?.reasoning).toBeUndefined();
     expect(capturedPayload).not.toHaveProperty("reasoning_effort");
   });

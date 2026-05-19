@@ -89,7 +89,7 @@ describe("browser default executable detection", () => {
     // own Info.plist. Both must be recognised.
     //
     // The existsSync mock deliberately only returns true for the Edge path
-    // when checked via the resolved osascript/defaults path — Chrome's
+    // when checked via the resolved osascript/defaults path â€” Chrome's
     // fallback candidate path is the only other "existing" binary. This
     // ensures the test fails if the default-browser detection branch is
     // broken, because the fallback candidate list would return Chrome, not
@@ -116,7 +116,7 @@ describe("browser default executable detection", () => {
       }
       // Only Edge (via osascript resolution) and Chrome (fallback candidate)
       // "exist". If default-browser detection breaks, the resolver would
-      // return Chrome from the fallback list — not Edge — failing the assert.
+      // return Chrome from the fallback list â€” not Edge â€” failing the assert.
       return value === edgeExecutablePath || value.includes(chromeExecutablePath);
     });
     const resolveBrowserExecutableForPlatform = await loadResolveBrowserExecutableForPlatform();

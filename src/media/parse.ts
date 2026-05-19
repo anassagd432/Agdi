@@ -31,7 +31,7 @@ function hasTraversalOrHomeDirPrefix(candidate: string): boolean {
 }
 
 // Broad structural check: does this look like a local file path? Used only for
-// stripping MEDIA: lines from output text — never for media approval.
+// stripping MEDIA: lines from output text â€” never for media approval.
 function looksLikeLocalFilePath(candidate: string): boolean {
   return (
     candidate.startsWith("/") ||

@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { loadJsonFile, saveJsonFile } from "openclaw/plugin-sdk/json-store";
-import { normalizeAccountId, resolveAgentIdFromSessionKey } from "openclaw/plugin-sdk/routing";
-import { resolveStateDir } from "openclaw/plugin-sdk/state-paths";
-import { resolveGlobalSingleton } from "openclaw/plugin-sdk/text-runtime";
+import { loadJsonFile, saveJsonFile } from "agdi/plugin-sdk/json-store";
+import { normalizeAccountId, resolveAgentIdFromSessionKey } from "agdi/plugin-sdk/routing";
+import { resolveStateDir } from "agdi/plugin-sdk/state-paths";
+import { resolveGlobalSingleton } from "agdi/plugin-sdk/text-runtime";
 import {
   DEFAULT_THREAD_BINDING_IDLE_TIMEOUT_MS,
   DEFAULT_THREAD_BINDING_MAX_AGE_MS,

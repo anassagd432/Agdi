@@ -23,7 +23,8 @@ import type {
 
 const log = createSubsystemLogger("plugins/binding");
 
-const APPROVALS_PATH = "~/.openclaw/plugin-binding-approvals.json";
+const APPROVALS_PATH = "~/.agdi/plugin-binding-approvals.json";
+const LEGACY_APPROVALS_PATH = "~/.openclaw/plugin-binding-approvals.json";
 const PLUGIN_BINDING_CUSTOM_ID_PREFIX = "pluginbind";
 const PLUGIN_BINDING_OWNER = "plugin";
 const PLUGIN_BINDING_SESSION_PREFIX = "plugin-binding";
@@ -133,6 +134,10 @@ function getPluginBindingGlobalState(): PluginBindingGlobalState {
 
 function resolveApprovalsPath(): string {
   return expandHomePrefix(APPROVALS_PATH);
+}
+
+function resolveLegacyApprovalsPath(): string {
+  return expandHomePrefix(LEGACY_APPROVALS_PATH);
 }
 
 function normalizeChannel(value: string): string {
@@ -265,40 +270,43 @@ function createApprovalRequestId(): string {
 }
 
 function loadApprovalsFromDisk(): PluginBindingApprovalsFile {
-  const filePath = resolveApprovalsPath();
-  try {
-    if (!fs.existsSync(filePath)) {
+  const candidatePaths = [resolveApprovalsPath(), resolveLegacyApprovalsPath()];
+  for (const filePath of candidatePaths) {
+    try {
+      if (!fs.existsSync(filePath)) {
+        continue;
+      }
+      const raw = fs.readFileSync(filePath, "utf8");
+      const parsed = JSON.parse(raw) as Partial<PluginBindingApprovalsFile>;
+      if (!Array.isArray(parsed.approvals)) {
+        return { version: 1, approvals: [] };
+      }
+      return {
+        version: 1,
+        approvals: parsed.approvals
+          .filter((entry): entry is PluginBindingApprovalEntry =>
+            Boolean(entry && typeof entry === "object"),
+          )
+          .map((entry) => ({
+            pluginRoot: typeof entry.pluginRoot === "string" ? entry.pluginRoot : "",
+            pluginId: typeof entry.pluginId === "string" ? entry.pluginId : "",
+            pluginName: typeof entry.pluginName === "string" ? entry.pluginName : undefined,
+            channel: typeof entry.channel === "string" ? normalizeChannel(entry.channel) : "",
+            accountId:
+              typeof entry.accountId === "string" ? entry.accountId.trim() || "default" : "default",
+            approvedAt:
+              typeof entry.approvedAt === "number" && Number.isFinite(entry.approvedAt)
+                ? Math.floor(entry.approvedAt)
+                : Date.now(),
+          }))
+          .filter((entry) => entry.pluginRoot && entry.pluginId && entry.channel),
+      };
+    } catch (error) {
+      log.warn(`plugin binding approvals load failed: ${String(error)}`);
       return { version: 1, approvals: [] };
     }
-    const raw = fs.readFileSync(filePath, "utf8");
-    const parsed = JSON.parse(raw) as Partial<PluginBindingApprovalsFile>;
-    if (!Array.isArray(parsed.approvals)) {
-      return { version: 1, approvals: [] };
-    }
-    return {
-      version: 1,
-      approvals: parsed.approvals
-        .filter((entry): entry is PluginBindingApprovalEntry =>
-          Boolean(entry && typeof entry === "object"),
-        )
-        .map((entry) => ({
-          pluginRoot: typeof entry.pluginRoot === "string" ? entry.pluginRoot : "",
-          pluginId: typeof entry.pluginId === "string" ? entry.pluginId : "",
-          pluginName: typeof entry.pluginName === "string" ? entry.pluginName : undefined,
-          channel: typeof entry.channel === "string" ? normalizeChannel(entry.channel) : "",
-          accountId:
-            typeof entry.accountId === "string" ? entry.accountId.trim() || "default" : "default",
-          approvedAt:
-            typeof entry.approvedAt === "number" && Number.isFinite(entry.approvedAt)
-              ? Math.floor(entry.approvedAt)
-              : Date.now(),
-        }))
-        .filter((entry) => entry.pluginRoot && entry.pluginId && entry.channel),
-    };
-  } catch (error) {
-    log.warn(`plugin binding approvals load failed: ${String(error)}`);
-    return { version: 1, approvals: [] };
   }
+  return { version: 1, approvals: [] };
 }
 
 async function saveApprovals(file: PluginBindingApprovalsFile): Promise<void> {
@@ -492,7 +500,7 @@ function buildDetachHintSuffix(detachHint?: string): string {
 }
 
 export function buildPluginBindingUnavailableText(binding: PluginConversationBinding): string {
-  return `The bound plugin ${resolvePluginBindingDisplayName(binding)} is not currently loaded. Routing this message to OpenClaw instead.${buildDetachHintSuffix(binding.detachHint)}`;
+  return `The bound plugin ${resolvePluginBindingDisplayName(binding)} is not currently loaded. Routing this message to Agdi instead.${buildDetachHintSuffix(binding.detachHint)}`;
 }
 
 export function buildPluginBindingDeclinedText(binding: PluginConversationBinding): string {

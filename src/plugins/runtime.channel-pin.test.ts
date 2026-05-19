@@ -94,7 +94,7 @@ describe("channel registry pinning", () => {
     const unrelated = createEmptyPluginRegistry();
     releasePinnedPluginChannelRegistry(unrelated);
 
-    // Pin is still held — unrelated release was ignored.
+    // Pin is still held â€” unrelated release was ignored.
     const replacement = createEmptyPluginRegistry();
     setActivePluginRegistry(replacement);
     expect(getActivePluginChannelRegistry()).toBe(startup);

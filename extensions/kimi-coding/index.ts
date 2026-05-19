@@ -1,6 +1,6 @@
-import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
-import { createProviderApiKeyAuthMethod } from "openclaw/plugin-sdk/provider-auth";
-import { isRecord } from "openclaw/plugin-sdk/text-runtime";
+import { definePluginEntry } from "agdi/plugin-sdk/plugin-entry";
+import { createProviderApiKeyAuthMethod } from "agdi/plugin-sdk/provider-auth";
+import { isRecord } from "agdi/plugin-sdk/text-runtime";
 import { applyKimiCodeConfig, KIMI_CODING_MODEL_REF } from "./onboard.js";
 import { buildKimiCodingProvider } from "./provider-catalog.js";
 

@@ -551,7 +551,7 @@ async function runWebFetch(params: WebFetchRuntimeParams): Promise<Record<string
     finalUrl = result.finalUrl;
     release = result.release;
 
-    // Cloudflare Markdown for Agents — log token budget hint when present
+    // Cloudflare Markdown for Agents â€” log token budget hint when present
     const markdownTokens = res.headers.get("x-markdown-tokens");
     if (markdownTokens) {
       logDebug(
@@ -765,7 +765,7 @@ export function createWebFetchTool(options?: {
     label: "Web Fetch",
     name: "web_fetch",
     description:
-      "Fetch and extract readable content from a URL (HTML → markdown/text). Use for lightweight page access without browser automation.",
+      "Fetch and extract readable content from a URL (HTML â†’ markdown/text). Use for lightweight page access without browser automation.",
     parameters: WebFetchSchema,
     execute: async (_toolCallId, args) => {
       const params = args as Record<string, unknown>;

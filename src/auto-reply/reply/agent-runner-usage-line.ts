@@ -40,7 +40,7 @@ export const formatResponseUsageLine = (params: {
         })
       : undefined;
   const costLabel = params.showCost ? formatUsd(cost) : undefined;
-  const suffix = costLabel ? ` · est ${costLabel}` : "";
+  const suffix = costLabel ? ` Â· est ${costLabel}` : "";
   return `Usage: ${inputLabel} in / ${outputLabel} out${suffix}`;
 };
 

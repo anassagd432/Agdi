@@ -281,7 +281,7 @@ describe("openclaw-tools: subagents (sessions_spawn allowlist)", () => {
       agents: {
         list: [
           { id: "main", subagents: { allowAgents: ["research"] } },
-          // "research" is NOT in agents.list — only in allowAgents
+          // "research" is NOT in agents.list â€” only in allowAgents
         ],
       },
     });

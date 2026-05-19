@@ -28,11 +28,11 @@ export type ResolveAgentRouteInput = {
   channel: string;
   accountId?: string | null;
   peer?: RoutePeer | null;
-  /** Parent peer for threads — used for binding inheritance when peer doesn't match directly. */
+  /** Parent peer for threads â€” used for binding inheritance when peer doesn't match directly. */
   parentPeer?: RoutePeer | null;
   guildId?: string | null;
   teamId?: string | null;
-  /** Discord member role IDs — used for role-based agent routing. */
+  /** Discord member role IDs â€” used for role-based agent routing. */
   memberRoleIds?: string[];
 };
 

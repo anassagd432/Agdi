@@ -1,29 +1,29 @@
 ---
 name: command-logger
 description: "Log all command events to a centralized audit file"
-homepage: https://docs.openclaw.ai/automation/hooks#command-logger
+homepage: https://docs.agdi.ai/automation/hooks#command-logger
 metadata:
   {
     "openclaw":
       {
-        "emoji": "📝",
+        "emoji": "log",
         "events": ["command"],
-        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with OpenClaw" }],
+        "install": [{ "id": "bundled", "kind": "bundled", "label": "Bundled with Agdi" }],
       },
   }
 ---
 
 # Command Logger Hook
 
-Logs all command events (`/new`, `/reset`, `/stop`, etc.) to a centralized audit log file for debugging and monitoring purposes.
+Logs all command events (`/new`, `/reset`, `/stop`, etc.) to a centralized audit log file for debugging and monitoring.
 
 ## What It Does
 
 Every time you issue a command to the agent:
 
-1. **Captures event details** - Command action, timestamp, session key, sender ID, source
-2. **Appends to log file** - Writes a JSON line to `~/.openclaw/logs/commands.log`
-3. **Silent operation** - Runs in the background without user notifications
+1. **Captures event details** - Command action, timestamp, session key, sender ID, and source.
+2. **Appends to log file** - Writes a JSON line to `~/.agdi/logs/commands.log`.
+3. **Silent operation** - Runs in the background without user notifications.
 
 ## Output Format
 
@@ -36,33 +36,33 @@ Log entries are written in JSONL (JSON Lines) format:
 
 ## Use Cases
 
-- **Debugging**: Track when commands were issued and from which source
-- **Auditing**: Monitor command usage across different channels
-- **Analytics**: Analyze command patterns and frequency
-- **Troubleshooting**: Investigate issues by reviewing command history
+- **Debugging**: Track when commands were issued and from which source.
+- **Auditing**: Monitor command usage across different channels.
+- **Analytics**: Analyze command patterns and frequency.
+- **Troubleshooting**: Investigate issues by reviewing command history.
 
 ## Log File Location
 
-`~/.openclaw/logs/commands.log`
+`~/.agdi/logs/commands.log`
 
 ## Requirements
 
-No requirements - this hook works out of the box on all platforms.
+No requirements. This hook works out of the box on all platforms.
 
 ## Configuration
 
-No configuration needed. The hook automatically:
+No configuration is needed. The hook automatically:
 
-- Creates the log directory if it doesn't exist
-- Appends to the log file (doesn't overwrite)
-- Handles errors silently without disrupting command execution
+- Creates the log directory if it does not exist.
+- Appends to the log file instead of overwriting it.
+- Handles errors silently without disrupting command execution.
 
 ## Disabling
 
 To disable this hook:
 
 ```bash
-openclaw hooks disable command-logger
+agdi hooks disable command-logger
 ```
 
 Or via config:
@@ -86,13 +86,14 @@ The hook does not automatically rotate logs. To manage log size, you can:
 1. **Manual rotation**:
 
    ```bash
-   mv ~/.openclaw/logs/commands.log ~/.openclaw/logs/commands.log.old
+   mv ~/.agdi/logs/commands.log ~/.agdi/logs/commands.log.old
    ```
 
 2. **Use logrotate** (Linux):
-   Create `/etc/logrotate.d/openclaw`:
-   ```
-   /home/username/.openclaw/logs/commands.log {
+   Create `/etc/logrotate.d/agdi`:
+
+   ```text
+   /home/username/.agdi/logs/commands.log {
        weekly
        rotate 4
        compress
@@ -106,17 +107,17 @@ The hook does not automatically rotate logs. To manage log size, you can:
 View recent commands:
 
 ```bash
-tail -n 20 ~/.openclaw/logs/commands.log
+tail -n 20 ~/.agdi/logs/commands.log
 ```
 
 Pretty-print with jq:
 
 ```bash
-cat ~/.openclaw/logs/commands.log | jq .
+cat ~/.agdi/logs/commands.log | jq .
 ```
 
 Filter by action:
 
 ```bash
-grep '"action":"new"' ~/.openclaw/logs/commands.log | jq .
+grep '"action":"new"' ~/.agdi/logs/commands.log | jq .
 ```

@@ -175,13 +175,13 @@ export async function scanStatus(
   }
   return await withProgress(
     {
-      label: "Scanning status…",
+      label: "Scanning statusâ€¦",
       total: 11,
       enabled: true,
     },
     async (progress) => {
       const coldStart = isMissingConfigColdStart();
-      progress.setLabel("Loading config…");
+      progress.setLabel("Loading configâ€¦");
       const loadedRaw = await readBestEffortConfig();
       const { resolvedConfig: cfg, diagnostics: secretDiagnostics } =
         await resolveCommandSecretRefsViaGateway({
@@ -220,7 +220,7 @@ export async function scanStatus(
       );
       progress.tick();
 
-      progress.setLabel("Checking Tailscale…");
+      progress.setLabel("Checking Tailscaleâ€¦");
       const tailscaleDns = await tailscaleDnsPromise;
       const tailscaleHttpsUrl = buildTailscaleHttpsUrl({
         tailscaleMode,
@@ -229,15 +229,15 @@ export async function scanStatus(
       });
       progress.tick();
 
-      progress.setLabel("Checking for updates…");
+      progress.setLabel("Checking for updatesâ€¦");
       const update = unwrapDeferredResult(await updatePromise);
       progress.tick();
 
-      progress.setLabel("Resolving agents…");
+      progress.setLabel("Resolving agentsâ€¦");
       const agentStatus = unwrapDeferredResult(await agentStatusPromise);
       progress.tick();
 
-      progress.setLabel("Probing gateway…");
+      progress.setLabel("Probing gatewayâ€¦");
       const {
         gatewayConnection,
         remoteUrlMissing,
@@ -258,36 +258,36 @@ export async function scanStatus(
         : null;
       progress.tick();
 
-      progress.setLabel("Querying channel status…");
+      progress.setLabel("Querying channel statusâ€¦");
       const channelsStatus = await resolveChannelsStatus({ cfg, gatewayReachable, opts });
       const { collectChannelStatusIssues, buildChannelsTable } =
         await loadStatusScanRuntimeModule();
       const channelIssues = channelsStatus ? collectChannelStatusIssues(channelsStatus) : [];
       progress.tick();
 
-      progress.setLabel("Summarizing channels…");
+      progress.setLabel("Summarizing channelsâ€¦");
       const channels = await buildChannelsTable(cfg, {
         // Show token previews in regular status; keep `status --all` redacted.
         // Set `OPENCLAW_SHOW_SECRETS=0` to force redaction.
-        showSecrets: process.env.OPENCLAW_SHOW_SECRETS?.trim() !== "0",
+        showSecrets: (process.env.AGDI_SHOW_SECRETS ?? process.env.OPENCLAW_SHOW_SECRETS)?.trim() !== "0",
         sourceConfig: loadedRaw,
       });
       progress.tick();
 
-      progress.setLabel("Checking memory…");
+      progress.setLabel("Checking memoryâ€¦");
       const memoryPlugin = resolveMemoryPluginStatus(cfg);
       const memory = await resolveMemoryStatusSnapshot({ cfg, agentStatus, memoryPlugin });
       progress.tick();
 
-      progress.setLabel("Checking plugins…");
+      progress.setLabel("Checking pluginsâ€¦");
       const pluginCompatibility = buildPluginCompatibilityNotices({ config: cfg });
       progress.tick();
 
-      progress.setLabel("Reading sessions…");
+      progress.setLabel("Reading sessionsâ€¦");
       const summary = unwrapDeferredResult(await summaryPromise);
       progress.tick();
 
-      progress.setLabel("Rendering…");
+      progress.setLabel("Renderingâ€¦");
       progress.tick();
 
       return {

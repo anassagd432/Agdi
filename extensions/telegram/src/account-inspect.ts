@@ -1,13 +1,13 @@
-import { resolveAccountWithDefaultFallback } from "openclaw/plugin-sdk/account-resolution";
-import type { OpenClawConfig } from "openclaw/plugin-sdk/config-runtime";
-import { coerceSecretRef } from "openclaw/plugin-sdk/config-runtime";
-import { tryReadSecretFileSync } from "openclaw/plugin-sdk/infra-runtime";
-import { resolveDefaultSecretProviderAlias } from "openclaw/plugin-sdk/provider-auth";
-import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "openclaw/plugin-sdk/routing";
+import { resolveAccountWithDefaultFallback } from "agdi/plugin-sdk/account-resolution";
+import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
+import { coerceSecretRef } from "agdi/plugin-sdk/config-runtime";
+import { tryReadSecretFileSync } from "agdi/plugin-sdk/infra-runtime";
+import { resolveDefaultSecretProviderAlias } from "agdi/plugin-sdk/provider-auth";
+import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "agdi/plugin-sdk/routing";
 import {
   hasConfiguredSecretInput,
   normalizeSecretInputString,
-} from "openclaw/plugin-sdk/secret-input";
+} from "agdi/plugin-sdk/secret-input";
 import type { TelegramAccountConfig } from "../runtime-api.js";
 import {
   mergeTelegramAccountConfig,

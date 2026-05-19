@@ -82,7 +82,7 @@ export function createOpenClawTools(
     requesterSenderId?: string | null;
     /** Whether the requesting sender is an owner. */
     senderIsOwner?: boolean;
-    /** Ephemeral session UUID — regenerated on /new and /reset. */
+    /** Ephemeral session UUID â€” regenerated on /new and /reset. */
     sessionId?: string;
     /**
      * Workspace directory to pass to spawned subagents for inheritance.

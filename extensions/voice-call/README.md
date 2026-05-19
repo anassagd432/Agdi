@@ -17,7 +17,7 @@ Plugin system: `https://docs.openclaw.ai/plugin`
 ### Option A: install via OpenClaw (recommended)
 
 ```bash
-openclaw plugins install @openclaw/voice-call
+agdi plugins install @openclaw/voice-call
 ```
 
 Restart the Gateway afterwards.
@@ -105,13 +105,13 @@ streaming speech on calls. Override examples and provider caveats live here:
 ## CLI
 
 ```bash
-openclaw voicecall call --to "+15555550123" --message "Hello from OpenClaw"
-openclaw voicecall continue --call-id <id> --message "Any questions?"
-openclaw voicecall speak --call-id <id> --message "One moment"
-openclaw voicecall end --call-id <id>
-openclaw voicecall status --call-id <id>
-openclaw voicecall tail
-openclaw voicecall expose --mode funnel
+agdi voicecall call --to "+15555550123" --message "Hello from OpenClaw"
+agdi voicecall continue --call-id <id> --message "Any questions?"
+agdi voicecall speak --call-id <id> --message "One moment"
+agdi voicecall end --call-id <id>
+agdi voicecall status --call-id <id>
+agdi voicecall tail
+agdi voicecall expose --mode funnel
 ```
 
 ## Tool

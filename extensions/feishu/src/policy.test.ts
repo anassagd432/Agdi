@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "openclaw/plugin-sdk/core";
+import type { OpenClawConfig } from "agdi/plugin-sdk/core";
 import { describe, expect, it } from "vitest";
 import {
   isFeishuGroupAllowed,

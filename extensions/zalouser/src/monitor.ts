@@ -1,16 +1,16 @@
 import {
   DM_GROUP_ACCESS_REASON,
   resolveDmGroupAccessWithLists,
-} from "openclaw/plugin-sdk/channel-policy";
-import { KeyedAsyncQueue } from "openclaw/plugin-sdk/core";
-import { createDeferred } from "openclaw/plugin-sdk/extension-shared";
+} from "agdi/plugin-sdk/channel-policy";
+import { KeyedAsyncQueue } from "agdi/plugin-sdk/core";
+import { createDeferred } from "agdi/plugin-sdk/extension-shared";
 import {
   DEFAULT_GROUP_HISTORY_LIMIT,
   type HistoryEntry,
   buildPendingHistoryContextFromMap,
   clearHistoryEntriesIfEnabled,
   recordPendingHistoryEntryIfEnabled,
-} from "openclaw/plugin-sdk/reply-history";
+} from "agdi/plugin-sdk/reply-history";
 import type {
   MarkdownTableMode,
   OpenClawConfig,
