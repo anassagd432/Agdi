@@ -6,7 +6,12 @@ import { isRecord } from "../utils.js";
 import type { PluginConfigUiHint, PluginKind } from "./types.js";
 
 export const PLUGIN_MANIFEST_FILENAME = "openclaw.plugin.json";
-export const PLUGIN_MANIFEST_FILENAMES = [PLUGIN_MANIFEST_FILENAME] as const;
+/** Canonical Agdi manifest name is preferred; legacy OpenClaw name kept for compatibility. */
+export const AGDI_PLUGIN_MANIFEST_FILENAME = "agdi.plugin.json";
+export const PLUGIN_MANIFEST_FILENAMES = [
+  AGDI_PLUGIN_MANIFEST_FILENAME,
+  PLUGIN_MANIFEST_FILENAME,
+] as const;
 
 export type PluginManifest = {
   id: string;

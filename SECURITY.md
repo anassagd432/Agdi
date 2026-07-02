@@ -117,6 +117,16 @@ docker run --read-only --cap-drop=ALL \
   agdi/agdi:latest
 ```
 
+## Known Dependency Advisories
+
+Dependency advisories are enforced through `pnpm.overrides` in `package.json`; run `pnpm audit --prod` to verify. The following advisories are currently accepted because no patched release exists upstream (all in `@mariozechner/pi-coding-agent`, the embedded Pi runner):
+
+- GHSA-gvmj-g25r-r7wr (high) — predictable temporary extension install path. Mitigated by the single trusted-operator model: extension installs only run on the operator's own host.
+- GHSA-7v5m-pr3q-6453 (low) — potential XSS in Pi HTML session exports.
+- GHSA-r95r-rj6r-c39x (low) — race condition in Pi `auth.json` writes.
+
+Re-check these on each release and remove this section once a patched Pi version ships.
+
 ## Security Scanning
 
 This project uses `detect-secrets` for automated secret detection.

@@ -14,6 +14,7 @@ import {
   resolvePackageExtensionEntries,
   type OpenClawPackageManifest,
   type PackageManifest,
+  resolvePluginManifestPath,
 } from "./manifest.js";
 import { formatPosixMode, isPathInside, safeRealpathSync, safeStatSync } from "./path-safety.js";
 import { resolvePluginCacheInputs, resolvePluginSourceRoots } from "./roots.js";
@@ -831,7 +832,7 @@ function discoverBundledMetadataInDirectory(params: {
       },
       packageDir: rootDir,
       bundledManifest: entry.manifest,
-      bundledManifestPath: path.join(rootDir, "openclaw.plugin.json"),
+      bundledManifestPath: resolvePluginManifestPath(rootDir),
     });
   }
 

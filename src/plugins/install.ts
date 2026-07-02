@@ -33,6 +33,7 @@ const MISSING_EXTENSIONS_ERROR =
   'package.json missing openclaw.extensions; update the plugin package to include openclaw.extensions (for example ["./dist/index.js"]). See https://docs.agdi.ai/help/troubleshooting#plugin-install-fails-with-missing-openclaw-extensions';
 const PLUGIN_ARCHIVE_ROOT_MARKERS = [
   "package.json",
+  "agdi.plugin.json",
   "openclaw.plugin.json",
   ".codex-plugin/plugin.json",
   ".claude-plugin/plugin.json",

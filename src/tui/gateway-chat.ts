@@ -8,6 +8,7 @@ import {
   resolveExplicitGatewayAuth,
 } from "../gateway/call.js";
 import { GatewayClient } from "../gateway/client.js";
+import { readGatewayPasswordEnv, readGatewayTokenEnv } from "../gateway/credentials.js";
 import { GATEWAY_CLIENT_CAPS } from "../gateway/protocol/client-info.js";
 import {
   type HelloOk,
@@ -47,14 +48,6 @@ type ResolvedGatewayConnection = {
   token?: string;
   password?: string;
 };
-
-function trimToUndefined(value: unknown): string | undefined {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : undefined;
-}
 
 function throwGatewayAuthResolutionError(reason: string): never {
   throw new Error(
@@ -275,8 +268,8 @@ export async function resolveGatewayConnection(
   const gatewayAuthMode = config.gateway?.auth?.mode;
   const isRemoteMode = config.gateway?.mode === "remote";
   const remote = config.gateway?.remote;
-  const envToken = trimToUndefined(env.OPENCLAW_GATEWAY_TOKEN);
-  const envPassword = trimToUndefined(env.OPENCLAW_GATEWAY_PASSWORD);
+  const envToken = readGatewayTokenEnv(env);
+  const envPassword = readGatewayPasswordEnv(env);
 
   const urlOverride =
     typeof opts.url === "string" && opts.url.trim().length > 0 ? opts.url.trim() : undefined;

@@ -290,7 +290,7 @@ export function assertGatewayAuthConfigured(
       return;
     }
     throw new Error(
-      "gateway auth mode is token, but no token was configured (set gateway.auth.token or OPENCLAW_GATEWAY_TOKEN)",
+      "gateway auth mode is token, but no token was configured (set gateway.auth.token or AGDI_GATEWAY_TOKEN; compatibility: OPENCLAW_GATEWAY_TOKEN)",
     );
   }
   if (auth.mode === "password" && !auth.password) {

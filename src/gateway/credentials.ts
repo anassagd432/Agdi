@@ -287,7 +287,9 @@ export function resolveGatewayCredentialsFromConfig(params: {
 
   const localTokenPrecedence =
     params.localTokenPrecedence ??
-    (env.OPENCLAW_SERVICE_KIND === "gateway" ? "config-first" : "env-first");
+    ((env.AGDI_SERVICE_KIND ?? env.OPENCLAW_SERVICE_KIND) === "gateway"
+      ? "config-first"
+      : "env-first");
   const localPasswordPrecedence = params.localPasswordPrecedence ?? "env-first";
 
   if (mode === "local") {
