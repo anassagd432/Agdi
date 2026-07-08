@@ -1049,3 +1049,66 @@
 .chat-controls-dropdown {
   display: none;
 }
+
+/* ============================================================
+   Command Center: Flat Sidebar Navigation
+   ============================================================ */
+
+/* Flat sections use non-interactive div labels instead of buttons */
+.nav-section--flat {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.nav-section__label--static {
+  display: flex;
+  align-items: center;
+  padding: 12px 10px 4px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.nav-section--flat .nav-section__label-text {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+/* Sign Out button – styled like a nav-item but with danger hover */
+.nav-item--signout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 9px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    border-color var(--duration-fast) ease,
+    background var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.nav-item--signout:hover {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.nav-item--signout:hover .nav-item__icon {
+  opacity: 1;
+  color: var(--danger);
+}
+

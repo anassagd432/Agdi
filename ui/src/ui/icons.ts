@@ -464,6 +464,43 @@ export const icons = {
       <line x1="3" x2="10" y1="21" y2="14" />
     </svg>
   `,
+  layoutDashboard: html`
+    <svg viewBox="0 0 24 24">
+      <rect width="7" height="9" x="3" y="3" rx="1" />
+      <rect width="7" height="5" x="14" y="3" rx="1" />
+      <rect width="7" height="9" x="14" y="12" rx="1" />
+      <rect width="7" height="5" x="3" y="16" rx="1" />
+    </svg>
+  `,
+  gitBranch: html`
+    <svg viewBox="0 0 24 24">
+      <line x1="6" x2="6" y1="3" y2="15" />
+      <circle cx="18" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <path d="M18 9a9 9 0 0 1-9 9" />
+    </svg>
+  `,
+  layout: html`
+    <svg viewBox="0 0 24 24">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <line x1="3" x2="21" y1="9" y2="9" />
+      <line x1="12" x2="12" y1="9" y2="21" />
+    </svg>
+  `,
+  database: html`
+    <svg viewBox="0 0 24 24">
+      <ellipse cx="12" cy="5" rx="9" ry="3" />
+      <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
+      <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
+    </svg>
+  `,
+  logOut: html`
+    <svg viewBox="0 0 24 24">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" x2="9" y1="12" y2="12" />
+    </svg>
+  `,
 } as const;
 
 export type IconName = keyof typeof icons;

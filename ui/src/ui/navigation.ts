@@ -1,19 +1,27 @@
 import { t } from "../i18n/index.ts";
 import type { IconName } from "./icons.js";
 
+// Premium command-center groups – only these appear in the flat sidebar.
+// Legacy tabs (channels, cron, config, etc.) remain routable but are hidden from the main nav.
 export const TAB_GROUPS = [
-  { label: "workspace", tabs: ["chat", "overview"] },
+  { label: "workspace", tabs: ["overview", "chat"] },
+  { label: "tools", tabs: ["browser", "canvas", "knowledge"] },
+  { label: "system", tabs: ["sessions", "usage", "logs"] },
+] as const;
+
+// Legacy groups kept for hidden-but-routable deep links.
+export const LEGACY_TAB_GROUPS = [
   { label: "assistants", tabs: ["agents", "skills", "nodes"] },
   {
     label: "connections",
     tabs: ["channels", "communications", "instances"],
   },
   { label: "automations", tabs: ["cron", "automation"] },
-  { label: "activity", tabs: ["sessions", "usage", "logs", "debug"] },
   {
     label: "settings",
     tabs: ["config", "appearance", "infrastructure", "aiAgents"],
   },
+  { label: "activity", tabs: ["debug"] },
 ] as const;
 
 export type Tab =
@@ -34,7 +42,10 @@ export type Tab =
   | "infrastructure"
   | "aiAgents"
   | "debug"
-  | "logs";
+  | "logs"
+  | "browser"
+  | "canvas"
+  | "knowledge";
 
 const TAB_PATHS: Record<Tab, string> = {
   agents: "/agents",
@@ -55,6 +66,9 @@ const TAB_PATHS: Record<Tab, string> = {
   aiAgents: "/ai-agents",
   debug: "/debug",
   logs: "/logs",
+  browser: "/browser",
+  canvas: "/canvas",
+  knowledge: "/knowledge",
 };
 
 const PATH_TO_TAB = new Map(Object.entries(TAB_PATHS).map(([tab, path]) => [path, tab as Tab]));
@@ -145,13 +159,13 @@ export function iconForTab(tab: Tab): IconName {
     case "chat":
       return "messageSquare";
     case "overview":
-      return "barChart";
+      return "layoutDashboard";
     case "channels":
       return "link";
     case "instances":
       return "radio";
     case "sessions":
-      return "fileText";
+      return "gitBranch";
     case "usage":
       return "barChart";
     case "cron":
@@ -176,6 +190,12 @@ export function iconForTab(tab: Tab): IconName {
       return "bug";
     case "logs":
       return "scrollText";
+    case "browser":
+      return "globe";
+    case "canvas":
+      return "layout";
+    case "knowledge":
+      return "database";
     default:
       return "folder";
   }

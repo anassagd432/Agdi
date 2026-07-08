@@ -138,6 +138,10 @@ const lazyLogs = createLazy(() => import("./views/logs.ts"));
 const lazyNodes = createLazy(() => import("./views/nodes.ts"));
 const lazySessions = createLazy(() => import("./views/sessions.ts"));
 const lazySkills = createLazy(() => import("./views/skills.ts"));
+const lazyBrowser = createLazy(() => import("./views/browser.ts"));
+const lazyCanvas = createLazy(() => import("./views/canvas.ts"));
+const lazyKnowledge = createLazy(() => import("./views/knowledge.ts"));
+
 
 function lazyRender<M>(getter: () => M | null, render: (mod: M) => unknown) {
   const mod = getter();
@@ -497,37 +501,17 @@ export function renderApp(state: AppViewState) {
             <div class="sidebar-shell__body">
               <nav class="sidebar-nav">
                 ${TAB_GROUPS.map((group) => {
-                  const isGroupCollapsed = state.settings.navGroupsCollapsed[group.label] ?? false;
-                  const hasActiveTab = group.tabs.some((tab) => tab === state.tab);
-                  const showItems = navCollapsed || hasActiveTab || !isGroupCollapsed;
-
                   return html`
-                    <section class="nav-section ${!showItems ? "nav-section--collapsed" : ""}">
-                      ${
-                        !navCollapsed
-                          ? html`
-                              <button
-                                class="nav-section__label"
-                                @click=${() => {
-                                  const next = { ...state.settings.navGroupsCollapsed };
-                                  next[group.label] = !isGroupCollapsed;
-                                  state.applySettings({
-                                    ...state.settings,
-                                    navGroupsCollapsed: next,
-                                  });
-                                }}
-                                aria-expanded=${showItems}
-                              >
-                                <span class="nav-section__label-text">${t(`nav.${group.label}`)}</span>
-                                <span class="nav-section__chevron">
-                                  ${icons.chevronDown}
-                                </span>
-                              </button>
-                            `
-                          : nothing
-                      }
+                    <section class="nav-section nav-section--flat">
+                      ${!navCollapsed
+                        ? html`<div class="nav-section__label nav-section__label--static">
+                            <span class="nav-section__label-text">${t(`nav.${group.label}`)}</span>
+                          </div>`
+                        : nothing}
                       <div class="nav-section__items">
-                        ${group.tabs.map((tab) => renderTab(state, tab, { collapsed: navCollapsed }))}
+                        ${group.tabs.map((tab) =>
+                          renderTab(state, tab as import("./navigation.ts").Tab, { collapsed: navCollapsed })
+                        )}
                       </div>
                     </section>
                   `;
@@ -536,6 +520,16 @@ export function renderApp(state: AppViewState) {
             </div>
             <div class="sidebar-shell__footer">
               <div class="sidebar-utility-group">
+                <button
+                  type="button"
+                  class="nav-item nav-item--signout"
+                  @click=${() => state.signOut()}
+                  title="${t("nav.signOut")}"
+                  aria-label="${t("nav.signOut")}"
+                >
+                  <span class="nav-item__icon" aria-hidden="true">${icons.logOut}</span>
+                  ${!navCollapsed ? html`<span class="nav-item__text">${t("nav.signOut")}</span>` : nothing}
+                </button>
                 <a
                   class="nav-item nav-item--external sidebar-utility-link"
                   href="https://docs.agdi.ai"
@@ -2039,6 +2033,24 @@ export function renderApp(state: AppViewState) {
                   onScroll: (event) => state.handleLogsScroll(event),
                 }),
               )
+            : nothing
+        }
+
+        ${
+          state.tab === "browser"
+            ? lazyRender(lazyBrowser, (m) => m.renderBrowser({}))
+            : nothing
+        }
+
+        ${
+          state.tab === "canvas"
+            ? lazyRender(lazyCanvas, (m) => m.renderCanvas({}))
+            : nothing
+        }
+
+        ${
+          state.tab === "knowledge"
+            ? lazyRender(lazyKnowledge, (m) => m.renderKnowledge({}))
             : nothing
         }
       </main>

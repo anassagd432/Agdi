@@ -42,17 +42,23 @@ describe("TAB_GROUPS", () => {
 
   it("groups workspace surfaces by user job", () => {
     const workspace = navigation.TAB_GROUPS.find((group) => group.label === "workspace");
-    const assistants = navigation.TAB_GROUPS.find((group) => group.label === "assistants");
-    const connections = navigation.TAB_GROUPS.find((group) => group.label === "connections");
-    const automations = navigation.TAB_GROUPS.find((group) => group.label === "automations");
-    const activity = navigation.TAB_GROUPS.find((group) => group.label === "activity");
-    const settings = navigation.TAB_GROUPS.find((group) => group.label === "settings");
+    const tools = navigation.TAB_GROUPS.find((group) => group.label === "tools");
+    const system = navigation.TAB_GROUPS.find((group) => group.label === "system");
 
-    expect(workspace?.tabs).toEqual(["chat", "overview"]);
+    expect(workspace?.tabs).toEqual(["overview", "chat"]);
+    expect(tools?.tabs).toEqual(["browser", "canvas", "knowledge"]);
+    expect(system?.tabs).toEqual(["sessions", "usage", "logs"]);
+  });
+
+  it("legacy groups retain all original tabs for deep links", () => {
+    const assistants = navigation.LEGACY_TAB_GROUPS.find((group) => group.label === "assistants");
+    const connections = navigation.LEGACY_TAB_GROUPS.find((group) => group.label === "connections");
+    const automations = navigation.LEGACY_TAB_GROUPS.find((group) => group.label === "automations");
+    const settings = navigation.LEGACY_TAB_GROUPS.find((group) => group.label === "settings");
+
     expect(assistants?.tabs).toEqual(["agents", "skills", "nodes"]);
     expect(connections?.tabs).toEqual(["channels", "communications", "instances"]);
     expect(automations?.tabs).toEqual(["cron", "automation"]);
-    expect(activity?.tabs).toEqual(["sessions", "usage", "logs", "debug"]);
     expect(settings?.tabs).toEqual(["config", "appearance", "infrastructure", "aiAgents"]);
   });
 
@@ -75,5 +81,9 @@ describe("TAB_GROUPS", () => {
     expect(navigation.tabFromPath("/appearance")).toBe("appearance");
     expect(navigation.tabFromPath("/infrastructure")).toBe("infrastructure");
     expect(navigation.tabFromPath("/ai-agents")).toBe("aiAgents");
+    // New Command Center tabs
+    expect(navigation.tabFromPath("/browser")).toBe("browser");
+    expect(navigation.tabFromPath("/canvas")).toBe("canvas");
+    expect(navigation.tabFromPath("/knowledge")).toBe("knowledge");
   });
 });

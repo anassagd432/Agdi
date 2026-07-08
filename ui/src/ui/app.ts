@@ -533,6 +533,26 @@ export class OpenClawApp extends LitElement {
     connectGatewayInternal(this as unknown as Parameters<typeof connectGatewayInternal>[0]);
   }
 
+  signOut() {
+    // Clear in-memory token and password so the login gate appears.
+    this.settings = { ...this.settings, token: "" };
+    this.password = "";
+    // Close any active WebSocket connection.
+    if (this.client) {
+      try {
+        this.client.stop();
+      } catch {
+        // best-effort
+      }
+      this.client = null;
+    }
+    this.connected = false;
+    this.hello = null;
+    this.lastError = null;
+    // Navigate back to the chat tab so the login gate renders.
+    void this.setTab("chat");
+  }
+
   handleChatScroll(event: Event) {
     handleChatScrollInternal(
       this as unknown as Parameters<typeof handleChatScrollInternal>[0],
