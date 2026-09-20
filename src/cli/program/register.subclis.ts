@@ -318,6 +318,33 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "goals",
+    description: "Autonomous goal planning, invariant verification, and execution",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../goals-cli.js");
+      mod.registerGoalsCli(program);
+    },
+  },
+  {
+    name: "learn",
+    description: "Capture verified execution patterns into autonomous skills",
+    hasSubcommands: false,
+    register: async (program) => {
+      const mod = await import("../learning-cli.js");
+      mod.registerLearningCli(program);
+    },
+  },
+  {
+    name: "instincts",
+    description: "Inspect and manage learned autonomous instincts",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../learning-cli.js");
+      mod.registerLearningCli(program);
+    },
+  },
+  {
     name: "completion",
     description: "Generate shell completion script",
     hasSubcommands: false,

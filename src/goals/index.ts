@@ -4,3 +4,4 @@ export * from "./engine.js";
 export * from "./verification-ledger.js";
 export * from "./guardrails.js";
 export * from "./context-compactor.js";
+export * from "./swarms.js";

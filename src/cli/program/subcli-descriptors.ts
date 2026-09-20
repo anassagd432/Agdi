@@ -134,6 +134,21 @@ export const SUB_CLI_DESCRIPTORS = [
     hasSubcommands: true,
   },
   {
+    name: "goals",
+    description: "Autonomous goal planning, invariant verification, and execution",
+    hasSubcommands: true,
+  },
+  {
+    name: "learn",
+    description: "Capture verified execution patterns into autonomous skills",
+    hasSubcommands: false,
+  },
+  {
+    name: "instincts",
+    description: "Inspect and manage learned autonomous instincts",
+    hasSubcommands: true,
+  },
+  {
     name: "completion",
     description: "Generate shell completion script",
     hasSubcommands: false,
