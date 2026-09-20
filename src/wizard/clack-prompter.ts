@@ -24,7 +24,7 @@ function guardCancel<T>(value: T | symbol): T {
     cancel(stylePromptTitle("Setup cancelled.") ?? "Setup cancelled.");
     throw new WizardCancelledError();
   }
-  return value;
+  return value as T;
 }
 
 function normalizeSearchTokens(search: string): string[] {

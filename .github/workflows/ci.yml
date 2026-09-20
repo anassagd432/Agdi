@@ -87,7 +87,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-env
       - run: pnpm build
-      - run: node --experimental-loader tsx agdi.mjs --version
+      - run: node agdi.mjs --version
 
   check-docs:
     needs: changed-scope

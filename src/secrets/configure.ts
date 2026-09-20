@@ -158,7 +158,7 @@ function assertNoCancel<T>(value: T | symbol, message: string): T {
   if (typeof value === "symbol") {
     throw new Error(message);
   }
-  return value;
+  return value as T;
 }
 
 const AUTH_PROFILE_ID_PATTERN = /^[A-Za-z0-9:_-]{1,128}$/;
