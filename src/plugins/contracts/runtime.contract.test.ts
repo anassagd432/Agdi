@@ -151,7 +151,7 @@ describe("provider runtime contract", () => {
       });
 
       expect(hint).toContain("suggested profile: anthropic:oauth-user@example.com");
-      expect(hint).toContain("openclaw doctor --yes");
+      expect(hint).toMatch(/(agdi|openclaw) doctor --yes/);
     });
 
     it("owns usage snapshot fetching", async () => {

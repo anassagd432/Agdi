@@ -111,7 +111,7 @@ export class GoalEngine {
     this.store.recalculateProgress(goal);
     await this.store.saveGoal(goal);
 
-    if (goal.status === "completed") {
+    if ((goal.status as string) === "completed") {
       this.emit("goal_completed", { goalId, title: goal.title, tasksCount: goal.tasks.length });
     }
 
