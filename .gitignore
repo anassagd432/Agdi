@@ -166,3 +166,14 @@ tssummary.txt
 
 # Deprecated changelog fragment workflow
 changelog/fragments/
+
+# Personal / workspace / media exclusions
+.obsidian/
+.ultraplan/
+.windsurf/
+.clawhub/
+.agents/
+screenshots/
+marketing/
+BRANDING_REPORT.md
+CLAUDE_REBRAND_MASTER_PROMPT.md
