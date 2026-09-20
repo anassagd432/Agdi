@@ -43,6 +43,10 @@ const ANTHROPIC_MODERN_MODEL_PREFIXES = [
   "claude-opus-4-5",
   "claude-sonnet-4-5",
   "claude-haiku-4-5",
+  "claude-3-7-sonnet",
+  "claude-3-5-sonnet",
+  "claude-3-5-haiku",
+  "claude-3-opus",
 ] as const;
 const ANTHROPIC_OAUTH_ALLOWLIST = [
   "anthropic/claude-sonnet-4-6",
@@ -50,6 +54,9 @@ const ANTHROPIC_OAUTH_ALLOWLIST = [
   "anthropic/claude-opus-4-5",
   "anthropic/claude-sonnet-4-5",
   "anthropic/claude-haiku-4-5",
+  "anthropic/claude-3-7-sonnet",
+  "anthropic/claude-3-5-sonnet",
+  "anthropic/claude-3-5-haiku",
 ] as const;
 
 function cloneFirstTemplateModel(params: {

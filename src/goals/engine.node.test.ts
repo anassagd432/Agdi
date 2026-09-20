@@ -75,4 +75,16 @@ describe("GoalEngine Native Tests", () => {
     assert.ok(events.includes("task_completed"));
     assert.ok(events.includes("goal_completed"));
   });
+
+  it("resumes and executes all active goals", async () => {
+    const goal1 = await store.createGoal("Active Goal 1");
+    await store.addTask(goal1.id, "G1 Task", "node -e \"process.stdout.write('g1')\"");
+    const goal2 = await store.createGoal("Active Goal 2");
+    await store.addTask(goal2.id, "G2 Task", "node -e \"process.stdout.write('g2')\"");
+
+    const executed = await engine.resumeActiveGoals();
+    assert.equal(executed.length, 2);
+    assert.equal(executed[0]?.status, "completed");
+    assert.equal(executed[1]?.status, "completed");
+  });
 });

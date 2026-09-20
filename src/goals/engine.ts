@@ -117,4 +117,23 @@ export class GoalEngine {
 
     return goal;
   }
+
+  async resumeActiveGoals(cwd?: string): Promise<Goal[]> {
+    if (this.isRunning) {
+      return [];
+    }
+    this.isRunning = true;
+    const executed: Goal[] = [];
+    try {
+      const allGoals = await this.store.listGoals();
+      const active = allGoals.filter((g) => g.status === "pending" || g.status === "in_progress");
+      for (const goal of active) {
+        const result = await this.executeGoal(goal.id, cwd);
+        executed.push(result);
+      }
+    } finally {
+      this.isRunning = false;
+    }
+    return executed;
+  }
 }

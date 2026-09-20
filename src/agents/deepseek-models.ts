@@ -30,7 +30,27 @@ export const DEEPSEEK_MODEL_CATALOG: ModelDefinitionConfig[] = [
     contextWindow: 131072,
     maxTokens: 65536,
     cost: DEEPSEEK_V3_2_COST,
+    compat: { supportsUsageInStreaming: true, supportsReasoningEffort: true },
+  },
+  {
+    id: "deepseek-v3",
+    name: "DeepSeek V3",
+    reasoning: false,
+    input: ["text"],
+    contextWindow: 131072,
+    maxTokens: 8192,
+    cost: DEEPSEEK_V3_2_COST,
     compat: { supportsUsageInStreaming: true },
+  },
+  {
+    id: "deepseek-r1",
+    name: "DeepSeek R1",
+    reasoning: true,
+    input: ["text"],
+    contextWindow: 131072,
+    maxTokens: 65536,
+    cost: DEEPSEEK_V3_2_COST,
+    compat: { supportsUsageInStreaming: true, supportsReasoningEffort: true },
   },
 ];
 

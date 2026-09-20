@@ -35,5 +35,10 @@ export function resolveGoogle31ForwardCompatModel(params: {
 }
 
 export function isModernGoogleModel(modelId: string): boolean {
-  return modelId.trim().toLowerCase().startsWith("gemini-3");
+  const lower = modelId.trim().toLowerCase();
+  return (
+    lower.startsWith("gemini-3") ||
+    lower.startsWith("gemini-2.5") ||
+    lower.startsWith("gemini-2.0")
+  );
 }

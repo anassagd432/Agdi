@@ -39,6 +39,11 @@ const OPENAI_XHIGH_MODEL_IDS = [
   "gpt-5.4-mini",
   "gpt-5.4-nano",
   "gpt-5.2",
+  "o3",
+  "o3-mini",
+  "o1",
+  "o1-preview",
+  "o1-mini",
 ] as const;
 const OPENAI_MODERN_MODEL_IDS = [
   "gpt-5.4",
@@ -46,6 +51,14 @@ const OPENAI_MODERN_MODEL_IDS = [
   "gpt-5.4-mini",
   "gpt-5.4-nano",
   "gpt-5.2",
+  "o3",
+  "o3-mini",
+  "o1",
+  "o1-preview",
+  "o1-mini",
+  "gpt-4.5-preview",
+  "gpt-4o",
+  "gpt-4o-mini",
 ] as const;
 const OPENAI_DIRECT_SPARK_MODEL_ID = "gpt-5.3-codex-spark";
 const SUPPRESSED_SPARK_PROVIDERS = new Set(["openai", "azure-openai-responses"]);
