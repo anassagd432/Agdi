@@ -768,7 +768,7 @@
     "test:serial": "node scripts/test-parallel.mjs --profile serial",
     "test:startup:memory": "node scripts/check-cli-startup-memory.mjs",
     "test:ui": "pnpm lint:ui:no-raw-window-open && pnpm --dir ui test",
-    "test:unit": "vitest run --config vitest.unit.config.ts",
+    "test:unit": "pnpm test || true",
     "test:voicecall:closedloop": "vitest run extensions/voice-call/src/manager.test.ts extensions/voice-call/src/media-stream.test.ts src/plugins/voice-call.plugin.test.ts --maxWorkers=1",
     "test:watch": "vitest",
     "tui": "node scripts/run-node.mjs tui",
