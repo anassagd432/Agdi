@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Agdi Community & Support
+    url: https://docs.agdi.ai
+    about: Ask questions, get help with setup, or share feedback.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/anassagd432/Agdi/security/policy
+    about: Privately report a security issue under our disclosure policy.
