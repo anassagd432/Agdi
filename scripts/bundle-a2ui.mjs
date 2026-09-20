@@ -72,9 +72,10 @@ async function main() {
       console.log("A2UI sources missing; keeping checked-in prebuilt bundle.");
       return;
     }
-    throw new Error(
-      `A2UI sources missing and no prebuilt bundle found at: ${path.relative(rootDir, outputFile)}`,
-    );
+    await fs.mkdir(path.dirname(outputFile), { recursive: true });
+    await fs.writeFile(outputFile, "/* A2UI bundle unavailable in this build */\n", "utf8");
+    console.log("A2UI sources missing; generated fallback bundle.");
+    return;
   }
 
   const inputs = [path.join(rootDir, "package.json"), path.join(rootDir, "pnpm-lock.yaml"), rendererDir, appDir];

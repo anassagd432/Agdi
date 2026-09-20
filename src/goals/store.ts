@@ -20,7 +20,11 @@ export class GoalStore {
     return path.join(this.goalsDir, `${id}.json`);
   }
 
-  async createGoal(title: string, description: string = "", context?: Record<string, unknown>): Promise<Goal> {
+  async createGoal(
+    title: string,
+    description: string = "",
+    context?: Record<string, unknown>,
+  ): Promise<Goal> {
     await this.ensureDir();
     const id = `goal_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
     const now = Date.now();
@@ -96,7 +100,9 @@ export class GoalStore {
       goal.progressPercent = goal.status === "completed" ? 100 : 0;
       return;
     }
-    const completed = goal.tasks.filter((t) => t.status === "completed" || t.status === "skipped").length;
+    const completed = goal.tasks.filter(
+      (t) => t.status === "completed" || t.status === "skipped",
+    ).length;
     goal.progressPercent = Math.round((completed / goal.tasks.length) * 100);
     if (goal.progressPercent === 100) {
       goal.status = "completed";

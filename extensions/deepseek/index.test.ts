@@ -51,8 +51,8 @@ describe("deepseek provider plugin", () => {
     expect(
       catalog.provider.models?.find((model) => model.id === "deepseek-reasoner")?.reasoning,
     ).toBe(true);
-    expect(
-      catalog.provider.models?.find((model) => model.id === "deepseek-r1")?.reasoning,
-    ).toBe(true);
+    expect(catalog.provider.models?.find((model) => model.id === "deepseek-r1")?.reasoning).toBe(
+      true,
+    );
   });
 });

@@ -37,8 +37,6 @@ export function resolveGoogle31ForwardCompatModel(params: {
 export function isModernGoogleModel(modelId: string): boolean {
   const lower = modelId.trim().toLowerCase();
   return (
-    lower.startsWith("gemini-3") ||
-    lower.startsWith("gemini-2.5") ||
-    lower.startsWith("gemini-2.0")
+    lower.startsWith("gemini-3") || lower.startsWith("gemini-2.5") || lower.startsWith("gemini-2.0")
   );
 }
