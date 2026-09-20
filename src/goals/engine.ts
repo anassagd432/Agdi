@@ -1,5 +1,8 @@
 import { GoalStore } from "./store.js";
 import type { Goal, GoalEngineOptions, GoalStepResult, GoalTask } from "./types.js";
+import { VerificationLedger } from "./verification-ledger.js";
+import { ToolGuardrailController } from "./guardrails.js";
+import { ContextCompactor } from "./context-compactor.js";
 import { exec } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -9,12 +12,18 @@ export type GoalEventHandler = (event: string, data: Record<string, unknown>) =>
 
 export class GoalEngine {
   private readonly store: GoalStore;
+  private readonly ledger: VerificationLedger;
+  private readonly guardrails: ToolGuardrailController;
+  private readonly compactor: ContextCompactor;
   private readonly maxConsecutiveFailures: number;
   private listeners: GoalEventHandler[] = [];
   private isRunning: boolean = false;
 
   constructor(options: GoalEngineOptions = {}) {
     this.store = new GoalStore(options.stateDir);
+    this.ledger = new VerificationLedger(options.stateDir);
+    this.guardrails = new ToolGuardrailController();
+    this.compactor = new ContextCompactor();
     this.maxConsecutiveFailures = options.maxConsecutiveFailures ?? 3;
   }
 
@@ -39,7 +48,19 @@ export class GoalEngine {
     return this.store;
   }
 
-  async runTask(task: GoalTask, cwd?: string): Promise<GoalStepResult> {
+  getLedger(): VerificationLedger {
+    return this.ledger;
+  }
+
+  getGuardrails(): ToolGuardrailController {
+    return this.guardrails;
+  }
+
+  getCompactor(): ContextCompactor {
+    return this.compactor;
+  }
+
+  async runTask(task: GoalTask, cwd?: string, goalId?: string): Promise<GoalStepResult> {
     task.attempts += 1;
     task.startedAt = Date.now();
     task.status = "running";
@@ -50,15 +71,51 @@ export class GoalEngine {
       return { taskId: task.id, status: "completed" };
     }
 
+    // Check guardrails on command/tool
+    const decision = this.guardrails.evaluate("command_exec", { command: task.command });
+    if (decision.shouldHalt) {
+      task.status = "failed";
+      const errorMsg = `[Guardrail Block] ${decision.message}`;
+      task.error = errorMsg;
+      return { taskId: task.id, status: "failed", error: errorMsg };
+    }
+
+    const start = Date.now();
     try {
       const { stdout, stderr } = await execAsync(task.command, { cwd: cwd ?? process.cwd() });
       const output = (stdout + (stderr ? `\n${stderr}` : "")).trim();
+      const durationMs = Date.now() - start;
+
+      // Record in verification ledger if applicable
+      this.ledger.recordProof({
+        command: task.command,
+        exitCode: 0,
+        output,
+        goalId,
+        durationMs,
+      });
+
+      this.guardrails.recordResult("command_exec", { command: task.command }, true);
+
       task.status = "completed";
       task.result = output;
       task.completedAt = Date.now();
       return { taskId: task.id, status: "completed", output };
     } catch (err: unknown) {
+      const durationMs = Date.now() - start;
       const errorMsg = err instanceof Error ? err.message : String(err);
+
+      // Record failed verification proof
+      this.ledger.recordProof({
+        command: task.command,
+        exitCode: 1,
+        output: errorMsg,
+        goalId,
+        durationMs,
+      });
+
+      this.guardrails.recordResult("command_exec", { command: task.command }, false);
+
       task.error = errorMsg;
       if (task.attempts >= task.maxAttempts) {
         task.status = "failed";
@@ -80,6 +137,7 @@ export class GoalEngine {
     this.emit("goal_started", { goalId, title: goal.title });
 
     let consecutiveFailures = 0;
+    this.guardrails.resetTurn();
 
     while (goal.status === "in_progress") {
       const pendingTask = goal.tasks.find((t) => t.status === "pending");
@@ -89,7 +147,7 @@ export class GoalEngine {
       }
 
       this.emit("task_started", { goalId, taskId: pendingTask.id, title: pendingTask.title });
-      const result = await this.runTask(pendingTask, cwd);
+      const result = await this.runTask(pendingTask, cwd, goalId);
 
       if (result.status === "completed") {
         consecutiveFailures = 0;
@@ -109,6 +167,21 @@ export class GoalEngine {
     }
 
     this.store.recalculateProgress(goal);
+
+    // Active Verification Invariant Gate
+    if ((goal.status as string) === "completed" && goal.validationCriteria && goal.validationCriteria.length > 0) {
+      const verifyResult = this.ledger.verifyGoalInvariants(goal);
+      if (!verifyResult.verified) {
+        goal.status = "in_progress";
+        this.emit("goal_verification_missing", {
+          goalId,
+          missingProofs: verifyResult.missingProofs,
+        });
+      } else {
+        goal.proofTokens = verifyResult.passedProofs.map((p) => p.id);
+      }
+    }
+
     await this.store.saveGoal(goal);
 
     if ((goal.status as string) === "completed") {
