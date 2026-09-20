@@ -146,7 +146,7 @@ agdi gateway --provider openai --model gpt-4o
 | `agdi dashboard` | Launch the local web workspace dashboard. |
 | `agdi doctor` | Run comprehensive health and dependency diagnostics. |
 | `agdi config` | Inspect, validate, and update runtime settings. |
-| `openclaw` | Backward-compatibility command for OpenClaw workflows. |
+| `openclaw` | Backward-compatibility command for legacy runtime workflows. |
 
 ---
 
