@@ -58,5 +58,7 @@ jobs:
       - uses: ./.github/actions/setup-node-env
       - name: Smoke test - fresh install
         run: pnpm ls --depth 0
+      - name: Build runtime
+        run: pnpm build
       - name: Verify entrypoint
         run: node agdi.mjs --version
