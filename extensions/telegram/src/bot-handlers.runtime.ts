@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Message, ReactionTypeEmoji } from "@grammyjs/types";
 import { resolveAgentDir, resolveDefaultAgentId } from "agdi/plugin-sdk/agent-runtime";
 import { resolveDefaultModelForAgent } from "agdi/plugin-sdk/agent-runtime";

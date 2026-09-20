@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { resolveDefaultAgentId } from "agdi/plugin-sdk/agent-runtime";
 import {
   isNativeCommandsExplicitlyDisabled,

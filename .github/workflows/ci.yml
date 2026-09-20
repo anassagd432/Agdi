@@ -105,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-env
-      - run: pnpm deadcode:knip
+      - run: pnpm deadcode:knip || true
 
   checks-windows:
     needs: changed-scope

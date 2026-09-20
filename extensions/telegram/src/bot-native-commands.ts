@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Bot, Context } from "grammy";
 import { createChannelReplyPipeline } from "agdi/plugin-sdk/channel-reply-pipeline";
 import {

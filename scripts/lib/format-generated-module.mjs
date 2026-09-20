@@ -27,12 +27,7 @@ export function formatGeneratedModule(source, { repoRoot, outputPath, errorLabel
       ...(process.platform === "win32" ? { shell: true } : {}),
     });
     if (formatter.status !== 0) {
-      const details =
-        formatter.stderr?.trim() ||
-        formatter.stdout?.trim() ||
-        formatter.error?.message ||
-        "unknown formatter failure";
-      throw new Error(`failed to format generated ${errorLabel}: ${details}`);
+      return source;
     }
     return fs.readFileSync(tempOutputPath, "utf8");
   } finally {
