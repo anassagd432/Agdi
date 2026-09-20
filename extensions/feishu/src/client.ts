@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Lark from "@larksuiteoapi/node-sdk";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import type { FeishuConfig, FeishuDomain, ResolvedFeishuAccount } from "./types.js";

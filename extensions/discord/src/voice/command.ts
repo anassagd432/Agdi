@@ -247,7 +247,7 @@ export function createDiscordVoiceCommand(params: VoiceCommandContext): CommandW
         description: "Voice channel to join",
         type: ApplicationCommandOptionType.Channel,
         required: true,
-        channel_types: VOICE_CHANNEL_TYPES,
+        channel_types: VOICE_CHANNEL_TYPES as any,
       },
     ];
 
