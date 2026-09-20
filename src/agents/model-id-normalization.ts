@@ -13,6 +13,15 @@ export function normalizeGoogleModelId(id: string): string {
   if (id === "gemini-3.1-flash-lite") {
     return "gemini-3.1-flash-lite-preview";
   }
+  if (id === "gemini-3.8" || id === "gemini-3.8-flash") {
+    return "gemini-3.8-flash";
+  }
+  if (id === "gemini-3.7" || id === "gemini-3.7-flash") {
+    return "gemini-3.7-flash";
+  }
+  if (id === "gemini-3.6" || id === "gemini-3.6-flash") {
+    return "gemini-3.6-flash";
+  }
   // Preserve compatibility with earlier OpenClaw docs/config that pointed at a
   // non-existent Gemini Flash preview ID. Google's current Flash text model is
   // `gemini-3-flash-preview`.

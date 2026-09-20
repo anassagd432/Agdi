@@ -34,11 +34,17 @@ const OPENAI_GPT_54_PRO_TEMPLATE_MODEL_IDS = ["gpt-5.2-pro", "gpt-5.2"] as const
 const OPENAI_GPT_54_MINI_TEMPLATE_MODEL_IDS = ["gpt-5-mini"] as const;
 const OPENAI_GPT_54_NANO_TEMPLATE_MODEL_IDS = ["gpt-5-nano", "gpt-5-mini"] as const;
 const OPENAI_XHIGH_MODEL_IDS = [
+  "gpt-6-astra",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
+  "gpt-5.6",
   "gpt-5.4",
   "gpt-5.4-pro",
   "gpt-5.4-mini",
   "gpt-5.4-nano",
   "gpt-5.2",
+  "o4-preview",
   "o3",
   "o3-mini",
   "o1",
@@ -46,11 +52,17 @@ const OPENAI_XHIGH_MODEL_IDS = [
   "o1-mini",
 ] as const;
 const OPENAI_MODERN_MODEL_IDS = [
+  "gpt-6-astra",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
+  "gpt-5.6",
   "gpt-5.4",
   "gpt-5.4-pro",
   "gpt-5.4-mini",
   "gpt-5.4-nano",
   "gpt-5.2",
+  "o4-preview",
   "o3",
   "o3-mini",
   "o1",

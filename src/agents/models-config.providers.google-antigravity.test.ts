@@ -57,6 +57,11 @@ describe("normalizeGoogleModelId", () => {
   it("adds the preview suffix for gemini 3.1 flash-lite", () => {
     expect(normalizeGoogleModelId("gemini-3.1-flash-lite")).toBe("gemini-3.1-flash-lite-preview");
   });
+
+  it("normalizes gemini 3.8 and 3.7 to flash models", () => {
+    expect(normalizeGoogleModelId("gemini-3.8")).toBe("gemini-3.8-flash");
+    expect(normalizeGoogleModelId("gemini-3.7")).toBe("gemini-3.7-flash");
+  });
 });
 
 describe("google-antigravity provider normalization", () => {

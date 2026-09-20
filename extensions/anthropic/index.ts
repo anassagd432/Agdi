@@ -38,6 +38,10 @@ const ANTHROPIC_SONNET_46_MODEL_ID = "claude-sonnet-4-6";
 const ANTHROPIC_SONNET_46_DOT_MODEL_ID = "claude-sonnet-4.6";
 const ANTHROPIC_SONNET_TEMPLATE_MODEL_IDS = ["claude-sonnet-4-5", "claude-sonnet-4.5"] as const;
 const ANTHROPIC_MODERN_MODEL_PREFIXES = [
+  "claude-fable-5.1",
+  "claude-mythos-5.1",
+  "claude-opus-5",
+  "claude-sonnet-5",
   "claude-opus-4-6",
   "claude-sonnet-4-6",
   "claude-opus-4-5",
@@ -49,6 +53,10 @@ const ANTHROPIC_MODERN_MODEL_PREFIXES = [
   "claude-3-opus",
 ] as const;
 const ANTHROPIC_OAUTH_ALLOWLIST = [
+  "anthropic/claude-fable-5.1",
+  "anthropic/claude-mythos-5.1",
+  "anthropic/claude-opus-5",
+  "anthropic/claude-sonnet-5",
   "anthropic/claude-sonnet-4-6",
   "anthropic/claude-opus-4-6",
   "anthropic/claude-opus-4-5",

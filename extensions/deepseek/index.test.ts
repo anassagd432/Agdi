@@ -45,11 +45,19 @@ describe("deepseek provider plugin", () => {
     expect(catalog.provider.models?.map((model) => model.id)).toEqual([
       "deepseek-chat",
       "deepseek-reasoner",
+      "deepseek-v4.1-flash",
+      "deepseek-v3.2",
       "deepseek-v3",
       "deepseek-r1",
     ]);
     expect(
       catalog.provider.models?.find((model) => model.id === "deepseek-reasoner")?.reasoning,
+    ).toBe(true);
+    expect(
+      catalog.provider.models?.find((model) => model.id === "deepseek-v4.1-flash")?.reasoning,
+    ).toBe(true);
+    expect(
+      catalog.provider.models?.find((model) => model.id === "deepseek-v3.2")?.reasoning,
     ).toBe(true);
     expect(catalog.provider.models?.find((model) => model.id === "deepseek-r1")?.reasoning).toBe(
       true,
