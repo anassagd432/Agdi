@@ -252,6 +252,19 @@ const coreEntries: CoreCliEntry[] = [
       mod.registerBrowserCli(program);
     },
   },
+  {
+    commands: [
+      {
+        name: "goal",
+        description: "Autonomous goal engine: define, track, and execute objectives until completion",
+        hasSubcommands: true,
+      },
+    ],
+    register: async ({ program }) => {
+      const mod = await import("./register.goal.js");
+      mod.registerGoalCommands(program);
+    },
+  },
 ];
 
 export function getCoreCliCommandNames(): string[] {

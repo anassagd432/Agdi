@@ -107,6 +107,11 @@ export const CORE_CLI_COMMAND_DESCRIPTORS = [
     description: "Manage Agdi's dedicated browser (Chrome/Chromium)",
     hasSubcommands: true,
   },
+  {
+    name: "goal",
+    description: "Autonomous goal engine: define, track, and execute objectives until completion",
+    hasSubcommands: true,
+  },
 ] as const satisfies ReadonlyArray<CoreCliCommandDescriptor>;
 
 export function getCoreCliCommandDescriptors(): ReadonlyArray<CoreCliCommandDescriptor> {
