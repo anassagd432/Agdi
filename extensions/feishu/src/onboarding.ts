@@ -6,9 +6,9 @@ import type {
   WizardPrompter,
 } from "agdi/plugin-sdk/setup";
 import { addWildcardAllowFrom, DEFAULT_ACCOUNT_ID, formatDocsLink } from "agdi/plugin-sdk/setup";
-import type { FeishuConfig } from "./types.js";
 import { resolveFeishuCredentials } from "./accounts.js";
 import { probeFeishu } from "./probe.js";
+import type { FeishuConfig } from "./types.js";
 
 const channel = "feishu" as const;
 
@@ -148,13 +148,14 @@ export const feishuOnboardingAdapter: ChannelOnboardingAdapter = {
   channel,
   getStatus: async ({ cfg }) => {
     const feishuCfg = cfg.channels?.feishu as FeishuConfig | undefined;
-    const configured = Boolean(resolveFeishuCredentials(feishuCfg));
+    const resolvedCreds = resolveFeishuCredentials(feishuCfg);
+    const configured = Boolean(resolvedCreds);
 
     // Try to probe if configured
     let probeResult = null;
-    if (configured && feishuCfg) {
+    if (resolvedCreds) {
       try {
-        probeResult = await probeFeishu(feishuCfg);
+        probeResult = await probeFeishu(resolvedCreds);
       } catch {
         // Ignore probe errors
       }
@@ -183,7 +184,7 @@ export const feishuOnboardingAdapter: ChannelOnboardingAdapter = {
   configure: async ({ cfg, prompter }) => {
     const feishuCfg = cfg.channels?.feishu as FeishuConfig | undefined;
     const resolved = resolveFeishuCredentials(feishuCfg);
-    const hasConfigCreds = Boolean(feishuCfg?.appId?.trim() && feishuCfg?.appSecret?.trim());
+    const hasConfigCreds = Boolean(resolved);
     const canUseEnv = Boolean(
       !hasConfigCreds && process.env.FEISHU_APP_ID?.trim() && process.env.FEISHU_APP_SECRET?.trim(),
     );
@@ -274,7 +275,7 @@ export const feishuOnboardingAdapter: ChannelOnboardingAdapter = {
       // Test connection
       const testCfg = next.channels?.feishu as FeishuConfig;
       try {
-        const probe = await probeFeishu(testCfg);
+        const probe = await probeFeishu(resolveFeishuCredentials(testCfg) ?? undefined);
         if (probe.ok) {
           await prompter.note(
             `Connected as ${probe.botName ?? probe.botOpenId ?? "bot"}`,

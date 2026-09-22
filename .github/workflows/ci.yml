@@ -98,14 +98,21 @@ jobs:
       - uses: ./.github/actions/setup-node-env
       - run: pnpm docs:spellcheck
 
-  check-additional:
+  # Informational only. This job is deliberately NOT a required check: dead-code
+  # findings are not yet at a quality bar that can gate a merge. The
+  # "-informational" job id, the explicit step name, and `continue-on-error`
+  # exist so a failing run cannot be mistaken for a green required gate.
+  # Rationale and current backlog: docs/audits/phase1-ci-integrity.md
+  deadcode-informational:
     needs: changed-scope
     if: ${{ needs.changed-scope.outputs.run_check_additional == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node-env
-      - run: pnpm deadcode:knip || true
+      - name: Dead code report (informational, non-blocking)
+        continue-on-error: true
+        run: pnpm deadcode:knip
 
   checks-windows:
     needs: changed-scope

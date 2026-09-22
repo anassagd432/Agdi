@@ -608,4 +608,4 @@ T-EXEC-002 → T-EXFIL-001 → External exfiltration
 
 ---
 
-_This threat model is a living document. Report security issues to security@agdi.ai_
+_This threat model is a living document. Report security issues per [SECURITY.md](https://github.com/anassagd432/Agdi/blob/main/SECURITY.md); there is no published security email address for this repository._

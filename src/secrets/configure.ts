@@ -1,6 +1,6 @@
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { confirm, select, text } from "@clack/prompts";
+import { confirm, select, text, type CANCEL_SYMBOL } from "@clack/prompts";
 import { listAgentIds, resolveAgentDir, resolveDefaultAgentId } from "../agents/agent-scope.js";
 import type { AuthProfileStore } from "../agents/auth-profiles.js";
 import { AUTH_STORE_VERSION } from "../agents/auth-profiles/constants.js";
@@ -154,11 +154,11 @@ function toSourceChoices(config: OpenClawConfig): Array<{ value: SecretRefSource
   return choices;
 }
 
-function assertNoCancel<T>(value: T | symbol, message: string): T {
+function assertNoCancel<T>(value: T | typeof CANCEL_SYMBOL, message: string): T {
   if (typeof value === "symbol") {
     throw new Error(message);
   }
-  return value as T;
+  return value;
 }
 
 const AUTH_PROFILE_ID_PATTERN = /^[A-Za-z0-9:_-]{1,128}$/;

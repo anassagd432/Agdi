@@ -78,6 +78,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw result.error;
+    }
     expect(result.to).toBe("spaces/AAA");
   });
 
@@ -89,6 +92,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw result.error;
+    }
     expect(result.to).toBe("users/user@example.com");
   });
 
@@ -100,6 +106,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected resolveTarget to fail");
+    }
     expect(result.error).toBeDefined();
   });
 
@@ -111,6 +120,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected resolveTarget to fail");
+    }
     expect(result.error).toBeDefined();
   });
 
@@ -122,6 +134,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected resolveTarget to fail");
+    }
     expect(result.error).toBeDefined();
   });
 
@@ -133,6 +148,9 @@ describe("googlechat resolveTarget", () => {
     });
 
     expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected resolveTarget to fail");
+    }
     expect(result.error).toBeDefined();
   });
 });

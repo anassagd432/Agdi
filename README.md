@@ -18,7 +18,20 @@
 
 Agdi gives you a private agent workspace that runs on your own machine or dedicated host. It combines a high-performance local runtime, gateway APIs, chat app connectors, plugin tooling, and an interactive workspace UI so autonomous assistants can execute real work—manipulating files, triggering shell scripts, browsing the web, and synchronizing state—instead of merely generating text.
 
-Agdi is the runtime layer of the ecosystem, purpose-built for developers, platform engineers, and AI automation teams who need fine-grained control over LLM execution, persistent tool safety, and multi-agent coordination.
+Agdi is the runtime layer of this repository for developers, platform engineers, and AI automation teams who need fine-grained control over LLM execution, persistent tool safety, and multi-agent coordination.
+
+## Upstream and provenance
+
+Agdi is independently maintained. The gateway, channel connectors, plugin layout, and most of the runtime are derived substantially from [OpenClaw](https://github.com/openclaw/openclaw).
+
+Changes visible in this repository include the `agdi` command and package name, state-directory branding aimed at `~/.agdi`, and additional scan, goals, learning, founder-ops, and MCP command surfaces. Repository metadata points at this GitHub repository.
+
+Compatibility naming that remains includes the `openclaw` executable, `openclaw.plugin.json` manifests, inherited `OPENCLAW_*` environment names, and the `clawdbot` and `moltbot` shims.
+
+Attribution and the evidence table:
+
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
+- [Provenance](docs/reference/provenance.md)
 
 ---
 
@@ -76,13 +89,13 @@ agdi onboard
 
 ### Pre-Built Binaries
 
-Native standalone artifacts are available for desktop and server environments:
+There are no pre-built binaries yet. No tagged release exists, so no standalone
+artifacts have been published for any platform. Install from source or from the
+npm package until the first release ships.
 
-| Platform | Artifact |
-|---|---|
-| Windows | `agdi-windows.exe` |
-| macOS | `agdi-macos` |
-| Linux | `agdi-linux` |
+This section previously listed `agdi-windows.exe`, `agdi-macos`, and
+`agdi-linux` as available. None of those artifacts exists, and the claim has been
+removed rather than left unverifiable.
 
 ### Running the Gateway
 

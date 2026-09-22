@@ -122,6 +122,12 @@ describe("collectForbiddenPackPaths", () => {
 });
 
 describe("collectMissingPackPaths", () => {
+  it("requires license and third-party notices", () => {
+    expect(collectMissingPackPaths([])).toEqual(
+      expect.arrayContaining(["LICENSE", "THIRD_PARTY_NOTICES.md"]),
+    );
+  });
+
   it("requires the shipped channel catalog, control ui, and optional bundled metadata", () => {
     const missing = collectMissingPackPaths([
       "dist/index.js",
@@ -153,6 +159,8 @@ describe("collectMissingPackPaths", () => {
   it("accepts the shipped upgrade surface when optional bundled metadata is present", () => {
     expect(
       collectMissingPackPaths([
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.md",
         "dist/index.js",
         "dist/entry.js",
         "dist/control-ui/index.html",

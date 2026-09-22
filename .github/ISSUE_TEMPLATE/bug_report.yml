@@ -1,0 +1,115 @@
+name: Bug report
+description: Report a reproducible bug in Agdi
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Do not report security vulnerabilities here.** Unpatched vulnerabilities must be
+        reported privately. See [SECURITY.md](https://github.com/anassagd432/Agdi/blob/main/SECURITY.md)
+        and use the private reporting form linked from the issue chooser.
+
+        Remove credentials, tokens, API keys, phone numbers, session identifiers, and
+        private configuration from anything you paste.
+
+  - type: input
+    id: version
+    attributes:
+      label: Agdi version or commit SHA
+      description: Run `agdi --version`, or paste the exact commit you built from.
+      placeholder: "2026.5.9 or c289b658b06ecf10861ff39f7af8df14c5427cc8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      description: Pick the closest match. Choose "Not sure" if you cannot tell.
+      options:
+        - CLI
+        - Gateway
+        - Channel plugin
+        - Provider plugin
+        - Workspace UI
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Fill in every line. Write "unknown" rather than leaving a line blank.
+      value: |
+        - OS:
+        - Node version (`node --version`):
+        - pnpm version (`pnpm --version`):
+        - Install method (npm global / from source / Docker):
+        - Channel or plugin, if applicable:
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest sequence of commands or actions that shows the problem.
+      placeholder: |
+        1. Run `...`
+        2. Send `...`
+        3. Observe `...`
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened, including the exact error message.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and error output (secrets removed)
+      description: Paste relevant output after removing credentials, tokens, phone numbers, and session data. If the failure produces no output, say so explicitly instead of leaving this blank.
+      placeholder: |
+        $ agdi doctor
+        ...
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and model, if relevant
+      description: Provider id and model id only. Never paste an API key.
+      placeholder: "openai/gpt-5.2"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I removed credentials, tokens, API keys, phone numbers, and session data from everything I pasted.
+          required: true
+        - label: This is not a security vulnerability. I understand security reports must go through SECURITY.md, not a public issue.
+          required: true

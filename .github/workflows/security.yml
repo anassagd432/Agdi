@@ -1,0 +1,124 @@
+name: Security
+
+# Real security jobs, not placeholders. Before 2026-09-22 the repository had no
+# CodeQL, dependency-review, secret-scan, or audit-policy job at all, so the
+# security claims in README.md and docs/ had no CI evidence behind them.
+#
+# Third-party actions are pinned to immutable commit SHAs, not moving tags. The
+# trailing comment records the human-readable version.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly. Advisories are published after the last commit, so a push-only
+    # trigger would never re-evaluate an unchanged dependency graph.
+    - cron: "17 4 * * 1"
+
+# Least privilege by default. Jobs that need more declare it themselves.
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@3ea06614dafe36dec890db3446326e0d40ce53d4 # v3
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+      - name: Analyse
+        uses: github/codeql-action/analyze@3ea06614dafe36dec890db3446326e0d40ce53d4 # v3
+
+  dependency-review:
+    name: Dependency review
+    # Only meaningful on a pull request: it diffs the dependency graph against
+    # the base branch.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          # Full history: a secret removed in a later commit is still a leak, and
+          # a shallow clone would not see it.
+          fetch-depth: 0
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gitleaks-action is free for individual public repositories. An
+          # organisation-owned repository needs a licence key in this secret.
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  production-audit-policy:
+    name: Production audit policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+
+      # `pnpm audit` exits non-zero whenever any advisory exists, which is not a
+      # usable signal on its own. The report is captured first and the decision is
+      # made by the policy checker on the next step. Deliberately not written as
+      # `|| true`: the repository's gate-integrity checker rejects unclassified
+      # failure suppression.
+      - name: Produce the production audit report
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --prod --json > audit.json
+          status=$?
+          set -e
+          if [ ! -s audit.json ]; then
+            echo "::error::pnpm audit produced no report (exit ${status})"
+            exit 1
+          fi
+          echo "pnpm audit exit: ${status} (non-zero is expected when advisories exist)"
+
+      - name: Evaluate against the exception policy
+        run: node scripts/check-production-audit-policy.mjs --input audit.json
+
+      - name: Upload the raw audit report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: production-audit-report
+          path: audit.json
+          retention-days: 30
+          if-no-files-found: warn

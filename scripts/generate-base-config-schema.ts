@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { computeBaseConfigSchemaResponse } from "../src/config/schema-base.js";
 import { formatGeneratedModule } from "./lib/format-generated-module.mjs";
 
@@ -70,7 +70,28 @@ if (args.has("--check") && args.has("--write")) {
   throw new Error("Use either --check or --write, not both.");
 }
 
-if (import.meta.url === new URL(process.argv[1] ?? "", "file://").href) {
+/**
+ * True when this module was executed directly rather than imported.
+ *
+ * The previous form, `import.meta.url === new URL(process.argv[1] ?? "", "file://").href`,
+ * could never be true:
+ *   - a relative invocation resolves to `file:///scripts/...` while
+ *     `import.meta.url` is `file:///<repo>/scripts/...`;
+ *   - on Windows `C:/...` is parsed as a URL scheme, producing `c:/Users/...`,
+ *     which is not a `file:` URL.
+ * The CLI block therefore never ran, so `--check` always exited 0 and
+ * `pnpm check:base-config-schema` was a silent no-op inside `pnpm check`.
+ * `pathToFileURL` resolves the path first and is correct on both platforms.
+ */
+function isDirectInvocation(): boolean {
+  const entry = process.argv[1];
+  if (!entry) {
+    return false;
+  }
+  return import.meta.url === pathToFileURL(path.resolve(entry)).href;
+}
+
+if (isDirectInvocation()) {
   const result = writeBaseConfigSchemaModule({ check: args.has("--check") });
   if (result.changed) {
     if (args.has("--check")) {

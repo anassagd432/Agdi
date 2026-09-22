@@ -6,19 +6,38 @@ inputs:
     description: Node.js version to install
     default: "22.x"
   pnpm-version:
-    description: pnpm version to install
-    default: "10"
+    description: >-
+      Exact pnpm version to install. Must match package.json#packageManager.
+      A floating major such as "10" is not acceptable for a reproducible install.
+    default: "10.32.1"
+  node-options:
+    description: >-
+      NODE_OPTIONS exported to later steps. The 8 GB old-space ceiling is required
+      because `tsc --noEmit` aborts with exit 134 (out of memory) at Node's default
+      heap on a full checkout. Measured on 2026-09-22: default heap -> exit 134 at
+      ~88s; 8 GB heap -> exit 0. Nothing in .github/ supplied this before, so the
+      `typecheck` gate was green only on machines where the default heap happened
+      to suffice. Set to an empty string to opt out.
+    default: "--max-old-space-size=8192"
 
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    # Third-party actions are pinned to immutable commit SHAs, not moving tags.
+    # The trailing comment records the human-readable version.
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
       with:
         node-version: ${{ inputs.node-version }}
 
+    - name: Export NODE_OPTIONS
+      if: ${{ inputs.node-options != '' }}
+      shell: bash
+      run: echo "NODE_OPTIONS=${{ inputs.node-options }}" >> "$GITHUB_ENV"
+
     - name: Install pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
       with:
+        version: ${{ inputs.pnpm-version }}
         run_install: false
 
     - name: Get pnpm store directory
@@ -28,7 +47,7 @@ runs:
         echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
     - name: Restore pnpm store cache
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       id: pnpm-cache
       with:
         path: ${{ steps.pnpm-store.outputs.store_path }}
@@ -36,11 +55,20 @@ runs:
         restore-keys: |
           pnpm-store-${{ runner.os }}-
 
-    - name: Install dependencies
+    - name: Verify the lockfile is committed
       shell: bash
       run: |
-        if [ -f pnpm-lock.yaml ]; then
-          pnpm install --frozen-lockfile
-        else
-          pnpm install --no-frozen-lockfile
+        if [ ! -f pnpm-lock.yaml ]; then
+          echo "::error::pnpm-lock.yaml is missing from the checkout."
+          echo "::error::A reproducible install requires a committed lockfile."
+          echo "::error::Run 'pnpm install' locally and commit pnpm-lock.yaml."
+          exit 1
         fi
+
+    # No --no-frozen-lockfile fallback. The previous version silently installed an
+    # unlocked graph whenever the lockfile was absent, which defeats the gate: CI
+    # could pass while resolving a dependency graph nobody reviewed. The step above
+    # fails closed instead.
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

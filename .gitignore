@@ -5,7 +5,6 @@ docker-compose.override.yml
 docker-compose.extra.yml
 dist
 dist-runtime
-pnpm-lock.yaml
 bun.lock
 bun.lockb
 coverage
@@ -86,6 +85,10 @@ apps/ios/*.mobileprovision
 .local/
 docs/.local/
 tmp/
+# Test-suite scratch output. The suite writes to `.tmp/`, which the `tmp/`
+# pattern above does not match, so 375 generated fixtures showed up as
+# untracked and would have been swept in by `git add -A`.
+.tmp/
 IDENTITY.md
 USER.md
 .tgz

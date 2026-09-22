@@ -2964,24 +2964,10 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                         maximum: 9007199254740991,
                       },
                       memory: {
-                        anyOf: [
-                          {
-                            type: "string",
-                          },
-                          {
-                            type: "number",
-                          },
-                        ],
+                        type: ["string", "number"],
                       },
                       memorySwap: {
-                        anyOf: [
-                          {
-                            type: "string",
-                          },
-                          {
-                            type: "number",
-                          },
-                        ],
+                        type: ["string", "number"],
                       },
                       cpus: {
                         type: "number",
@@ -4156,24 +4142,10 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                           maximum: 9007199254740991,
                         },
                         memory: {
-                          anyOf: [
-                            {
-                              type: "string",
-                            },
-                            {
-                              type: "number",
-                            },
-                          ],
+                          type: ["string", "number"],
                         },
                         memorySwap: {
-                          anyOf: [
-                            {
-                              type: "string",
-                            },
-                            {
-                              type: "number",
-                            },
-                          ],
+                          type: ["string", "number"],
                         },
                         cpus: {
                           type: "number",
@@ -4671,14 +4643,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                           additionalProperties: {
                             type: "array",
                             items: {
-                              anyOf: [
-                                {
-                                  type: "string",
-                                },
-                                {
-                                  type: "number",
-                                },
-                              ],
+                              type: ["string", "number"],
                             },
                           },
                         },
@@ -5828,17 +5793,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                           type: "string",
                         },
                         additionalProperties: {
-                          anyOf: [
-                            {
-                              type: "string",
-                            },
-                            {
-                              type: "number",
-                            },
-                            {
-                              type: "boolean",
-                            },
-                          ],
+                          type: ["string", "number", "boolean"],
                         },
                       },
                     },
@@ -5997,17 +5952,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                         type: "string",
                       },
                       additionalProperties: {
-                        anyOf: [
-                          {
-                            type: "string",
-                          },
-                          {
-                            type: "number",
-                          },
-                          {
-                            type: "boolean",
-                          },
-                        ],
+                        type: ["string", "number", "boolean"],
                       },
                     },
                   },
@@ -6164,17 +6109,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                               type: "string",
                             },
                             additionalProperties: {
-                              anyOf: [
-                                {
-                                  type: "string",
-                                },
-                                {
-                                  type: "number",
-                                },
-                                {
-                                  type: "boolean",
-                                },
-                              ],
+                              type: ["string", "number", "boolean"],
                             },
                           },
                         },
@@ -6337,17 +6272,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                         type: "string",
                       },
                       additionalProperties: {
-                        anyOf: [
-                          {
-                            type: "string",
-                          },
-                          {
-                            type: "number",
-                          },
-                          {
-                            type: "boolean",
-                          },
-                        ],
+                        type: ["string", "number", "boolean"],
                       },
                     },
                   },
@@ -6504,17 +6429,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                               type: "string",
                             },
                             additionalProperties: {
-                              anyOf: [
-                                {
-                                  type: "string",
-                                },
-                                {
-                                  type: "number",
-                                },
-                                {
-                                  type: "boolean",
-                                },
-                              ],
+                              type: ["string", "number", "boolean"],
                             },
                           },
                         },
@@ -6677,17 +6592,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                         type: "string",
                       },
                       additionalProperties: {
-                        anyOf: [
-                          {
-                            type: "string",
-                          },
-                          {
-                            type: "number",
-                          },
-                          {
-                            type: "boolean",
-                          },
-                        ],
+                        type: ["string", "number", "boolean"],
                       },
                     },
                   },
@@ -6844,17 +6749,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                               type: "string",
                             },
                             additionalProperties: {
-                              anyOf: [
-                                {
-                                  type: "string",
-                                },
-                                {
-                                  type: "number",
-                                },
-                                {
-                                  type: "boolean",
-                                },
-                              ],
+                              type: ["string", "number", "boolean"],
                             },
                           },
                         },
@@ -7158,14 +7053,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                 additionalProperties: {
                   type: "array",
                   items: {
-                    anyOf: [
-                      {
-                        type: "string",
-                      },
-                      {
-                        type: "number",
-                      },
-                    ],
+                    type: ["string", "number"],
                   },
                 },
               },
@@ -8567,14 +8455,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
           ownerAllowFrom: {
             type: "array",
             items: {
-              anyOf: [
-                {
-                  type: "string",
-                },
-                {
-                  type: "number",
-                },
-              ],
+              type: ["string", "number"],
             },
           },
           ownerDisplay: {
@@ -8593,14 +8474,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
             additionalProperties: {
               type: "array",
               items: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
             },
           },
@@ -8662,14 +8536,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                       type: "string",
                     },
                     threadId: {
-                      anyOf: [
-                        {
-                          type: "string",
-                        },
-                        {
-                          type: "number",
-                        },
-                      ],
+                      type: ["string", "number"],
                     },
                   },
                   required: ["channel", "to"],
@@ -9067,14 +8934,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                 enum: ["enforce", "warn"],
               },
               pruneAfter: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
               pruneDays: {
                 type: "integer",
@@ -9087,14 +8947,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                 maximum: 9007199254740991,
               },
               rotateBytes: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
               resetArchiveRetention: {
                 anyOf: [
@@ -9111,24 +8964,10 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                 ],
               },
               maxDiskBytes: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
               highWaterBytes: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
             },
             additionalProperties: false,
@@ -9264,14 +9103,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
             type: "object",
             properties: {
               maxBytes: {
-                anyOf: [
-                  {
-                    type: "string",
-                  },
-                  {
-                    type: "number",
-                  },
-                ],
+                type: ["string", "number"],
               },
               keepLines: {
                 type: "integer",
@@ -11208,17 +11040,7 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
                     type: "string",
                   },
                   additionalProperties: {
-                    anyOf: [
-                      {
-                        type: "string",
-                      },
-                      {
-                        type: "number",
-                      },
-                      {
-                        type: "boolean",
-                      },
-                    ],
+                    type: ["string", "number", "boolean"],
                   },
                 },
                 cwd: {
@@ -16299,6 +16121,6 @@ export const GENERATED_BASE_CONFIG_SCHEMA = {
       tags: ["security", "auth"],
     },
   },
-  version: "2026.3.24",
+  version: "2026.5.9",
   generatedAt: "2026-03-22T21:17:33.302Z",
 } as const satisfies BaseConfigSchemaResponse;

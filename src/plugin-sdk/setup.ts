@@ -67,6 +67,7 @@ export {
   patchNestedChannelConfigSection,
   patchTopLevelChannelConfigSection,
   patchChannelConfigForAccount,
+  promptAccountId,
   promptLegacyChannelAllowFrom,
   promptLegacyChannelAllowFromForAccount,
   promptParsedAllowFromForAccount,

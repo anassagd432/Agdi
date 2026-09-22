@@ -966,7 +966,7 @@
           }
         },
         {
-          "declaration": "export function buildChannelConfigSchema(schema: ZodType<unknown, unknown, $ZodTypeInternals<unknown, unknown>>): ChannelConfigSchema;",
+          "declaration": "export function buildChannelConfigSchema(schema: ZodTypeAny): ChannelConfigSchema;",
           "exportName": "buildChannelConfigSchema",
           "kind": "function",
           "source": {
@@ -2996,7 +2996,7 @@
           }
         },
         {
-          "declaration": "export function buildChannelConfigSchema(schema: ZodType<unknown, unknown, $ZodTypeInternals<unknown, unknown>>): ChannelConfigSchema;",
+          "declaration": "export function buildChannelConfigSchema(schema: ZodTypeAny): ChannelConfigSchema;",
           "exportName": "buildChannelConfigSchema",
           "kind": "function",
           "source": {
@@ -3396,7 +3396,7 @@
           "exportName": "GatewayRequestHandlerOptions",
           "kind": "type",
           "source": {
-            "line": 112,
+            "line": 129,
             "path": "src/gateway/server-methods/types.ts"
           }
         },

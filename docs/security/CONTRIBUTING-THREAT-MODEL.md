@@ -14,7 +14,7 @@ Thanks for helping make Agdi more secure. This threat model is a living document
 
 ### Add a Threat
 
-Spotted an attack vector or risk we haven't covered? Open an issue on [agdi/trust](https://github.com/agdi/trust/issues) and describe it in your own words. You don't need to know any frameworks or fill in every field - just describe the scenario.
+Spotted an attack vector or risk we haven't covered? Open an issue on this repository and describe it in your own words. You don't need to know any frameworks or fill in every field - just describe the scenario.
 
 **Helpful to include (but not required):**
 
@@ -25,7 +25,7 @@ Spotted an attack vector or risk we haven't covered? Open an issue on [agdi/trus
 
 We'll handle the ATLAS mapping, threat IDs, and risk assessment during review. If you want to include those details, great - but it's not expected.
 
-> **This is for adding to the threat model, not reporting live vulnerabilities.** If you've found an exploitable vulnerability, see our [Trust page](https://trust.agdi.ai) for responsible disclosure instructions.
+> **This is for adding to the threat model, not reporting live vulnerabilities.** If you've found an exploitable vulnerability, follow [SECURITY.md](https://github.com/anassagd432/Agdi/blob/main/SECURITY.md) for responsible disclosure instructions.
 
 ### Suggest a Mitigation
 
@@ -75,7 +75,7 @@ If you're unsure about the risk level, just describe the impact and we'll assess
 
 ## Review Process
 
-1. **Triage** - We review new submissions within 48 hours
+1. **Triage** - Submissions are reviewed on a best-effort basis. There is no response-time SLA.
 2. **Assessment** - We verify feasibility, assign ATLAS mapping and threat ID, validate risk level
 3. **Documentation** - We ensure everything is formatted and complete
 4. **Merge** - Added to the threat model and visualization
@@ -89,10 +89,10 @@ If you're unsure about the risk level, just describe the impact and we'll assess
 
 ## Contact
 
-- **Security vulnerabilities:** See our [Trust page](https://trust.agdi.ai) for reporting instructions
-- **Threat model questions:** Open an issue on [agdi/trust](https://github.com/agdi/trust/issues)
-- **General chat:** Discord #security channel
+- **Security vulnerabilities:** Follow [SECURITY.md](https://github.com/anassagd432/Agdi/blob/main/SECURITY.md). Use GitHub private vulnerability reporting; do not open a public issue.
+- **Threat model questions:** Open an issue on this repository.
+- **General chat:** No chat channel is published for this repository today.
 
 ## Recognition
 
-Contributors to the threat model are recognized in the threat model acknowledgments, release notes, and the Agdi security hall of fame for significant contributions.
+Significant contributions are recorded in the threat model acknowledgments and release notes. There is no separate recognition program today.

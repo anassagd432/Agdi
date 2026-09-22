@@ -63,11 +63,24 @@ const targets = [
   "scripts/changelog-to-html.sh",
 ];
 
+// Each negated class excludes `\n` so a match is confined to a single line.
+//
+// Without that exclusion the class admits newlines, so the engine pairs an
+// unrelated opening quote with the next quote anywhere later in the file. On
+// 2026-09-22 that produced a 42-line "string literal" starting at the quote in
+// `align="center"` on README.md line 1 and ending inside a Mermaid block, and
+// reported the violation against line 1 while the actual `OpenClaw` text sat on
+// line 25. The label is "string literal", and a string literal that this check
+// cares about is a single-line quoted token (for example a package id, a
+// service name, or a compatibility shim name), so line-bounding the match is a
+// correctness fix rather than a relaxation: a quoted `"OpenClaw"` on one line is
+// still caught. Prose mentions outside quotes, such as the attribution link in
+// README.md, are deliberately not this check's concern.
 const forbiddenPatterns = [
   {
     label: "OpenClaw string literal",
     pattern:
-      /"(?:\\.|[^"\\])*\bOpenClaw\b(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*\bOpenClaw\b(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*\bOpenClaw\b(?:\\.|[^`\\])*`/g,
+      /"(?:\\.|[^"\\\n])*\bOpenClaw\b(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*\bOpenClaw\b(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\\n])*\bOpenClaw\b(?:\\.|[^`\\\n])*`/g,
   },
   { label: "openclaw.ai", pattern: /https:\/\/openclaw\.ai\b/g },
 ];

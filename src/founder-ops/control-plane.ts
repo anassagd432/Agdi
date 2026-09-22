@@ -5,7 +5,7 @@ import {
   type FounderOpsAgendaSnapshot,
 } from "./agenda.js";
 import { toAgentStoreSessionKey } from "../routing/session-key.js";
-export type { FounderOpsAgendaSnapshot } from "./agenda.js";
+export type { FounderOpsAgendaItem, FounderOpsAgendaSnapshot } from "./agenda.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

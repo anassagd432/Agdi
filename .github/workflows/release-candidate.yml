@@ -1,0 +1,158 @@
+name: Release candidate
+
+# Manual only, by design. A candidate is one exact commit SHA reachable from
+# protected `main` plus the lockfile generated from that tree.
+#
+# This workflow never publishes. It builds, tests, packs, and retains evidence for
+# a maintainer to inspect. Version bumps, tags, npm publish, and GitHub releases
+# stay operator-approved actions outside this workflow, so no unreviewed ref can
+# reach a published artifact.
+#
+# Third-party actions are pinned to immutable commit SHAs, not moving tags.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: Full 40-character commit SHA reachable from main.
+        required: true
+        type: string
+      retention_days:
+        description: Days to retain candidate artifacts.
+        required: false
+        default: "14"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    name: Build and verify candidate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Validate the requested SHA
+        id: validate
+        shell: bash
+        run: |
+          sha='${{ inputs.commit_sha }}'
+          if ! printf '%s' "$sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::commit_sha must be a full 40-character lowercase hex SHA."
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout the exact candidate commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ steps.validate.outputs.sha }}
+          fetch-depth: 0
+
+      - name: Assert the commit is reachable from main
+        shell: bash
+        run: |
+          git fetch --depth=1 origin main
+          if ! git merge-base --is-ancestor "${{ steps.validate.outputs.sha }}" origin/main; then
+            echo "::error::${{ steps.validate.outputs.sha }} is not an ancestor of origin/main."
+            echo "::error::Refusing to build a candidate from an unreviewed ref."
+            exit 1
+          fi
+
+      - name: Setup Node and pnpm
+        uses: ./.github/actions/setup-node-env
+
+      - name: Record toolchain and lockfile identity
+        shell: bash
+        run: |
+          {
+            echo "candidate_sha=${{ steps.validate.outputs.sha }}"
+            echo "node=$(node --version)"
+            echo "pnpm=$(pnpm --version)"
+            echo "lockfile_sha256=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)"
+            echo "recorded_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } | tee candidate-identity.txt
+
+      - name: Assert the worktree is clean
+        run: node scripts/assert-clean-worktree.mjs
+
+      - name: Package invariants
+        run: node scripts/check-workspace-package-invariants.mjs
+
+      - name: Required gates
+        run: pnpm check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Release checks
+        run: pnpm release:check
+
+      - name: Install smoke test against the packed tarball
+        run: node scripts/test-package-install-smoke.mjs
+
+      - name: Production audit policy
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --prod --json > audit.json
+          status=$?
+          set -e
+          if [ ! -s audit.json ]; then
+            echo "::error::pnpm audit produced no report (exit ${status})"
+            exit 1
+          fi
+          node scripts/check-production-audit-policy.mjs --input audit.json
+
+      - name: Pack the candidate and checksum it
+        id: pack
+        shell: bash
+        run: |
+          mkdir -p candidate
+          npm pack --ignore-scripts --json --pack-destination candidate > pack.json
+          filename=$(node -e "const j=require('./pack.json');process.stdout.write(Array.isArray(j)?j[0].filename:j.filename)")
+          echo "tarball=candidate/${filename}" >> "$GITHUB_OUTPUT"
+          sha256sum "candidate/${filename}" | tee candidate-checksums.txt
+
+      - name: Generate the SBOM
+        run: node scripts/generate-sbom.mjs --output candidate/sbom.cdx.json
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        with:
+          subject-path: ${{ steps.pack.outputs.tarball }}
+
+      - name: Upload candidate evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-candidate-${{ steps.validate.outputs.sha }}
+          path: |
+            candidate/
+            candidate-identity.txt
+            candidate-checksums.txt
+            audit.json
+          retention-days: ${{ inputs.retention_days }}
+          if-no-files-found: error
+
+  summary:
+    name: Candidate summary
+    needs: candidate
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: State the outcome and the publication boundary
+        shell: bash
+        run: |
+          echo "Candidate job result: ${{ needs.candidate.result }}"
+          echo ""
+          echo "This workflow does not publish. Workflow artifacts are retained build"
+          echo "outputs, not immutable releases. Publishing the npm package, creating a"
+          echo "tag, or opening a GitHub release remains a maintainer action."
+          if [ "${{ needs.candidate.result }}" != "success" ]; then
+            echo ""
+            echo "::error::The candidate did not pass. Do not publish from this commit."
+            exit 1
+          fi

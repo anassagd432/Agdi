@@ -1,0 +1,65 @@
+name: Documentation issue
+description: Report missing, incorrect, or confusing documentation
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for documentation problems: wrong commands, stale screenshots,
+        broken links, or steps that do not work as written. For a runtime bug, use the
+        bug report form instead.
+
+  - type: input
+    id: location
+    attributes:
+      label: Document or page
+      description: Repository path or URL of the page.
+      placeholder: "docs/help/testing.md or https://github.com/anassagd432/Agdi/blob/main/CONTRIBUTING.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the sentence, command, or section that is incorrect or unclear, and explain why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should say instead
+      description: If you know the correct information, write the replacement text or command.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Agdi version or commit SHA
+      description: Only if the documentation problem depends on a specific version.
+      placeholder: "2026.5.9 or c289b658b06ecf10861ff39f7af8df14c5427cc8"
+    validations:
+      required: false
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting output (secrets removed)
+      description: Paste the command output that shows the documented steps failing, with credentials and private configuration removed.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: This is not a security vulnerability. I understand security reports must go through SECURITY.md, not a public issue.
+          required: true

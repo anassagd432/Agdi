@@ -1,0 +1,50 @@
+# Line-ending and binary policy for the repository.
+#
+# Why this file exists: without it, `format:check` gave a different answer on
+# Windows and Linux. A Windows checkout with `core.autocrlf=true` materialises
+# CRLF in the working tree, Oxfmt normalises to LF, and so Oxfmt reported every
+# text file as differing. On 2026-09-22 that accounted for roughly 97% of the
+# ~8,850 reported differences; the genuine backlog against committed LF content
+# was 219-284 tracked files. `format:check` cannot be a deterministic required
+# gate until line endings are normalised here.
+#
+# Evidence: docs/audits/phase1-ci-integrity.md ("Format: the 8,800 differing
+# files figure is mostly a checkout artifact").
+
+# Normalise every text file to LF in the repository and in working trees.
+* text=auto eol=lf
+
+# Windows-native scripts must keep CRLF so they stay runnable when checked out
+# on Windows.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+*.psm1 text eol=crlf
+
+# Binary assets: never apply line-ending conversion.
+*.png          binary
+*.jpg          binary
+*.jpeg         binary
+*.gif          binary
+*.ico          binary
+*.webp         binary
+*.bmp          binary
+*.pdf          binary
+*.zip          binary
+*.gz           binary
+*.tgz          binary
+*.tar          binary
+*.bz2          binary
+*.7z           binary
+*.wasm         binary
+*.node         binary
+*.woff         binary
+*.woff2        binary
+*.ttf          binary
+*.otf          binary
+*.eot          binary
+*.mp3          binary
+*.mp4          binary
+*.wav          binary
+*.webm         binary
+*.heapsnapshot binary

@@ -1,91 +1,115 @@
-# OpenAI Open Source Grant Application Kit
+---
+summary: "Draft application text for the Codex for Open Source offer, shaped as the real form fields"
+read_when:
+  - You are drafting or reviewing the Agdi application
+  - You need the dated evidence behind an application claim
+title: "OpenAI Codex for Open Source application"
+---
 
-**Project Name:** Agdi  
-**Primary Repository:** [https://github.com/anassagd432/Agdi](https://github.com/anassagd432/Agdi)  
-**License:** MIT  
-**Applicant / Maintainer:** anassagd432 (dj)  
-**Target Category:** Developer Tooling, Autonomous Agent Frameworks, AI Infrastructure  
+# OpenAI Codex for Open Source application
+
+This replaces the previous version of this file, which was a marketing pitch
+rather than an application. See [Corrections](#corrections-made-2026-09-22) for
+what was removed and why.
+
+Official source: <https://openai.com/form/codex-for-oss/> (accessed 2026-09-21).
+
+**Program facts, stated accurately.** Selected maintainers receive six months of
+ChatGPT Pro including Codex, and API credits may be provided. OpenAI does not
+promise selection or a response date, and it does not publish a cash grant
+amount. Do not make payment decisions based on an expected award.
+
+**Do not submit yet.** Seven of nine mandatory gates in
+`plans/agdi-openai-oss-readiness-master-plan.md` fail. The current blocker list is
+`plans/agdi-submission-readiness-gap-report.md`.
 
 ---
 
-## 1. Executive Summary & Elevator Pitch
+## Field 1 — Why this repository qualifies
 
-> **Agdi** is a production-grade, local-first autonomous AI runtime and multi-provider agent framework designed for continuous, goal-driven execution. Built from the ground up to orchestrate next-generation frontier reasoning models (including OpenAI `o3`, `o1`, `gpt-5.6`, and `gpt-6-astra`), Agdi bridges high-level human objectives with verifiable multi-step execution across CLI, desktop, and embedded environments.
+> Agdi is a local-first AI agent runtime: a TypeScript pnpm workspace of 88
+> packages with a gateway, CLI, dashboard, and messaging-channel plugins. It is
+> independently maintained and derived substantially from OpenClaw, which
+> README.md discloses. As of 2026-09-22 the public repository has 1 contributor,
+> 0 stars, 0 forks, and no tagged release, so adoption evidence does not yet
+> exist. One maintainer carries the full dependency graph, security triage, and
+> review load.
 
----
+Characters: 468
 
-## 2. Project Overview & Motivation
+## Field 2 — How API credits would be used
 
-### The Problem
-Current agent runtimes suffer from three structural limitations:
-1. **Fragile short-horizon loops:** Most AI assistants operate as single-turn chat wrappers or naive single-pass chains that hallucinate or abort when encountering real-world runtime friction.
-2. **Provider lock-in & outdated model surfaces:** Existing open-source tools lag behind modern frontier model releases or tie developers to rigid proprietary ecosystems without flexible routing.
-3. **Absence of persistent goal convergence:** Developers lack an agent runtime that can accept complex long-running goals, decompose them into DAG work units, execute them against local toolchains, and autonomously self-heal until verified completion.
+> Credits would fund Codex-assisted maintenance of the existing runtime, not new
+> product scope: reviewing pull requests across 88 workspace packages; triaging
+> the 1 critical and 16 high production advisories that currently block release;
+> validating the exact-SHA release candidate workflow (frozen install, pack,
+> install smoke, SBOM, attestation); and automating issue triage. Every use maps
+> to a CI job or audit document already in the repository.
 
-### The Agdi Solution
-Agdi resolves this by introducing:
-- **Autonomous Goal Engine (`agdi goal`):** A persistent, self-healing execution loop that decomposes high-level user directives into structured milestones, tracks progress state, and runs verifiable evaluation gates until the goal is fully accomplished.
-- **Frontier Multi-Provider Registry:** First-class, zero-latency support for modern frontier architectures with intelligent fallbacks, token-budget optimization, and dynamic context caching.
-- **Local-First & Privacy-Preserving Core:** Runs directly on developer hardware with full control over file-system sandboxing, credential vaults, and offline-compatible tooling.
-- **Pluggable Extension Architecture:** Deep integration with messaging protocols (Discord, Telegram, Feishu), MCP servers, and custom tool suites.
+Characters: 446
 
----
+## Field 3 — Anything else
 
-## 3. OpenAI Integration & Technical Architecture
+> Honest limitations: no public release, one maintainer, no external users, and an
+> unfinished migration from inherited OpenClaw naming. Four provenance questions
+> remain open for legal review. Engineering is gated rather than asserted: a
+> security workflow, an audit exception policy, and a candidate release workflow
+> landed 2026-09-22, but two gates still fail honestly and are not yet enforced.
+> No adoption number here is estimated or projected.
 
-Agdi deeply integrates the OpenAI API ecosystem as its primary intelligence engine:
+Characters: 443
 
-### A. Reasoning-First Orchestration (`o3` & `o1`)
-- Agdi utilizes OpenAI's reasoning models (`o3-mini`, `o3`, `o1`) for high-complexity architectural planning, dependency resolution, and autonomous debugging phases.
-- The `GoalEngine` routes structural decomposition tasks to `o3`/`o1` to generate invariant test criteria before delegating rapid execution steps to high-throughput endpoints.
-
-### B. High-Throughput Execution (`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-4o`)
-- Execution units and file editing operations leverage OpenAI's flagship models, taking full advantage of low-latency streaming tool calls, structured JSON outputs, and extended context windows.
-
-### C. Multi-Modal & Tool-Use Foundation
-- Vision and document ingestion pipelines process visual feedback, terminal renders, and architectural diagrams directly through OpenAI multimodal endpoints.
-- Function calling interfaces are strictly typed using Zod schemas, ensuring zero runtime schema divergence during tool execution.
-
----
-
-## 4. Proposed Use of OpenAI Grant Credits ($25,000 Allocation Plan)
-
-If awarded OpenAI Open Source Grant credits, the compute budget will be directly deployed into four core initiatives:
-
-| Initiative | Budget Allocation | Expected Output |
-|---|---|---|
-| **Autonomous Goal Eval Benchmark (AGE-Bench)** | $8,000 | Develop and open-source a comprehensive evaluation suite measuring autonomous agent multi-step goal convergence across 500+ diverse software engineering challenges using `o3` and `gpt-5.6`. |
-| **Community Free-Tier Gateway & Cloud Sandbox** | $7,000 | Provide hosted, zero-friction sandbox instances with rate-limited OpenAI inference access for independent developers and open-source contributors testing Agdi workflows. |
-| **Continuous Integration & Reasoning Regression Testing** | $5,000 | Power nightly matrix CI pipelines testing real agent execution loops, multi-tool interactions, and prompt-caching stability against live OpenAI endpoints. |
-| **Next-Gen Agentic Memory & Fine-Tuning Research** | $5,000 | Fine-tune compact models on successful multi-turn tool traces generated by `o3` to create ultra-efficient local execution controllers. |
+All three fields are within the form's 500-character limit. Counts are measured
+on the field text with line breaks collapsed to single spaces; re-measure after
+any edit rather than assuming the number is still valid.
 
 ---
 
-## 5. Security, Safety, and Alignment Posture
+## Dated evidence behind each claim
 
-Agdi adheres to rigorous open-source security standards:
-- **Clean-Slate Zero-Leak Sandbox:** Credentials and private tokens are isolated through encrypted local secret providers; strict `.gitignore` filters ensure private workspace data is never tracked.
-- **One-Confirm Gate for Irreversible Operations:** High-impact file drops, remote deployments, and destructive file-system operations require explicit confirmation tokens before execution.
-- **Automated Dependency & Static Analysis:** Every pull request runs through automated linting, typechecking, smoke testing, and security scans across Linux, macOS, and Windows runners.
+Every row was verified on 2026-09-22 against `HEAD`
+`c289b658b06ecf10861ff39f7af8df14c5427cc8`. Nothing is projected.
 
----
+| Claim | Evidence | Source |
+| ----- | -------- | ------ |
+| 88 workspace packages | `node scripts/check-workspace-package-invariants.mjs --report` prints "passed for 88 packages" | command output |
+| 1 contributor | contributors API returns one account, 34 commits | GitHub API |
+| 0 stars, 0 forks | repository API | GitHub API |
+| No tagged release | `git tag` returns nothing; releases API returns `[]` | git, GitHub API |
+| 1 critical, 16 high advisories | `pnpm audit --prod --json` | command output |
+| Derived from OpenClaw | `README.md` attribution line | repository |
+| Two gates still fail | `format:check` and `test:unit` both end in `\|\| true` | `package.json` |
+| Four provenance questions open | notice questions listed with no owner or expiry | `docs/audits/phase1-release-candidate-checklist.md` |
+| Security and candidate workflows landed | `.github/workflows/security.yml`, `.github/workflows/release-candidate.yml` | repository |
 
-## 6. Project Roadmap & Key Milestones
+## Corrections made 2026-09-22
 
-- **Month 1–2: Deep MCP & Dynamic Tool Discovery**  
-  Implement native Model Context Protocol (MCP) server integration, allowing Agdi agents to dynamically discover and mount external tools at runtime.
-- **Month 3–4: Real-Time Audio & Canvas Protocol**  
-  Integrate OpenAI Realtime API (WebSockets) for voice-driven developer interactions and collaborative visual code canvas manipulation.
-- **Month 5–6: Decentralized Worktree Swarms**  
-  Scale the `GoalEngine` across isolated git worktrees, enabling parallel agent teams to resolve complex multi-repository refactors simultaneously.
+| Removed or changed | Why |
+| ------------------ | --- |
+| "$25,000 Allocation Plan" with four budget lines | Invented. The program provides ChatGPT Pro and API credits, not a published cash amount. |
+| "100% Green Matrix CI" | False. `check:public-branding` failed at the time, `format:check` and `test:unit` were masked, and `typecheck` aborted with exit 134 at the default heap. |
+| "security scans across Linux, macOS, and Windows runners" | No macOS runner and no security-scan job existed. |
+| "Built from the ground up" | Contradicted the repository's own attribution to OpenClaw. |
+| "production-grade", "premium", "zero-latency" | Unverifiable adjectives with no measurement behind them. |
+| Free-form pitch structure | Replaced with the three narrative fields the form actually asks for, each within its 500-character limit. |
+| Grant-credit figure framing | Reframed as API-credit use, which is what the programme offers. |
 
----
+## Codex Security interest
 
-## 7. Verifiable Open Source Track Record
+Request Codex Security only after the threat model and the security workflow have
+produced evidence. Both now exist as files, but neither has run against a public
+release. Relevant surfaces: archive extraction, PDF ingestion, messaging-channel
+ingress, MCP server output, and credential handling. See
+`docs/audits/phase1-security-triage.md` for reachability per finding.
 
-- **100% Green Matrix CI:** Multi-platform GitHub Actions covering Linux, Windows, build artifacts, smoke tests, and linting.
-- **Permissive MIT License:** Unrestricted utility for developers, startups, and researchers worldwide.
-- **Transparent Codebase:** Modern TypeScript, strictly typed architectures, and reproducible pnpm workspaces.
+## Submission record
 
----
-*Generated for the OpenAI Open Source Grant Submission · Maintained by anassagd432*
+Fill this in at submission time. Do not pre-fill it with an expected date.
+
+| Item | Value |
+| ---- | ----- |
+| Submitted on | _(not submitted)_ |
+| Repository SHA | _(unset)_ |
+| Public release URL | _(none exists)_ |
+| Exact submitted text | _(unset)_ |
+| Account email used | _(unset)_ |

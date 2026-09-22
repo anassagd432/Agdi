@@ -1,0 +1,9 @@
+{
+  "id": "helloworld",
+  "channels": [],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

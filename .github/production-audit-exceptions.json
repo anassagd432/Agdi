@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "reviewedOn": "2026-09-22",
+  "maintainer": "anassagd432",
+  "_note": [
+    "Machine-readable registry evaluated by scripts/check-production-audit-policy.mjs.",
+    "The human-readable template and rationale live in docs/audits/phase1-security-exceptions.md.",
+    "",
+    "This file is empty on purpose. On 2026-09-22 `pnpm audit --prod --json` reported",
+    "1 critical and 16 high production advisories, and no exception has been granted,",
+    "so the policy check fails by design. That failure is the release block, not a bug.",
+    "",
+    "Every entry must carry all of: id, module, advisory, severity, owner, grantedOn,",
+    "expiresOn, rationale, reachability, compensatingControl, residualRisk, approvedBy.",
+    "Use \"*\" for module or advisory to match broadly. There is no open-ended exception:",
+    "expiry is a hard stop, and an entry that matches no current advisory is itself a",
+    "violation so the registry shrinks as findings are fixed.",
+    "",
+    "Granting an exception is Anass's decision, not an agent's."
+  ],
+  "exceptions": []
+}

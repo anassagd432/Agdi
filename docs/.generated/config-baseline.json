@@ -43946,7 +43946,7 @@
         "advanced"
       ],
       "label": "Queue Mode by Channel",
-      "help": "Per-channel queue mode overrides keyed by provider id (for example telegram, discord, slack). Use this when one channel’s traffic pattern needs different queue behavior than global defaults.",
+      "help": "Per-channel queue mode overrides keyed by provider id (for example telegram, discord, slack). Use this when one channelâ€™s traffic pattern needs different queue behavior than global defaults.",
       "hasChildren": true
     },
     {
@@ -44168,7 +44168,7 @@
         "advanced"
       ],
       "label": "Status Reactions",
-      "help": "Lifecycle status reactions that update the emoji on the trigger message as the agent progresses (queued → thinking → tool → done/error).",
+      "help": "Lifecycle status reactions that update the emoji on the trigger message as the agent progresses (queued â†’ thinking â†’ tool â†’ done/error).",
       "hasChildren": true
     },
     {
@@ -44364,7 +44364,7 @@
         "advanced"
       ],
       "label": "Suppress Tool Error Warnings",
-      "help": "When true, suppress ⚠️ tool-error warnings from being shown to the user. The agent already sees errors in context and can retry. Default: false.",
+      "help": "When true, suppress âš ï¸ tool-error warnings from being shown to the user. The agent already sees errors in context and can retry. Default: false.",
       "hasChildren": false
     },
     {
@@ -46432,7 +46432,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/amazon-bedrock-provider",
+      "label": "@openclaw/amazon-bedrock",
       "help": "OpenClaw Amazon Bedrock provider plugin (plugin: amazon-bedrock)",
       "hasChildren": true
     },
@@ -46446,7 +46446,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/amazon-bedrock-provider Config",
+      "label": "@openclaw/amazon-bedrock Config",
       "help": "Plugin-defined config payload for amazon-bedrock.",
       "hasChildren": false
     },
@@ -46460,7 +46460,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/amazon-bedrock-provider",
+      "label": "Enable @openclaw/amazon-bedrock",
       "hasChildren": false
     },
     {
@@ -46553,7 +46553,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/anthropic-provider",
+      "label": "@openclaw/anthropic",
       "help": "OpenClaw Anthropic provider plugin (plugin: anthropic)",
       "hasChildren": true
     },
@@ -46567,7 +46567,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/anthropic-provider Config",
+      "label": "@openclaw/anthropic Config",
       "help": "Plugin-defined config payload for anthropic.",
       "hasChildren": false
     },
@@ -46581,7 +46581,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/anthropic-provider",
+      "label": "Enable @openclaw/anthropic",
       "hasChildren": false
     },
     {
@@ -46795,7 +46795,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/brave-plugin",
+      "label": "@openclaw/brave",
       "help": "OpenClaw Brave plugin (plugin: brave)",
       "hasChildren": true
     },
@@ -46809,7 +46809,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/brave-plugin Config",
+      "label": "@openclaw/brave Config",
       "help": "Plugin-defined config payload for brave.",
       "hasChildren": true
     },
@@ -46869,7 +46869,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/brave-plugin",
+      "label": "Enable @openclaw/brave",
       "hasChildren": false
     },
     {
@@ -46962,7 +46962,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/byteplus-provider",
+      "label": "@openclaw/byteplus",
       "help": "OpenClaw BytePlus provider plugin (plugin: byteplus)",
       "hasChildren": true
     },
@@ -46976,7 +46976,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/byteplus-provider Config",
+      "label": "@openclaw/byteplus Config",
       "help": "Plugin-defined config payload for byteplus.",
       "hasChildren": false
     },
@@ -46990,7 +46990,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/byteplus-provider",
+      "label": "Enable @openclaw/byteplus",
       "hasChildren": false
     },
     {
@@ -47083,7 +47083,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/chutes-provider",
+      "label": "@openclaw/chutes",
       "help": "OpenClaw Chutes.ai provider plugin (plugin: chutes)",
       "hasChildren": true
     },
@@ -47097,7 +47097,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/chutes-provider Config",
+      "label": "@openclaw/chutes Config",
       "help": "Plugin-defined config payload for chutes.",
       "hasChildren": false
     },
@@ -47111,7 +47111,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/chutes-provider",
+      "label": "Enable @openclaw/chutes",
       "hasChildren": false
     },
     {
@@ -47204,7 +47204,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/cloudflare-ai-gateway-provider",
+      "label": "@openclaw/cloudflare-ai-gateway",
       "help": "OpenClaw Cloudflare AI Gateway provider plugin (plugin: cloudflare-ai-gateway)",
       "hasChildren": true
     },
@@ -47218,7 +47218,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/cloudflare-ai-gateway-provider Config",
+      "label": "@openclaw/cloudflare-ai-gateway Config",
       "help": "Plugin-defined config payload for cloudflare-ai-gateway.",
       "hasChildren": false
     },
@@ -47232,7 +47232,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/cloudflare-ai-gateway-provider",
+      "label": "Enable @openclaw/cloudflare-ai-gateway",
       "hasChildren": false
     },
     {
@@ -47446,7 +47446,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/deepgram-provider",
+      "label": "@openclaw/deepgram",
       "help": "OpenClaw Deepgram media-understanding provider (plugin: deepgram)",
       "hasChildren": true
     },
@@ -47460,7 +47460,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/deepgram-provider Config",
+      "label": "@openclaw/deepgram Config",
       "help": "Plugin-defined config payload for deepgram.",
       "hasChildren": false
     },
@@ -47474,7 +47474,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/deepgram-provider",
+      "label": "Enable @openclaw/deepgram",
       "hasChildren": false
     },
     {
@@ -47567,7 +47567,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/deepseek-provider",
+      "label": "@openclaw/deepseek",
       "help": "OpenClaw DeepSeek provider plugin (plugin: deepseek)",
       "hasChildren": true
     },
@@ -47581,7 +47581,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/deepseek-provider Config",
+      "label": "@openclaw/deepseek Config",
       "help": "Plugin-defined config payload for deepseek.",
       "hasChildren": false
     },
@@ -47595,7 +47595,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/deepseek-provider",
+      "label": "Enable @openclaw/deepseek",
       "hasChildren": false
     },
     {
@@ -48523,7 +48523,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/duckduckgo-plugin",
+      "label": "@openclaw/duckduckgo",
       "help": "OpenClaw DuckDuckGo plugin (plugin: duckduckgo)",
       "hasChildren": true
     },
@@ -48537,7 +48537,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/duckduckgo-plugin Config",
+      "label": "@openclaw/duckduckgo Config",
       "help": "Plugin-defined config payload for duckduckgo.",
       "hasChildren": true
     },
@@ -48594,7 +48594,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/duckduckgo-plugin",
+      "label": "Enable @openclaw/duckduckgo",
       "hasChildren": false
     },
     {
@@ -48687,7 +48687,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/elevenlabs-speech",
+      "label": "@openclaw/elevenlabs",
       "help": "OpenClaw ElevenLabs speech plugin (plugin: elevenlabs)",
       "hasChildren": true
     },
@@ -48701,7 +48701,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/elevenlabs-speech Config",
+      "label": "@openclaw/elevenlabs Config",
       "help": "Plugin-defined config payload for elevenlabs.",
       "hasChildren": false
     },
@@ -48715,7 +48715,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/elevenlabs-speech",
+      "label": "Enable @openclaw/elevenlabs",
       "hasChildren": false
     },
     {
@@ -48808,7 +48808,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/exa-plugin",
+      "label": "@openclaw/exa",
       "help": "OpenClaw Exa plugin (plugin: exa)",
       "hasChildren": true
     },
@@ -48822,7 +48822,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/exa-plugin Config",
+      "label": "@openclaw/exa Config",
       "help": "Plugin-defined config payload for exa.",
       "hasChildren": true
     },
@@ -48864,7 +48864,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/exa-plugin",
+      "label": "Enable @openclaw/exa",
       "hasChildren": false
     },
     {
@@ -48957,7 +48957,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/fal-provider",
+      "label": "@openclaw/fal",
       "help": "OpenClaw fal provider plugin (plugin: fal)",
       "hasChildren": true
     },
@@ -48971,7 +48971,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/fal-provider Config",
+      "label": "@openclaw/fal Config",
       "help": "Plugin-defined config payload for fal.",
       "hasChildren": false
     },
@@ -48985,7 +48985,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/fal-provider",
+      "label": "Enable @openclaw/fal",
       "hasChildren": false
     },
     {
@@ -49199,7 +49199,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/firecrawl-plugin",
+      "label": "@openclaw/firecrawl",
       "help": "OpenClaw Firecrawl plugin (plugin: firecrawl)",
       "hasChildren": true
     },
@@ -49213,7 +49213,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/firecrawl-plugin Config",
+      "label": "@openclaw/firecrawl Config",
       "help": "Plugin-defined config payload for firecrawl.",
       "hasChildren": true
     },
@@ -49269,7 +49269,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/firecrawl-plugin",
+      "label": "Enable @openclaw/firecrawl",
       "hasChildren": false
     },
     {
@@ -49362,7 +49362,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/github-copilot-provider",
+      "label": "@openclaw/github-copilot",
       "help": "OpenClaw GitHub Copilot provider plugin (plugin: github-copilot)",
       "hasChildren": true
     },
@@ -49376,7 +49376,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/github-copilot-provider Config",
+      "label": "@openclaw/github-copilot Config",
       "help": "Plugin-defined config payload for github-copilot.",
       "hasChildren": false
     },
@@ -49390,7 +49390,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/github-copilot-provider",
+      "label": "Enable @openclaw/github-copilot",
       "hasChildren": false
     },
     {
@@ -49483,9 +49483,130 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/google-plugin",
+      "label": "@openclaw/google",
       "help": "OpenClaw Google plugin (plugin: google)",
       "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/google-gemini-cli-auth",
+      "help": "google-gemini-cli-auth plugin (plugin: google-gemini-cli-auth)",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.config",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/google-gemini-cli-auth Config",
+      "help": "Plugin-defined config payload for google-gemini-cli-auth.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.enabled",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Enable @openclaw/google-gemini-cli-auth",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.hooks",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Hook Policy",
+      "help": "Per-plugin typed hook policy controls for core-enforced safety gates. Use this to constrain high-impact hook categories without disabling the entire plugin.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.hooks.allowPromptInjection",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Prompt Injection Hooks",
+      "help": "Controls whether this plugin may mutate prompts through typed hooks. Set false to block `before_prompt_build` and ignore prompt-mutating fields from legacy `before_agent_start`, while preserving legacy `modelOverride` and `providerOverride` behavior.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.subagent",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Subagent Policy",
+      "help": "Per-plugin subagent runtime controls for model override trust and allowlists. Keep this unset unless a plugin must explicitly steer subagent model selection.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.subagent.allowedModels",
+      "kind": "plugin",
+      "type": "array",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Plugin Subagent Allowed Models",
+      "help": "Allowed override targets for trusted plugin subagent runs as canonical \"provider/model\" refs. Use \"*\" only when you intentionally allow any model.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.subagent.allowedModels.*",
+      "kind": "plugin",
+      "type": "string",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [],
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.google-gemini-cli-auth.subagent.allowModelOverride",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Plugin Subagent Model Override",
+      "help": "Explicitly allows this plugin to request provider/model overrides in background subagent runs. Keep false unless the plugin is trusted to steer model selection.",
+      "hasChildren": false
     },
     {
       "path": "plugins.entries.google.config",
@@ -49497,7 +49618,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/google-plugin Config",
+      "label": "@openclaw/google Config",
       "help": "Plugin-defined config payload for google.",
       "hasChildren": true
     },
@@ -49553,7 +49674,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/google-plugin",
+      "label": "Enable @openclaw/google",
       "hasChildren": false
     },
     {
@@ -49767,7 +49888,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/groq-provider",
+      "label": "@openclaw/groq",
       "help": "OpenClaw Groq media-understanding provider (plugin: groq)",
       "hasChildren": true
     },
@@ -49781,7 +49902,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/groq-provider Config",
+      "label": "@openclaw/groq Config",
       "help": "Plugin-defined config payload for groq.",
       "hasChildren": false
     },
@@ -49795,7 +49916,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/groq-provider",
+      "label": "Enable @openclaw/groq",
       "hasChildren": false
     },
     {
@@ -49879,6 +50000,127 @@
       "hasChildren": false
     },
     {
+      "path": "plugins.entries.helloworld",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/helloworld",
+      "help": "helloworld plugin (plugin: helloworld)",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.helloworld.config",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/helloworld Config",
+      "help": "Plugin-defined config payload for helloworld.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.helloworld.enabled",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Enable @openclaw/helloworld",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.helloworld.hooks",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Hook Policy",
+      "help": "Per-plugin typed hook policy controls for core-enforced safety gates. Use this to constrain high-impact hook categories without disabling the entire plugin.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.helloworld.hooks.allowPromptInjection",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Prompt Injection Hooks",
+      "help": "Controls whether this plugin may mutate prompts through typed hooks. Set false to block `before_prompt_build` and ignore prompt-mutating fields from legacy `before_agent_start`, while preserving legacy `modelOverride` and `providerOverride` behavior.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.helloworld.subagent",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Subagent Policy",
+      "help": "Per-plugin subagent runtime controls for model override trust and allowlists. Keep this unset unless a plugin must explicitly steer subagent model selection.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.helloworld.subagent.allowedModels",
+      "kind": "plugin",
+      "type": "array",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Plugin Subagent Allowed Models",
+      "help": "Allowed override targets for trusted plugin subagent runs as canonical \"provider/model\" refs. Use \"*\" only when you intentionally allow any model.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.helloworld.subagent.allowedModels.*",
+      "kind": "plugin",
+      "type": "string",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [],
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.helloworld.subagent.allowModelOverride",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Plugin Subagent Model Override",
+      "help": "Explicitly allows this plugin to request provider/model overrides in background subagent runs. Keep false unless the plugin is trusted to steer model selection.",
+      "hasChildren": false
+    },
+    {
       "path": "plugins.entries.huggingface",
       "kind": "plugin",
       "type": "object",
@@ -49888,7 +50130,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/huggingface-provider",
+      "label": "@openclaw/huggingface",
       "help": "OpenClaw Hugging Face provider plugin (plugin: huggingface)",
       "hasChildren": true
     },
@@ -49902,7 +50144,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/huggingface-provider Config",
+      "label": "@openclaw/huggingface Config",
       "help": "Plugin-defined config payload for huggingface.",
       "hasChildren": false
     },
@@ -49916,7 +50158,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/huggingface-provider",
+      "label": "Enable @openclaw/huggingface",
       "hasChildren": false
     },
     {
@@ -50251,7 +50493,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/kilocode-provider",
+      "label": "@openclaw/kilocode",
       "help": "OpenClaw Kilo Gateway provider plugin (plugin: kilocode)",
       "hasChildren": true
     },
@@ -50265,7 +50507,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/kilocode-provider Config",
+      "label": "@openclaw/kilocode Config",
       "help": "Plugin-defined config payload for kilocode.",
       "hasChildren": false
     },
@@ -50279,7 +50521,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/kilocode-provider",
+      "label": "Enable @openclaw/kilocode",
       "hasChildren": false
     },
     {
@@ -50363,7 +50605,7 @@
       "hasChildren": false
     },
     {
-      "path": "plugins.entries.kimi",
+      "path": "plugins.entries.kimi-coding",
       "kind": "plugin",
       "type": "object",
       "required": false,
@@ -50372,12 +50614,12 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/kimi-provider",
-      "help": "OpenClaw Kimi provider plugin (plugin: kimi)",
+      "label": "@openclaw/kimi-coding",
+      "help": "OpenClaw Kimi provider plugin (plugin: kimi-coding)",
       "hasChildren": true
     },
     {
-      "path": "plugins.entries.kimi.config",
+      "path": "plugins.entries.kimi-coding.config",
       "kind": "plugin",
       "type": "object",
       "required": false,
@@ -50386,12 +50628,12 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/kimi-provider Config",
-      "help": "Plugin-defined config payload for kimi.",
+      "label": "@openclaw/kimi-coding Config",
+      "help": "Plugin-defined config payload for kimi-coding.",
       "hasChildren": false
     },
     {
-      "path": "plugins.entries.kimi.enabled",
+      "path": "plugins.entries.kimi-coding.enabled",
       "kind": "plugin",
       "type": "boolean",
       "required": false,
@@ -50400,11 +50642,11 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/kimi-provider",
+      "label": "Enable @openclaw/kimi-coding",
       "hasChildren": false
     },
     {
-      "path": "plugins.entries.kimi.hooks",
+      "path": "plugins.entries.kimi-coding.hooks",
       "kind": "plugin",
       "type": "object",
       "required": false,
@@ -50418,7 +50660,7 @@
       "hasChildren": true
     },
     {
-      "path": "plugins.entries.kimi.hooks.allowPromptInjection",
+      "path": "plugins.entries.kimi-coding.hooks.allowPromptInjection",
       "kind": "plugin",
       "type": "boolean",
       "required": false,
@@ -50432,7 +50674,7 @@
       "hasChildren": false
     },
     {
-      "path": "plugins.entries.kimi.subagent",
+      "path": "plugins.entries.kimi-coding.subagent",
       "kind": "plugin",
       "type": "object",
       "required": false,
@@ -50446,7 +50688,7 @@
       "hasChildren": true
     },
     {
-      "path": "plugins.entries.kimi.subagent.allowedModels",
+      "path": "plugins.entries.kimi-coding.subagent.allowedModels",
       "kind": "plugin",
       "type": "array",
       "required": false,
@@ -50460,7 +50702,7 @@
       "hasChildren": true
     },
     {
-      "path": "plugins.entries.kimi.subagent.allowedModels.*",
+      "path": "plugins.entries.kimi-coding.subagent.allowedModels.*",
       "kind": "plugin",
       "type": "string",
       "required": false,
@@ -50470,7 +50712,7 @@
       "hasChildren": false
     },
     {
-      "path": "plugins.entries.kimi.subagent.allowModelOverride",
+      "path": "plugins.entries.kimi-coding.subagent.allowModelOverride",
       "kind": "plugin",
       "type": "boolean",
       "required": false,
@@ -51539,9 +51781,130 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/microsoft-speech",
+      "label": "@openclaw/microsoft",
       "help": "OpenClaw Microsoft speech plugin (plugin: microsoft)",
       "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/microsoft-foundry",
+      "help": "microsoft-foundry plugin (plugin: microsoft-foundry)",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.config",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "@openclaw/microsoft-foundry Config",
+      "help": "Plugin-defined config payload for microsoft-foundry.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.enabled",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Enable @openclaw/microsoft-foundry",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.hooks",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Hook Policy",
+      "help": "Per-plugin typed hook policy controls for core-enforced safety gates. Use this to constrain high-impact hook categories without disabling the entire plugin.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.hooks.allowPromptInjection",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Prompt Injection Hooks",
+      "help": "Controls whether this plugin may mutate prompts through typed hooks. Set false to block `before_prompt_build` and ignore prompt-mutating fields from legacy `before_agent_start`, while preserving legacy `modelOverride` and `providerOverride` behavior.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.subagent",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Subagent Policy",
+      "help": "Per-plugin subagent runtime controls for model override trust and allowlists. Keep this unset unless a plugin must explicitly steer subagent model selection.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.subagent.allowedModels",
+      "kind": "plugin",
+      "type": "array",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Plugin Subagent Allowed Models",
+      "help": "Allowed override targets for trusted plugin subagent runs as canonical \"provider/model\" refs. Use \"*\" only when you intentionally allow any model.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.subagent.allowedModels.*",
+      "kind": "plugin",
+      "type": "string",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [],
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.microsoft-foundry.subagent.allowModelOverride",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Plugin Subagent Model Override",
+      "help": "Explicitly allows this plugin to request provider/model overrides in background subagent runs. Keep false unless the plugin is trusted to steer model selection.",
+      "hasChildren": false
     },
     {
       "path": "plugins.entries.microsoft.config",
@@ -51553,7 +51916,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/microsoft-speech Config",
+      "label": "@openclaw/microsoft Config",
       "help": "Plugin-defined config payload for microsoft.",
       "hasChildren": false
     },
@@ -51567,7 +51930,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/microsoft-speech",
+      "label": "Enable @openclaw/microsoft",
       "hasChildren": false
     },
     {
@@ -51660,9 +52023,130 @@
       "tags": [
         "performance"
       ],
-      "label": "@openclaw/minimax-provider",
+      "label": "@openclaw/minimax",
       "help": "OpenClaw MiniMax provider and OAuth plugin (plugin: minimax)",
       "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "performance"
+      ],
+      "label": "@openclaw/minimax-portal-auth",
+      "help": "minimax-portal-auth plugin (plugin: minimax-portal-auth)",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.config",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "performance"
+      ],
+      "label": "@openclaw/minimax-portal-auth Config",
+      "help": "Plugin-defined config payload for minimax-portal-auth.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.enabled",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "performance"
+      ],
+      "label": "Enable @openclaw/minimax-portal-auth",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.hooks",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Hook Policy",
+      "help": "Per-plugin typed hook policy controls for core-enforced safety gates. Use this to constrain high-impact hook categories without disabling the entire plugin.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.hooks.allowPromptInjection",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Prompt Injection Hooks",
+      "help": "Controls whether this plugin may mutate prompts through typed hooks. Set false to block `before_prompt_build` and ignore prompt-mutating fields from legacy `before_agent_start`, while preserving legacy `modelOverride` and `providerOverride` behavior.",
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.subagent",
+      "kind": "plugin",
+      "type": "object",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "advanced"
+      ],
+      "label": "Plugin Subagent Policy",
+      "help": "Per-plugin subagent runtime controls for model override trust and allowlists. Keep this unset unless a plugin must explicitly steer subagent model selection.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.subagent.allowedModels",
+      "kind": "plugin",
+      "type": "array",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Plugin Subagent Allowed Models",
+      "help": "Allowed override targets for trusted plugin subagent runs as canonical \"provider/model\" refs. Use \"*\" only when you intentionally allow any model.",
+      "hasChildren": true
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.subagent.allowedModels.*",
+      "kind": "plugin",
+      "type": "string",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [],
+      "hasChildren": false
+    },
+    {
+      "path": "plugins.entries.minimax-portal-auth.subagent.allowModelOverride",
+      "kind": "plugin",
+      "type": "boolean",
+      "required": false,
+      "deprecated": false,
+      "sensitive": false,
+      "tags": [
+        "access"
+      ],
+      "label": "Allow Plugin Subagent Model Override",
+      "help": "Explicitly allows this plugin to request provider/model overrides in background subagent runs. Keep false unless the plugin is trusted to steer model selection.",
+      "hasChildren": false
     },
     {
       "path": "plugins.entries.minimax.config",
@@ -51674,7 +52158,7 @@
       "tags": [
         "performance"
       ],
-      "label": "@openclaw/minimax-provider Config",
+      "label": "@openclaw/minimax Config",
       "help": "Plugin-defined config payload for minimax.",
       "hasChildren": false
     },
@@ -51688,7 +52172,7 @@
       "tags": [
         "performance"
       ],
-      "label": "Enable @openclaw/minimax-provider",
+      "label": "Enable @openclaw/minimax",
       "hasChildren": false
     },
     {
@@ -51781,7 +52265,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/mistral-provider",
+      "label": "@openclaw/mistral",
       "help": "OpenClaw Mistral provider plugin (plugin: mistral)",
       "hasChildren": true
     },
@@ -51795,7 +52279,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/mistral-provider Config",
+      "label": "@openclaw/mistral Config",
       "help": "Plugin-defined config payload for mistral.",
       "hasChildren": false
     },
@@ -51809,7 +52293,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/mistral-provider",
+      "label": "Enable @openclaw/mistral",
       "hasChildren": false
     },
     {
@@ -51902,7 +52386,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/modelstudio-provider",
+      "label": "@openclaw/modelstudio",
       "help": "OpenClaw Model Studio provider plugin (plugin: modelstudio)",
       "hasChildren": true
     },
@@ -51916,7 +52400,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/modelstudio-provider Config",
+      "label": "@openclaw/modelstudio Config",
       "help": "Plugin-defined config payload for modelstudio.",
       "hasChildren": false
     },
@@ -51930,7 +52414,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/modelstudio-provider",
+      "label": "Enable @openclaw/modelstudio",
       "hasChildren": false
     },
     {
@@ -52023,7 +52507,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/moonshot-provider",
+      "label": "@openclaw/moonshot",
       "help": "OpenClaw Moonshot provider plugin (plugin: moonshot)",
       "hasChildren": true
     },
@@ -52037,7 +52521,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/moonshot-provider Config",
+      "label": "@openclaw/moonshot Config",
       "help": "Plugin-defined config payload for moonshot.",
       "hasChildren": true
     },
@@ -52107,7 +52591,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/moonshot-provider",
+      "label": "Enable @openclaw/moonshot",
       "hasChildren": false
     },
     {
@@ -52563,7 +53047,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/nvidia-provider",
+      "label": "@openclaw/nvidia",
       "help": "OpenClaw NVIDIA provider plugin (plugin: nvidia)",
       "hasChildren": true
     },
@@ -52577,7 +53061,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/nvidia-provider Config",
+      "label": "@openclaw/nvidia Config",
       "help": "Plugin-defined config payload for nvidia.",
       "hasChildren": false
     },
@@ -52591,7 +53075,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/nvidia-provider",
+      "label": "Enable @openclaw/nvidia",
       "hasChildren": false
     },
     {
@@ -52684,7 +53168,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/ollama-provider",
+      "label": "@openclaw/ollama",
       "help": "OpenClaw Ollama provider plugin (plugin: ollama)",
       "hasChildren": true
     },
@@ -52698,7 +53182,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/ollama-provider Config",
+      "label": "@openclaw/ollama Config",
       "help": "Plugin-defined config payload for ollama.",
       "hasChildren": false
     },
@@ -52712,7 +53196,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/ollama-provider",
+      "label": "Enable @openclaw/ollama",
       "hasChildren": false
     },
     {
@@ -52926,7 +53410,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/openai-provider",
+      "label": "@openclaw/openai",
       "help": "OpenClaw OpenAI provider plugins (plugin: openai)",
       "hasChildren": true
     },
@@ -52940,7 +53424,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/openai-provider Config",
+      "label": "@openclaw/openai Config",
       "help": "Plugin-defined config payload for openai.",
       "hasChildren": false
     },
@@ -52954,7 +53438,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/openai-provider",
+      "label": "Enable @openclaw/openai",
       "hasChildren": false
     },
     {
@@ -53047,7 +53531,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/opencode-provider",
+      "label": "@openclaw/opencode",
       "help": "OpenClaw OpenCode Zen provider plugin (plugin: opencode)",
       "hasChildren": true
     },
@@ -53061,7 +53545,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/opencode-go-provider",
+      "label": "@openclaw/opencode-go",
       "help": "OpenClaw OpenCode Go provider plugin (plugin: opencode-go)",
       "hasChildren": true
     },
@@ -53075,7 +53559,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/opencode-go-provider Config",
+      "label": "@openclaw/opencode-go Config",
       "help": "Plugin-defined config payload for opencode-go.",
       "hasChildren": false
     },
@@ -53089,7 +53573,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/opencode-go-provider",
+      "label": "Enable @openclaw/opencode-go",
       "hasChildren": false
     },
     {
@@ -53182,7 +53666,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/opencode-provider Config",
+      "label": "@openclaw/opencode Config",
       "help": "Plugin-defined config payload for opencode.",
       "hasChildren": false
     },
@@ -53196,7 +53680,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/opencode-provider",
+      "label": "Enable @openclaw/opencode",
       "hasChildren": false
     },
     {
@@ -53289,7 +53773,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/openrouter-provider",
+      "label": "@openclaw/openrouter",
       "help": "OpenClaw OpenRouter provider plugin (plugin: openrouter)",
       "hasChildren": true
     },
@@ -53303,7 +53787,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/openrouter-provider Config",
+      "label": "@openclaw/openrouter Config",
       "help": "Plugin-defined config payload for openrouter.",
       "hasChildren": false
     },
@@ -53317,7 +53801,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/openrouter-provider",
+      "label": "Enable @openclaw/openrouter",
       "hasChildren": false
     },
     {
@@ -53698,7 +54182,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/perplexity-plugin",
+      "label": "@openclaw/perplexity",
       "help": "OpenClaw Perplexity plugin (plugin: perplexity)",
       "hasChildren": true
     },
@@ -53712,7 +54196,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/perplexity-plugin Config",
+      "label": "@openclaw/perplexity Config",
       "help": "Plugin-defined config payload for perplexity.",
       "hasChildren": true
     },
@@ -53782,7 +54266,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/perplexity-plugin",
+      "label": "Enable @openclaw/perplexity",
       "hasChildren": false
     },
     {
@@ -53996,7 +54480,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/qianfan-provider",
+      "label": "@openclaw/qianfan",
       "help": "OpenClaw Qianfan provider plugin (plugin: qianfan)",
       "hasChildren": true
     },
@@ -54010,7 +54494,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/qianfan-provider Config",
+      "label": "@openclaw/qianfan Config",
       "help": "Plugin-defined config payload for qianfan.",
       "hasChildren": false
     },
@@ -54024,7 +54508,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/qianfan-provider",
+      "label": "Enable @openclaw/qianfan",
       "hasChildren": false
     },
     {
@@ -54117,8 +54601,8 @@
       "tags": [
         "advanced"
       ],
-      "label": "qwen-portal-auth",
-      "help": "Plugin entry for qwen-portal-auth.",
+      "label": "@openclaw/qwen-portal-auth",
+      "help": "qwen-portal-auth plugin (plugin: qwen-portal-auth)",
       "hasChildren": true
     },
     {
@@ -54131,7 +54615,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "qwen-portal-auth Config",
+      "label": "@openclaw/qwen-portal-auth Config",
       "help": "Plugin-defined config payload for qwen-portal-auth.",
       "hasChildren": false
     },
@@ -54145,7 +54629,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable qwen-portal-auth",
+      "label": "Enable @openclaw/qwen-portal-auth",
       "hasChildren": false
     },
     {
@@ -54238,7 +54722,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/sglang-provider",
+      "label": "@openclaw/sglang",
       "help": "OpenClaw SGLang provider plugin (plugin: sglang)",
       "hasChildren": true
     },
@@ -54252,7 +54736,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/sglang-provider Config",
+      "label": "@openclaw/sglang Config",
       "help": "Plugin-defined config payload for sglang.",
       "hasChildren": false
     },
@@ -54266,7 +54750,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/sglang-provider",
+      "label": "Enable @openclaw/sglang",
       "hasChildren": false
     },
     {
@@ -54722,7 +55206,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/synthetic-provider",
+      "label": "@openclaw/synthetic",
       "help": "OpenClaw Synthetic provider plugin (plugin: synthetic)",
       "hasChildren": true
     },
@@ -54736,7 +55220,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/synthetic-provider Config",
+      "label": "@openclaw/synthetic Config",
       "help": "Plugin-defined config payload for synthetic.",
       "hasChildren": false
     },
@@ -54750,7 +55234,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/synthetic-provider",
+      "label": "Enable @openclaw/synthetic",
       "hasChildren": false
     },
     {
@@ -54964,7 +55448,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/tavily-plugin",
+      "label": "@openclaw/tavily",
       "help": "OpenClaw Tavily plugin (plugin: tavily)",
       "hasChildren": true
     },
@@ -54978,7 +55462,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/tavily-plugin Config",
+      "label": "@openclaw/tavily Config",
       "help": "Plugin-defined config payload for tavily.",
       "hasChildren": true
     },
@@ -55034,7 +55518,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/tavily-plugin",
+      "label": "Enable @openclaw/tavily",
       "hasChildren": false
     },
     {
@@ -55528,7 +56012,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/together-provider",
+      "label": "@openclaw/together",
       "help": "OpenClaw Together provider plugin (plugin: together)",
       "hasChildren": true
     },
@@ -55542,7 +56026,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/together-provider Config",
+      "label": "@openclaw/together Config",
       "help": "Plugin-defined config payload for together.",
       "hasChildren": false
     },
@@ -55556,7 +56040,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/together-provider",
+      "label": "Enable @openclaw/together",
       "hasChildren": false
     },
     {
@@ -55770,7 +56254,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/venice-provider",
+      "label": "@openclaw/venice",
       "help": "OpenClaw Venice provider plugin (plugin: venice)",
       "hasChildren": true
     },
@@ -55784,7 +56268,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/venice-provider Config",
+      "label": "@openclaw/venice Config",
       "help": "Plugin-defined config payload for venice.",
       "hasChildren": false
     },
@@ -55798,7 +56282,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/venice-provider",
+      "label": "Enable @openclaw/venice",
       "hasChildren": false
     },
     {
@@ -55891,7 +56375,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/vercel-ai-gateway-provider",
+      "label": "@openclaw/vercel-ai-gateway",
       "help": "OpenClaw Vercel AI Gateway provider plugin (plugin: vercel-ai-gateway)",
       "hasChildren": true
     },
@@ -55905,7 +56389,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/vercel-ai-gateway-provider Config",
+      "label": "@openclaw/vercel-ai-gateway Config",
       "help": "Plugin-defined config payload for vercel-ai-gateway.",
       "hasChildren": false
     },
@@ -55919,7 +56403,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/vercel-ai-gateway-provider",
+      "label": "Enable @openclaw/vercel-ai-gateway",
       "hasChildren": false
     },
     {
@@ -56012,7 +56496,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/vllm-provider",
+      "label": "@openclaw/vllm",
       "help": "OpenClaw vLLM provider plugin (plugin: vllm)",
       "hasChildren": true
     },
@@ -56026,7 +56510,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/vllm-provider Config",
+      "label": "@openclaw/vllm Config",
       "help": "Plugin-defined config payload for vllm.",
       "hasChildren": false
     },
@@ -56040,7 +56524,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/vllm-provider",
+      "label": "Enable @openclaw/vllm",
       "hasChildren": false
     },
     {
@@ -57610,7 +58094,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/volcengine-provider",
+      "label": "@openclaw/volcengine",
       "help": "OpenClaw Volcengine provider plugin (plugin: volcengine)",
       "hasChildren": true
     },
@@ -57624,7 +58108,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/volcengine-provider Config",
+      "label": "@openclaw/volcengine Config",
       "help": "Plugin-defined config payload for volcengine.",
       "hasChildren": false
     },
@@ -57638,7 +58122,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/volcengine-provider",
+      "label": "Enable @openclaw/volcengine",
       "hasChildren": false
     },
     {
@@ -57852,7 +58336,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/xai-plugin",
+      "label": "@openclaw/xai",
       "help": "OpenClaw xAI plugin (plugin: xai)",
       "hasChildren": true
     },
@@ -57866,7 +58350,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/xai-plugin Config",
+      "label": "@openclaw/xai Config",
       "help": "Plugin-defined config payload for xai.",
       "hasChildren": true
     },
@@ -57936,7 +58420,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/xai-plugin",
+      "label": "Enable @openclaw/xai",
       "hasChildren": false
     },
     {
@@ -58029,7 +58513,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/xiaomi-provider",
+      "label": "@openclaw/xiaomi",
       "help": "OpenClaw Xiaomi provider plugin (plugin: xiaomi)",
       "hasChildren": true
     },
@@ -58043,7 +58527,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/xiaomi-provider Config",
+      "label": "@openclaw/xiaomi Config",
       "help": "Plugin-defined config payload for xiaomi.",
       "hasChildren": false
     },
@@ -58057,7 +58541,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/xiaomi-provider",
+      "label": "Enable @openclaw/xiaomi",
       "hasChildren": false
     },
     {
@@ -58150,7 +58634,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/zai-provider",
+      "label": "@openclaw/zai",
       "help": "OpenClaw Z.AI provider plugin (plugin: zai)",
       "hasChildren": true
     },
@@ -58164,7 +58648,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "@openclaw/zai-provider Config",
+      "label": "@openclaw/zai Config",
       "help": "Plugin-defined config payload for zai.",
       "hasChildren": false
     },
@@ -58178,7 +58662,7 @@
       "tags": [
         "advanced"
       ],
-      "label": "Enable @openclaw/zai-provider",
+      "label": "Enable @openclaw/zai",
       "hasChildren": false
     },
     {
@@ -61864,7 +62348,7 @@
         "tools"
       ],
       "label": "Transcript Echo Format",
-      "help": "Format string for the echoed transcript message. Use `{transcript}` as a placeholder for the transcribed text. Default: '📝 \"{transcript}\"'.",
+      "help": "Format string for the echoed transcript message. Use `{transcript}` as a placeholder for the transcribed text. Default: 'ðŸ“ \"{transcript}\"'.",
       "hasChildren": false
     },
     {

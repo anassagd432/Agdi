@@ -1,4 +1,9 @@
-import { cancel, multiselect as clackMultiselect, isCancel } from "@clack/prompts";
+import {
+  cancel,
+  isCancel,
+  multiselect as clackMultiselect,
+  type CANCEL_SYMBOL,
+} from "@clack/prompts";
 import { resolveApiKeyForProvider } from "../../agents/model-auth.js";
 import { type ModelScanResult, scanOpenRouterModels } from "../../agents/model-scan.js";
 import { withProgressTotals } from "../../cli/progress.js";
@@ -26,7 +31,7 @@ const multiselect = <T>(params: Parameters<typeof clackMultiselect<T>>[0]) =>
     ),
   });
 
-function guardPromptCancel<T>(value: T | symbol, runtime: RuntimeEnv): T {
+function guardPromptCancel<T>(value: T | typeof CANCEL_SYMBOL, runtime: RuntimeEnv): T {
   if (isCancel(value)) {
     cancel(stylePromptTitle("Model scan cancelled.") ?? "Model scan cancelled.");
     runtime.exit(0);

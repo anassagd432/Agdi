@@ -1,0 +1,22 @@
+{
+  "name": "@openclaw/thread-ownership",
+  "version": "2026.3.22",
+  "description": "thread-ownership plugin",
+  "type": "module",
+  "devDependencies": {
+    "agdi": "workspace:*"
+  },
+  "peerDependencies": {
+    "agdi": ">=2026.3.22"
+  },
+  "peerDependenciesMeta": {
+    "agdi": {
+      "optional": true
+    }
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

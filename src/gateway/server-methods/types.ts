@@ -34,10 +34,27 @@ export type RespondFn = (
   meta?: Record<string, unknown>,
 ) => void;
 
+/**
+ * Jarvis always-on voice assistant service.
+ *
+ * The Jarvis module is optional; the gateway context only exposes an accessor,
+ * so handlers must treat a missing service as "not initialized".
+ */
+export type JarvisService = {
+  getStatus: () => Record<string, unknown>;
+  isRunning: () => boolean;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+  getConfig: () => Record<string, unknown>;
+  setConfig: (config: Record<string, unknown>) => void;
+};
+
 export type GatewayRequestContext = {
   deps: ReturnType<typeof createDefaultDeps>;
   cron: CronService;
   cronStorePath: string;
+  /** Accessor for the optional Jarvis service; undefined when the module is absent. */
+  getJarvis?: () => JarvisService | undefined;
   execApprovalManager?: ExecApprovalManager;
   loadGatewayModelCatalog: () => Promise<ModelCatalogEntry[]>;
   getHealthCache: () => HealthSummary | null;

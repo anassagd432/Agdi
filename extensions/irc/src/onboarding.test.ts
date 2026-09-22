@@ -1,8 +1,8 @@
 import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 import type { WizardPrompter } from "agdi/plugin-sdk/setup";
 import { describe, expect, it, vi } from "vitest";
-import type { CoreConfig } from "./types.js";
 import { ircOnboardingAdapter } from "./onboarding.js";
+import type { CoreConfig } from "./types.js";
 
 describe("irc onboarding", () => {
   it("configures host and nick via onboarding prompts", async () => {
@@ -10,7 +10,7 @@ describe("irc onboarding", () => {
       intro: vi.fn(async () => {}),
       outro: vi.fn(async () => {}),
       note: vi.fn(async () => {}),
-      select: vi.fn(async () => "allowlist"),
+      select: vi.fn(async () => "allowlist") as WizardPrompter["select"],
       multiselect: vi.fn(async () => []),
       text: vi.fn(async ({ message }: { message: string }) => {
         if (message === "IRC server host") {
@@ -79,7 +79,7 @@ describe("irc onboarding", () => {
       intro: vi.fn(async () => {}),
       outro: vi.fn(async () => {}),
       note: vi.fn(async () => {}),
-      select: vi.fn(async () => "allowlist"),
+      select: vi.fn(async () => "allowlist") as WizardPrompter["select"],
       multiselect: vi.fn(async () => []),
       text: vi.fn(async ({ message }: { message: string }) => {
         if (message === "IRC allowFrom (nick or nick!user@host)") {

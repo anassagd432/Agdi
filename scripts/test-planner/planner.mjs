@@ -1151,7 +1151,10 @@ export function buildCIExecutionManifest(scopeInput = {}, options = {}) {
       ...extensionFastInclude.map((entry) => entry.check_name),
       ...bunChecksInclude.map((entry) => entry.check_name),
       "check",
-      "check-additional",
+      // The dead-code job (`deadcode-informational` in .github/workflows/ci.yml)
+      // is intentionally non-blocking and therefore intentionally absent here.
+      // Listing it as required would let CI claim a green required check that
+      // cannot actually fail. See docs/audits/phase1-ci-integrity.md.
       "build-smoke",
       ...(docsEligible ? ["check-docs"] : []),
       ...(skillsPythonEligible ? ["skills-python"] : []),

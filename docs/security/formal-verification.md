@@ -1,6 +1,6 @@
 ---
 title: Formal Verification (Security Models)
-summary: Machine-checked security models for Agdi’s highest-risk paths.
+summary: TLA+/TLC security model notes and reproduction steps (models repository not reachable as of 2026-09-22).
 read_when:
   - Reviewing formal security model guarantees or limits
   - Reproducing or updating TLA+/TLC security model checks
@@ -8,6 +8,12 @@ permalink: /security/formal-verification/
 ---
 
 # Formal Verification (Security Models)
+
+> **Verification status (2026-09-22).** The models repository referenced on this
+> page returned HTTP 404 when checked, and no model run against this working
+> tree has been observed. Treat every claim below as **design intent that has
+> not been independently reproduced**, not as a verified result for this
+> repository. This page does not establish that Agdi enforces any policy.
 
 This page tracks Agdi’s **formal security models** (TLA+/TLC today; more as needed).
 
@@ -26,7 +32,11 @@ misconfiguration safety), under explicit assumptions.
 
 ## Where the models live
 
-Models are maintained in a separate repo: [vignesh07/agdi-formal-models](https://github.com/vignesh07/agdi-formal-models).
+Models were said to be maintained in a separate repository,
+`vignesh07/agdi-formal-models`. That URL returned HTTP 404 on 2026-09-22, so the
+models are **not currently retrievable**. This section records the intended
+location; it is not evidence that the models exist or that they cover this
+repository.
 
 ## Important caveats
 

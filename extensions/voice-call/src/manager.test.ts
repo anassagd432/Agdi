@@ -1,8 +1,12 @@
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { VoiceCallConfigSchema } from "./config.js";
+import { CallManager } from "./manager.js";
 import type { VoiceCallProvider } from "./providers/base.js";
 import type {
+  GetCallStatusInput,
+  GetCallStatusResult,
   HangupCallInput,
   InitiateCallInput,
   InitiateCallResult,
@@ -13,8 +17,6 @@ import type {
   WebhookContext,
   WebhookVerificationResult,
 } from "./types.js";
-import { VoiceCallConfigSchema } from "./config.js";
-import { CallManager } from "./manager.js";
 
 class FakeProvider implements VoiceCallProvider {
   readonly name = "plivo" as const;
@@ -38,6 +40,9 @@ class FakeProvider implements VoiceCallProvider {
   }
   async startListening(_input: StartListeningInput): Promise<void> {}
   async stopListening(_input: StopListeningInput): Promise<void> {}
+  async getCallStatus(_input: GetCallStatusInput): Promise<GetCallStatusResult> {
+    return { status: "in-progress", isTerminal: false };
+  }
 }
 
 describe("CallManager", () => {
@@ -50,7 +55,7 @@ describe("CallManager", () => {
 
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const manager = new CallManager(config, storePath);
-    manager.initialize(new FakeProvider(), "https://example.com/voice/webhook");
+    await manager.initialize(new FakeProvider(), "https://example.com/voice/webhook");
 
     const { callId, success, error } = await manager.initiateCall("+15550000001");
     expect(success).toBe(true);
@@ -84,7 +89,7 @@ describe("CallManager", () => {
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const provider = new FakeProvider();
     const manager = new CallManager(config, storePath);
-    manager.initialize(provider, "https://example.com/voice/webhook");
+    await manager.initialize(provider, "https://example.com/voice/webhook");
 
     const { callId, success } = await manager.initiateCall("+15550000002", undefined, {
       message: "Hello there",
@@ -106,7 +111,7 @@ describe("CallManager", () => {
     expect(provider.playTtsCalls[0]?.text).toBe("Hello there");
   });
 
-  it("rejects inbound calls with missing caller ID when allowlist enabled", () => {
+  it("rejects inbound calls with missing caller ID when allowlist enabled", async () => {
     const config = VoiceCallConfigSchema.parse({
       enabled: true,
       provider: "plivo",
@@ -118,7 +123,7 @@ describe("CallManager", () => {
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const provider = new FakeProvider();
     const manager = new CallManager(config, storePath);
-    manager.initialize(provider, "https://example.com/voice/webhook");
+    await manager.initialize(provider, "https://example.com/voice/webhook");
 
     manager.processEvent({
       id: "evt-allowlist-missing",
@@ -135,7 +140,7 @@ describe("CallManager", () => {
     expect(provider.hangupCalls[0]?.providerCallId).toBe("provider-missing");
   });
 
-  it("rejects inbound calls with anonymous caller ID when allowlist enabled", () => {
+  it("rejects inbound calls with anonymous caller ID when allowlist enabled", async () => {
     const config = VoiceCallConfigSchema.parse({
       enabled: true,
       provider: "plivo",
@@ -147,7 +152,7 @@ describe("CallManager", () => {
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const provider = new FakeProvider();
     const manager = new CallManager(config, storePath);
-    manager.initialize(provider, "https://example.com/voice/webhook");
+    await manager.initialize(provider, "https://example.com/voice/webhook");
 
     manager.processEvent({
       id: "evt-allowlist-anon",
@@ -165,7 +170,7 @@ describe("CallManager", () => {
     expect(provider.hangupCalls[0]?.providerCallId).toBe("provider-anon");
   });
 
-  it("rejects inbound calls that only match allowlist suffixes", () => {
+  it("rejects inbound calls that only match allowlist suffixes", async () => {
     const config = VoiceCallConfigSchema.parse({
       enabled: true,
       provider: "plivo",
@@ -177,7 +182,7 @@ describe("CallManager", () => {
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const provider = new FakeProvider();
     const manager = new CallManager(config, storePath);
-    manager.initialize(provider, "https://example.com/voice/webhook");
+    await manager.initialize(provider, "https://example.com/voice/webhook");
 
     manager.processEvent({
       id: "evt-allowlist-suffix",
@@ -195,7 +200,7 @@ describe("CallManager", () => {
     expect(provider.hangupCalls[0]?.providerCallId).toBe("provider-suffix");
   });
 
-  it("rejects duplicate inbound events with a single hangup call", () => {
+  it("rejects duplicate inbound events with a single hangup call", async () => {
     const config = VoiceCallConfigSchema.parse({
       enabled: true,
       provider: "plivo",
@@ -206,7 +211,7 @@ describe("CallManager", () => {
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const provider = new FakeProvider();
     const manager = new CallManager(config, storePath);
-    manager.initialize(provider, "https://example.com/voice/webhook");
+    await manager.initialize(provider, "https://example.com/voice/webhook");
 
     manager.processEvent({
       id: "evt-reject-init",
@@ -235,7 +240,7 @@ describe("CallManager", () => {
     expect(provider.hangupCalls[0]?.providerCallId).toBe("provider-dup");
   });
 
-  it("accepts inbound calls that exactly match the allowlist", () => {
+  it("accepts inbound calls that exactly match the allowlist", async () => {
     const config = VoiceCallConfigSchema.parse({
       enabled: true,
       provider: "plivo",
@@ -246,7 +251,7 @@ describe("CallManager", () => {
 
     const storePath = path.join(os.tmpdir(), `agdi-voice-call-test-${Date.now()}`);
     const manager = new CallManager(config, storePath);
-    manager.initialize(new FakeProvider(), "https://example.com/voice/webhook");
+    await manager.initialize(new FakeProvider(), "https://example.com/voice/webhook");
 
     manager.processEvent({
       id: "evt-allowlist-exact",

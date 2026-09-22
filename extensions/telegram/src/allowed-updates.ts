@@ -1,3 +1,4 @@
+import type { FetchOptions } from "@grammyjs/runner";
 import * as grammy from "grammy";
 
 const FALLBACK_ALL_UPDATE_TYPES = [
@@ -53,7 +54,14 @@ export type TelegramUpdateType =
 export const DEFAULT_TELEGRAM_UPDATE_TYPES: ReadonlyArray<TelegramUpdateType> =
   grammy.API_CONSTANTS?.DEFAULT_UPDATE_TYPES ?? FALLBACK_DEFAULT_UPDATE_TYPES;
 
-export function resolveTelegramAllowedUpdates(): ReadonlyArray<TelegramUpdateType> {
+/**
+ * Update types accepted by grammY's `allowed_updates` option.
+ *
+ * Derived from the runner's own `FetchOptions` so the two cannot drift apart.
+ */
+export type TelegramAllowedUpdate = NonNullable<FetchOptions["allowed_updates"]>[number];
+
+export function resolveTelegramAllowedUpdates(): ReadonlyArray<TelegramAllowedUpdate> {
   const updates = [...DEFAULT_TELEGRAM_UPDATE_TYPES] as TelegramUpdateType[];
   if (!updates.includes("message_reaction")) {
     updates.push("message_reaction");
@@ -61,5 +69,10 @@ export function resolveTelegramAllowedUpdates(): ReadonlyArray<TelegramUpdateTyp
   if (!updates.includes("channel_post")) {
     updates.push("channel_post");
   }
-  return updates;
+  // grammY's runtime constant list tracks the live Bot API and can name update
+  // types that the older `Update` shape behind `@grammyjs/runner` does not model
+  // yet (for example `subscription`). Those values are valid for the Bot API, so
+  // they are kept at runtime and only the declared element type is narrowed to the
+  // set the runner accepts.
+  return updates as ReadonlyArray<TelegramAllowedUpdate>;
 }

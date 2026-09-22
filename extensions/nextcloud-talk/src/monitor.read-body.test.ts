@@ -1,5 +1,5 @@
-import type { IncomingMessage } from "node:http";
 import { EventEmitter } from "node:events";
+import type { IncomingMessage } from "node:http";
 import { describe, expect, it } from "vitest";
 import { readNextcloudTalkWebhookBody } from "./monitor.js";
 
@@ -7,8 +7,9 @@ function createMockRequest(chunks: string[]): IncomingMessage {
   const req = new EventEmitter() as IncomingMessage & { destroyed?: boolean; destroy: () => void };
   req.destroyed = false;
   req.headers = {};
-  req.destroy = () => {
+  req.destroy = (_error?: Error) => {
     req.destroyed = true;
+    return req;
   };
 
   void Promise.resolve().then(() => {

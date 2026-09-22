@@ -4,6 +4,7 @@ import {
   isCancel,
   select as clackSelect,
   text as clackText,
+  type CANCEL_SYMBOL,
 } from "@clack/prompts";
 import {
   resolveAgentDir,
@@ -44,8 +45,8 @@ import {
 } from "../provider-auth-helpers.js";
 import { loadValidConfigOrThrow, updateConfig } from "./shared.js";
 
-function guardCancel<T>(value: T | symbol): T {
-  if (typeof value === "symbol" || isCancel(value)) {
+function guardCancel<T>(value: T | typeof CANCEL_SYMBOL): T {
+  if (isCancel(value)) {
     cancel("Cancelled.");
     process.exit(0);
   }

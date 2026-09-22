@@ -1,0 +1,22 @@
+{
+  "name": "@openclaw/phone-control",
+  "version": "2026.3.22",
+  "description": "phone-control plugin",
+  "type": "module",
+  "devDependencies": {
+    "agdi": "workspace:*"
+  },
+  "peerDependencies": {
+    "agdi": ">=2026.3.22"
+  },
+  "peerDependenciesMeta": {
+    "agdi": {
+      "optional": true
+    }
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

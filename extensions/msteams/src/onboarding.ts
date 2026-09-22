@@ -1,10 +1,10 @@
+import type { MSTeamsTeamConfig } from "agdi/plugin-sdk/msteams";
 import type {
   ChannelOnboardingAdapter,
   ChannelOnboardingDmPolicy,
   AGDIConfig,
   DmPolicy,
   WizardPrompter,
-  MSTeamsTeamConfig,
 } from "agdi/plugin-sdk/setup";
 import {
   addWildcardAllowFrom,
@@ -17,7 +17,7 @@ import {
   resolveMSTeamsChannelAllowlist,
   resolveMSTeamsUserAllowlist,
 } from "./resolve-allowlist.js";
-import { resolveMSTeamsCredentials } from "./token.js";
+import { hasConfiguredMSTeamsCredentials, resolveMSTeamsCredentials } from "./token.js";
 
 const channel = "msteams" as const;
 
@@ -241,11 +241,7 @@ export const msteamsOnboardingAdapter: ChannelOnboardingAdapter = {
   },
   configure: async ({ cfg, prompter }) => {
     const resolved = resolveMSTeamsCredentials(cfg.channels?.msteams);
-    const hasConfigCreds = Boolean(
-      cfg.channels?.msteams?.appId?.trim() &&
-      cfg.channels?.msteams?.appPassword?.trim() &&
-      cfg.channels?.msteams?.tenantId?.trim(),
-    );
+    const hasConfigCreds = hasConfiguredMSTeamsCredentials(cfg.channels?.msteams);
     const canUseEnv = Boolean(
       !hasConfigCreds &&
       process.env.MSTEAMS_APP_ID?.trim() &&

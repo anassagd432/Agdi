@@ -5,6 +5,31 @@ import { pathToFileURL } from "node:url";
 
 const WINDOWS_UNSAFE_CMD_CHARS_RE = /[&|<>^%\r\n]/;
 
+/**
+ * Dependency fields where a bundled plugin legitimately declares the host package.
+ *
+ * Inside the monorepo the host is a `workspace:*` devDependency (so plugin sources
+ * type-check against the local host) and an optional `peerDependencies` entry (so
+ * published installs can satisfy it). Neither form is resolvable once the manifest is
+ * copied into `dist/extensions/<id>/`: `workspace:*` only resolves inside the pnpm
+ * workspace, and the host is not a real npm dependency of its own bundled plugins.
+ * `npm install --omit=dev` rejects the leftover `workspace:` protocol outright with
+ * EUNSUPPORTEDPROTOCOL, which is what broke bundled runtime staging.
+ */
+const HOST_PACKAGE_STRIPPABLE_FIELDS = [
+  "devDependencies",
+  "peerDependencies",
+  "peerDependenciesMeta",
+];
+
+/**
+ * Dependency fields where a host-package declaration is a real defect rather than
+ * expected monorepo metadata. A bundled plugin must never depend on the host at
+ * runtime, so staging fails loudly here instead of quietly rewriting the manifest
+ * into something installable but wrong.
+ */
+const HOST_PACKAGE_FORBIDDEN_FIELDS = ["dependencies", "optionalDependencies"];
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
@@ -37,51 +62,105 @@ function hasRuntimeDeps(packageJson) {
   );
 }
 
+// `openclaw` here is the bundled plugin metadata namespace (the same one used by
+// `openclaw.plugin.json` and `openclaw.install`), not the host npm package name. Do not
+// confuse it with the host package identity resolved by `resolveHostPackageName`.
 function shouldStageRuntimeDeps(packageJson) {
   return packageJson.openclaw?.bundle?.stageRuntimeDependencies === true;
 }
 
-function sanitizeBundledManifestForRuntimeInstall(pluginDir) {
-  const manifestPath = path.join(pluginDir, "package.json");
-  const packageJson = readJson(manifestPath);
-  let changed = false;
+function hasOwnDependency(container, name) {
+  return (
+    container !== null &&
+    typeof container === "object" &&
+    !Array.isArray(container) &&
+    Object.hasOwn(container, name)
+  );
+}
 
-  if (packageJson.peerDependencies?.openclaw) {
-    const nextPeerDependencies = { ...packageJson.peerDependencies };
-    delete nextPeerDependencies.openclaw;
-    if (Object.keys(nextPeerDependencies).length === 0) {
-      delete packageJson.peerDependencies;
-    } else {
-      packageJson.peerDependencies = nextPeerDependencies;
+/**
+ * Derive the host package identity from authoritative repository metadata (the root
+ * manifest `name`) instead of hard-coding it. A hard-coded list silently goes stale on
+ * a host rename, which is exactly how the `openclaw` -> `agdi` rename left `agdi:
+ * workspace:*` behind in every staged bundled plugin manifest.
+ */
+export function resolveHostPackageName(params = {}) {
+  const repoRoot = params.repoRoot ?? process.cwd();
+  const readJsonImpl = params.readJson ?? readJson;
+  const manifestPath = path.join(repoRoot, "package.json");
+
+  let manifest;
+  try {
+    manifest = readJsonImpl(manifestPath);
+  } catch (error) {
+    throw new Error(
+      `cannot derive the host package name: failed to read ${manifestPath} (${
+        error instanceof Error ? error.message : String(error)
+      })`,
+    );
+  }
+
+  const name = typeof manifest?.name === "string" ? manifest.name.trim() : "";
+  if (name.length === 0) {
+    throw new Error(
+      `cannot derive the host package name: ${manifestPath} has no non-empty "name" field.`,
+    );
+  }
+  return name;
+}
+
+/**
+ * Remove the host package from a staged bundled plugin manifest.
+ *
+ * Only the resolved host package is touched. Genuine plugin dependencies and peer
+ * dependencies are preserved verbatim, including the `openclaw` plugin metadata
+ * namespace (`openclaw.plugin.json` / `openclaw.install` / `openclaw.bundle`), which is
+ * a plugin manifest convention and is unrelated to the npm host package name.
+ *
+ * Returns a new manifest object; the input is never mutated.
+ */
+export function stripHostPackageDeclarations(packageJson, hostPackageName) {
+  const forbiddenFields = HOST_PACKAGE_FORBIDDEN_FIELDS.filter((field) =>
+    hasOwnDependency(packageJson?.[field], hostPackageName),
+  );
+  if (forbiddenFields.length > 0) {
+    throw new Error(
+      `bundled plugin manifest declares the host package "${hostPackageName}" in ${forbiddenFields.join(
+        ", ",
+      )}. A bundled plugin must not depend on the host at runtime; fix the plugin manifest rather than relying on staging to strip it.`,
+    );
+  }
+
+  const nextManifest = { ...packageJson };
+  const removedFields = [];
+  for (const field of HOST_PACKAGE_STRIPPABLE_FIELDS) {
+    if (!hasOwnDependency(nextManifest[field], hostPackageName)) {
+      continue;
     }
-    changed = true;
-  }
-
-  if (packageJson.peerDependenciesMeta?.openclaw) {
-    const nextPeerDependenciesMeta = { ...packageJson.peerDependenciesMeta };
-    delete nextPeerDependenciesMeta.openclaw;
-    if (Object.keys(nextPeerDependenciesMeta).length === 0) {
-      delete packageJson.peerDependenciesMeta;
+    const remaining = { ...nextManifest[field] };
+    delete remaining[hostPackageName];
+    if (Object.keys(remaining).length === 0) {
+      delete nextManifest[field];
     } else {
-      packageJson.peerDependenciesMeta = nextPeerDependenciesMeta;
+      nextManifest[field] = remaining;
     }
-    changed = true;
+    removedFields.push(field);
   }
 
-  if (packageJson.devDependencies?.openclaw) {
-    const nextDevDependencies = { ...packageJson.devDependencies };
-    delete nextDevDependencies.openclaw;
-    if (Object.keys(nextDevDependencies).length === 0) {
-      delete packageJson.devDependencies;
-    } else {
-      packageJson.devDependencies = nextDevDependencies;
-    }
-    changed = true;
-  }
+  return {
+    packageJson: nextManifest,
+    changed: removedFields.length > 0,
+    removedFields,
+  };
+}
 
-  if (changed) {
-    writeJson(manifestPath, packageJson);
+export function sanitizeBundledManifestForRuntimeInstall(params) {
+  const manifestPath = path.join(params.pluginDir, "package.json");
+  const result = stripHostPackageDeclarations(readJson(manifestPath), params.hostPackageName);
+  if (result.changed) {
+    writeJson(manifestPath, result.packageJson);
   }
+  return result;
 }
 
 export function resolveNpmRunner(params = {}) {
@@ -176,6 +255,18 @@ function resolvePathEnvKey(env) {
   return Object.keys(env).find((key) => key.toLowerCase() === "path") ?? "PATH";
 }
 
+/**
+ * pnpm may export this setting while running workspace scripts. npm 11 rejects it
+ * for project-scoped installs, even when the child explicitly uses
+ * `--ignore-scripts`. The staged plugin install is intentionally isolated and
+ * script-free, so do not leak that pnpm-only setting into npm.
+ */
+export function sanitizeNpmInstallEnv(env) {
+  return Object.fromEntries(
+    Object.entries(env).filter(([key]) => key.toLowerCase() !== "npm_config_allow_scripts"),
+  );
+}
+
 function escapeForCmdExe(arg) {
   if (WINDOWS_UNSAFE_CMD_CHARS_RE.test(arg)) {
     throw new Error(`unsafe Windows cmd.exe argument detected: ${JSON.stringify(arg)}`);
@@ -190,8 +281,7 @@ function buildCmdExeCommandLine(command, args) {
   return [escapeForCmdExe(command), ...args.map(escapeForCmdExe)].join(" ");
 }
 
-function installPluginRuntimeDeps(pluginDir, pluginId) {
-  sanitizeBundledManifestForRuntimeInstall(pluginDir);
+function installPluginRuntimeDeps(params) {
   const npmRunner = resolveNpmRunner({
     npmArgs: [
       "install",
@@ -203,9 +293,9 @@ function installPluginRuntimeDeps(pluginDir, pluginId) {
     ],
   });
   const result = spawnSync(npmRunner.command, npmRunner.args, {
-    cwd: pluginDir,
+    cwd: params.pluginDir,
     encoding: "utf8",
-    env: npmRunner.env,
+    env: sanitizeNpmInstallEnv(npmRunner.env ?? process.env),
     stdio: "pipe",
     shell: npmRunner.shell,
     windowsVerbatimArguments: npmRunner.windowsVerbatimArguments,
@@ -213,23 +303,31 @@ function installPluginRuntimeDeps(pluginDir, pluginId) {
   if (result.status === 0) {
     return;
   }
-  const output = [result.stderr, result.stdout].filter(Boolean).join("\n").trim();
+  const output = [result.error?.message, result.stderr, result.stdout]
+    .filter(Boolean)
+    .join("\n")
+    .trim();
   throw new Error(
-    `failed to stage bundled runtime deps for ${pluginId}: ${output || "npm install failed"}`,
+    `failed to stage bundled runtime deps for ${params.pluginId}: ${output || "npm install failed"}`,
   );
 }
 
 export function stageBundledPluginRuntimeDeps(params = {}) {
   const repoRoot = params.cwd ?? params.repoRoot ?? process.cwd();
+  const hostPackageName = params.hostPackageName ?? resolveHostPackageName({ repoRoot });
+
   for (const pluginDir of listBundledPluginRuntimeDirs(repoRoot)) {
     const pluginId = path.basename(pluginDir);
-    const packageJson = readJson(path.join(pluginDir, "package.json"));
-    const nodeModulesDir = path.join(pluginDir, "node_modules");
-    removePathIfExists(nodeModulesDir);
-    if (!hasRuntimeDeps(packageJson) || !shouldStageRuntimeDeps(packageJson)) {
+    removePathIfExists(path.join(pluginDir, "node_modules"));
+
+    // Normalize every staged manifest, not only the ones that install here, so the
+    // packed artifact never carries a `workspace:` host declaration at any plugin path.
+    const sanitized = sanitizeBundledManifestForRuntimeInstall({ pluginDir, hostPackageName });
+    if (!hasRuntimeDeps(sanitized.packageJson) || !shouldStageRuntimeDeps(sanitized.packageJson)) {
       continue;
     }
-    installPluginRuntimeDeps(pluginDir, pluginId);
+
+    installPluginRuntimeDeps({ pluginDir, pluginId });
   }
 }
 

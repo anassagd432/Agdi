@@ -1,8 +1,13 @@
-import type { AGDIConfig } from "agdi/plugin-sdk/setup";
 import type { PluginRuntime } from "agdi/plugin-sdk/runtime-store";
+import type { AGDIConfig } from "agdi/plugin-sdk/setup";
 import { describe, expect, it, vi } from "vitest";
 import { linePlugin } from "./channel.js";
 import { setLineRuntime } from "./runtime.js";
+
+const startAccount = linePlugin.gateway?.startAccount;
+if (!startAccount) {
+  throw new Error("linePlugin.gateway.startAccount is required for these startup tests");
+}
 
 function createRuntime() {
   const probeLineBot = vi.fn(async () => ({ ok: false }));
@@ -48,7 +53,7 @@ describe("linePlugin gateway.startAccount", () => {
     setLineRuntime(runtime);
 
     await expect(
-      linePlugin.gateway.startAccount(
+      startAccount(
         createStartAccountCtx({
           token: "token",
           secret: "   ",
@@ -66,7 +71,7 @@ describe("linePlugin gateway.startAccount", () => {
     setLineRuntime(runtime);
 
     await expect(
-      linePlugin.gateway.startAccount(
+      startAccount(
         createStartAccountCtx({
           token: "   ",
           secret: "secret",
@@ -83,7 +88,7 @@ describe("linePlugin gateway.startAccount", () => {
     const { runtime, monitorLineProvider } = createRuntime();
     setLineRuntime(runtime);
 
-    await linePlugin.gateway.startAccount(
+    await startAccount(
       createStartAccountCtx({
         token: "token",
         secret: "secret",

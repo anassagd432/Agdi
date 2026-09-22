@@ -12,6 +12,21 @@ export type ZaloGroup = {
   memberCount?: number;
 };
 
+export type ZcaGroup = ZaloGroup;
+
+export type ZcaRunOptions = {
+  profile?: string;
+  timeout?: number;
+  cwd?: string;
+};
+
+export type ZcaResult = {
+  ok: boolean;
+  stdout: string;
+  stderr: string;
+  exitCode: number;
+};
+
 export type ZaloGroupMember = {
   userId: string;
   displayName: string;

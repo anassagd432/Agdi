@@ -27,13 +27,13 @@ import type { NodeManagerChoice, OnboardMode, ResetScope } from "./onboard-types
 
 export { detectBinary };
 
-export function guardCancel<T>(value: T | symbol, runtime: RuntimeEnv): T {
+export function guardCancel<T>(value: T | symbol, runtime: RuntimeEnv): Exclude<T, symbol> {
   if (isCancel(value)) {
     cancel(stylePromptTitle("Setup cancelled.") ?? "Setup cancelled.");
     runtime.exit(0);
     throw new Error("unreachable");
   }
-  return value;
+  return value as Exclude<T, symbol>;
 }
 
 export function summarizeExistingConfig(config: OpenClawConfig): string {

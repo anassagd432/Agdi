@@ -1,0 +1,54 @@
+# Agdi CODEOWNERS
+#
+# AGENTS.md states: "Do not edit files covered by security-focused CODEOWNERS
+# rules unless a listed owner explicitly asked for the change or is already
+# reviewing it with you. Treat those paths as restricted surfaces, not drive-by
+# cleanup." This file defines those surfaces. Before 2026-09-22 it did not exist,
+# so every path AGENTS.md described as restricted was unenforced.
+#
+# Agdi currently has a single maintainer, so every rule names the same owner.
+# The value of the file today is that the restricted surfaces are declared
+# explicitly and a future co-maintainer can be granted a narrower set.
+#
+# Syntax reference: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything not matched below.
+*                                             @anassagd432
+
+# --- Security and vulnerability handling -------------------------------------
+# Changing these changes the project's stated security posture, disclosure
+# process, or the tooling that enforces it.
+/SECURITY.md                                  @anassagd432
+/SUPPORT.md                                   @anassagd432
+/docs/security/                               @anassagd432
+/scripts/check-production-audit-policy.mjs    @anassagd432
+/docs/audits/phase1-security-triage.md        @anassagd432
+/docs/audits/phase1-security-exceptions.md    @anassagd432
+
+# --- Supply chain, CI, and release authority ---------------------------------
+# Fork pull requests must not be able to reach write credentials, and no
+# unreviewed ref may publish. Workflow and release-checker changes are therefore
+# owner-reviewed.
+/.github/                                     @anassagd432
+/.github/CODEOWNERS                           @anassagd432
+/scripts/openclaw-npm-release-check.ts        @anassagd432
+/scripts/release-check.ts                     @anassagd432
+/scripts/check-ci-gate-integrity*             @anassagd432
+/scripts/check-workspace-package-invariants*  @anassagd432
+/scripts/test-package-install-smoke.mjs       @anassagd432
+/scripts/assert-clean-worktree.mjs            @anassagd432
+
+# --- Legal, provenance, and the packaging contract ---------------------------
+# Attribution and the set of files that may ship in the npm artifact.
+/LICENSE                                      @anassagd432
+/THIRD_PARTY_NOTICES.md                       @anassagd432
+/docs/reference/provenance.md                 @anassagd432
+/scripts/lib/pack-path-policy.mjs             @anassagd432
+/scripts/check-package-artifact-smoke.mjs     @anassagd432
+
+# --- Dependency graph --------------------------------------------------------
+# A lockfile or override change moves the vulnerability surface, so it is
+# owner-reviewed rather than drive-by.
+/pnpm-lock.yaml                               @anassagd432
+/pnpm-workspace.yaml                          @anassagd432
+/patches/                                     @anassagd432
