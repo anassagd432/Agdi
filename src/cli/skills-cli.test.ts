@@ -43,7 +43,7 @@ describe("skills-cli", () => {
       const report = createMockReport([]);
       const output = formatSkillsList(report, {});
       expect(output).toContain("No skills found");
-      expect(output).toContain("openclaw skills search");
+      expect(output).toContain("agdi skills search");
     });
 
     it("formats skills list with eligible skill", () => {
@@ -115,7 +115,7 @@ describe("skills-cli", () => {
       const report = createMockReport([]);
       const output = formatSkillInfo(report, "unknown-skill", {});
       expect(output).toContain("not found");
-      expect(output).toContain("openclaw skills install");
+      expect(output).toContain("agdi skills install");
     });
 
     it("shows detailed info for a skill", () => {
@@ -153,12 +153,12 @@ describe("skills-cli", () => {
       const report = createMockReport([
         createMockSkill({
           name: "info-emoji",
-          emoji: "ðŸŽ›\uFE0E",
+          emoji: "\u{1F39B}\uFE0E",
         }),
       ]);
 
       const output = formatSkillInfo(report, "info-emoji", {});
-      expect(output).toContain("ðŸŽ›ï¸");
+      expect(output).toContain("\u{1F39B}\uFE0F");
     });
   });
 
@@ -180,23 +180,23 @@ describe("skills-cli", () => {
       expect(output).toContain("ready-2");
       expect(output).toContain("not-ready");
       expect(output).toContain("go"); // missing binary
-      expect(output).toContain("openclaw skills update");
+      expect(output).toContain("agdi skills update");
     });
 
     it("normalizes text-presentation emoji selectors in check output", () => {
       const report = createMockReport([
-        createMockSkill({ name: "ready-emoji", emoji: "ðŸŽ›\uFE0E", eligible: true }),
+        createMockSkill({ name: "ready-emoji", emoji: "\u{1F39B}\uFE0E", eligible: true }),
         createMockSkill({
           name: "missing-emoji",
-          emoji: "ðŸŽ™\uFE0E",
+          emoji: "\u{1F399}\uFE0E",
           eligible: false,
           missing: { bins: ["ffmpeg"], anyBins: [], env: [], config: [], os: [] },
         }),
       ]);
 
       const output = formatSkillsCheck(report, {});
-      expect(output).toContain("ðŸŽ›ï¸ ready-emoji");
-      expect(output).toContain("ðŸŽ™ï¸ missing-emoji");
+      expect(output).toContain("\u{1F39B}\uFE0F ready-emoji");
+      expect(output).toContain("\u{1F399}\uFE0F missing-emoji");
     });
   });
 

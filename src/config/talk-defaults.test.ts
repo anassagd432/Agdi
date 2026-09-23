@@ -34,21 +34,8 @@ describe("talk silence timeout defaults", () => {
     expect(readRepoFile("docs/nodes/talk.md")).toContain(defaultsDescription);
   });
 
-  it("matches the Apple and Android runtime constants", () => {
-    const macDefaults = readRepoFile("apps/macos/Sources/OpenClaw/TalkDefaults.swift");
-    const iosDefaults = readRepoFile("apps/ios/Sources/Voice/TalkDefaults.swift");
-    const androidDefaults = readRepoFile(
-      "apps/android/app/src/main/java/ai/openclaw/app/voice/TalkDefaults.kt",
-    );
-
-    expect(macDefaults).toContain(
-      `static let silenceTimeoutMs = ${TALK_SILENCE_TIMEOUT_MS_BY_PLATFORM.macos}`,
-    );
-    expect(iosDefaults).toContain(
-      `static let silenceTimeoutMs = ${TALK_SILENCE_TIMEOUT_MS_BY_PLATFORM.ios}`,
-    );
-    expect(androidDefaults).toContain(
-      `const val defaultSilenceTimeoutMs = ${TALK_SILENCE_TIMEOUT_MS_BY_PLATFORM.android}L`,
-    );
+  it("keeps platform defaults stable in this repository", () => {
+    // Native app sources are not part of Agdi; their parity cannot be tested here.
+    expect(TALK_SILENCE_TIMEOUT_MS_BY_PLATFORM).toEqual({ macos: 700, android: 700, ios: 900 });
   });
 });

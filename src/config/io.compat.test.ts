@@ -17,9 +17,9 @@ async function withTempHome(run: (home: string) => Promise<void>): Promise<void>
 
 async function writeConfig(
   home: string,
-  dirname: ".openclaw",
+  dirname: string = ".agdi",
   port: number,
-  filename: string = "openclaw.json",
+  filename: string = "agdi.json",
 ) {
   const dir = path.join(home, dirname);
   await fs.mkdir(dir, { recursive: true });
@@ -36,19 +36,19 @@ function createIoForHome(home: string, env: NodeJS.ProcessEnv = {} as NodeJS.Pro
 }
 
 describe("config io paths", () => {
-  it("uses ~/.openclaw/openclaw.json when config exists", async () => {
+  it("migrates an existing ~/.openclaw/openclaw.json config", async () => {
     await withTempHome(async (home) => {
-      const configPath = await writeConfig(home, ".openclaw", 19001);
+      await writeConfig(home, ".openclaw", 19001, "openclaw.json");
       const io = createIoForHome(home);
-      expect(io.configPath).toBe(configPath);
+      expect(io.configPath).toBe(path.join(home, ".agdi", "openclaw.json"));
       expect(io.loadConfig().gateway?.port).toBe(19001);
     });
   });
 
-  it("defaults to ~/.openclaw/openclaw.json when config is missing", async () => {
+  it("defaults to ~/.agdi/agdi.json when config is missing", async () => {
     await withTempHome(async (home) => {
       const io = createIoForHome(home);
-      expect(io.configPath).toBe(path.join(home, ".openclaw", "openclaw.json"));
+      expect(io.configPath).toBe(path.join(home, ".agdi", "agdi.json"));
     });
   });
 
@@ -58,7 +58,7 @@ describe("config io paths", () => {
         env: { OPENCLAW_HOME: path.join(home, "svc-home") } as NodeJS.ProcessEnv,
         homedir: () => path.join(home, "ignored-home"),
       });
-      expect(io.configPath).toBe(path.join(home, "svc-home", ".openclaw", "openclaw.json"));
+      expect(io.configPath).toBe(path.join(home, "svc-home", ".agdi", "agdi.json"));
     });
   });
 
@@ -73,9 +73,9 @@ describe("config io paths", () => {
 
   it("normalizes safe-bin config entries at config load time", async () => {
     await withTempHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
+      const configDir = path.join(home, ".agdi");
       await fs.mkdir(configDir, { recursive: true });
-      const configPath = path.join(configDir, "openclaw.json");
+      const configPath = path.join(configDir, "agdi.json");
       await fs.writeFile(
         configPath,
         JSON.stringify(
@@ -133,9 +133,9 @@ describe("config io paths", () => {
 
   it("logs invalid config path details and throws on invalid config", async () => {
     await withTempHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
+      const configDir = path.join(home, ".agdi");
       await fs.mkdir(configDir, { recursive: true });
-      const configPath = path.join(configDir, "openclaw.json");
+      const configPath = path.join(configDir, "agdi.json");
       await fs.writeFile(
         configPath,
         JSON.stringify({ gateway: { port: "not-a-number" } }, null, 2),
@@ -168,9 +168,9 @@ describe("config io paths", () => {
     const touchedVersion = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}-${(parsedVersion.revision ?? 0) + 1}`;
 
     await withTempHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
+      const configDir = path.join(home, ".agdi");
       await fs.mkdir(configDir, { recursive: true });
-      const configPath = path.join(configDir, "openclaw.json");
+      const configPath = path.join(configDir, "agdi.json");
       await fs.writeFile(
         configPath,
         JSON.stringify({ meta: { lastTouchedVersion: touchedVersion } }, null, 2),
@@ -204,9 +204,9 @@ describe("config io paths", () => {
     const touchedVersion = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}-beta.1`;
 
     await withTempHome(async (home) => {
-      const configDir = path.join(home, ".openclaw");
+      const configDir = path.join(home, ".agdi");
       await fs.mkdir(configDir, { recursive: true });
-      const configPath = path.join(configDir, "openclaw.json");
+      const configPath = path.join(configDir, "agdi.json");
       await fs.writeFile(
         configPath,
         JSON.stringify({ meta: { lastTouchedVersion: touchedVersion } }, null, 2),

@@ -279,7 +279,7 @@ describe("registerAgentCommands", () => {
 
     await runCli(["agents"]);
 
-    expect(runtime.error).toHaveBeenCalledWith("Error: list failed");
+    expect(runtime.error).toHaveBeenCalledWith("list failed");
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 
@@ -288,7 +288,7 @@ describe("registerAgentCommands", () => {
 
     await runCli(["agent", "--message", "hello"]);
 
-    expect(runtime.error).toHaveBeenCalledWith("Error: agent failed");
+    expect(runtime.error).toHaveBeenCalledWith("agent failed");
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 });

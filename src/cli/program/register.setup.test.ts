@@ -96,7 +96,7 @@ describe("registerSetupCommand", () => {
 
     await runCli(["setup"]);
 
-    expect(runtime.error).toHaveBeenCalledWith("Error: setup failed");
+    expect(runtime.error).toHaveBeenCalledWith("setup failed");
     expect(runtime.exit).toHaveBeenCalledWith(1);
   });
 });

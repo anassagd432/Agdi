@@ -45,6 +45,12 @@ const SWIFT_MODEL_CANDIDATES = [`${MACOS_APP_SOURCES_DIR}/CronModels.swift`];
 const SWIFT_STATUS_CANDIDATES = [`${MACOS_APP_SOURCES_DIR}/GatewayConnection.swift`];
 
 async function resolveSwiftFiles(cwd: string, candidates: string[]): Promise<string[]> {
+  try {
+    await fs.access(path.join(cwd, MACOS_APP_SOURCES_DIR));
+  } catch {
+    // This fork does not ship the macOS app; keep UI checks active without inventing Swift sources.
+    return [];
+  }
   const matches: string[] = [];
   for (const relPath of candidates) {
     try {
@@ -61,7 +67,7 @@ async function resolveSwiftFiles(cwd: string, candidates: string[]): Promise<str
 }
 
 describe("cron protocol conformance", () => {
-  it("ui + swift include all cron delivery modes from gateway schema", async () => {
+  it("shipped UI and Swift sources include all cron delivery modes from gateway schema", async () => {
     const modes = extractDeliveryModes(CronDeliverySchema as SchemaLike);
     expect(modes.length).toBeGreaterThan(0);
 
@@ -85,7 +91,7 @@ describe("cron protocol conformance", () => {
     }
   });
 
-  it("cron status shape matches gateway fields in UI + Swift", async () => {
+  it("cron status shape matches gateway fields in shipped UI and Swift sources", async () => {
     const cwd = process.cwd();
     const uiTypes = await fs.readFile(path.join(cwd, "ui/src/ui/types.ts"), "utf-8");
     expect(uiTypes.includes("export type CronStatus")).toBe(true);
@@ -93,6 +99,9 @@ describe("cron protocol conformance", () => {
     expect(uiTypes.includes("jobCount")).toBe(false);
 
     const [swiftRelPath] = await resolveSwiftFiles(cwd, SWIFT_STATUS_CANDIDATES);
+    if (!swiftRelPath) {
+      return;
+    }
     const swiftPath = path.join(cwd, swiftRelPath);
     const swift = await fs.readFile(swiftPath, "utf-8");
     expect(swift.includes("struct CronSchedulerStatus")).toBe(true);
