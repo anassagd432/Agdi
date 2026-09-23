@@ -91,8 +91,9 @@ identify the copyright holder before any notice is rewritten. The Apache
 ## A2UI Lit renderer
 
 The A2UI Lit renderer and canvas bootstrap were imported from OpenClaw tag
-`v2026.3.24`. All 62 imported files match the corresponding tag Git blob
-hashes. The renderer's package manifest identifies `@a2ui/lit` version `0.8.1`
+`v2026.3.24`. Of 62 imported files, 61 match the corresponding tag Git blob
+hashes. The Apache license has identical text with terminal whitespace
+normalized. The renderer's package manifest identifies `@a2ui/lit` version `0.8.1`
 and Apache License 2.0. Source headers credit Copyright 2025 Google LLC; the
 license text is preserved at `vendor/a2ui/LICENSE`.
 
