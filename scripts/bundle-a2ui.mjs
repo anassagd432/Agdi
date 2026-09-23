@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -52,13 +52,24 @@ async function computeHash(inputs) {
 }
 
 function run(command, args) {
-  const result = spawnSync(command, args, {
+  const activePnpmCli = command === "pnpm" ? process.env.npm_execpath : undefined;
+  const useActivePnpm = activePnpmCli && /[\\/]pnpm[\\/]bin[\\/]pnpm\.cjs$/iu.test(activePnpmCli);
+  const executable = useActivePnpm
+    ? process.execPath
+    : process.platform === "win32" && command === "pnpm"
+      ? "pnpm.cmd"
+      : command;
+  const commandArgs = useActivePnpm ? [activePnpmCli, ...args] : args;
+  const result = spawnSync(executable, commandArgs, {
     cwd: rootDir,
     stdio: "inherit",
-    shell: process.platform === "win32" && command.toLowerCase().endsWith(".cmd"),
+    shell:
+      !useActivePnpm && process.platform === "win32" && executable.toLowerCase().endsWith(".cmd"),
   });
   if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(" ")} failed`);
+    throw new Error(
+      `${command} ${args.join(" ")} failed: ${result.error?.message ?? result.status}`,
+    );
   }
 }
 
@@ -78,7 +89,12 @@ async function main() {
     return;
   }
 
-  const inputs = [path.join(rootDir, "package.json"), path.join(rootDir, "pnpm-lock.yaml"), rendererDir, appDir];
+  const inputs = [
+    path.join(rootDir, "package.json"),
+    path.join(rootDir, "pnpm-lock.yaml"),
+    rendererDir,
+    appDir,
+  ];
   const currentHash = await computeHash(inputs);
   const previousHash = (await exists(hashFile)) ? (await fs.readFile(hashFile, "utf8")).trim() : "";
   if (previousHash === currentHash && outputPresent) {

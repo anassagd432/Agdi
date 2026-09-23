@@ -10,7 +10,7 @@
 [![node](https://img.shields.io/badge/node-%3E%3D22.14.0-brightgreen?style=flat-square)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
-**6,000+ npm downloads · 50+ releases · Local-First Architecture**
+**Published on npm · Local-first architecture**
 
 </div>
 
@@ -100,16 +100,19 @@ removed rather than left unverifiable.
 ### Running the Gateway
 
 Start the local runtime:
+
 ```bash
 agdi gateway
 ```
 
 Open the interactive workspace UI:
+
 ```bash
 agdi dashboard
 ```
 
 Verify your environment readiness:
+
 ```bash
 agdi doctor
 ```
@@ -129,6 +132,7 @@ agdi gateway --provider openai --model gpt-4o
 ```
 
 ### Native Capabilities
+
 - **Structured Tool Execution:** Native function calling and schema validation for agent tool loops.
 - **WebSocket Streaming:** Low-latency bidirectional execution telemetry via `openai-ws-stream`.
 - **Reasoning Profiles:** Deep planning loops tailored for `o1` and `o3` reasoning workflows.
@@ -138,34 +142,35 @@ agdi gateway --provider openai --model gpt-4o
 
 ## 🧩 Core Capabilities
 
-| Capability | Description |
-|---|---|
-| **Local Runtime** | Full local control over configuration, environment profiles, tools, and execution boundaries. |
-| **Gateway APIs** | Bidirectional WebSocket and HTTP interfaces for real-time telemetry, remote control, and automation triggers. |
-| **Workspace UI** | Live web dashboard for monitoring agent decisions, inspecting token usage, and reviewing tool actions. |
-| **Chat Connectors** | Ready-to-use bridges for Slack, Discord, Telegram, WhatsApp, Matrix, and custom webhooks. |
-| **Tool Execution** | Granular, permissioned access to shell commands, filesystem operations, headless web browsing, and external APIs. |
-| **Plugin SDK** | Reusable TypeScript/JavaScript SDK to build custom tools, providers, and channel adapters. |
-| **Self-Hosting** | Zero vendor lock-in. Runs cleanly on local machines, WSL, Docker, Linux servers, and macOS hosts. |
+| Capability          | Description                                                                                                       |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Local Runtime**   | Full local control over configuration, environment profiles, tools, and execution boundaries.                     |
+| **Gateway APIs**    | Bidirectional WebSocket and HTTP interfaces for real-time telemetry, remote control, and automation triggers.     |
+| **Workspace UI**    | Live web dashboard for monitoring agent decisions, inspecting token usage, and reviewing tool actions.            |
+| **Chat Connectors** | Ready-to-use bridges for Slack, Discord, Telegram, WhatsApp, Matrix, and custom webhooks.                         |
+| **Tool Execution**  | Granular, permissioned access to shell commands, filesystem operations, headless web browsing, and external APIs. |
+| **Plugin SDK**      | Reusable TypeScript/JavaScript SDK to build custom tools, providers, and channel adapters.                        |
+| **Self-Hosting**    | Zero vendor lock-in. Runs cleanly on local machines, WSL, Docker, Linux servers, and macOS hosts.                 |
 
 ---
 
 ## ⚙️ CLI Reference
 
-| Command | Purpose |
-|---|---|
-| `agdi onboard` | Interactive setup wizard for runtime configuration and API provider keys. |
-| `agdi gateway` | Launch, inspect, and manage the local gateway daemon. |
-| `agdi dashboard` | Launch the local web workspace dashboard. |
-| `agdi doctor` | Run comprehensive health and dependency diagnostics. |
-| `agdi config` | Inspect, validate, and update runtime settings. |
-| `openclaw` | Backward-compatibility command for legacy runtime workflows. |
+| Command          | Purpose                                                                   |
+| ---------------- | ------------------------------------------------------------------------- |
+| `agdi onboard`   | Interactive setup wizard for runtime configuration and API provider keys. |
+| `agdi gateway`   | Launch, inspect, and manage the local gateway daemon.                     |
+| `agdi dashboard` | Launch the local web workspace dashboard.                                 |
+| `agdi doctor`    | Run comprehensive health and dependency diagnostics.                      |
+| `agdi config`    | Inspect, validate, and update runtime settings.                           |
+| `openclaw`       | Backward-compatibility command for legacy runtime workflows.              |
 
 ---
 
 ## 🛡️ Security & Sandbox Model
 
 Agdi operates under an operator-controlled security model:
+
 - **Loopback Default:** Gateway binds to loopback (`127.0.0.1`) by default.
 - **Token Protection:** Remote access requires token or password authentication (`AGDI_GATEWAY_TOKEN`).
 - **Execution Approvals:** Destructive tools and terminal executions can be gated with interactive confirmation.
