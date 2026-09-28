@@ -414,6 +414,28 @@ These are posted to the agent’s session after the node reports the event.
 Gateway-host exec approvals emit the same lifecycle events when the command finishes (and optionally when running longer than the threshold).
 Approval-gated execs reuse the approval id as the `runId` in these messages for easy correlation.
 
+## Laya decision support
+
+Laya can add advice to an exec approval prompt. It does not grant permission.
+
+Set these in the Gateway process environment. Do not commit `LAYA_API_KEY`.
+
+- `LAYA_ENABLED=1` turns the check on. Unset, `0`, or `false` leaves approvals unchanged.
+- `LAYA_API_KEY` is sent only as a bearer token to the Laya API.
+- `LAYA_BASE_URL` optional. Defaults to `https://api.laya.studio`. The client posts to `/v1/systemone`.
+- `LAYA_TIMEOUT_MS` optional. Defaults to 4000 and is clamped between 250 and 15000.
+- `LAYA_CONFIDENCE_MIN` optional. Defaults to 0.6. Confidence below this is treated as uncertain.
+
+When an approval is already required:
+
+- Read-only commands such as `ls`, `cat`, and `git status` proceed through the normal approval path. Laya is not called.
+- Hard-to-reverse commands, including deletes, publishes, message sends, and spending, also ask Laya. The short advice is attached to the approval prompt as `layaAdvice`.
+- The command text and argument list are included in that Laya request, along with host, cwd, and policy context. Environment values are not sent.
+- If Laya is down, times out, returns an invalid payload, or is uncertain, the approval is still required. Silence is not treated as safe.
+- An allow-like Laya answer is ignored. Allowlists, safety checks, and the human decision still win.
+
+Laya does not run for commands that exec policy already allows without a prompt. It also does not auto-deny. The human approval recorded by Exec approvals remains the gate.
+
 ## Implications
 
 - **full** is powerful; prefer allowlists when possible.

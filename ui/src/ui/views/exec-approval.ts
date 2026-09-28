@@ -1,6 +1,6 @@
 import { html, nothing } from "lit";
-import type { AppViewState } from "../app-view-state.ts";
 import { describeFounderOpsApproval } from "../../../../src/founder-ops/control-plane.js";
+import type { AppViewState } from "../app-view-state.ts";
 
 function formatRemaining(ms: number): string {
   const remaining = Math.max(0, ms);
@@ -63,6 +63,11 @@ export function renderExecApprovalPrompt(state: AppViewState) {
           <div class="muted" style="font-size: 12px;">
             Delay: ${approval.consequenceOfDelay}
           </div>
+          ${
+            request.layaAdvice
+              ? html`<div class="muted" style="font-size: 12px;">Laya: ${request.layaAdvice}</div>`
+              : nothing
+          }
           <div class="pill" style="font-size: 11px; width: fit-content;">
             Timeout fallback: ${approval.timeoutFallback}
           </div>

@@ -14,6 +14,7 @@ Docs: https://docs.Agdi.ai
 - Agents/compaction: surface safeguard-specific cancel reasons and relabel benign manual `/compact` no-op cases as skipped instead of failed. (#51072) Thanks @afurm.
 - Agents/compaction: preserve the post-compaction AGENTS refresh on stale-usage preflight compaction for both immediate replies and queued followups. (#49479) Thanks @jared596.
 - CLI: add `Agdi config schema` to print the generated JSON schema for `Agdi.json`. (#54523) Thanks @kvokka.
+- Exec approvals: when Laya is enabled, attach Laya advice to approval prompts for hard-to-reverse commands. Laya cannot allow, deny, or skip the human approval, and an unavailable Laya check still leaves the approval required.
 
 ### Fixes
 

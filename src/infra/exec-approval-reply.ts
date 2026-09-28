@@ -24,6 +24,8 @@ export type ExecApprovalPendingReplyParams = {
   nodeId?: string;
   expiresAtMs?: number;
   nowMs?: number;
+  /** Advice only. Displayed to the approver and never treated as a decision. */
+  layaAdvice?: string | null;
 };
 
 export type ExecApprovalUnavailableReplyParams = {
@@ -84,6 +86,10 @@ export function buildExecApprovalPendingReplyPayload(
   const warningText = params.warningText?.trim();
   if (warningText) {
     lines.push(warningText);
+  }
+  const layaAdvice = params.layaAdvice?.trim();
+  if (layaAdvice) {
+    lines.push(`Laya: ${layaAdvice}`);
   }
   lines.push("Approval required.");
   lines.push("Run:");

@@ -7,6 +7,7 @@ export type ExecApprovalRequestPayload = {
   agentId?: string | null;
   resolvedPath?: string | null;
   sessionKey?: string | null;
+  layaAdvice?: string | null;
 };
 
 export type ExecApprovalRequest = {
@@ -63,6 +64,7 @@ export function parseExecApprovalRequested(payload: unknown): ExecApprovalReques
       agentId: typeof request.agentId === "string" ? request.agentId : null,
       resolvedPath: typeof request.resolvedPath === "string" ? request.resolvedPath : null,
       sessionKey: typeof request.sessionKey === "string" ? request.sessionKey : null,
+      layaAdvice: typeof request.layaAdvice === "string" ? request.layaAdvice : null,
     },
     createdAtMs,
     expiresAtMs,
@@ -111,7 +113,10 @@ export async function loadPendingExecApprovals(state: PendingExecApprovalState) 
     return;
   }
   try {
-    const response = await state.client.request<{ approvals?: unknown[] }>("exec.approval.list", {});
+    const response = await state.client.request<{ approvals?: unknown[] }>(
+      "exec.approval.list",
+      {},
+    );
     const approvals = Array.isArray(response.approvals)
       ? response.approvals.map((entry) => parseExecApprovalRequested(entry)).filter(Boolean)
       : [];

@@ -73,6 +73,26 @@ describe("exec approval reply helpers", () => {
     expect(payload.text).toContain("Full id: `req-1`");
   });
 
+  it("shows Laya advice on the approval message without changing allowed decisions", () => {
+    const payload = buildExecApprovalPendingReplyPayload({
+      approvalId: "req-laya",
+      approvalSlug: "slug-laya",
+      command: "rm -rf /data",
+      host: "gateway",
+      layaAdvice: "Laya advice only, not permission: harm. Approval is still required.",
+    });
+
+    expect(payload.text).toContain(
+      "Laya: Laya advice only, not permission: harm. Approval is still required.",
+    );
+    expect(payload.text).toContain("Approval required.");
+    expect(getExecApprovalReplyMetadata(payload)?.allowedDecisions).toEqual([
+      "allow-once",
+      "allow-always",
+      "deny",
+    ]);
+  });
+
   it("uses a longer fence for commands containing triple backticks", () => {
     const payload = buildExecApprovalPendingReplyPayload({
       approvalId: "req-2",

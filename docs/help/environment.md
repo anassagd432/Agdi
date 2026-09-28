@@ -103,11 +103,21 @@ Both resolve from process env at activation time. SecretRef details are document
 
 ## Path-related env vars
 
-| Variable               | Purpose                                                                                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable               | Purpose                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `OPENCLAW_HOME`        | Override the home directory used for all internal path resolution (`~/.agdi/`, agent dirs, sessions, credentials). Useful when running Agdi as a dedicated service user. |
-| `OPENCLAW_STATE_DIR`   | Override the state directory (default `~/.agdi`).                                                                                                                            |
+| `OPENCLAW_STATE_DIR`   | Override the state directory (default `~/.agdi`).                                                                                                                        |
 | `OPENCLAW_CONFIG_PATH` | Override the config file path (default `~/.agdi/agdi.json`).                                                                                                             |
+
+## Laya decision support
+
+Optional advice for exec approval prompts. Laya cannot allow a command or skip approval. See [Exec approvals](/tools/exec-approvals#laya-decision-support).
+
+- `LAYA_ENABLED=1` enables the check.
+- `LAYA_API_KEY` bearer token. Keep it in the process environment, not in committed config.
+- `LAYA_BASE_URL` optional override. Default `https://api.laya.studio`.
+- `LAYA_TIMEOUT_MS` optional. Default 4000.
+- `LAYA_CONFIDENCE_MIN` optional. Default 0.6.
 
 ## Logging
 

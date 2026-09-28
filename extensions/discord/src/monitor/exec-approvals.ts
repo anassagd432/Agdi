@@ -9,7 +9,6 @@ import {
   type MessagePayloadObject,
   type TopLevelComponents,
 } from "@buape/carbon";
-import { ButtonStyle, Routes } from "discord-api-types/v10";
 import type { OpenClawConfig } from "agdi/plugin-sdk/config-runtime";
 import { loadSessionStore, resolveStorePath } from "agdi/plugin-sdk/config-runtime";
 import type { DiscordExecApprovalConfig } from "agdi/plugin-sdk/config-runtime";
@@ -31,6 +30,7 @@ import {
 import type { RuntimeEnv } from "agdi/plugin-sdk/runtime-env";
 import { compileSafeRegex, testRegexWithBoundedInput } from "agdi/plugin-sdk/security-runtime";
 import { logDebug, logError } from "agdi/plugin-sdk/text-runtime";
+import { ButtonStyle, Routes } from "discord-api-types/v10";
 import { createDiscordClient, stripUndefinedFields } from "../send.shared.js";
 import { DiscordUiContainer } from "../ui.js";
 
@@ -230,6 +230,10 @@ function buildExecApprovalMetadataLines(request: ExecApprovalRequest): string[] 
   }
   if (request.request.agentId) {
     lines.push(`- Agent: ${request.request.agentId}`);
+  }
+  const layaAdvice = request.request.layaAdvice?.trim();
+  if (layaAdvice) {
+    lines.push(`- Laya: ${layaAdvice}`);
   }
   return lines;
 }
