@@ -1,11 +1,40 @@
 import { describe, expect, it } from "vitest";
 import {
   rewriteUpdateFlagArgv,
+  resolveInteractiveEntryArgv,
   shouldEnsureCliPath,
   shouldRegisterPrimarySubcommand,
   shouldSkipPluginCommandRegistration,
   shouldUseRootHelpFastPath,
 } from "./run-main.js";
+
+describe("resolveInteractiveEntryArgv", () => {
+  const bare = ["node", "agdi"];
+
+  it("opens onboarding when a terminal has no configuration", () => {
+    expect(resolveInteractiveEntryArgv(bare, { interactive: true, configured: false })).toEqual([
+      "node",
+      "agdi",
+      "onboard",
+    ]);
+  });
+
+  it("opens the terminal workspace when configured", () => {
+    expect(resolveInteractiveEntryArgv(bare, { interactive: true, configured: true })).toEqual([
+      "node",
+      "agdi",
+      "tui",
+    ]);
+  });
+
+  it("preserves non-interactive and explicit command invocations", () => {
+    expect(resolveInteractiveEntryArgv(bare, { interactive: false, configured: true })).toBe(bare);
+    const explicit = [...bare, "--help"];
+    expect(resolveInteractiveEntryArgv(explicit, { interactive: true, configured: true })).toBe(
+      explicit,
+    );
+  });
+});
 
 describe("rewriteUpdateFlagArgv", () => {
   it("leaves argv unchanged when --update is absent", () => {

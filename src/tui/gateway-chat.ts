@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { SkillStatusReport } from "../agents/skills-status.js";
 import { loadConfig } from "../config/config.js";
 import { hasConfiguredSecretInput } from "../config/types.secrets.js";
 import { assertExplicitGatewayAuthModeWhenBothConfigured } from "../gateway/auth-mode-policy.js";
@@ -264,6 +265,10 @@ export class GatewayChatClient {
   async listModels(): Promise<GatewayModelChoice[]> {
     const res = await this.client.request<{ models?: GatewayModelChoice[] }>("models.list");
     return Array.isArray(res?.models) ? res.models : [];
+  }
+
+  async listSkills(agentId: string): Promise<SkillStatusReport> {
+    return await this.client.request<SkillStatusReport>("skills.status", { agentId });
   }
 }
 

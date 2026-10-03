@@ -26,6 +26,32 @@ describe("entry root help fast path", () => {
     expect(outputRootHelpMock).not.toHaveBeenCalled();
   });
 
+  it("renders root help for a bare non-interactive invocation", () => {
+    const outputRootHelpMock = vi.fn();
+
+    const handled = tryHandleRootHelpFastPath(["node", "agdi"], {
+      outputRootHelp: outputRootHelpMock,
+      interactive: false,
+      env: {},
+    });
+
+    expect(handled).toBe(true);
+    expect(outputRootHelpMock).toHaveBeenCalledOnce();
+  });
+
+  it("leaves a bare interactive invocation to the workspace router", () => {
+    const outputRootHelpMock = vi.fn();
+
+    const handled = tryHandleRootHelpFastPath(["node", "agdi"], {
+      outputRootHelp: outputRootHelpMock,
+      interactive: true,
+      env: {},
+    });
+
+    expect(handled).toBe(false);
+    expect(outputRootHelpMock).not.toHaveBeenCalled();
+  });
+
   it("skips the host help fast path when a container target is active", () => {
     const outputRootHelpMock = vi.fn();
 

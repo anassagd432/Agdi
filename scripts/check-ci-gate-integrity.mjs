@@ -42,24 +42,7 @@ export const REQUIRED_GATES = [
  * Gate scripts whose `|| true` is deliberate. Each entry needs a reason, an
  * owner, and a documentation path. Emptying this map is the goal.
  */
-export const DOCUMENTED_GATE_SUPPRESSIONS = {
-  "format:check": {
-    reason:
-      "219 tracked files still differ from Oxfmt under default settings, and 284 under the " +
-      "restored (uncommitted) .oxfmtrc.jsonc. Mass-formatting is not approved, so the gate " +
-      "cannot be honest yet. The failure is real and reproducible, not a config artifact.",
-    owner: "Anass",
-    doc: "docs/audits/phase1-ci-integrity.md",
-  },
-  "test:unit": {
-    reason:
-      "The unit suite has genuine failures; src/config/schema.base.generated.test.ts fails " +
-      "because the committed baseline is stale (version 2026.3.24 vs package 2026.5.9, plus " +
-      "an anyOf/type-array schema drift). Regenerating the baseline is out of scope here.",
-    owner: "Anass",
-    doc: "docs/audits/phase1-ci-integrity.md",
-  },
-};
+export const DOCUMENTED_GATE_SUPPRESSIONS = {};
 
 /**
  * Scripts that contain `|| true` but are not gates. Masking here does not hide
@@ -174,6 +157,7 @@ export function analyzeCiGateIntegrity({
   scripts,
   ciYml,
   requiredCheckNames = [],
+  documentedGateSuppressions = DOCUMENTED_GATE_SUPPRESSIONS,
 } = {}) {
   const violations = [];
 
@@ -189,7 +173,7 @@ export function analyzeCiGateIntegrity({
 
   // 1. Every suppression must be classified.
   for (const name of suppressedScripts) {
-    if (name in DOCUMENTED_GATE_SUPPRESSIONS || name in NON_GATE_SUPPRESSIONS) {
+    if (name in documentedGateSuppressions || name in NON_GATE_SUPPRESSIONS) {
       continue;
     }
     violations.push({
@@ -201,7 +185,7 @@ export function analyzeCiGateIntegrity({
   }
 
   // 2. A documented gate suppression must be real, justified, and documented.
-  for (const [name, entry] of Object.entries(DOCUMENTED_GATE_SUPPRESSIONS)) {
+  for (const [name, entry] of Object.entries(documentedGateSuppressions)) {
     const command = scripts[name];
     if (typeof command !== "string") {
       violations.push({

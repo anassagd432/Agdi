@@ -139,6 +139,77 @@ export function createCommandHandlers(context: CommandHandlerContext) {
     }
   };
 
+  const openProviderSelector = async () => {
+    try {
+      const models = await client.listModels();
+      const counts = new Map<string, number>();
+      for (const model of models) {
+        counts.set(model.provider, (counts.get(model.provider) ?? 0) + 1);
+      }
+      if (counts.size === 0) {
+        chatLog.addSystem("no model providers available");
+        tui.requestRender();
+        return;
+      }
+      const items = [...counts.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([provider, count]) => ({
+          value: provider,
+          label: sanitizeRenderableText(provider),
+          description: `${count} model${count === 1 ? "" : "s"}`,
+        }));
+      openSelector(createSearchableSelectList(items, 9), async (provider) => {
+        const choices = models
+          .filter((model) => model.provider === provider)
+          .map((model) => `${model.provider}/${model.id}`);
+        chatLog.addSystem(sanitizeRenderableText(`${provider}: ${choices.join(", ")}`));
+      });
+    } catch (err) {
+      chatLog.addSystem(`provider list failed: ${sanitizeRenderableText(String(err))}`);
+      tui.requestRender();
+    }
+  };
+
+  const openSkillSelector = async () => {
+    try {
+      const report = await client.listSkills(state.currentAgentId);
+      if (report.skills.length === 0) {
+        chatLog.addSystem("no skills found for this agent");
+        tui.requestRender();
+        return;
+      }
+      const skills = [...report.skills].sort((a, b) => a.name.localeCompare(b.name));
+      const items = skills.map((skill) => ({
+        value: skill.name,
+        label: sanitizeRenderableText(skill.name),
+        description: sanitizeRenderableText(
+          `${skill.eligible ? "ready" : "unavailable"} · ${skill.source}`,
+        ),
+      }));
+      openSelector(createSearchableSelectList(items, 9), async (name) => {
+        const skill = skills.find((entry) => entry.name === name);
+        if (!skill) {
+          return;
+        }
+        const reason = skill.disabled
+          ? "disabled"
+          : skill.blockedByAllowlist
+            ? "blocked by allowlist"
+            : skill.eligible
+              ? "ready"
+              : "requirements missing";
+        chatLog.addSystem(
+          sanitizeRenderableText(
+            `${skill.name} · ${reason} · ${skill.source}\n${skill.description}\nUse /skill ${skill.name} <task> to invoke.`,
+          ),
+        );
+      });
+    } catch (err) {
+      chatLog.addSystem(`skill list failed: ${sanitizeRenderableText(String(err))}`);
+      tui.requestRender();
+    }
+  };
+
   const openAgentSelector = async () => {
     await refreshAgents();
     if (state.agents.length === 0) {
@@ -313,6 +384,12 @@ export function createCommandHandlers(context: CommandHandlerContext) {
         break;
       case "models":
         await openModelSelector();
+        break;
+      case "providers":
+        await openProviderSelector();
+        break;
+      case "skills":
+        await openSkillSelector();
         break;
       case "think":
         if (!args) {

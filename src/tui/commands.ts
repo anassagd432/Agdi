@@ -70,6 +70,8 @@ export function getSlashCommands(options: SlashCommandOptions = {}): SlashComman
       description: "Set model (or open picker)",
     },
     { name: "models", description: "Open model picker" },
+    { name: "providers", description: "Explore available model providers" },
+    { name: "skills", description: "Explore skills and their availability" },
     {
       name: "think",
       description: "Set thinking level",
@@ -141,13 +143,25 @@ export function getSlashCommands(options: SlashCommandOptions = {}): SlashComman
 export function helpText(options: SlashCommandOptions = {}): string {
   const thinkLevels = formatThinkingLevels(options.provider, options.model, "|");
   return [
-    "Slash commands:",
+    "AGDI workspace · type / to search commands",
+    "",
+    "DISCOVER",
     "/help",
     "/commands",
     "/status",
+    "/skills - explore installed skills and requirements",
+    "/skill <name> [task] - invoke an eligible skill",
+    "/plugins - inspect plugins; /mcp - inspect MCP servers",
+    "/providers - explore providers and models",
+    "",
+    "WORKSPACE",
     "/agent <id> (or /agents)",
     "/session <key> (or /sessions)",
     "/model <provider/model> (or /models)",
+    "/new or /reset",
+    "/settings",
+    "",
+    "CONTROLS",
     `/think <${thinkLevels}>`,
     "/fast <status|on|off>",
     "/verbose <on|off>",
@@ -156,9 +170,7 @@ export function helpText(options: SlashCommandOptions = {}): string {
     "/elevated <on|off|ask|full>",
     "/elev <on|off|ask|full>",
     "/activation <mention|always>",
-    "/new or /reset",
     "/abort",
-    "/settings",
     "/exit",
   ].join("\n");
 }

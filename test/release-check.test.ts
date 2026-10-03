@@ -3,11 +3,38 @@ import { listBundledPluginPackArtifacts } from "../scripts/lib/bundled-plugin-bu
 import { listPluginSdkDistArtifacts } from "../scripts/lib/plugin-sdk-entries.mjs";
 import {
   collectAppcastSparkleVersionErrors,
+  collectNpmOnlyVersionErrors,
   collectBundledExtensionManifestErrors,
   collectForbiddenPackPaths,
   collectMissingPackPaths,
   collectPackUnpackedSizeErrors,
+  parseReleaseCheckTarget,
 } from "../scripts/release-check.ts";
+
+describe("parseReleaseCheckTarget", () => {
+  it("keeps joint npm and macOS validation as the default", () => {
+    expect(parseReleaseCheckTarget([])).toBe("joint");
+  });
+
+  it("allows an explicit npm-only candidate", () => {
+    expect(parseReleaseCheckTarget(["--npm-only"])).toBe("npm-only");
+  });
+
+  it("rejects unknown options instead of silently skipping checks", () => {
+    expect(() => parseReleaseCheckTarget(["--npm-only", "--skip-pack"])).toThrow(
+      "unknown release-check option",
+    );
+  });
+});
+
+describe("collectNpmOnlyVersionErrors", () => {
+  it("requires a beta package version for npm-only release", () => {
+    expect(collectNpmOnlyVersionErrors("2026.9.23-beta.1")).toEqual([]);
+    expect(collectNpmOnlyVersionErrors("2026.9.23")).toEqual([
+      'npm-only release requires a YYYY.M.D-beta.N package version; found "2026.9.23".',
+    ]);
+  });
+});
 
 function makeItem(shortVersion: string, sparkleVersion: string): string {
   return `<item><title>${shortVersion}</title><sparkle:shortVersionString>${shortVersion}</sparkle:shortVersionString><sparkle:version>${sparkleVersion}</sparkle:version></item>`;

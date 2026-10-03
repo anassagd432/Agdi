@@ -13,10 +13,11 @@ import {
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const tempRoots = [];
 
-function createDocRoot() {
+function createDocRoot(entries = Object.values(DOCUMENTED_GATE_SUPPRESSIONS)) {
   const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), "agdi-ci-gate-integrity-"));
   tempRoots.push(repoRoot);
-  for (const entry of Object.values(DOCUMENTED_GATE_SUPPRESSIONS)) {
+  for (const entry of entries) {
+    if (!entry.doc) continue;
     const docPath = path.join(repoRoot, entry.doc);
     fs.mkdirSync(path.dirname(docPath), { recursive: true });
     fs.writeFileSync(docPath, "# stub\n", "utf8");
@@ -61,59 +62,55 @@ test("a required gate masked with || true is rejected", () => {
   assert.ok(codesFor(result).includes("unclassified-suppression"));
 });
 
-test("documented gate suppressions are accepted when justified and documented", () => {
-  const repoRoot = createDocRoot();
-  const scripts = {};
-  for (const [name, entry] of Object.entries(DOCUMENTED_GATE_SUPPRESSIONS)) {
-    scripts[name] = `pnpm something || true`;
-    assert.ok(entry.doc, `${name} must declare a doc`);
-  }
-  const result = analyzeCiGateIntegrity({ repoRoot, scripts, ciYml: wellFormedCiYml() });
+test("documented gate suppressions are accepted only when justified and documented", () => {
+  const documentedGateSuppressions = {
+    "test:example": { reason: "temporary", owner: "maintainer", doc: "docs/gate.md" },
+  };
+  const repoRoot = createDocRoot(Object.values(documentedGateSuppressions));
+  const result = analyzeCiGateIntegrity({
+    repoRoot,
+    scripts: { "test:example": "pnpm test || true" },
+    ciYml: wellFormedCiYml(),
+    documentedGateSuppressions,
+  });
   assert.deepEqual(result.violations, []);
 });
 
-test("a documented suppression that no longer masks anything is stale and rejected", () => {
-  const repoRoot = createDocRoot();
-  const scripts = {};
-  for (const name of Object.keys(DOCUMENTED_GATE_SUPPRESSIONS)) {
-    scripts[name] = "pnpm something || true";
-  }
-  // Fixing a gate must force removal from the allowlist.
-  scripts["format:check"] = "oxfmt --check --threads=1";
-  const result = analyzeCiGateIntegrity({ repoRoot, scripts, ciYml: wellFormedCiYml() });
+test("a documented suppression that no longer masks anything is stale", () => {
+  const documentedGateSuppressions = {
+    "format:check": { reason: "temporary", owner: "maintainer", doc: "docs/gate.md" },
+  };
+  const repoRoot = createDocRoot(Object.values(documentedGateSuppressions));
+  const result = analyzeCiGateIntegrity({
+    repoRoot,
+    scripts: { "format:check": "oxfmt --check" },
+    ciYml: wellFormedCiYml(),
+    documentedGateSuppressions,
+  });
   assert.ok(codesFor(result).includes("stale-gate-suppression"));
 });
 
 test("a documented suppression without reason, owner, or doc is rejected", () => {
-  const repoRoot = createDocRoot();
-  const scripts = { "format:check": "oxfmt --check || true", "test:unit": "pnpm test || true" };
-  const original = DOCUMENTED_GATE_SUPPRESSIONS["format:check"];
-  DOCUMENTED_GATE_SUPPRESSIONS["format:check"] = {
-    reason: "",
-    owner: "",
-    doc: "docs/does-not-exist.md",
+  const documentedGateSuppressions = {
+    "format:check": { reason: "", owner: "", doc: "docs/missing.md" },
   };
-  try {
-    const result = analyzeCiGateIntegrity({ repoRoot, scripts, ciYml: wellFormedCiYml() });
-    const codes = codesFor(result);
-    assert.ok(codes.includes("gate-suppression-missing-reason"));
-    assert.ok(codes.includes("gate-suppression-missing-owner"));
-    assert.ok(codes.includes("gate-suppression-missing-doc"));
-  } finally {
-    DOCUMENTED_GATE_SUPPRESSIONS["format:check"] = original;
-  }
+  const result = analyzeCiGateIntegrity({
+    scripts: { "format:check": "oxfmt --check || true" },
+    ciYml: wellFormedCiYml(),
+    documentedGateSuppressions,
+  });
+  const codes = codesFor(result);
+  assert.ok(codes.includes("gate-suppression-missing-reason"));
+  assert.ok(codes.includes("gate-suppression-missing-owner"));
+  assert.ok(codes.includes("gate-suppression-missing-doc"));
 });
 
 test("a non-gate suppression is accepted", () => {
-  const repoRoot = createDocRoot();
   const scripts = {};
-  for (const name of Object.keys(DOCUMENTED_GATE_SUPPRESSIONS)) {
-    scripts[name] = "pnpm something || true";
-  }
   for (const name of Object.keys(NON_GATE_SUPPRESSIONS)) {
     scripts[name] = "some command || true";
   }
-  const result = analyzeCiGateIntegrity({ repoRoot, scripts, ciYml: wellFormedCiYml() });
+  const result = analyzeCiGateIntegrity({ repoRoot: REPO_ROOT, scripts, ciYml: wellFormedCiYml() });
   assert.deepEqual(result.violations, []);
 });
 

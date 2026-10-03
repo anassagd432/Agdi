@@ -13,6 +13,8 @@ function createHarness(params?: {
   setActivityStatus?: SetActivityStatusMock;
   isConnected?: boolean;
   activeChatRunId?: string | null;
+  listSkills?: ReturnType<typeof vi.fn>;
+  listModels?: ReturnType<typeof vi.fn>;
 }) {
   const sendChat = params?.sendChat ?? vi.fn().mockResolvedValue({ runId: "r1" });
   const resetSession = params?.resetSession ?? vi.fn().mockResolvedValue({ ok: true });
@@ -20,12 +22,16 @@ function createHarness(params?: {
   const addUser = vi.fn();
   const addSystem = vi.fn();
   const requestRender = vi.fn();
+  const openOverlay = vi.fn();
   const noteLocalRunId = vi.fn();
   const noteLocalBtwRunId = vi.fn();
   const loadHistory =
     params?.loadHistory ?? (vi.fn().mockResolvedValue(undefined) as LoadHistoryMock);
   const setActivityStatus = params?.setActivityStatus ?? (vi.fn() as SetActivityStatusMock);
+  const listSkills = params?.listSkills ?? vi.fn().mockResolvedValue({ skills: [] });
+  const listModels = params?.listModels ?? vi.fn().mockResolvedValue([]);
   const state = {
+    currentAgentId: "main",
     currentSessionKey: "agent:main:main",
     activeChatRunId: params?.activeChatRunId ?? null,
     isConnected: params?.isConnected ?? true,
@@ -33,13 +39,13 @@ function createHarness(params?: {
   };
 
   const { handleCommand } = createCommandHandlers({
-    client: { sendChat, resetSession } as never,
+    client: { sendChat, resetSession, listSkills, listModels } as never,
     chatLog: { addUser, addSystem } as never,
     tui: { requestRender } as never,
     opts: {},
     state: state as never,
     deliverDefault: false,
-    openOverlay: vi.fn(),
+    openOverlay,
     closeOverlay: vi.fn(),
     refreshSessionInfo: vi.fn(),
     loadHistory,
@@ -64,15 +70,59 @@ function createHarness(params?: {
     addUser,
     addSystem,
     requestRender,
+    openOverlay,
     loadHistory,
     setActivityStatus,
     noteLocalRunId,
     noteLocalBtwRunId,
     state,
+    listSkills,
+    listModels,
   };
 }
 
 describe("tui command handlers", () => {
+  it("queries skills and providers without sending a chat message", async () => {
+    const { handleCommand, listSkills, listModels, addSystem, sendChat } = createHarness();
+
+    await handleCommand("/skills");
+    await handleCommand("/providers");
+
+    expect(listSkills).toHaveBeenCalledWith("main");
+    expect(listModels).toHaveBeenCalledOnce();
+    expect(addSystem).toHaveBeenCalledWith("no skills found for this agent");
+    expect(addSystem).toHaveBeenCalledWith("no model providers available");
+    expect(sendChat).not.toHaveBeenCalled();
+  });
+
+  it("shows skill provenance and readiness before invocation", async () => {
+    const listSkills = vi.fn().mockResolvedValue({
+      skills: [
+        {
+          name: "example",
+          description: "Example skill",
+          source: "workspace",
+          eligible: true,
+          disabled: false,
+          blockedByAllowlist: false,
+        },
+      ],
+    });
+    const { handleCommand, openOverlay, addSystem, sendChat } = createHarness({ listSkills });
+
+    await handleCommand("/skills");
+    const selector = openOverlay.mock.calls[0]?.[0] as {
+      onSelect: (item: { value: string }) => void;
+    };
+    selector.onSelect({ value: "example" });
+    await vi.waitFor(() => {
+      expect(addSystem).toHaveBeenCalledWith(
+        "example · ready · workspace\nExample skill\nUse /skill example <task> to invoke.",
+      );
+    });
+    expect(sendChat).not.toHaveBeenCalled();
+  });
+
   it("renders the sending indicator before chat.send resolves", async () => {
     let resolveSend: (value: { runId: string }) => void = () => {
       throw new Error("sendChat promise resolver was not initialized");

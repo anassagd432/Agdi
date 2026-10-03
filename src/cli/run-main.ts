@@ -80,6 +80,16 @@ export function shouldUseRootHelpFastPath(argv: string[]): boolean {
   return isRootHelpInvocation(argv);
 }
 
+export function resolveInteractiveEntryArgv(
+  argv: string[],
+  options: { interactive: boolean; configured: boolean },
+): string[] {
+  if (!options.interactive || argv.length > 2) {
+    return argv;
+  }
+  return [...argv, options.configured ? "tui" : "onboard"];
+}
+
 export async function runCli(argv: string[] = process.argv) {
   const originalArgv = normalizeWindowsArgv(argv);
   const parsedContainer = parseCliContainerArgs(originalArgv);
@@ -94,7 +104,10 @@ export async function runCli(argv: string[] = process.argv) {
     applyCliProfileEnv({ profile: parsedProfile.profile });
   }
   const containerTargetName =
-    parsedContainer.container ?? process.env.AGDI_CONTAINER?.trim() ?? process.env.OPENCLAW_CONTAINER?.trim() ?? null;
+    parsedContainer.container ??
+    process.env.AGDI_CONTAINER?.trim() ??
+    process.env.OPENCLAW_CONTAINER?.trim() ??
+    null;
   if (containerTargetName && parsedProfile.profile) {
     throw new Error("--container cannot be combined with --profile/--dev");
   }
@@ -110,6 +123,19 @@ export async function runCli(argv: string[] = process.argv) {
 
   loadCliDotEnv({ quiet: true });
   normalizeEnv();
+  if (normalizedArgv.length === 2) {
+    if (!process.stdin.isTTY || !process.stdout.isTTY) {
+      const { outputRootHelp } = await import("./program/root-help.js");
+      outputRootHelp();
+      return;
+    }
+    const { existsSync } = await import("node:fs");
+    const { resolveConfigPathCandidate } = await import("../config/paths.js");
+    normalizedArgv = resolveInteractiveEntryArgv(normalizedArgv, {
+      interactive: true,
+      configured: existsSync(resolveConfigPathCandidate()),
+    });
+  }
   if (shouldEnsureCliPath(normalizedArgv)) {
     ensureOpenClawCliOnPath();
   }

@@ -165,12 +165,14 @@ export function tryHandleRootHelpFastPath(
     outputRootHelp?: () => void;
     onError?: (error: unknown) => void;
     env?: NodeJS.ProcessEnv;
+    interactive?: boolean;
   } = {},
 ): boolean {
   if (resolveCliContainerTarget(argv, deps.env)) {
     return false;
   }
-  if (!isRootHelpInvocation(argv)) {
+  const interactive = deps.interactive ?? Boolean(process.stdin.isTTY && process.stdout.isTTY);
+  if (!isRootHelpInvocation(argv) && (argv.length !== 2 || interactive)) {
     return false;
   }
   const handleError =

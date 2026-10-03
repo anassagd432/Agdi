@@ -41,6 +41,22 @@ const appcastPath = resolve("appcast.xml");
 const laneBuildMin = 1_000_000_000;
 const laneFloorAdoptionDateKey = 20260227;
 
+export function parseReleaseCheckTarget(args: string[]): "joint" | "npm-only" {
+  if (args.length === 0) {
+    return "joint";
+  }
+  if (args.length === 1 && args[0] === "--npm-only") {
+    return "npm-only";
+  }
+  throw new Error(`unknown release-check option: ${args.join(" ")}`);
+}
+
+export function collectNpmOnlyVersionErrors(version: string): string[] {
+  return /^\d{4}\.(?:[1-9]|1[0-2])\.(?:[1-9]|[12]\d|3[01])-beta\.[1-9]\d*$/.test(version)
+    ? []
+    : [`npm-only release requires a YYYY.M.D-beta.N package version; found "${version}".`];
+}
+
 function collectBundledExtensions(): BundledExtension[] {
   const extensionsDir = resolve("extensions");
   const entries = readdirSync(extensionsDir, { withFileTypes: true }).filter((entry) =>
@@ -299,7 +315,23 @@ async function checkPluginSdkExports() {
 }
 
 async function main() {
-  checkAppcastSparkleVersions();
+  const target = parseReleaseCheckTarget(process.argv.slice(2));
+  if (target === "joint") {
+    checkAppcastSparkleVersions();
+  } else {
+    const packageVersion = (
+      JSON.parse(readFileSync(resolve("package.json"), "utf8")) as {
+        version?: string;
+      }
+    ).version;
+    const errors = collectNpmOnlyVersionErrors(packageVersion ?? "");
+    if (errors.length > 0) {
+      for (const error of errors) {
+        console.error(`release-check: ${error}`);
+      }
+      process.exit(1);
+    }
+  }
   await checkPluginSdkExports();
   checkBundledExtensionMetadata();
 

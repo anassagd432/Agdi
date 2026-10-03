@@ -24,6 +24,12 @@ describe("getSlashCommands", () => {
       { value: "always", label: "always" },
     ]);
   });
+
+  it("exposes live skill and provider discovery in the command palette", () => {
+    const names = getSlashCommands().map((command) => command.name);
+    expect(names).toContain("skills");
+    expect(names).toContain("providers");
+  });
 });
 
 describe("helpText", () => {
@@ -31,5 +37,9 @@ describe("helpText", () => {
     const output = helpText();
     expect(output).toContain("/elevated <on|off|ask|full>");
     expect(output).toContain("/elev <on|off|ask|full>");
+    expect(output).toContain("/skills");
+    expect(output).toContain("/providers");
+    expect(output).toContain("/plugins");
+    expect(output).toContain("/mcp");
   });
 });

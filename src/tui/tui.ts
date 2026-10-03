@@ -460,7 +460,7 @@ export async function runTui(opts: TuiOptions) {
     const agentLabel = formatAgentLabel(currentAgentId);
     header.setText(
       theme.header(
-        `openclaw tui - ${client.connection.url} - agent ${agentLabel} - session ${sessionLabel}`,
+        `AGDI · ${client.connection.url} · agent ${agentLabel} · session ${sessionLabel}`,
       ),
     );
   };
@@ -657,7 +657,11 @@ export async function runTui(opts: TuiOptions) {
       reasoningLabel,
       tokens,
     ].filter(Boolean);
-    footer.setText(theme.dim(footerParts.join(" | ")));
+    footer.setText(
+      theme.dim(
+        `${footerParts.join(" | ")}\n/ for commands · /skills · /providers · /plugins · /mcp`,
+      ),
+    );
   };
 
   const { openOverlay, closeOverlay } = createOverlayHandlers(tui, editor);

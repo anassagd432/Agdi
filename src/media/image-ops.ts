@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { runExec } from "../process/exec.js";
 
-type Sharp = typeof import("sharp");
+type Sharp = typeof import("sharp").default;
 
 export type ImageMetadata = {
   width: number;
@@ -26,14 +26,16 @@ function isBun(): boolean {
 function prefersSips(): boolean {
   return (
     (process.env.AGDI_IMAGE_BACKEND ?? process.env.OPENCLAW_IMAGE_BACKEND) === "sips" ||
-    ((process.env.AGDI_IMAGE_BACKEND ?? process.env.OPENCLAW_IMAGE_BACKEND) !== "sharp" && isBun() && process.platform === "darwin")
+    ((process.env.AGDI_IMAGE_BACKEND ?? process.env.OPENCLAW_IMAGE_BACKEND) !== "sharp" &&
+      isBun() &&
+      process.platform === "darwin")
   );
 }
 
 async function loadSharp(): Promise<(buffer: Buffer) => ReturnType<Sharp>> {
   const mod = (await import("sharp")) as unknown as { default?: Sharp };
   const sharp = mod.default ?? (mod as unknown as Sharp);
-  return (buffer) => sharp(buffer, { failOnError: false });
+  return (buffer) => sharp(buffer, { failOn: "none" });
 }
 
 /**
