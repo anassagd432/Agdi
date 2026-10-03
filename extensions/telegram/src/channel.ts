@@ -9,10 +9,7 @@ import { createChatChannelPlugin } from "agdi/plugin-sdk/core";
 import { createChannelDirectoryAdapter } from "agdi/plugin-sdk/directory-runtime";
 import { resolveExecApprovalCommandDisplay } from "agdi/plugin-sdk/infra-runtime";
 import { buildExecApprovalPendingReplyPayload } from "agdi/plugin-sdk/infra-runtime";
-import {
-  resolveOutboundSendDep,
-  type OutboundSendDeps,
-} from "agdi/plugin-sdk/outbound-runtime";
+import { resolveOutboundSendDep, type OutboundSendDeps } from "agdi/plugin-sdk/outbound-runtime";
 import {
   buildOutboundBaseSessionKey,
   normalizeMessageChannel,
@@ -416,6 +413,7 @@ export const telegramPlugin = createChatChannelPlugin({
           nodeId: request.request.nodeId ?? undefined,
           expiresAtMs: request.expiresAtMs,
           nowMs,
+          layaAdvice: request.request.layaAdvice,
         });
         const buttons = buildTelegramExecApprovalButtons(request.id);
         if (!buttons) {

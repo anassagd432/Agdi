@@ -350,6 +350,28 @@ describe("exec approval forwarder", () => {
     expect(text).toContain("Reply with: /approve <id> allow-once|allow-always|deny");
   });
 
+  it("includes Laya advice in the forwarded approval message", async () => {
+    vi.useFakeTimers();
+    const { deliver, forwarder } = createForwarder({ cfg: TARGETS_CFG });
+
+    await expect(
+      forwarder.handleRequested({
+        ...baseRequest,
+        request: {
+          ...baseRequest.request,
+          layaAdvice: "Laya advice only, not permission: harm. Approval is still required.",
+        },
+      }),
+    ).resolves.toBe(true);
+    await Promise.resolve();
+
+    const text = getFirstDeliveryText(deliver);
+    expect(text).toContain(
+      "Laya: Laya advice only, not permission: harm. Approval is still required.",
+    );
+    expect(text).toContain("Command: `echo hello`");
+  });
+
   it("renders invisible Unicode format chars as visible escapes", async () => {
     vi.useFakeTimers();
     const { deliver, forwarder } = createForwarder({ cfg: TARGETS_CFG });

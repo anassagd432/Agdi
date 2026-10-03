@@ -79,6 +79,8 @@ export type ExecApprovalRequestPayload = {
   turnSourceTo?: string | null;
   turnSourceAccountId?: string | null;
   turnSourceThreadId?: string | number | null;
+  /** Laya advice for the human reviewer. Never a permission grant. */
+  layaAdvice?: string | null;
 };
 
 export type ExecApprovalRequest = {

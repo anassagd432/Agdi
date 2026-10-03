@@ -5,6 +5,11 @@ import {
   type ExecApprovalDecision,
 } from "../../infra/exec-approvals.js";
 import {
+  isConsequentialExecAction,
+  isLayaEnabled,
+  resolveExecApprovalLayaAdvice,
+} from "../../infra/laya-decision-support.js";
+import {
   buildSystemRunApprovalBinding,
   buildSystemRunApprovalEnvBinding,
 } from "../../infra/system-run-approval-binding.js";
@@ -146,6 +151,25 @@ export function createExecApprovalHandlers(
         );
         return;
       }
+      // Advice only. Skip the await unless Laya will actually be called so
+      // registration stays synchronous for the existing approval path.
+      let layaAdvice: string | undefined;
+      if (
+        isLayaEnabled() &&
+        isConsequentialExecAction(effectiveCommandText, effectiveCommandArgv)
+      ) {
+        layaAdvice = await resolveExecApprovalLayaAdvice({
+          command: effectiveCommandText,
+          commandArgv: effectiveCommandArgv,
+          cwd: effectiveCwd,
+          host: host || null,
+          security: typeof p.security === "string" ? p.security : null,
+          ask: typeof p.ask === "string" ? p.ask : null,
+          agentId: effectiveAgentId ?? null,
+          sessionKey: effectiveSessionKey ?? null,
+          resolvedPath: typeof p.resolvedPath === "string" ? p.resolvedPath : null,
+        });
+      }
       const request = {
         command: sanitizeExecApprovalDisplayText(effectiveCommandText),
         commandPreview:
@@ -170,6 +194,7 @@ export function createExecApprovalHandlers(
         turnSourceAccountId:
           typeof p.turnSourceAccountId === "string" ? p.turnSourceAccountId.trim() || null : null,
         turnSourceThreadId: p.turnSourceThreadId ?? null,
+        ...(layaAdvice ? { layaAdvice } : {}),
       };
       const record = manager.create(request, timeoutMs, explicitId);
       record.requestedByConnId = client?.connId ?? null;

@@ -172,6 +172,10 @@ function buildRequestMessage(request: ExecApprovalRequest, nowMs: number) {
   if (request.request.ask) {
     lines.push(`Ask: ${request.request.ask}`);
   }
+  const layaAdvice = request.request.layaAdvice?.trim();
+  if (layaAdvice) {
+    lines.push(`Laya: ${layaAdvice}`);
+  }
   const expiresIn = Math.max(0, Math.round((request.expiresAtMs - nowMs) / 1000));
   lines.push(`Expires in: ${expiresIn}s`);
   lines.push("Mode: foreground (interactive approvals available in this chat).");

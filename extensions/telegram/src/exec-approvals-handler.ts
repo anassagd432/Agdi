@@ -292,6 +292,7 @@ export class TelegramExecApprovalHandler {
       nodeId: request.request.nodeId ?? undefined,
       expiresAtMs: request.expiresAtMs,
       nowMs: this.nowMs(),
+      layaAdvice: request.request.layaAdvice,
     };
     const payload = buildExecApprovalPendingReplyPayload(payloadParams);
     const buttons = buildTelegramExecApprovalButtons(request.id);
